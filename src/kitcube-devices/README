@@ -1,0 +1,521 @@
+README KITcube Device Data Definiton
+A. Kopmann
+
+
+
+
+Next Meeting:
+- Radiodetektion / Charakterisierung von Gewittern
+- Demonstration Testaufbau 
+  Ziele: Echte Ceilometerdaten, Performance der Verbindung
+         Darstellung von Profilen als Farbverlauf 
+- Erste Tests mit dem Funkmodulen
+- Vorstellung Flatinger
+- Zeitplan: Integration der weiteren Systeme?!
+
+
+
+Meeting 28.7.09:
+- Presentation Reader and DataServer Implementation
+  Übersicht Module
+  Folien mit Architektur + Datenfluss + Files zeigen
+- Presentation ADEI
+  Wiki-Seite
+  Gruppen, Sensoren
+  Navigation
+  Achsen
+  Performance
+- Status: Radio Link 
+  --> Norbert wird seinen Plan vorstellen
+  (UHF-Band? NK: Noch keine Komponenten?!)
+- Details Mast
+  (s. Unten)
+- Details Ceilometer
+  (s. Unten)
+  --> Store all parameters from Ceilometer?
+      Ceilometer like other devices provide too much information?
+      Proposal: Leave some raw data only in the raw data files?!
+- ZV Änderung - mitnehmen?
+
+
+Results:
+- Setup for multiple data generators and reading data of all modules. 
+  Multi module handling code is not complete now.
+	- Error handling?! 
+          With the Ceilometer the missing data should be left out.
+          Might be also the solution for other modules?
+          But this will make it difficult to find sensor errors?!
+ 	- Implementation of compression before transport
+          --> Is there a rsync feature for transport of compressed data?
+              The option -z or --compress (using zlib)
+        - performance module: transfer time, amount of data, disk space
+          parse rsync output to get the amount of transfered data !!!
+          usage of rsync library to get performance of rsync with out parsing stdout
+          alternative network traffic monitor for data transfer monitoring
+        - Individual communication with the stake holders for bugs and changes
+- Implement two side synchronisation (e.g. USB-Stick transport)
+  Implement a function to add also unordered data file
+  --> Database table with all files.
+      Should also contain First and last time stamp, file size, date of loading?! More?
+- Test with the real Ceilometer. Most of the devices are accessable in FZK-LAN
+  --> Receive account information from Jan
+- Implementation of other modules
+  --> Dokumentation about Data structure + data formats of all devices
+- How to store complex data? How to display?
+- Tests with radio link
+	- Check alternatives: GSM, X25 Radio Pakets (does not require line of sight
+          between the nodes), Satellite connection (like remote TV recordings)
+- Order Servers in October (Norbert / Heinz)
+  (Fileserver, Database, monitoring, Compute server)
+- Computation of mixed module signals?!
+  --> GPU Computation of FFT's and other volume data operations?!
+
+
+
+
+>>> kitcube-tools (Reader + Dataserver implementation
+-------------------------------------------------------
+
+Open Issues:
+*  php-Webapplication für ein Monitoring-Tool.       
+   Die Befehle müssen dazu noch implementiert werden.
+      - Aktive konfiguration (Module, Verzeichnisse, ...)
+      - Starten/Stoppen und Auswahl der Dienste? 
+         --> Dazu müssen allerdings die Dienste noch etwas modifiziert werden...
+      - Verfügbarer Plattenplatz, hochgerechnete Schreibdauer
+      - mittlere Datenrate des Modules
+      - Laufzeit / letzter Start
+      - Fehlende / fehlerhafte Daten?
+* Schreiben in die Datenbank in eine eigene Klasse verschieben. 
+  Kann man dann besser für das Performance-Modul verwenden. Denn hier ist eine Dateien nicht
+  unbedingt notwendig?!
+* Redirect rsync output to file and parse for performance
+* Performance measurement: Include the time of writing in the database also to the data
+  Write virtual DAQDevice class to store performance measurements and system load 
+  Parameters: Reader loop time, number of modules, bytes copied, free disk space 
+* Implement Ceilometer nc-support as example data for colored profiles
+* Profile graphics for ceilometer scatter?! 
+  --> There might be only gnuplot?! Need for a completely redesigned viewing algorithm?!
+* Bug in BaseServer::getNextDelay(). Does not work properly on 64bit-Systems?!
+  Multiple calls at the same time?! 
+* List all kitcube  processes that are running. Split between dataserver and reader process
+* Universal data server start script that takes the name of the script to find the desired module
+* Start a few modules in the same reader program 
+  This modules should run cooperative in the same process
+* Add module table. Description and may be other information?!
+* Replace the naming DAQDevice by DAQModule
+* Documentation of the code and the system
+  Rules for the implementation, naming convention
+  Re-design the names of the class variables, e.g. filename and path are to general as
+  quite a lot of files are opened 
+* Re-write the functions that return strings - now they are not indepenedant 
+* SimpleServer-Schnittstelle in php implementieren?
+  --> Einfacher Zugang für Web-Displays?!
+* Make sure the time is always in the middle of the second and never earlier?!
+  Write table with performance analysis: How long was the reading, percentage of cpu time 
+  compared with sampling time.
+* Improve output of system-calls. The output is mixed in the order with regular output to stdout.
+  (s. example below using pipes) 
+* Implement alternative to rsync, that work like the database loader. 
+  It is not necessary to run over the whole directory structure all the time. The information 
+  about the order of file creating can be used to accelerate the copy. 
+  It appears this will b needed to be able to copy teh data from all the modules in time?!
+* Use unique parameter in database for the timestamps!!!
+
+
+>>> ADEI
+----------------------
+
+Link:
+http://ipechilinga2.ka.fzk.de/zweb/?setup=imk
+
+
+New groups will automatically be generated. 
+It might take a while after everything is processed properly
+
+
+Open: 
+* Add profile plots as second display option 
+* Add masks for each device of the mast modules
+  Parse the name or provide the mask list in the raw database?!
+* Axis labels are missing in Virtual server view
+* Recognize the 9999 values in ADEI and leave out (also in display and sum?!)
+  How are the times handled if there is no data entered?
+  --> Compare Ceilometer 022: Do not draw lines to zero !!!
+* Remove the reserved variables?!
+* Ordering of the virtual tree by modules and devices.
+* Further improve the title by embedded fonts in the graphics
+  May be also add one of the boxes?!
+* Display for 10min values is some what strange. Lots of dots?!
+* Wiki, It is not possible to create new Wiki-Pages for other than the main setup?!
+  Access denied for user adei to database kitcube_actual
+* Admin does not support the setup varible. 
+* Where is the error log? How to drop tables and recreate?!
+  It looks like adei crashed on friday. Since then no new data has been loaded?!
+  Howto startup again?
+* The second table is too large? Is the index wrong? How to avoid the whole ADEI crashing?!
+* The access to the pages takes much to long?! Ovoisly the configruation is now some how messed?
+  Are the proper indexes on the tables?
+
+
+Suren:
+* Fixed color problem in the title bar. I decided to change to jpg format. 
+  Change some colors and the title line.
+  From a websites: There is no way of making PNG images that match CSS colors
+  		   in all PNG-supporting browsers. 
+  Effected files: setup/imk/imk.css imk.png imk.jpg, config.php 
+
+
+
+
+
+Warning:
+For compatibility with 64bit systems it is necessary to handle the data types 
+carefully: int is always 4Byte, but long int will be 4Bytes with 32bit and 8Byte with 64bit systems
+--> Use long int types only if really needed!!!
+
+
+
+>>> Mast data format
+--------------------
+* Change Mast data creation to the 10min intervals
+* Location of the individual systems is not included in the header
+* Should the sensor name be used in the header files
+* The time structure is not used in DAX and DAR files?
+* In the headers should no non standard ASCII characters should be used (e.g. m^3) 
+  German characters
+* Description in header file should be english
+* Is the reference time given in UTC / Localtime?
+  (I assumed UTC in the first version of the program) 
+
+* Sisomop Signal + Steuer fehlen - wahrscheinlich wird es nur weiterverarbeitet benötigt?!
+EB1.SISOMOP.E.SOIL.001.AVG
+EB1.SISOMOP.E.SOIL.002.AVG
+* Naming for not found parameters?
+* Pygometer unten und oden --> sind dsas zwei geräte? Sollte man die dann über zwei 
+  Höhen fortlaufend nummerieren?
+* Ich kann die Wippe in der Sensorliste nicht finden
+  Die Ableitung sollte als Aggregation Parameter eingeführt werden.
+* Worauf basiert die Taupunkt-Berechnung?
+* Mast Berechnete Größen: Es fehlen vier Variablen?!
+         8	EinstrahlungBerechnet	EB1.XXX.R.SWDR.001.AVG
+         9	AusstrahlungBerechnet	EB1.XXX.R.SWUR.001.AVG
+        18	Strahlungsbilanz	EB1.XXX.R.QSUR.001.AVG
+        19	Dampfdruck(Tau)	EB1.DEW.M.E.001.AVG
+        20	absoluteFeuchte(Tau)	EB1.DEW.M.AH.001.AVG
+  * Sometime there are corrupted data lines in the Mast data
+  They seem to be also in the original file???
+  Is there an error free version available?
+* Inclination should be abreviated with INCL !? (not INKL)
+* Heatflux has unit w/m^2 but is named with F for flow?!
+
+
+
+>>> Ceilometer
+--------------
+
+The following items should be recored:
+
+Backscatter (from *.nc raw data file, field beta_raw)
+Cloud heigh 
+penetration depth
+vertical visibility - radiation property?!
+
+
+Q: Should the height be given relative or absolute?
+Q: What other paarameters are needed from the raw data file?
+Q: What is vertical visibility? chm file: vertikale sichtbarkeit? Why a R as symbol and not H?
+Q: What about the other parameters from the chm file?
+Q: The check sum is not in the data?!
+Q: The number field should always be three digets?!
+* The chm file has only 237 bytes?! Not 240 as in the manual???
+* How to code NotDetermined and NaN??? 
+  At the moment 9999 and (visibility) 99999 ??? 
+  --> How does ADEI behave if there are missing values?
+* The data is not completely like described in the manual?!
+
+
+
+Module properties:
+
+There are two files (of different size) to be processed.
+The chm file contains 1min values
+A new file is created every day
+Folder structure ???
+Height and position of the instrument are in the data 
+
+The data is stored in a current folder. There is always only one line
+per file. (so little different to my first implementation?!
+So this one is in principle enough to look for. 
+For storage the data is processed once a day. All data of one day is packed in a
+single file. Archive data can also be processed if needed...
+
+Jan Handwerker:
+Die anderen Files liegen beim User "data"
+(/home/data/<Messgeraet>/Daten). Hier kommen die minütlich erzeugten
+Dateien an. uudecoded man eine solche *.dat-Datei, entsteht eine
+*.nc-Datei. Die erste Zeile der dat-Datei ist die chm-Datei.
+
+Jeden Tag, morgens um 5:05 (UTC, der Rechner läuft auf UTC) werden
+die *.dat-Dateien des Vortages uudecoded, die nc-Dateien werden
+zusammengefasst, die dat-Files getart und alles in ein
+Unterverzeichnis geschoben (siehe z.B. 2009/07/27). Dann wird das
+"Daten"-Verzeichnis wieder geleert.
+
+Ab und zu entsteht auch eine Datei vom 01.01.2004. Ich habe es
+aufgegeben, mich daran zu stören.
+
+
+
+
+Display:
+--> The three heights can be display very good as time series.
+    The not detected values are just left out.
+--> For the profiles a second plot -- or (better?) a 3D-Surface back-scatter vs time
+    is needed. There is no sense to have the backscatter stored as single
+    elements! Use blobs here?
+
+The IP-Address of the measurement PC is send by cron jobs to ipeauger1 to ipepdvadei
+The direct access to ipepdvadei was not possible. The scripts used are bin/send-ip
+
+
+Open:
+* Implement package of online data to Ceilometer archive format
+* Implement raw data interface (new sub class of Ceilometer)
+
+
+
+>>> Cloud Radar
+-----------------------
+
+There are (again) two data files.
+
+Raw format *.pds (Short description by Jan in Email)
+NetCDF format *.nc (Contains two parameters time and height)
+
+Both sample files contain (partly) the same data?
+
+Sample data: 1014 times (what is the angular distribution?)
+heights: 478 (this is the length of the profile...
+
+The reflectivity is in most cases not available (value -9e+33)
+Is it possible to generate similar parameters like with the Ceilometer?!
+What is the spatial / time resolution of the device? Is it possible to 
+follow the deformation of the clouds???
+
+
+The time axis is not continuously sampled:
+  - There scanning phases and pause phases
+  - The time values need to be rounded to full integer values (from double)
+  - The sampling during scanning switched between 1/2 and 10/11 seconds
+  - In each scanning mode the every second samping interval has 1 and 2 seconds length?!
+    --> Is this some rounding problem in the radar DAQ?
+    --> Compare with other data?!
+
+
+
+
+Q:
+* Should the *.nrd Format also be implemented?
+* How to display the data? Is there a sample display?
+  Which kind of Information is needed for this?
+* Is it really intended only to store these raw data (reflectivity and so on)?
+  One would expect to see some cloud level and thickness?!
+
+
+
+Open: 
+* Implement *.pds Format
+  Data (slanted) profiles, but all in different directions...
+  It can be assumed that the directions again are somehow repeated over the day?!
+  
+
+
+Requested variables:
+CR.CR.Z.CO.1.PROF	(slanted) profiles of reflectivity, co channel
+CR.CR.Z.CX.1.PROF	(slanted) profiles of reflectivity, cross channel
+CR.CR.L.LDR.1.PROF	(slanted) profiles of linear depolarisation ratio
+CR.CR.V.RAD.1.PROF	(slanted) profiles of radial velocity away from radarl
+CR.CR.V.WIDTH.1.PROF	(slanted) profiles of spectral width
+CR.OMB2.N.NI.1.AVG	rain intensity
+CR.OMB2.N.N.1.AVG	accumulated rain amount
+
+
+
+
+--------------------------------------------------------------
+>>> Other notes
+
+
+Statements:
+
+* The unit of a sensor can not be derived from the physical property of the sensors
+  There are too many different units for the same think: 
+  Temperature in Celsium or Fahrenheit will be used in the KITcube modules.
+  Even worse for other items like humidity (absolute in g or mg / m^3, some times 
+  also as g/ml ?!)
+* Naming Konvention in the Database
+  Sensor table name
+  Data table names
+  Sensor item = column names
+  
+
+
+Naming Convention
+
+
+Physical type
+
+T 	Temperature
+WV	Wind speed
+WD	Wind direction
+	Moisture (P?)
+
+
+Physical measurement principle
+
+
+
+TS	Sonic
+Ta	air temperature
+Td	dew point temperature
+Tdiff	
+Tref
+SOT	Soil temperature
+SOM	Soil moisture
+WV_u
+WV_v
+WV_w
+WV
+WD
+couw	covariance eastward upward wind
+covw
+cowT 	cinematic heat flux
+
+e	water vapor pressure
+sF	specific humidity
+Tv	virtual temperature
+
+
+
+
+Statistic properties
+
+mom	Actual/current value 		Subsampling 	
+avg	Mean value			mean value in the interval
+min	Minimum				minimum value in the interval
+max	Maximum				maximum value in the interval
+std	Variance			standard variance
+
+
+
+
+//
+// Better control of system calls
+//
+
+int	sout_pipe[2];
+int	serr_pipe[2];
+int	child_pid;
+
+	/* create pipes and mark them non-close-on-exec */
+	pipe(sout_pipe);
+	fcntl(sout_pipe[1], F_SETFD, fcntl(sout_pipe[1], F_GETFD) & ~1);
+	pipe(serr_pipe);
+	fcntl(serr_pipe[1], F_SETFD, fcntl(serr_pipe[1], F_GETFD) & ~1);
+
+	/* go our separate ways */
+	child_pid = fork();
+
+	/* in the child process, re-arrange stdout/err and run the tool */
+	if (child_pid == 0) {
+		close(0);
+		close(1);
+		dup2(sout_pipe[1], 1);
+		close(2);
+		dup2(serr_pipe[2], 2);
+
+		execl(absolute_path_to_tool, arguments...)
+	}
+
+
+
+
+>>> Plots and graphics
+-----------------------
+- Time series plots
+- plots of two parameters against each other (e.g. two different temperature sensors)
+  How to determine the interval that should be considered? Scrollbar?
+  Pick two arbitrary sensors from the list - interpolate at the sampling rate of the sensors
+  with the lower frequency
+- vertical profiles of color coding of the parameter
+  Only one sensor per plot possible,
+  Can be scrolled like the regular plot
+- vertical profiles as graph + error bars 
+  Only for one point in time, may be its possible to stack several plots at the time axis?
+  Scroll bar to pick the time of the profile
+
+
+
+>>> Scientific background
+--------------------------
+
+KITCube - Karlsruhe Observatory for Convection Studies
+
+
+Unter dem KITcube verstehen wir das Gesamtbeobachtungssystem unterschiedlichster Instrumente zur Sondierung der Atmosphäre, das ein Atmosphärenvolumen von ca. 10 km Seitenlänge mit verschiedensten Methoden vermessen kann und somit eine zeitlich und räumlich vollständige Erfassung vieler konvektionsrelevanter Prozesse ermöglicht. 
+Der KITcube vereint die modernen Messgeräten zur experimentellen Erforschung der Atmosphäre, d.h. Geräte zur bodengebundenen Fernerkundung der Atmosphäre (Radar und Lidar) und die Geräte für in-situ-Messungen (Turbulenz, Strahlung, Messtürme), und setzt das Gesamtsystem in großen internationalen Messprogrammen ein. 
+Durch Erweiterungsinvestitionen des BMBF, der Helmholtzgemeinschaft und des KIT wird in den kommenden Jahres ein komplexes Beobachtungssystem entwickelt werden, das hohe große Einsatzflexibilität besitzt soll. Es kann sowohl als mobile Einrichtung an beliebigen Messorten betrieben werden als auch im Dauerbetrieb für atmosphärisches Monitoring eingesetzt werden. 
+Das Konzept des KITcube realisiert einen koordinierten Betrieb mit großen Synergieeffekten durch den aufeinander abgestimmten Betrieb aller Messgeräte. 
+
+Ziele
+
+Das vorrangige Ziel von KITcube ist es, wesentliche, noch offene Fragestellungen im Zusammenhang mit 
+- Turbulenz und Konvektion in der Grenzschicht, 
+- der Auslösung und Entwicklung von hochreichender Konvektion durch Grenzschichtzustand und -prozesse (Feuchtevariabilität, Feuchtekonvergenz, Konvergenzzonen, Aerosolverteilung) 
+- konvektivem Niederschlag zu bearbeiten. 
+- Darüber hinaus bietet die meteorologische Messplattform die Möglichkeit, durch Kombination mit luftchemischen Beobachtungen, zur Charakterisierung atmosphärische Aerosole beizutragen. 
+
+Vorteile
+
+Grenzschichtstruktur und -prozesse
+
+Neue Fernerkundungsverfahren (Lidar, Radar, passive Radiometer) erlauben es, kontinuierliche Messungen in der gesamten Grenzschicht gleichzeitig durchzuführen, was bisher mit Flugzeugmessungen nicht möglich war. Damit sollte eine deutlich Reduktion des statistischen Fehlers insbesondere für Turbulenzmessungen in der Grenzschicht erreicht werden. Darüber hinaus ergibt sich die Möglichkeit durch den koordinierten gleichzeitigen Einsatz von Windlidargeräten die zweidimensionale Struktur von Böen zu vermessen und Windvektoren zu bestimmen. 
+
+Feuchtkonvektion
+
+Im Fokus der Konvektionsuntersuchungen steht die Frage, warum genau in einem bestimmten Gebiet und zu einer bestimmten Zeit Konvektion ausgelöst wird bzw. sich zu hochreichender Konvektion ausbildet. Die Entstehung und Entwicklung von Konvektion hängt im Wesentlichen von (i) der großräumigen Schichtung der Atmosphäre (ii) Prozessen, die die konvektive Energie freisetzen können und (iii) der Existenz von Inversionen, die die Entwicklung von Konvektion unterdrücken können, ab. Als wichtige Auslösemechanismen werden angesehen: (i) eine räumliche Feuchte- bzw. Temperaturvariabilität in der Grenzschicht, (ii) Feuchte- bzw. Massenkonvergenz, z. T. resultierend aus thermisch induzierten Windsystemen. Mit dem KITcube können (hoffentlich), durch den aufeinander abgestimmten Betrieb der Messgeräte, die meisten der genannten möglichen Mechanismen vermessen, und ihre Bedeutung für die Konvektionsauslösung bestimmt werden.
+
+
+
+
+
+______DAQDevice::getNewFiles()______________________
+Reading from /Users/kopmann/src/kitcube/archive/023/Ceilometer/Daten/
+Type:  4, name: .
+Type:  4, name: ..
+Type:  8, name: chm20090731_035856.dat
+Type:  8, name: chm20090731_040856.dat
+Type:  8, name: chm20090731_080858.dat
+Type:  8, name: chm20090731_081858.dat
+Type:  8, name: chm20090731_121858.dat
+Type:  8, name: chm20090731_122858.dat
+Type:  8, name: chm20090731_162958.dat
+Type:  8, name: chm20090731_163958.dat
+Type:  8, name: chm20090731_204058.dat
+Type:  8, name: chm20090731_205058.dat
+ 0  0 2 START
+ 1  -1 0 END
+ 2  1249012736 3 chm20090731_035856.dat
+ 3  1249013336 4 chm20090731_040856.dat
+ 4  1249027738 5 chm20090731_080858.dat
+ 5  1249028338 6 chm20090731_081858.dat
+ 6  1249042738 7 chm20090731_121858.dat
+ 7  1249043338 8 chm20090731_122858.dat
+ 8  1249057798 9 chm20090731_162958.dat
+ 9  1249058398 10 chm20090731_163958.dat
+ 10  1249072858 11 chm20090731_204058.dat
+ 11  1249073458 1 chm20090731_205058.dat
+
+
+

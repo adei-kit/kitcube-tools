@@ -1,0 +1,406 @@
+# @PACKAGE@.spec (Automatically generated from @PACKAGE@.spec.in)
+# A. Kopmann (ak) <kopmann@ipe.fzk.de>
+#
+# Specific settings for the package
+# Consider also the general varibles defined in ~/.rpmmacros
+#
+# Changes:
+#   see section %changelog
+#
+
+Summary:   Inspect and configure FD Electronics
+Name:      @PACKAGE@
+Version:   @VERSION@
+Release:   47 
+Copyright: GPL
+Url:       http://www.auger.de
+
+Distribution: Auger FD Software
+Group:     AugerFD/FDE
+#
+Source:    %{name}-%{version}.tar.gz
+Vendor:    IK/IPE - Forschungszentrum Karlsruhe
+
+BuildRoot: %{_buildroot}/%{name}-%{version}
+
+
+%description
+Inspect and configure the electronics of the fluorescence
+telescopes for the Pierre Auger Observatory.
+
+Features:
+    Based on fdhwlib @FDHWLIB_VERSION@-@FDHWLIB_RELEASE@ (build @FDHWLIB_BUILDDATE@)
+    @MYSQL@
+    @FDDAS@
+
+Documentation: %{_augerprefix}/share/doc/packages/feshell/feshell-manual.pdf
+
+Authors:
+    Andreas Kopmann (ak) <kopmann@ipe.fzk.de>
+
+
+%package eyestation
+Summary:   Feshell for the eye station
+Group:     AugerFD/FDE
+
+%description eyestation
+Inspect and configure the electronics of the flourescence
+telescopes for the Pierre Auger Observatory. The package is
+intended for the eye stations in order to install the 
+file system for the mirror PCs.
+
+Features:
+    Based on fdhwlib @FDHWLIB_VERSION@-@FDHWLIB_RELEASE@ (build @FDHWLIB_BUILDDATE@)
+    @MYSQL@
+    @FDDAS@
+
+Authors:
+    Andreas Kopmann (ak) <kopmann@ipe.fzk.de>
+
+
+%prep
+%setup -n feshell-%{version}
+CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_augerprefix} \
+                 \
+                $LOCALFLAGS
+
+%build
+make
+
+# Generate Documentation
+# req doxygen
+if [ "`doxygen | grep ersion`" != "" ]; then
+  make doc
+  if [ "`latex --version | grep ersion`" != "" ]; then
+    cd %{name}-api/latex
+    make pdf
+  fi
+fi
+
+
+%install
+make install-strip DESTDIR=$RPM_BUILD_ROOT
+make install-data DESTDIR=$RPM_BUILD_ROOT
+cp etc/semtool      $RPM_BUILD_ROOT%{_augerprefix}/bin
+
+
+#
+# Configuration files
+#
+TARGETDIR=$RPM_BUILD_ROOT%{_augerprefix}/config
+mkdir -p $TARGETDIR
+cp desktop/FE.EyeStation.ini      $TARGETDIR
+cp desktop/EyeStation_ini.cmd     $TARGETDIR
+cp desktop/startup_EyeStation.cmd $TARGETDIR
+cp desktop/startup_MirrorPC.cmd   $TARGETDIR
+cp etc/FE-feshell.ini             $TARGETDIR
+
+
+#
+# Documentation
+#
+TARGETDIR=$RPM_BUILD_ROOT%{_augerprefix}/share/doc/packages/feshell
+mkdir -p $TARGETDIR
+
+if [ "`doxygen | grep ersion`" != "" ]; then
+  cp -r %{name}-api/html           $TARGETDIR
+  if [ "`latex --version | grep ersion`" != "" ]; then
+    cp %{name}-api/latex/refman.pdf $TARGETDIR/%{name}-manual.pdf
+  fi
+fi
+
+
+
+cd $RPM_BUILD_ROOT
+find . -type d | sed '1,2d;s,^\.,\%attr(-\,root\,root) \%dir ,' > $RPM_BUILD_DIR/file.list.%{name}
+find . -type f | sed 's,^\.,\%attr(-\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}
+find . -type l | sed 's,^\.,\%attr(-\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}
+
+#
+# Add GUI elements
+#
+# Note: Not required any more
+#cd $RPM_BUILD_DIR/feshell-%{version}/desktop
+#TARGETDIR=$RPM_BUILD_ROOT/home/auger/KDesktop
+#mkdir -p $TARGETDIR
+#cp FD_Electronic_Shell.desktop $TARGETDIR
+
+
+# extend file list
+#echo "%attr(-,auger,users) /home/auger/KDesktop/*"  >> $RPM_BUILD_DIR/file.list.%{name}
+
+
+# Build the file list for the eyestation package
+cd $RPM_BUILD_ROOT
+for i in 1 2 3 4 5 6 ; do
+  TARGETDIR=$RPM_BUILD_ROOT/tftpboot/mirrorPC$i
+
+   # Install feshell variants  
+   mkdir -p $TARGETDIR%{_augerprefix}/bin
+   cp -fr $RPM_BUILD_ROOT%{_augerprefix}/bin/* $TARGETDIR%{_augerprefix}/bin
+
+done
+
+cd $RPM_BUILD_ROOT
+find . -type d -ipath "./tftpboot*" | sed '1,2d;s,^\.,\%attr(-\,root\,root) \%dir ,' > $RPM_BUILD_DIR/file.list.%{name}-eyestation
+find . -type f -ipath "./tftpboot*" | sed 's,^\.,\%attr(-\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}-eyestation
+find . -type l -ipath "./tftpboot*" | sed 's,^\.,\%attr(-\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}-eyestation
+
+
+
+%files -f ../file.list.%{name}
+%files eyestation -f ../file.list.%{name}-eyestation
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_DIR/feshell-%{version}
+rm -rf $RPM_BUILD_ROOT/file.list.%{name}
+rm -rf $RPM_BUILD_ROOT/file.list.%{name}-eyestation
+
+
+
+%pre
+
+# Adding parameters to the desktop
+# Note: You need to append the parameters before copying the
+#   icon itself to the KDesktop folder.
+
+#CONF=/home/auger/KDesktop/.directory
+#
+#if test -f "$CONF" ; then
+#
+#  ICON=IconPosition::FD_Electronic_Shell.desktop
+#  if test "`cat $CONF | grep \"\[$ICON\]\" `" ; then
+#    echo "$ICON is already existing! - Will not change desktop parameters"
+#  else
+#    echo "Adding post processing icon to desktop"
+#    echo                                            >> $CONF
+#    echo "[$ICON]"                                  >> $CONF
+#    echo "X=666"                                    >> $CONF
+#    echo "Y=142"                                    >> $CONF
+#  fi
+#
+#
+#else
+#  echo "The KDesktop for the user auger is not configured"
+#  echo "Login as user auger and start the X-server and reinstall"
+#  echo "this package afterwards."
+#
+#fi
+#
+
+%post
+#
+# Check for existing config files
+#
+
+
+FILE=FE.EyeStation.ini
+if test -e /home/auger/$FILE ; then
+  echo "Config file $FILE exists "
+  echo "Use: diff %{_augerprefix}/config/$FILE /home/auger/$FILE"
+else
+  cp %{_augerprefix}/config/$FILE /home/auger
+  chown auger:users /home/auger/$FILE
+fi
+
+FILE=EyeStation_ini.cmd
+if test -e /home/auger/$FILE ; then
+  echo "Config file $FILE exists "
+  echo "Use: diff %{_augerprefix}/config/$FILE /home/auger/$FILE"
+else
+  cp %{_augerprefix}/config/$FILE /home/auger
+  chown auger:users /home/auger/$FILE
+fi
+
+
+FILE=startup_EyeStation.cmd
+if test -e /home/auger/$FILE ; then
+  echo "Config file $FILE exists "
+  echo "Use: diff %{_augerprefix}/config/$FILE /home/auger/$FILE"
+else
+  cp %{_augerprefix}/config/$FILE /home/auger
+  chown auger:users /home/auger/$FILE
+fi
+
+FILE=startup_MirrorPC.cmd
+if test -e /home/auger/$FILE ; then
+  echo "Config file $FILE exists "
+  echo "Use: diff %{_augerprefix}/config/$FILE /home/auger/$FILE"
+else
+  cp %{_augerprefix}/config/$FILE /home/auger
+  chown auger:users /home/auger/$FILE
+fi
+
+
+
+
+%changelog
+* Mon Mar 5 2007 ak
+Release 47 - Fixed reading gpsserver parameter from inifile
+
+* Mon Feb 26 2007 ak
+Release 46 - Added fdhwlib version to the rpm header
+
+* Fri Feb 23 2007 ak
+Release 45 - Added status display for bgrecorder
+
+* Wed Feb 21 2007 ak
+Release 44 - Fixed reading database name and overriding location
+  in bgtools.
+  
+* Fri Feb 16 2007 ak
+Release 43 - Added stand-alone version of bgrecord
+
+* Thu Feb 9 2007 ak
+Release 42 - Fixed chktime bug
+
+* Thu Feb 8 2007 ak
+Release 41 - Changes in bgtools database tables
+
+* Fri Jan 19 2007 ak
+Release 40 - Remove testloop implementation from feshell-base
+
+* Mon Jan 15 2007 ak
+Release 39 - Bug fixes of Katrin commands, extention of Katrin fltstatus
+
+* Wed Oct 25 2006 ak
+Release 38 - GpsCmds changes: Individual buffers for both capture
+  inputs, test of capture proxy server. Reset added.
+
+* Wed Oct 06 2006 ak
+Release 37 - Improved eventloops, interface to waveform generator, 
+  gps capture interface test, access to ZEUS DB, ... 
+
+* Wed Jul 05 2006 thjm
+Release 36 - new packge release to match all changes of fdhwlib (until 1.6.0-50)
+
+* Fri Nov 11 2005 ak
+Release 35 - Changes in writing test pattern for sake of compatibility
+  with fde_diagnostic
+  
+* Mon Oct 17 2005 ak
+Release 34 - Internal changes in fdhwlib for KATRIN implementation,
+  ported to Apple/Darwin.
+
+* Fri May 13 2005 ak
+Release 33 - Changes in Pbus-Layer management (init/free)
+  Reading slot list with settel
+  Upgrade to libraw1394-1.1.0
+
+* Wed Mar 9 2005 ak
+Release 32 - Simplified turn-off of gps generators
+
+* Tue Mar 8 2005 ak
+Release 31 - Updated script files (removed bugs)
+
+* Tue Mar 8 2005 ak
+Release 30 - Updated script files
+
+* Tue Mar 8 2005 ak
+Release 29 - Changed dead counter implemtentation again
+
+* Wed Mar 2 2005 ak
+Release 28 - Added parameter to pbusstate
+
+* Wed Feb 23 2005 ak
+Release 27 - Remove Icons and Graphical stuff,
+  added eyestation package
+ 
+* Thu Dec 9 2004 ak
+Release 26 - Added default path to bgrecord files.
+
+* Mon Nov 22 2004 ak
+Release 25 - Display of GpsCmds versions added
+
+* Mon Nov 22 2004 ak
+Release 24 - Doubled status command, to improve compatibility with
+  older applications
+
+* Tue Oct 19 2004 ak
+Release 23 - Lots of new features and bug fixes
+
+* Tue May 18 2004 ak
+Release 22 - Added explicit "startup" command.
+
+* Mon Apr 26 2004 ak
+Release 21 - Improved GpsStatus output, bug fixes for chktime
+
+* Fri Apr 23 2004 ak
+Release 20 - Removed all microenable version of feshell
+
+* Fri Mar 05 2004 ak
+Release 19 - Update of gpsclock commands for GPSClock 3.4
+
+* Mon Mar 01 2004 ak
+Release 18 - Chktime functions for GPSClock added, semcmds
+  introduced
+
+* Wed Feb 11 2004 ak
+Release 17 - Remove gpsserver script - there is now a separate package
+
+* Tue Feb 10 2004 ak
+Release 16 - Added an instruction set for semphore handling (help semtool)
+  Use "feshell -d" to avoid Pbus-initialization at startup when you want to
+  maintain the status of the semaphores.
+
+* Fri Feb 06 2004 ak
+Release 15 - Update of Hardware Access Library for
+  FireWire interrupt support.
+
+* Mon Nov 24 2003 ak
+Release 14 - Using new Pbus-Interface of fdhwlib 1.0
+
+* Fri Sep 05 2003 ak
+Release 13 - Added virtual channel to statistics and gain control
+
+* Wed Aug 27 2003 ak
+Release 12 - Bug in Pbus::free fixed
+  The semaphore was not released in direct mode.
+
+* Tue Aug 22 2003 ak
+Release 11 - Added startup script for GpsServer
+
+* Tue Aug 19 2003 ak
+Release 10 - Further changes in the Gps Clock interface.
+  Updated startup procedure.
+
+* Thu Aug 14 2003 ak
+Release 9 - GPS Clock interface improved + fixed
+  Manual updated
+
+* Fri Jul 18 2003 ak
+Release 8 - IEEE1394 included
+
+* Mon Jun 30 2003 ak
+Release 7 - Bug fixed: Feshell was compiled with wrong incompatible
+  library :(
+
+* Tue May 20 2003 ak
+Release 6 - Further improvements of the gps commands. Available now
+  are commands to programm the gps clock, display status and retrieve
+  the timing parameter. Still missing is the readout of the capture
+  input.
+  Bug-fix for the hitrate controller to set the integration time
+
+* Tue Apr 8 2003 ak
+Release 5 - Added support for updated gps classes
+
+* Tue Mar 19 2003 ak
+Release 4 - Re-design of status output
+
+* Thu Mar 13 2003 ak
+Release 3 - Added new status function
+
+* Thu Jan 23 2003 ak
+Release 1 - Change to version 1.5
+
+* Thu Aug 15 2002 ak
+Release 2 - Changed prefix to the new directory for the auger software
+            Configuration in the post-section added.
+	    GUI Elements + configuration files added.
+
+* Wed Feb 20 2002 ak
+Release 1 - First start with RPM
+
+

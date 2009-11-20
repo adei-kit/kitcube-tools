@@ -1,0 +1,32 @@
+ChangeLog - readout
+A. Kopmann
+
+
+TODO:
+- Reading configuration from xml file.
+    
+
+Version 0.3:
+- Fixed calculation of subseconds in getcFData. Readout loop in subseconds possible.
+  5.12.07 ak 
+
+
+Version 0.2:
+- Added endian swaping for Intel machines.
+  23.11.07 ak
+- Client implementation for cFP interface
+  Analysis of received data for timing precision and missing samples,
+  Check of synchrony of clocks of readout and recorder system. 
+  21.11.07 ak
+  
+
+Version 0.1:
+ - Initial version:
+   TCP/IP server standard interface
+   Periodically scheduling by select-timeout
+   Analysis functions to check the precision of the timing
+   and missing samples
+   29.10.07 ak
+   
+   
+   

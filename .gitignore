@@ -1,0 +1,53 @@
+# .gitignore
+#
+# List of files that is never included in the git repository
+# A. Kopmann, 20.11.09
+#
+#
+# Files created by the autotools
+aclocal.m4
+autom4te.cache
+Makefile
+Makefile.in
+config.h
+config.h.in
+config.log
+config.status
+configure
+libtool
+stamp-h1
+#
+# Objects and libraries and applications
+*.o
+*.a
+.deps/
+src/kitcube-data/kitcube-data
+src/kitcube-reader/kitcube-reader
+src/kitcube-reader/kitcube-reader-mysql
+#
+# Package tar-balls
+*.tar.gz
+#
+# Documentation created automatically for the package
+kitcube-tools-api
+kitcube-tools.tag
+kitcube-tools.log
+#
+# Configuration file maintained as configure input
+kitcube-tools.doxygen
+kitcube-tools.spec
+#
+# Package log files
+.kitcube-*
+#
+# Old files
+*.old
+*.off
+*.orig
+*.bak
+old/*
+#
+# Links from other packages
+akutil/
+fdhwlib.h
+

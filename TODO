@@ -1,0 +1,15 @@
+TODO readout
+A. Kopmann, 29.10.2007
+
+Last modifiered  29.10.2007
+
+
+
+Feature requests:
+
+- Simulation functions
+- Calculation of mathematical formulas (internal processors, C Scripting via root?)
+- Provide data via simpleserver interface
+- Provide data via direct database access
+- Access to background data (replacement of background reader) 
+- Watch dog process, automatic restart in case of errors

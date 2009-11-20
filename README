@@ -1,0 +1,57 @@
+README kitcube-tools 
+A. Kopmann, 6.7.2009
+
+
+
+Installation instructions
+
+
+1. To compile the project from CVS use
+
+cvs checkout readout
+cd readout
+
+aclocal
+autoheader  --> config.h.in
+(libtoolize --copy --force)  --> config.sub, config.guess, ltmain.sh
+automake    --> Makefile.in
+autoconf    --> configure
+./configure  --> <name>.in --> <name>
+make
+
+
+Some time problems with different versions of libtool can happen.
+In these cases try to run libtoolize (linux) or copy the current version of
+ltmain.sh from /usr/share/libtool/config to the project folder.
+
+--> Howto get the configuration form the standard files?
+
+
+
+2. Build RPM packages
+
+To build a new package with minor changes increment the release number
+in readout.spec.in and add a new entry in the end of the file
+
+readout.spec.in:
+Version:   @VERSION@
+Release:   35
+
+...
+
+%ChangeLog
+ * Mon Oct 29 2007 ak
+Release 1 - Initial release
+
+
+If a increment of the project version is required change the new
+version number in configure.in add rebuild everything (see 1.)
+
+configure.in:
+AC_INIT(configure.in)
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(kitcube-tools, 0.1)
+...
+
+

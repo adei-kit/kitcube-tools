@@ -1,0 +1,105 @@
+#! /bin/sh
+# Copyright (c) 2001, Forschungszentrum Karlsruhe, Germany.  
+# All rights reserved.
+#
+# Author: Hermann-Josef Mathes <Hermann-Josef.Mathes@ik.fzk.de>, 2004
+#
+# History:
+#   v 1.4: Copies start script from gpsserver
+#          (ak 2005-02-23)
+#  
+# /etc/init.d/kitcube-data
+#
+# Start generation of simulated data for kitcube modules
+#
+### BEGIN INIT INFO
+# Provides:       kitcube-data 
+# Required-Start: $network
+# Required-Stop:
+# Default-Start:  3 5
+# Default-Stop:   0 1 2 6
+# Description:    starts /Users/kopmann/src/kitcube/kitcube-tools/src/kitcube-data/kitcube-data
+### END INIT INFO
+
+GPSS_START="yes"
+GPSS_USER="kopmann"
+GPSS_GROUP="users"
+GPSS_TITLE="KITCube DataServer"
+GPSS_NAME=kitcube-data
+GPSS=/Users/kopmann/src/kitcube/kitcube-tools/src/kitcube-data/kitcube-data
+GPSS_ARGS="-d Mast11-mean"
+
+# load Eye specific config file ...
+#if  test -f /etc/eye.config; then
+#  echo Reading from /etc/eye.config ...
+#  . /etc/eye.config
+#fi
+
+
+
+if [ -d /home/$GPSS_USER ] ; then
+  GPSS_LOGFILE=/home/$GPSS_USER/$GPSS_NAME.$HOSTNAME.log
+else
+  GPSS_LOGFILE=/tmp/$GPSS_NAME.$HOSTNAME.log
+  GPSS_USER="root"
+  GPSS_GROUP="root"
+fi
+
+# libFE.a needs a set $HOME env. variable !!!
+export HOME=/home/$GPSS_USER
+
+base=${0##*/}
+link=${base#*[SK][0-9][0-9]}
+
+test $link = $base && GPSS_START=yes
+test "$GPSS_START" = yes || exit 0
+
+
+
+if ! test -x $GPSS ; then
+ echo "No $GPSS_TITLE found !"
+ exit 1
+fi
+
+return=$rc_done
+case "$1" in
+    status)
+      /sbin/checkproc $GPSS_NAME
+      if test $? -eq 0 ; then
+        echo "$GPSS_TITLE '$GPSS_NAME' is running"
+      else
+        echo "$GPSS_TITLE '$GPSS_NAME' is stopped"
+      fi
+      exit 1
+      ;;
+    start)
+      /sbin/checkproc $GPSS_NAME
+      if test $? -eq 0 ; then
+        echo "$GPSS_TITLE '$GPSS_NAME' already running $rc_failed"
+        exit 1
+      fi
+      # execute in $GPSS_USER's home directory
+#      rm -f $GPSS_LOGFILE
+      touch $GPSS_LOGFILE
+      chown $GPSS_USER.users $GPSS_LOGFILE
+      /sbin/startproc -l $GPSS_LOGFILE \
+                -u $GPSS_USER $GPSS $GPSS_ARGS || return=$rc_failed
+      echo -n "Starting $GPSS_TITLE (Logfile: $GPSS_LOGFILE)"
+      echo -e "$return"
+      ;;
+    stop)
+      /sbin/checkproc $GPSS_NAME
+      if test $? -ne 0 ; then
+        echo "$GPSS_TITLE '$GPSS_NAME' not running $rc_failed"
+        exit 1
+      fi
+      echo  "Shutting down $GPSS_TITLE"
+      /sbin/killproc $GPSS_NAME || return=$rc_failed
+      ;;
+    restart)
+      $0 stop && $0 start || return=$rc_failed
+      ;;
+    *)
+    echo "Usage: $0 {status|start|stop|restart}"
+    exit 1
+esac

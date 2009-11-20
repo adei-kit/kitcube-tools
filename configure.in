@@ -1,0 +1,138 @@
+AC_INIT(configure.in)
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(kitcube-tools, 0.1)
+
+
+AC_LANG_CPLUSPLUS
+AC_PROG_CXX
+AM_PROG_LIBTOOL
+
+
+dnl
+dnl Add the base include directory
+dnl
+CXXFLAGS="$CXXFLAGS -I.. "
+CFLAGS="$CFLAGS -I.. "
+
+
+dnl
+dnl Define libraries for IEEE1394
+dnl Known hosts are Linux and Darwin System
+dnl TODO: Check for existance of library
+dnl
+
+AM_CONDITIONAL(ARCH_LINUX, test `uname` = Linux)
+AM_CONDITIONAL(ARCH_DARWIN, test `uname` = Darwin)
+
+
+
+
+dnl
+dnl Check MySQL support
+dnl
+AC_CHECK_HEADERS(mysql/mysql.h)
+if test "x$ac_cv_header_mysql_mysql_h" = "xyes"; then
+  MYSQL="MySQL support"
+  MYSQL_LIBS="-lmysqlclient -lz"
+else
+  MYSQL="MySQL support  disabled"
+fi
+AC_SUBST(MYSQL)
+AC_SUBST(MYSQL_LIBS)
+AM_CONDITIONAL(USE_MYSQL, test "x$ac_cv_header_mysql_mysql_h" = "xyes")
+
+
+
+dnl
+dnl Check iconv support
+dnl
+AC_CHECK_HEADERS(iconv.h)
+if test "x$ac_cv_header_iconv_h" = "xyes"; then
+  ICONV_LIBS="-liconv"
+fi
+AC_SUBST(ICONV_LIBS)
+AM_CONDITIONAL(USE_ICONV, test "x$ac_cv_header_iconv_h" = "xyes")
+
+
+
+dnl
+dnl Check DAQ File Format
+dnl
+dnl AC_CHECK_HEADERS(MiEvent.hh)
+AC_MSG_CHECKING(for FD DAQ file format)
+if test -x "`echo $FD_ROOT`"; then
+  FDDAS="FD DAQ support"
+  AC_MSG_RESULT(yes)
+else
+  FDDAS="FD DAQ support  disabled"
+  AC_MSG_RESULT(no)
+fi
+AC_SUBST(FDDAS)
+AC_DEFINE(HAVE_FDDAS, 1, [FD DAQ file format])
+AM_CONDITIONAL(USE_FDDAS, test -x "`echo $FD_ROOT`")
+
+
+dnl
+dnl Check other packages
+dnl TODO: Add optional also the microenable access
+dnl
+AC_CHECK_HEADERS(fdhwlib.h)
+AC_CHECK_HEADERS(libraw1394/raw1394.h)
+AC_CHECK_HEADERS(IOKit/firewire/IOFirewireLib.h)
+
+
+
+dnl
+dnl Find path to gps header files
+dnl The path is used to generate the documentation
+dnl
+
+GPSONCORE="SorryNoGpsServerHeaderFound"
+if test -x "/opt/auger/fdhwlib/include/gpsoncore" ; then
+  GPSONCORE=/opt/auger/fdhwlib/include/gpsoncore
+fi
+if test -x "$HOME/include/fdhwlib/gpsoncore" ; then
+  GPSONCORE=$HOME/include/fdhwlib/gpsoncore
+fi
+if test -x "$HOME/src/fdhwlib/fdhwlib/gpsoncore" ; then
+  GPSONCORE=$HOME/src/fdhwlib/fdhwlib/gpsoncore
+fi
+
+AC_SUBST(GPSONCORE)
+
+
+dnl
+dnl Find path to gps header files
+dnl The path is used to generate the documentation
+dnl
+
+FEDATA="SorryNoFEdataHeaderFound"
+if test -x "/opt/auger/fdhwlib/include/FEdata" ; then
+  FEDATA=/opt/auger/fdhwlib/include/FEdata
+fi
+if test -x "$HOME/include/fdhwlib/FEdata" ; then
+  FEDATA=$HOME/include/fdhwlib/FEdata
+fi
+if test -x "$HOME/src/fdhwlib/fdhwlib/FEdata" ; then
+  FEDATA=$HOME/src/fdhwlib/fdhwlib/FEdata
+fi
+
+AC_SUBST(FEDATA)
+
+
+dnl
+dnl Get version of fdhwlib package
+dnl
+FDHWLIB_VERSION="`fdhwlib -v`"
+FDHWLIB_RELEASE="`fdhwlib -r`"
+FDHWLIB_BUILDDATE="`fdhwlib -b`"
+
+AC_SUBST(FDHWLIB_VERSION)
+AC_SUBST(FDHWLIB_RELEASE)
+AC_SUBST(FDHWLIB_BUILDDATE)
+
+
+
+AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile etc/Makefile src/Makefile src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile)
+
