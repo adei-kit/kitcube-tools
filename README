@@ -6,10 +6,14 @@ A. Kopmann, 6.7.2009
 Installation instructions
 
 
-1. To compile the project from CVS use
+1. To compile the project from repository use
 
-cvs checkout readout
-cd readout
+cvs checkout -d ext:ipefser1.fzk.de:/home/ipefser1/kopmann/cvsroot fdhwlib
+
+git clone ssh://ipefser1.fzk.de/home/ipefser1/kopmann/gitroot/kitcube-tools.git
+cd kitcube-tools/src
+ln -s <path-to-fdhwlib>/src/akutil .
+
 
 aclocal
 autoheader  --> config.h.in
@@ -31,9 +35,9 @@ ltmain.sh from /usr/share/libtool/config to the project folder.
 2. Build RPM packages
 
 To build a new package with minor changes increment the release number
-in readout.spec.in and add a new entry in the end of the file
+in kitcube-tools.spec.in and add a new entry in the end of the file
 
-readout.spec.in:
+kitcube-tools.spec.in:
 Version:   @VERSION@
 Release:   35
 

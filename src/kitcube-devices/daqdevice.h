@@ -172,6 +172,9 @@ public:
     /** Set debug level */
 	void setDebugLevel(int level);
 	
+	/** Reached EOF during reading data in readData() */
+	bool reachedEOF();
+	
 protected:
 	/** Length of the header block in the data file */
 	int lenHeader;
@@ -287,6 +290,8 @@ protected:
 	int debug;
 	
 	std::string buffer;
+	
+	bool fd_eof;
 	
 private:	
 	

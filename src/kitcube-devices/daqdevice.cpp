@@ -602,6 +602,10 @@ void DAQDevice::openDatabase(){
 		return; 
 	} 
 	
+	// Enable automatic reconnect
+    my_bool re_conn = 1;
+    mysql_options(db, MYSQL_OPT_RECONNECT, &re_conn);
+
 	
 	// Read list of databases?!
 	// Only kitcube.* are relevant
@@ -856,10 +860,12 @@ void DAQDevice::openDatabase(){
 
 
 void DAQDevice::closeDatabase(){
-#ifdef USE_MYSQL	
-	// Close database
-	mysql_close(db);
-	db = 0;
+#ifdef USE_MYSQL
+	if (db > 0){
+	  // Close database
+	  mysql_close(db);
+	  db = 0;
+	}
 #endif
 }
 
@@ -1152,31 +1158,45 @@ void DAQDevice::getNewFiles(){
 	
 	
 	// Read the data from the files
-	next = 0;
-	for(i=0;i<nList-1;i++){	
-		//printf(" %d  %d %d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
-		//printf("Reading %d  %d  %s %d\n", next, listIndex[next], listName[next].c_str(), lastIndex);
-		
-		if (listIndex[next] == lastIndex){
-			printf("Reading %d  %d  %s (continued)\n", next, listIndex[next], listName[next].c_str());
-			readData(dataDir.c_str(), listName[next].c_str());
-		}	
-		
-		if (listIndex[next] > lastIndex){
-			// Remove the pointers of the last file
-			fmark = fopen(filenameMarker.c_str(), "w");
-			if (fmark > 0) {
-				fprintf(fmark, "%d %d %d %d\n", listIndex[next], 0, 0, 0);
-				fclose(fmark);
-			}			
+	try {
+		next = 0;
+		for(i=0;i<nList-1;i++){	
+			//printf(" %d  %d %d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
+			//printf("Reading %d  %d  %s %d\n", next, listIndex[next], listName[next].c_str(), lastIndex);
 			
-			printf("Reading %d  %d  %s\n", next, listIndex[next], listName[next].c_str());
-			readData(dataDir.c_str(), listName[next].c_str());
-		}	
+			if (listIndex[next] == lastIndex){
+				printf("Reading %d  %d  %s (continued)\n", next, listIndex[next], listName[next].c_str());
+				readData(dataDir.c_str(), listName[next].c_str());
+			}	
+			
+			if (listIndex[next] > lastIndex){
+				// Remove the pointers of the last file
+				fmark = fopen(filenameMarker.c_str(), "w");
+				if (fmark > 0) {
+					fprintf(fmark, "%d %d %d %d\n", listIndex[next], 0, 0, 0);
+					fclose(fmark);
+				}			
+				
+				printf("Reading %d  %d  %s\n", next, listIndex[next], listName[next].c_str());
+				readData(dataDir.c_str(), listName[next].c_str());
+			}	
+			
+			// Check if file has been completely read
+			if (listIndex[next] >= lastIndex){
+				if (!reachedEOF()){
+					printf("EOF not reached - continue with %s at next call\n", listName[next].c_str());
+					break;
+				}				
+			}
+			
+			next = listNext[next];
 		
-		next = listNext[next];
+		}
+	} catch (std::invalid_argument &err){
+		printf("Error: %s\n", err.what());
+		// Reset database connection
+		closeDatabase();
 	}
-	
 	
 	delete [] listName;
 	delete [] listIndex;
@@ -1242,6 +1262,10 @@ unsigned long DAQDevice::getTimestamp(const char *date, const char *time){
 	return( timegm(&timestamp));
 }
 
+
+bool DAQDevice::reachedEOF(){
+	return(fd_eof);
+}
 
 
 

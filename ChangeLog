@@ -1,32 +1,24 @@
-ChangeLog - readout
+ChangeLog - kitcube-tools 
 A. Kopmann
 
 
-TODO:
-- Reading configuration from xml file.
-    
-
-Version 0.3:
-- Fixed calculation of subseconds in getcFData. Readout loop in subseconds possible.
-  5.12.07 ak 
 
 
 Version 0.2:
-- Added endian swaping for Intel machines.
-  23.11.07 ak
-- Client implementation for cFP interface
-  Analysis of received data for timing precision and missing samples,
-  Check of synchrony of clocks of readout and recorder system. 
-  21.11.07 ak
-  
+ - Added automatic reconnect of the database connection. 
+   In case of a connection loss to the database no further data is processed.
+   If the connection can be re-established the processing is continued.
+ - Fixed bug in calculating the file index for the Ceilometer
+   Initialisation of the time structure was missing.
+ - Moved code to GIT repository
+   24.11.09 ak
+
 
 Version 0.1:
  - Initial version:
-   TCP/IP server standard interface
-   Periodically scheduling by select-timeout
-   Analysis functions to check the precision of the timing
-   and missing samples
-   29.10.07 ak
+   Framework to simulate and read data from the kitcube devices. 
+   Implementated modules are: Mast, Ceilometer (wo binary data).
+   06.07.09 ak
    
    
    

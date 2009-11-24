@@ -21,6 +21,7 @@
 #include <fstream>
 #include <nl_types.h>
 #include <string>
+#include <stdexcept>
 
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
@@ -105,7 +106,7 @@ const char *Mast::getDataDir(){
 	char line[256];
 	
 	// TODO: Create a single source for the filename convention...
-	sprintf(line, "%03d/Mast%02d/Data/", moduleNumber, moduleNumber);
+	sprintf(line, "Mast%02d/Data/", moduleNumber);
 	buffer = line;
 	return(buffer.c_str());
 }
@@ -612,8 +613,18 @@ void Mast::readData(const char *dir, const char *filename){
 	if (nSensors == 0) readHeader(filenameData.c_str());
 	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());	
 #ifdef USE_MYSQL	
-	if (db == 0) { openDatabase(); }
+	if (db == 0) { 
+		openDatabase(); 
+	} else {
+		// Automatic reconnect 
+		if (mysql_ping(db) != 0){
+			printf("Error: Lost connection to database - automatic reconnect failed\n");
+			throw std::invalid_argument("Database unavailable\n");
+		}
+	}
 #endif
+	
+	if (debug > 0) printf("_____Reading data_____________________\n");		
 	
 	// Allocate memory for one data set
 	len = (sizeof(*tickCount) + nSensors * sizeof(float) + 8);
@@ -642,24 +653,23 @@ void Mast::readData(const char *dir, const char *filename){
 		fscanf(fmark, "%ld %ld %d %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	}
-   	
+	
 	if (lastPos == 0) lastPos = this->lenHeader; // Move the the first data
 	
 	// Find the beginning of the new data
 	if (debug > 1) printf("LastPos: %ld\n", lastPos);
 	lseek(fd, lastPos, SEEK_SET);
 	
-
-	
+  
 	
 	n = len;
-	i = 0;
-	while ((n == len) && (i< 1000)) {
+	int iLoop = 0;
+	while ((n == len) && (iLoop < 1000)) {
 		n = read(fd, buf, len);
-		
+	
 		if (n == len){	
-			if (debug > 1) printf("Received %4d bytes (errno = %d) : Tickcount = %12d: %12f %12f %12f %12f %12f  ", 
-				   n, errno, *tickCount, sensorValue[0], sensorValue[1], sensorValue[2], sensorValue[3], sensorValue[4]);
+			if (debug > 1) printf("%4d: Received %4d bytes (errno = %d) : Tickcount = %12d: %12f %12f %12f %12f %12f  ", 
+				   iLoop, n, errno, *tickCount, sensorValue[0], sensorValue[1], sensorValue[2], sensorValue[3], sensorValue[4]);
 			
 			
 			// Calculate the time stamp
@@ -701,37 +711,28 @@ void Mast::readData(const char *dir, const char *filename){
 					fprintf(stderr, "%s\n", sql.c_str());
 					fprintf(stderr, "%s\n", mysql_error(db));
 					
-					// TODO: If this operation fails do not proceed in the file?!
+					// If this operation fails do not proceed in the file?!
+					printf("Error: Unable to write data to database\n");
+					throw std::invalid_argument("Writing data failed");
 					break;
 				}	
+			} else {
+				printf("Error: No database availabe\n");
+				throw std::invalid_argument("No database");
 			}
 #endif // of USE_MYSQL
 			
 			lastPos += n;
 	    }		
-		i++;
+		iLoop++;
 	}
+	
+	if (n < len) { fd_eof = true; } 
+	else { fd_eof = false; }
 	
 	if (debug > 1) printf("\n");
 	if (debug > 1) printf("Position of file %ld\n", lastPos);
-	
-
-	
-	
-	
-	// Write data to database
-#ifdef USE_MYSQL
-	// Open database connection
-	
-	// Read until the end of the file and store the last file pointer 
-	// Compare reader implementation...
-	
-	// Return last position to store it in the reader
-	
-	// Close database connection
-	
-#endif // of USE_MYSQL
-	
+		
 	
 	// Write the last valid time stamp / file position
     fmark = fopen(filenameMarker.c_str(), "w");

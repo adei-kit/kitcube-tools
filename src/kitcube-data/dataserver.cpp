@@ -570,7 +570,7 @@ void DataServer::simQDData(struct timeval t){
 	  //printf("n = %d nQd = %d\n", n, qdNSensors);
       fclose(fd);
     } else {
-      printf("Error writing %s (fd=%ld, errno=%d)\n", filename, fd, errno);
+      printf("Error writing %s (fd=%p, errno=%d)\n", filename, fd, errno);
     }
 
     // TODO Clear other file with the same file number

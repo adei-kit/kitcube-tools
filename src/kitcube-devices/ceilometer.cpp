@@ -21,6 +21,8 @@
 #include <fstream>
 #include <nl_types.h>
 #include <string>
+#include <stdexcept>
+
 
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
@@ -148,7 +150,7 @@ int Ceilometer::getFileNumber(char *filename){
 		throw std::invalid_argument("Suffix not found");
 	}
 	
-	
+		
 	// Get year
 	numString = fileString.substr(posIndex, 2);
 	time.tm_year = atoi(numString.c_str()) + 100; 
@@ -172,7 +174,14 @@ int Ceilometer::getFileNumber(char *filename){
     
 	  numString = fileString.substr(posIndex+11, 2);
 	  time.tm_sec = atoi(numString.c_str()); 
-    }
+		
+    } else {
+		time.tm_hour = 0;
+		time.tm_min = 0;
+		time.tm_sec = 0;
+		time.tm_gmtoff = 0;		
+	}
+
 	
 	// Convert to unix time stamp
 	if (debug>3) printf("File index %s\n", asctime(&time));
@@ -480,9 +489,16 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	if (nSensors == 0) readHeader(filenameData.c_str());
 	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());	
 #ifdef USE_MYSQL	
-	if (db == 0) { openDatabase(); }
+	if (db == 0) { 
+		openDatabase(); 
+	} else {
+		// Automatic reconnect 
+		if (mysql_ping(db) != 0){
+			printf("Error: Lost connection to database - automatic reconnect failed\n");
+			throw std::invalid_argument("Database unavailable\n");
+		}
+	}
 #endif
-
 	
 	if (debug > 0) printf("_____Reading data_____________________\n");	
 	
@@ -517,8 +533,8 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	
 	
 	n = len;
-	i = 0;
-	while ((n == len) && (i< 1000)) {
+	int iLoop = 0;
+	while ((n == len) && (iLoop< 1000)) {
 		n = read(fd, buf, len);
 		
 		if (n == len){	
@@ -534,7 +550,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 				break; // or n = 0
 			}
 			
-			if (debug > 1) printf("Received %4d bytes ---  ", n);
+			if (debug > 1) printf("%4d: Received %4d bytes ---  ", iLoop, n);
 			
 			
 			// TODO: Put in a separate function...
@@ -607,21 +623,29 @@ void Ceilometer::readData(const char *dir, const char *filename){
 					fprintf(stderr, "%s\n", sql.c_str());
 					fprintf(stderr, "%s\n", mysql_error(db));
 					
-					// TODO: If this operation fails do not proceed in the file?!
+					// If this operation fails do not proceed in the file?!
+					printf("Error: Unable to write data to database\n");
+					throw std::invalid_argument("Writing data failed");
 					break;
 				}	
 				
 				gettimeofday(&t1, &tz);
 				printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 	
+			} else {
+				printf("Error: No database availabe\n");
+				throw std::invalid_argument("No database");
 			}
 #endif // of USE_MYSQL
 			
 			lastPos += n;
 	    }		
-		i++;
+		iLoop++;
 	}
 	
+	if (n < len) { fd_eof = true; } 
+	else { fd_eof = false; }
+
 	if (debug > 1) printf("\n");
 	if (debug > 1) printf("Position of file %ld\n", lastPos);
 	

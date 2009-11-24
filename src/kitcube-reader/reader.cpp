@@ -219,7 +219,7 @@ int Reader::handle_timeout(){
     
   
   // TODO: Read data / Simulate data
-  if (debug > 1) printf("=== Reading Data %10d %06d=== \n", t0.tv_sec, t0.tv_usec);	
+  if (debug > 1) printf("=== Reading Data %10ld %06d=== \n", t0.tv_sec, t0.tv_usec);	
   // Call rsync
   // TODO: Include also in the device class as the specific filenames are needed!!	
 
@@ -237,7 +237,7 @@ int Reader::handle_timeout(){
 	}
 	
 	gettimeofday(&t1, &tz);
-	printf("Reader cycle duration %dus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));	
+	printf("Reader cycle duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));	
 	
     // Get free disk space
 	// Read the disk space from all devices. Report every device only once?!
@@ -462,7 +462,7 @@ void Reader::analyseTiming(struct timeval *t){
     unsigned long long buf; 
   
     buf = tRef.tv_sec;
-    if (fout) fprintf(fout, "%6d  | %d.%06d \n", index, t->tv_sec, t->tv_usec);
+    if (fout) fprintf(fout, "%6d  | %ld.%06d \n", index, t->tv_sec, t->tv_usec);
   }
 
 
@@ -475,9 +475,9 @@ void Reader::displayStatus(FILE *fout){
 
 
   fprintf(fout, "\n");
-  fprintf(fout,   "Server start     : %ds %dus\n", tRef.tv_sec, tRef.tv_usec);
+  fprintf(fout,   "Server start     : %lds %dus\n", tRef.tv_sec, tRef.tv_usec);
   if (useTimeout){
-    fprintf(fout, "Sampling time    : %ds %dus\n", tSample.tv_sec, tSample.tv_usec);
+    fprintf(fout, "Sampling time    : %lds %dus\n", tSample.tv_sec, tSample.tv_usec);
 	fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
 	fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
 	
@@ -510,18 +510,16 @@ void Reader::analyseDiskSpace(const char *dir){
 // TODO:  How to handle the 64bit data types??? 
 //        Change to 64bit version to be compatible...
 struct statfs fs;
-struct statfs64 fs64;
-
+  
 statfs(dir, &fs);
-statfs64(dir, &fs64);
 
 #ifndef linux	
 // Not supported under Linux?!	
 printf("Disk %s mounted to %s\n", fs.f_mntfromname, fs.f_mntonname);
 #endif
-printf("Total blocks  %12d %12.3f MByte (block size %d bytes)\n", fs.f_blocks, 
-	   (float) fs.f_blocks / 1024 / 1024 * fs64.f_bsize, fs.f_bsize);
-printf("Free blocks   %12d %12.3f MByte %6.2f %s\n", fs.f_bfree, 
+printf("Total blocks  %12Ld %12.3f MByte (block size %d bytes)\n", fs.f_blocks, 
+	   (float) fs.f_blocks / 1024 / 1024 * fs.f_bsize, fs.f_bsize);
+printf("Free blocks   %12Ld %12.3f MByte %6.2f %s\n", fs.f_bfree, 
 	   (float) fs.f_bfree / 1024 / 1024 * fs.f_bsize,
 	   (float) fs.f_bfree / fs.f_blocks * 100, "%");
 
