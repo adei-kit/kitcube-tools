@@ -48,9 +48,9 @@ dnl
 dnl Check iconv support
 dnl
 AC_CHECK_HEADERS(iconv.h)
-if test "x$ac_cv_header_iconv_h" = "xyes"; then
-  ICONV_LIBS="-liconv"
-fi
+dnl if test "x$ac_cv_header_iconv_h" = "xyes"; then
+dnl  ICONV_LIBS="-liconv"
+dnl fi
 AC_SUBST(ICONV_LIBS)
 AM_CONDITIONAL(USE_ICONV, test "x$ac_cv_header_iconv_h" = "xyes")
 
