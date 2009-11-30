@@ -24,6 +24,7 @@ stamp-h1
 src/kitcube-data/kitcube-data
 src/kitcube-reader/kitcube-reader
 src/kitcube-reader/kitcube-reader-mysql
+test-device
 #
 # Package tar-balls
 *.tar.gz
@@ -48,6 +49,6 @@ kitcube-tools.spec
 old/*
 #
 # Links from other packages
-akutil/
+akutil
 fdhwlib.h
 
