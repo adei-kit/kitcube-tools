@@ -31,7 +31,6 @@
 #define DATASERVER_PORT 4900
 
 
-
 class SimpleSocket;
 class SimpleServer;
 class procDuration;
@@ -115,135 +114,126 @@ class DAQDevice;
   */
 
 class DataServer : public SimpleServer  {
-public: 
-  /**  */
-  DataServer();
-  /**  */
-  ~DataServer();
+	public:
+		/**  */
+		DataServer();
+		/**  */
+		~DataServer();
 
+		/** Read parameter from inifile */
+		void readInifile(const char *inifile, const char *module = 0);
 
-  /** Read parameter from inifile */
-  void readInifile(const char *inifile, const char *module = 0);
+			/** Set operation without interactive inputs */
+			void runAsDaemon(bool flag = true);
 
-	/** Set operation without interactive inputs */
-	void runAsDaemon(bool flag = true);	
-  
-  /** Get time until next sample and it's id */
-  void getNextSample(int *iSample, double *tWait);
-  
-  void getNextSample(int *iSample, struct timeval *tWait);
+		/** Get time until next sample and it's id */
+		void getNextSample(int *iSample, double *tWait);
+		
+		void getNextSample(int *iSample, struct timeval *tWait);
 
-  /** Handler for the timeout */
-  int handle_timeout();
-
-  /** Keyboard interface for interactive control
-    * (only for compatibility reasons */
-  int read_from_keyboard();
-
-  /** Execute the command */
-  void executeCmd(int client, short cmd, unsigned int *arg, short n);
-
-  /** Start the server and all the client recording the
-    * telescopes background data.
-    */
-  void runReadout(FILE *fout);
-
-
-  /** Analyse timing */
-  void analyseTiming(struct timeval *t);
-  
-  /** Display status of readout process */
-  void displayStatus(FILE *fout);
-
+		/** Handler for the timeout */
+		int handle_timeout();
+		
+		/** Keyboard interface for interactive control
+		  * (only for compatibility reasons */
+		int read_from_keyboard();
+		
+		/** Execute the command */
+		void executeCmd(int client, short cmd, unsigned int *arg, short n);
+		
+		/** Start the server and all the client recording the
+		  * telescopes background data.
+		  */
+		void runReadout(FILE *fout);
+		
+		/** Analyse timing */
+		void analyseTiming(struct timeval *t);
+		
+		/** Display status of readout process */
+		void displayStatus(FILE *fout);
+		
+		void simulate();
+		
+		/** Simulate data of the quench detection unit */
+		void simQDData(struct timeval t);
+		
+		/** Generate analog data input */
+		void qd(double *analog, int n);
+		
+		/** Write one long data file */
+		//void simHeader(FILE *fdata, struct timeval t);
+		//void simDataSample(FILE *fdata, struct timeval t);
+		
+		/** Index of the data files */
+		int simDataIndex;
+		
+	private:
+		/** Flag to start the server as daemon - without interactive input */
+		bool runDaemon;
+		
+		std::string moduleName;
+		std::string moduleType;
 	
-  void simulate();	
-	
-  /** Simulate data of the quench detection unit */
-  void simQDData(struct timeval t);
-
-
-  /** Generate analog data input */
-  void qd(double *analog, int n);
-
-  /** Write one long data file */	 
-  //void simHeader(FILE *fdata, struct timeval t);
-  //void simDataSample(FILE *fdata, struct timeval t);
-	
-  /** Index of the data files */	
-  int simDataIndex;	
-	
-private:
-	/** Flag to start the server as daemon - without interactive input */
-	bool runDaemon;
-	
-	std::string moduleName;
-   std::string moduleType;
-	
-  DAQDevice *dev;	
-	
-  /** File pointer for the data file */
-  FILE *fdata;	
-
-  /** Number of sensor groups */
-  int nGroups;
-
-  /** Number of samples (of timeout loop) */
-  unsigned long samplesN;
-
-  /** Number of analysed samples */
-  long long timingN;
-  
-  /** Sum of all deviations from the planned sample time */
-  long long timingSum;
-  
-  /** Sum of squares from the the planned sample time */
-  long long timingSum2;
-  
-  /** Minimal deviation */
-  long long timingMin;
-  
-  /** Maximal deviation */
-  long long timingMax;
-
-  /** Number of last samples skipped, because there was no vaild data / timestamp */
-  int nSamplesSkipped;
-
-
-  std::string inifile;
-
-  /** Record filename */
-  std::string filename;
-
-  /** Template for the record filename */
-  std::string filenameTmpl;
-
-  /** Basedir of the auger file */
-  std::string basedir;
-  
-  /** Template for the basedir of the auger file */
-  std::string basedirTmpl;
-  
-
-  /** FEalarm log file name */
-  FILE *flog;
-
-  /** Name of the logfile */
-  std::string logfile;
-
-  
-  /** Path to the QD data */
-  std::string qdPath;
-
-  /** Name of configuration file */
-  std::string qdConfig;
-
-  /** Sampling time (ms) */
-  int qdTSample;
-
-  /** Number of values (max 24) */
-  int qdNSensors;
-
-
+		DAQDevice *dev;
+		
+		/** File pointer for the data file */
+		FILE *fdata;	
+		
+		/** Number of sensor groups */
+		int nGroups;
+		
+		/** Number of samples (of timeout loop) */
+		unsigned long samplesN;
+		
+		/** Number of analysed samples */
+		long long timingN;
+		
+		/** Sum of all deviations from the planned sample time */
+		long long timingSum;
+		
+		/** Sum of squares from the the planned sample time */
+		long long timingSum2;
+		
+		/** Minimal deviation */
+		long long timingMin;
+		
+		/** Maximal deviation */
+		long long timingMax;
+		
+		/** Number of last samples skipped, because there was no vaild data / timestamp */
+		int nSamplesSkipped;
+		
+		std::string inifile;
+		
+		/** Record filename */
+		std::string filename;
+		
+		/** Template for the record filename */
+		std::string filenameTmpl;
+		
+		/** Basedir of the auger file */
+		std::string basedir;
+		
+		/** Template for the basedir of the auger file */
+		std::string basedirTmpl;
+		
+		/** FEalarm log file name */
+		FILE *flog;
+		
+		/** Name of the logfile */
+		std::string logfile;
+		
+		/** Path to the QD data */
+		std::string qdPath;
+		
+		/** Name of configuration file */
+		std::string qdConfig;
+		
+		/** Sampling time (ms) */
+		int qdTSample;
+		
+		/** Number of values (max 24) */
+		int qdNSensors;
 };
 
 #endif
