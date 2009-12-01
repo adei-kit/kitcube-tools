@@ -78,7 +78,7 @@ void DataServer::readInifile(const char *filename, const char *module){
 		
 		error = ini->SpecifyGroup(moduleName.c_str());
 		if (error == Inifile::kSUCCESS){
-			this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);	
+			this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);
 		}
 		
 		//ini->SpecifyGroup("Readout");
