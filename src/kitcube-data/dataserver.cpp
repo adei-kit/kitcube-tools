@@ -48,8 +48,6 @@ DataServer::DataServer(): SimpleServer(DATASERVER_PORT){
 
 
 DataServer::~DataServer(){
-	
-	
 }
 
 
@@ -59,7 +57,7 @@ void DataServer::readInifile(const char *filename, const char *module){
 	std::string value;
 	
 	//printf("ReadInifile(%s)\n", filename);
- 	
+	
 	this->inifile = filename;
 	this->moduleName = "Simulation";
 	this->moduleType = "SimRandom";	
@@ -67,7 +65,6 @@ void DataServer::readInifile(const char *filename, const char *module){
 	ini = new akInifile(inifile.c_str(), stdout);
 	//ini = new akInifile(inifile.c_str());
 	if (ini->Status()==Inifile::kSUCCESS){
-		
 		
 		if ((module == 0) || (module[0] == 0)){
 			//printf("Get module from inifile\n");
@@ -84,7 +81,6 @@ void DataServer::readInifile(const char *filename, const char *module){
 			this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);	
 		}
 		
-		
 		//ini->SpecifyGroup("Readout");
 		//varianceClosedShutter = ini->GetFirstValue("varlevel", varianceClosedShutter, &error);
 		//varianceOverflow = ini->GetNextValue(varianceOverflow, &error);
@@ -92,9 +88,6 @@ void DataServer::readInifile(const char *filename, const char *module){
 		
 	}
 	delete ini;
-
-	
-
 }
 
 
@@ -104,19 +97,18 @@ void DataServer::runAsDaemon(bool flag){
  
 
 void DataServer::runReadout(FILE *fout){
-    int i;
+	int i;
 	//int iSample;
-    struct timeval tWait;
+	struct timeval tWait;
 	struct timeval tStart;
-    //char host[255];
+	//char host[255];
 	char dataName[255];
 
-    if (shutdown) return; // Do not start the server!!!
+	if (shutdown) return; // Do not start the server!!!
 
-	
 	struct timeval t;
 	struct timezone tz;
-    
+
 	gettimeofday(&t, &tz);
 	
 	//  Start run	
@@ -127,126 +119,119 @@ void DataServer::runReadout(FILE *fout){
 	
 	// Initialize the QD simulation
 	// Set sampling time
-    //tWait.tv_sec = qdTSample / 1000;
+	//tWait.tv_sec = qdTSample / 1000;
 	//tWait.tv_usec = (qdTSample % 1000) * 1000;
 
-	
 
-    //tRef.setStart(); // Set reference time
-    // The first measurement point should be 5sec in the future
-    //tRef.setStart((unsigned long) (tRef.getStartSec() - tSample + 5.));
-    //tStart.tv_sec = tRef.getStartSec();
+	//tRef.setStart(); // Set reference time
+	// The first measurement point should be 5sec in the future
+	//tRef.setStart((unsigned long) (tRef.getStartSec() - tSample + 5.));
+	//tStart.tv_sec = tRef.getStartSec();
 	//tStart.tv_usec = tRef.getStartMicroSec();
 
-    // Clear the variables for the timing analysis
-    timingN = 0;
+	// Clear the variables for the timing analysis
+	timingN = 0;
 	timingSum = 0;
 	timingSum2 = 0;
 	timingMin = 0;
 	timingMax = 0;
  
-   
-	
-	
+
 	printf("Create module %s, type %s\n", moduleName.c_str(), moduleType.c_str());
-    dev = (DAQDevice *) createDevice(moduleType.c_str());
+	dev = (DAQDevice *) createDevice(moduleType.c_str());
 	dev->setDebugLevel(debug);
 	
 	dev->readInifile(inifile.c_str(), moduleName.c_str());
 	dev->getSamplingTime(&tWait);
 	
 	dev->openFile(); 
-    dev->readHeader(); // Read the reference time from the data
+	dev->readHeader(); // Read the reference time from the data
 
-	
 
 	// For every module one free port is existing
-	printf("_____Starting service for module %d at port %d_______________________________\n", 
+	printf("_____Starting service for module %d at port %d_______________________________\n",
 		   dev->getModuleNumber(), DATASERVER_PORT+dev->getModuleNumber());
-    setPort(DATASERVER_PORT+dev->getModuleNumber()*10+dev->getSensorGroupNumber());	
-    init();
+	setPort(DATASERVER_PORT+dev->getModuleNumber()*10+dev->getSensorGroupNumber());
+	init();
 	
-    // Set reference time and sampling time of the server loop
+	// Set reference time and sampling time of the server loop
 	// TODO: Read the start time from configuration 
 	// TODO: Read sampling phase from configuration
 	tStart.tv_sec = 1195487978;
 	tStart.tv_usec = 100000;      // If there are two independant loops with thee same
 	                              // sample rate there should be a phase shift between sampling
 	setTRef(&tStart);
-    enableTimeout(&tWait);
+	enableTimeout(&tWait);
 
 	fflush(stdout);
 
-    // Start the server waiting for the records
+	// Start the server waiting for the records
 	if (runDaemon)
 		init_server();
 	else
 		init_server(fileno(stdin));
 
-    fprintf(fout, "\n");
+	fprintf(fout, "\n");
 
-    //tRef.setEnd();
+	//tRef.setEnd();
 
-	
 	dev->closeFile();
 	delete dev;
-
 }
 
 
-
 int DataServer::handle_timeout(){
-  int i;
-  //procDuration t;  
-  //int iSample;
-  //struct timeval tWait;
-  struct timeval t;
-  struct timezone tz;
-    
+	int i;
+	//procDuration t;
+	//int iSample;
+	//struct timeval tWait;
+	struct timeval t;
+	struct timezone tz;
 
-  // TODO: Check timing
-  // The goal is to read data in periodic intervals 
-  // The reference time is given by the run start time
-  //t.setStart();
-  gettimeofday(&t, &tz);
-  
-  
-  // Analyse the timeing quality of the readout process
-  //analyseTiming(&t);
-    
-  
-  // TODO: Read data / Simulate data
-  if (debug > 1) printf("=== Data %10ld %06d=== \n", t.tv_sec, t.tv_usec);	
-  dev->writeData();	
 
-  fflush(stdout);
-  return(0);
+	// TODO: Check timing
+	// The goal is to read data in periodic intervals 
+	// The reference time is given by the run start time
+	//t.setStart();
+	gettimeofday(&t, &tz);
+
+
+	// Analyse the timeing quality of the readout process
+	//analyseTiming(&t);
+
+
+	// TODO: Read data / Simulate data
+	if (debug > 1) printf("=== Data %10ld %06d=== \n", t.tv_sec, t.tv_usec);
+	dev->writeData();
+	
+	fflush(stdout);
+	return(0);
 }
 
 
 
 
 int DataServer::read_from_keyboard(){
-  int err;
-  char buf[256];
-  char dataName[255];
-
-  // Handle keyboard events
-  //handleKeyboard(floop, kb);
+	int err;
+	char buf[256];
+	char dataName[255];
+	
+	// Handle keyboard events
+	//handleKeyboard(floop, kb);
 
 #ifdef __GNUC__
-  err = read (fileno(stdin), buf, 256);
+	err = read (fileno(stdin), buf, 256);
 #else // windows ?
-  err = _read (fileno(stdin), buf, 256);
+	err = _read (fileno(stdin), buf, 256);
 #endif
 
-  if (err > 0){
-    //keyboard_cmds(floop, buf);
-   buf[err] = 0; // Add string terminator
-    //printf("%s", buf); fflush(stdout);
-
-    // Command interpreter for stdin
-    switch (buf[0]){
+	if (err > 0){
+	//keyboard_cmds(floop, buf);
+	buf[err] = 0; // Add string terminator
+	//printf("%s", buf); fflush(stdout);
+	
+	// Command interpreter for stdin
+	switch (buf[0]){
 	  case 'd': // Enable / display debug
 	    //if (fout == stdout) fout = 0;
 		//else fout = stdout;
@@ -313,22 +298,22 @@ int DataServer::read_from_keyboard(){
 
 
 void DataServer::executeCmd(int client, short cmd, unsigned int *arg, short n){
-  //int i;
-  int err;
-  unsigned int res[10], *buf;
-  //float *pFloat;
-  short acklen;
-  
+	//int i;
+	int err;
+	unsigned int res[10], *buf;
+	//float *pFloat;
+	short acklen;
+
 
 #ifdef debug
-  fprintf(fout, "ExecuteCmd: %d \n",cmd);
+	fprintf(fout, "ExecuteCmd: %d \n",cmd);
 #endif
 
-  // local function call
-  buf = res;  // used, if the result is not longer than 2 words
-  buf[0] = 0; // no error
-  acklen = 1;
-  try { switch(cmd) {
+	// local function call
+	buf = res;  // used, if the result is not longer than 2 words
+	buf[0] = 0; // no error
+	acklen = 1;
+	try { switch(cmd) {
 
 /*
     case 0: // save data
@@ -574,7 +559,6 @@ void DataServer::simQDData(struct timeval t){
     }
 
     // TODO Clear other file with the same file number
-	
 
 }
 
@@ -583,14 +567,10 @@ void DataServer::simQDData(struct timeval t){
   * Use PC time to calculate a sinus wave plus some noise.
   */
 void DataServer::qd(double *analog, int n){
-   
-    for(int i=0; i<n;i++) analog[i] =  0.02 * (index%100 + i); 
-
-    // Test values
-    analog[0] = 0.0;
-    analog[1] = -2.5;
-    analog[2] = 2.5;
+	for(int i=0; i<n;i++) analog[i] =  0.02 * (index%100 + i); 
+	
+	// Test values
+	analog[0] = 0.0;
+	analog[1] = -2.5;
+	analog[2] = 2.5;
 }
-
-
-
