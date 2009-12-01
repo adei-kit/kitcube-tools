@@ -232,68 +232,68 @@ int DataServer::read_from_keyboard(){
 	
 	// Command interpreter for stdin
 	switch (buf[0]){
-	  case 'd': // Enable / display debug
-	    //if (fout == stdout) fout = 0;
+	case 'd': // Enable / display debug
+		//if (fout == stdout) fout = 0;
 		//else fout = stdout;
-			
+		
 		this->debug++;
 		if (this->debug > 2) this->debug = 0;
 		dev->setDebugLevel(debug);
-		printf("Switched debug level to %d\n", this->debug);	
-	    break;
+		printf("Switched debug level to %d\n", this->debug);
+		break;
 		
-	  case 'h': // Help pages
-	    printf("Data server -  commands:\n");
+	case 'h': // Help pages
+		printf("Data server -  commands:\n");
 		printf("   d    Enable/disable debug output\n");
 		printf("   q    Quit\n");
 		printf("   s    Display status\n");
 		printf("   z    Test database connection\n");
 		printf("   n    Create a new data file\n");
 		printf(" SPACE  Add sleep command - load simulation\n");
-	    break;	
+		break;
 		
-	  case 'n': // force new file			
-	  case 'N':
-			dev->openNewFile();
-			break;	
-			
-      case 'q': // Shutdown server
-      case 'Q':
-        shutdown = true;
-        break;
+	case 'n': // force new file
+	case 'N':
+		dev->openNewFile();
+		break;
 		
-      case ' ': // Simulate high load?!
-	    SLEEP(600); //ms
-	    break;
+	case 'q': // Shutdown server
+	case 'Q':
+		shutdown = true;
+		break;
+		
+	case ' ': // Simulate high load?!
+		SLEEP(600); //ms
+		break;
 
-      case 's':
-      case 'S':
-	    displayStatus(stdout);
-        //displayActiveSockets(stdout);
-        break;
+	case 's':
+	case 'S':
+		displayStatus(stdout);
+		//displayActiveSockets(stdout);
+		break;
 		
-      // Create new Experiment - means completely new database
-	  // Create all database tables
-	  case 'e': // new experiment
-	     //createExperiment();
-	     break;
-	  
-	  // Start RUN
-	  case 'r': // Start run
-	     //createRun();
-	     break;
-	  
-	  // Stop RUN
-	  case 'p': // Stop run
-	     //stopRun();
-		 break; 
-						
-    }
-				            
-  }
+	// Create new Experiment - means completely new database
+	// Create all database tables
+	case 'e': // new experiment
+		//createExperiment();
+		break;
+
+	// Start RUN
+	case 'r': // Start run
+		//createRun();
+		break;
+	
+	// Stop RUN
+	case 'p': // Stop run
+		//stopRun();
+		break;
+
+	}
+
+	}
 
   return(0);
-}  
+}
 
 
 
@@ -363,31 +363,28 @@ void DataServer::executeCmd(int client, short cmd, unsigned int *arg, short n){
 
 */
 
-    case 41: // shutdown bgloop-recorder
+	case 41: // shutdown bgloop-recorder
 
+		// Set shutdown flag
+		shutdown = true;
+		acklen=1;
+		break;
 
-       // Set shutdown flag
-       shutdown = true;
-       acklen=1;
-       break;
-
-  }  } catch (...) {
+	}  } catch (...) {
 #ifdef debug
-      fprintf(fout, "read_from_client: Error occured during execution of bg-command?!\n");
+	fprintf(fout, "read_from_client: Error occured during execution of bg-command?!\n");
 #endif
-      buf[0] = 1; // Error occured
-      acklen = 1;
-  }
+	buf[0] = 1; // Error occured
+	acklen = 1;
+	}
 
 
-  // return the result
-  err = writeData(client,buf,acklen);
+	// return the result
+	err = writeData(client,buf,acklen);
 
 #ifdef debug
-  fprintf(fout, "read_from_client: status %ld, err=%d\n",buf[0],err);
+	fprintf(fout, "read_from_client: status %ld, err=%d\n",buf[0],err);
 #endif
-
-
 }
 
 
@@ -396,72 +393,66 @@ void DataServer::executeCmd(int client, short cmd, unsigned int *arg, short n){
 
 void DataServer::analyseTiming(struct timeval *t){
 
-  unsigned long long tPlan;
-  unsigned long long tNow;
-  unsigned long long tDiff;
+	unsigned long long tPlan;
+	unsigned long long tNow;
+	unsigned long long tDiff;
  
 
-  tPlan = ((unsigned long long) tRef.tv_sec + lastIndex * tSample.tv_sec) * 1000000
-         + (unsigned long long) tRef.tv_usec + lastIndex * tSample.tv_usec;
-  tNow = (unsigned long long) t->tv_sec * 1000000 + (unsigned long long) t->tv_usec;
-  tDiff = tNow - tPlan;
-  
-  if (timingN == 0){
-    timingMin = tDiff;
-	timingMax = tDiff;
-  }
-  
-  timingN++;
-  
-  timingSum += tDiff;
-  timingSum2 += tDiff * tDiff;
-  
-  if (tDiff > (unsigned) timingMax)  timingMax = tDiff;
-  if (tDiff < (unsigned) timingMin)  timingMin = tDiff;
+	tPlan = ((unsigned long long) tRef.tv_sec + lastIndex * tSample.tv_sec) * 1000000
+		+ (unsigned long long) tRef.tv_usec + lastIndex * tSample.tv_usec;
+	tNow = (unsigned long long) t->tv_sec * 1000000 + (unsigned long long) t->tv_usec;
+	tDiff = tNow - tPlan;
 
+	if (timingN == 0){
+		timingMin = tDiff;
+		timingMax = tDiff;
+	}
 
-  if (fout > 0){
-    unsigned long long buf; 
-  
-    buf = tRef.tv_sec;
-    if (fout) fprintf(fout, "%6d  | %ld.%06d \n", index, t->tv_sec, t->tv_usec);
-  }
+	timingN++;
 
+	timingSum += tDiff;
+	timingSum2 += tDiff * tDiff;
 
+	if (tDiff > (unsigned) timingMax)  timingMax = tDiff;
+	if (tDiff < (unsigned) timingMin)  timingMin = tDiff;
+
+	if (fout > 0){
+		unsigned long long buf; 
+
+		buf = tRef.tv_sec;
+		if (fout) fprintf(fout, "%6d  | %ld.%06d \n", index, t->tv_sec, t->tv_usec);
+	}
 }
 
 
 void DataServer::displayStatus(FILE *fout){
 
-  if (fout == 0) return;
+	if (fout == 0) return;
 
-
-  fprintf(fout, "\n");
-  fprintf(fout,   "Server start     : %lds %dus\n", tRef.tv_sec, tRef.tv_usec);
-  if (useTimeout){
-    fprintf(fout, "Sampling time    : %lds %dus\n", tSample.tv_sec, tSample.tv_usec);
-	fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
-	fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
+	fprintf(fout, "\n");
+	fprintf(fout,   "Server start     : %lds %dus\n", tRef.tv_sec, tRef.tv_usec);
+	if (useTimeout){
+		fprintf(fout, "Sampling time    : %lds %dus\n", tSample.tv_sec, tSample.tv_usec);
+		fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
+		fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
 	
-	if (timingN > 0){
-	  double var;
-	  var = (double) timingSum2 / timingN - (double) timingSum / timingN * timingSum / timingN;
-	  if (var >= 0)
-	    fprintf(fout, "Sample error     : %lld +- %8.1f  (%lld .. %lld) \n", timingSum/timingN, 
-				   sqrt(var),  timingMin, timingMax);
-	  else
-	    fprintf(fout, "Sample error     : %lld +- %8s  (%lld .. %lld) \n", timingSum/timingN, 
-				   "err", timingMin, timingMax);	    			   
-	}			  
+		if (timingN > 0){
+			double var;
+			var = (double) timingSum2 / timingN - (double) timingSum / timingN * timingSum / timingN;
+			if (var >= 0)
+				fprintf(fout, "Sample error     : %lld +- %8.1f  (%lld .. %lld) \n", timingSum/timingN,
+					sqrt(var),  timingMin, timingMax);
+			else
+				fprintf(fout, "Sample error     : %lld +- %8s  (%lld .. %lld) \n", timingSum/timingN,
+					"err", timingMin, timingMax);
+		}
 	
 	// TODO: Display error status of sensor groups
 	
-	
-  } else {
-    fprintf(fout, "Sampling         : Disabled\n");
-  }
-  fprintf(fout, "\n");
-  	
+	} else {
+		fprintf(fout, "Sampling         : Disabled\n");
+	}
+	fprintf(fout, "\n");
 }
 
 
@@ -470,95 +461,93 @@ void DataServer::displayStatus(FILE *fout){
 // ========= QD Simukation ====================
 
 void DataServer::simQDData(struct timeval t){
-   char filename[256];
-   struct tm *timestamp;
-  int j;
-  //bool running;
-  FILE *fd;
-  double analog[24];
-  unsigned short data[24];
-  double scaled;
-  unsigned long nBuffer;
-  int fd2;
-
-   // TODO: Measure length of operation?
-   //        Precision of timing
- 
-
-   //qdPath = "/Users/kopmann/tmp/qd/";// Parameter fileserver (~/tmp/qd)
-   //qdPath = "c:\\tmp\\";
-   //qdNSensors= 24; // number of variables (default: 24)
-   nBuffer= 10000;// length of file buffer (default 10000)
-   // Sampling rate (default 100ms)
-   // Test signal (sinus)
-   // Frequency
-   // Amplitude
-   // Noise 
-  
-
-   // Generate data
-   
-   // Generate file name
-   timestamp = localtime((time_t *) &t.tv_sec);
+	char filename[256];
+	struct tm *timestamp;
+	int j;
+	//bool running;
+	FILE *fd;
+	double analog[24];
+	unsigned short data[24];
+	double scaled;
+	unsigned long nBuffer;
+	int fd2;
+	
+	// TODO: Measure length of operation?
+	//        Precision of timing
+	
+	
+	//qdPath = "/Users/kopmann/tmp/qd/";// Parameter fileserver (~/tmp/qd)
+	//qdPath = "c:\\tmp\\";
+	//qdNSensors= 24; // number of variables (default: 24)
+	nBuffer= 10000;// length of file buffer (default 10000)
+	// Sampling rate (default 100ms)
+	// Test signal (sinus)
+	// Frequency
+	// Amplitude
+	// Noise
+	
+	
+	// Generate data
+	
+	// Generate file name
+	timestamp = localtime((time_t *) &t.tv_sec);
 
 /*
-   // Filename according to K Petry
-   sprintf(filename, "%sADC%05d_QDFFF_H%02dDM%02dS%02d_D%02d-M%02d-Y%04d.RAW", 
-         qdPath.c_str(), index%nBuffer,
-         timestamp->tm_hour, timestamp->tm_min, timestamp->tm_sec,
-   	   timestamp->tm_mday, timestamp->tm_mon+1, timestamp->tm_year+1900);
+	// Filename according to K Petry
+	sprintf(filename, "%sADC%05d_QDFFF_H%02dDM%02dS%02d_D%02d-M%02d-Y%04d.RAW",
+		qdPath.c_str(), index%nBuffer,
+		timestamp->tm_hour, timestamp->tm_min, timestamp->tm_sec,
+		timestamp->tm_mday, timestamp->tm_mon+1, timestamp->tm_year+1900);
 */
-   
 
-   // Filenames accordig to M Heiduk / A Augenstein
-   sprintf(filename, "%s%04d_%02d_%02d_%02d_%02d_%02d_%07d.k%2di16", 
-         qdPath.c_str(), 
-         timestamp->tm_year+1900, timestamp->tm_mon+1, timestamp->tm_mday, 
-		 timestamp->tm_hour, timestamp->tm_min, timestamp->tm_sec, 
-		 t.tv_usec * 10, qdNSensors);
+	// Filenames accordig to M Heiduk / A Augenstein
+	sprintf(filename, "%s%04d_%02d_%02d_%02d_%02d_%02d_%07d.k%2di16",
+		qdPath.c_str(),
+		timestamp->tm_year+1900, timestamp->tm_mon+1, timestamp->tm_mday,
+		timestamp->tm_hour, timestamp->tm_min, timestamp->tm_sec,
+		t.tv_usec * 10, qdNSensors);
  
-   
-   // Write file
-   fprintf(stdout, "%s\n", filename); fflush(stdout);
+	// Write file
+	fprintf(stdout, "%s\n", filename); fflush(stdout);
  
-   // Calculate simulted values 
-   qd(analog, qdNSensors);
+	// Calculate simulted values 
+	qd(analog, qdNSensors);
 
-   // A-D Conversion
-   for (j=0;j<qdNSensors;j++){
-      scaled = ((analog[j] + 2.5) * 4096 / 5) - 1;
-      if (scaled < 0) scaled = 0;
-      if (scaled > 4095) scaled = 4095;
-      data[j] = (unsigned short) scaled;
-   }
+	// A-D Conversion
+	for (j=0;j<qdNSensors;j++){
+		scaled = ((analog[j] + 2.5) * 4096 / 5) - 1;
+		if (scaled < 0) scaled = 0;
+		if (scaled > 4095) scaled = 4095;
+		data[j] = (unsigned short) scaled;
+	}
 
 #if defined __i386__ 
-  // #error endian swap needed
-  for (int i=0;i<qdNSensors;i++)  endian_swap(data[i]);
-#endif  
+	// #error endian swap needed
+	for (int i=0;i<qdNSensors;i++)  endian_swap(data[i]);
+#endif
 
 /*
-    // Write test data to file
-  fd2 = open(filename, O_RDWR | O_CREAT | O_BINARY);
+	// Write test data to file
+	fd2 = open(filename, O_RDWR | O_CREAT | O_BINARY);
 	if (fd2>0) {
 		write(fd2, data, qdNSensors * sizeof(short));
 		close(fd2);
-    } else {
-      printf("Error writing %s (fd=%d, errno=%d)\n", filename, fd2, errno);
-    }
+	} else {
+		printf("Error writing %s (fd=%d, errno=%d)\n", filename, fd2, errno);
+	}
 */
-    // Open binary file for writing the data
-    fd = fopen(filename, "wb");
-    if (fd > 0) {
-      size_t n; 
-      n = fwrite(data,2,qdNSensors,fd);
-	  //printf("n = %d nQd = %d\n", n, qdNSensors);
-      fclose(fd);
-    } else {
-      printf("Error writing %s (fd=%p, errno=%d)\n", filename, fd, errno);
-    }
+	// Open binary file for writing the data
+	fd = fopen(filename, "wb");
+	if (fd > 0) {
+		size_t n; 
+		n = fwrite(data,2,qdNSensors,fd);
+		//printf("n = %d nQd = %d\n", n, qdNSensors);
+		fclose(fd);
+	} else {
+		printf("Error writing %s (fd=%p, errno=%d)\n", filename, fd, errno);
+	}
 
-    // TODO Clear other file with the same file number
+	// TODO Clear other file with the same file number
 
 }
 

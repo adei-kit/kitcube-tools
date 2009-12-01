@@ -29,12 +29,12 @@ int main(int argc, char *argv[]){
 	//
 	inifile = "kitcube.ini";
 	runDaemon = false; // Run interactive as default
-    debug = 2;
+	debug = 2;
 	isLinkedApp = false;
 	
 	//
 	// Parse command line
-	//	
+	//
 	
 	// Get name of the application
 	// Strip the path and the kitcube prefix
@@ -42,14 +42,14 @@ int main(int argc, char *argv[]){
 	applicationName = namePtr+1;
 	//printf("Running application %s\n", applicationName.c_str()); 
 	if (strcmp(applicationName.c_str(),"kitcube-data") != 0) {
-	  isLinkedApp = true;
-	  namePtr = strstr(namePtr+1, "kitcube-");
-	  if (namePtr <  0){
-		//printf("Warning: Kitcube prefix is missing in the application file name\n");
-		throw std::invalid_argument("Kitcube prefix is missing in the application file name");
-	  } else {
+		isLinkedApp = true;
+		namePtr = strstr(namePtr+1, "kitcube-");
+		if (namePtr <  0){
+			//printf("Warning: Kitcube prefix is missing in the application file name\n");
+			throw std::invalid_argument("Kitcube prefix is missing in the application file name");
+		} else {
 			module = namePtr+8;
-	  }	
+		}
 	}
 	
 	
@@ -100,17 +100,17 @@ int main(int argc, char *argv[]){
 	// Parse the remaining arguments
 	if (argc - nOpts >= 2 ){
 		if (!isLinkedApp)
-		  module = argv[1 + nOpts];
+			module = argv[1 + nOpts];
 	}
 	
 	
 	if (module.length() >  0)
-		printf("Start production of data for module %s\n", module.c_str());	
+		printf("Start production of data for module %s\n", module.c_str());
 	
 	
 	
 	// Read inifile
-	try {	
+	try {
 		data = new DataServer();
 		data->setDebugLevel(debug);
 		data->readInifile(inifile.c_str(), module.c_str());
@@ -128,6 +128,3 @@ int main(int argc, char *argv[]){
 	}
 	
 }
-
-
-
