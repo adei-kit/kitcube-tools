@@ -94,7 +94,7 @@ void DataServer::readInifile(const char *filename, const char *module){
 void DataServer::runAsDaemon(bool flag){
 	this->runDaemon = flag;
 }
- 
+
 
 void DataServer::runReadout(FILE *fout){
 	int i;
