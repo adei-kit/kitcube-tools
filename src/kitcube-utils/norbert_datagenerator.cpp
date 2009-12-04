@@ -33,8 +33,9 @@ int main(){
 	for (m = m; m < 60; m++) {
 		for (s = s; s < 60; s++) {
 			// output "timestamp" and "data value"
-			cout << "11:" << setfill('0') << setw(2) << m << ":" << setw(2)
-				 << s << '\t' << setfill(' ') << setw(4) << i << endl;
+			cout << "11:" << setfill('0') << setw(2) << m << ":"
+			     << setw(2) << s << '\t' << setfill(' ') << setw(4)
+			     << i << endl;
 /*			cout << "11:";
 			cout.fill('0');
 			cout.width(2);
@@ -48,7 +49,8 @@ int main(){
 			if (counting_up) {
 				// increment data value
 				i++;
-				// allow max. 1023 (= 10 bits) for data value, then go downwards again
+				// allow max. 1023 (= 10 bits) for data value,
+				// then go downwards again
 				if (i == 1024 ) {
 					i = 1022;
 					counting_up = false;
