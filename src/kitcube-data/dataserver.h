@@ -123,8 +123,8 @@ class DataServer : public SimpleServer  {
 		/** Read parameter from inifile */
 		void readInifile(const char *inifile, const char *module = 0);
 
-			/** Set operation without interactive inputs */
-			void runAsDaemon(bool flag = true);
+		/** Set operation without interactive inputs */
+		void runAsDaemon(bool flag = true);
 
 		/** Get time until next sample and it's id */
 		void getNextSample(int *iSample, double *tWait);

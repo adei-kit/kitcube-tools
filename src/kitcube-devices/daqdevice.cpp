@@ -1207,7 +1207,7 @@ void DAQDevice::getNewFiles(){
 
 
 unsigned long DAQDevice::getTimestamp(const char *date, const char *time){
-    char *ptr1, *ptr2;
+	char *ptr1, *ptr2;
 	struct tm timestamp;
 	char buf[20];
 	
@@ -1254,8 +1254,8 @@ unsigned long DAQDevice::getTimestamp(const char *date, const char *time){
 	}
 	
 	
-	//printf("%d %d %d   %d %d %d  -- %d errno %d\n", timestamp.tm_mday, timestamp.tm_mon+1, timestamp.tm_year+ 1900, 
-	//	   timestamp.tm_hour, timestamp.tm_min, timestamp.tm_sec, 
+	//printf("%d %d %d   %d %d %d  -- %d errno %d\n", timestamp.tm_mday, timestamp.tm_mon+1, timestamp.tm_year+ 1900,
+	//	   timestamp.tm_hour, timestamp.tm_min, timestamp.tm_sec,
 	//	   timegm(&timestamp), errno);
 	
 	// Is the time always given in UTC?
@@ -1266,9 +1266,3 @@ unsigned long DAQDevice::getTimestamp(const char *date, const char *time){
 bool DAQDevice::reachedEOF(){
 	return(fd_eof);
 }
-
-
-
-
-
-
