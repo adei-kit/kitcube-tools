@@ -14,7 +14,8 @@ lib_LIBRARIES = libkitcube-devices.a  $(MYSQL_TARGETS)
 
 libkitcube_devices_a_SOURCES = daqdevice.h daqdevice.cpp createdevice.h createdevice.cpp \
 	daqbinarydevice.h daqbinarydevice.cpp \
-	simrandom.h simrandom.cpp mast.h mast.cpp ceilometer.h ceilometer.cpp
+	simrandom.h simrandom.cpp mast.h mast.cpp ceilometer.h ceilometer.cpp \
+	norbert.h norbert.cpp
 
 libkitcube_devices_a_CXXFLAGS =   
 
