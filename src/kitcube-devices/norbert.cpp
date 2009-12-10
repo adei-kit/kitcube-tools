@@ -10,7 +10,6 @@
 ********************************************************************/
 
 
-
 #include "norbert.h"
 
 #include <stdlib.h>
@@ -35,17 +34,16 @@
 
 Norbert::Norbert():DAQBinaryDevice(){
 	
-	this->moduleType = "Norbert";
-	this->moduleNumber = 20;	// Norbert default number
-	this->sensorGroup = "chm";
+	moduleType = "NF";
+	moduleNumber = 190;	// Norbert default number
+	sensorGroup = "dat";
 
-	this->iniGroup = "Norbert"; 
+	iniGroup = "Norbert";
 	
-	this->lenHeader = 0;
-	this->lenDataSet = 237;		// In the chm files is no check sum !?
-	this->noData = 99999;
+	lenHeader = 0x33;	// CAUTION: header has 2 lines!
+	lenDataSet = 14;
 	
-	headerRaw = 0;
+	headerRaw = 0;		// unsigned char*
 }
 
 
@@ -63,13 +61,14 @@ void Norbert::setConfigDefaults(){
 	// of the class but first time after reading from the inifile
 	//
 	
-	this->moduleName = "CM";
-	this->moduleComment = "Norbert";
+	moduleName = "Norbert";
+	moduleComment = "Norbert's";
 	
 	sprintf(line, "Norbert.%s.template", sensorGroup.c_str());
-	this->datafileTemplate = line;
+	datafileTemplate = line;
+
 	sprintf(line, "20<index>.%s", sensorGroup.c_str());
-	this->datafileMask = line;
+	datafileMask = line;
 	//printf("datafileMask = %s\n", datafileMask.c_str());
 	
 	sprintf(line, "Norbert.%s.sensors", sensorGroup.c_str());
@@ -81,7 +80,7 @@ const char *Norbert::getDataDir(){
 	char line[256];
 	
 	// TODO: Create a single source for the filename convention...
-	sprintf(line, "Norbert/Daten/");
+	sprintf(line, "%s/Daten/", moduleName.c_str());
 	buffer = line;
 	return(buffer.c_str());
 }
@@ -89,7 +88,7 @@ const char *Norbert::getDataDir(){
 
 const char *Norbert::getDataFilename(){
 	struct timeval t;
-	struct timezone tz;	
+	struct timezone tz;
 	struct tm *date;
 	char line[256];
 
@@ -204,7 +203,7 @@ void Norbert::replaceItem(const char **header, const char *itemTag, const char *
 	while ( (!findTag) && (i < 20)) {
 		ptr = strcasestr(*header,  itemTag);
 		if (ptr > 0){
-			startChar = strstr(ptr, ": "); 
+			startChar = strstr(ptr, ": ");
 			if (startChar > 0) {
 				
 				// Replace the data in the header
@@ -278,43 +277,29 @@ unsigned long Norbert::getSensorGroup(){
 	
 	number = 0;
 	buffer = "";
-	if (sensorGroup == "chm") {
-		number = 1; 
-		buffer = "standard";
-	}
 
 	if (sensorGroup == "dat") {
-		number = 2; 
+		number = 1;
 		buffer = "online";
 	}
+
+	printf("Sensor Group ID: %i\n", number);
 	
-	if (sensorGroup == "nc") {
-		number = 3; 
-		buffer = "raw data";
-	}
-	
-	return( number);
+	return number;
 }
 
 
-
-
 void Norbert::readHeader(const char *filename){
-	int fd; 
+	int fd;
 	const char *headerReadPtr;
 	char line[256];
 	int n;
 	int i;
 	int heightOffset;
 	char heightUnit[5];
-	int len; 
+	int len;
 	
 	
-	// There is no header for this format
-	// This means all output is static all the time?!
-	// Some header informations are hidden in the data (e.g. height)
-	// --> So read the first data set
-		
 	printf("_____Reading header information_____________________\n");
 	fd = open(filename, O_RDONLY);
 	if (fd < 0) {
@@ -322,21 +307,20 @@ void Norbert::readHeader(const char *filename){
 		throw std::invalid_argument(line);
 	}
 	
-	// Read the complete header 
+	// Read the complete header
 	// No need for character code conversions
-	// Read the first data set - there is no header for these sensor group 
-	len = this->lenDataSet;
-	headerRaw = new unsigned char [ len ]; // Is stored in the class variables
+	len = lenHeader;
+	headerRaw = new unsigned char [ len ];	// Is stored in the class variables
 	n = read(fd, headerRaw, len);
 	printf("Bytes read %d from file %s\n", n, filename);
 	
 	close(fd);
 	
 	if (n<len) {
-		// There is no header defined in the data format. Instead the data from the 
+		// There is no header defined in the data format. Instead the data from the
 		// First data set is read -- of course when starting with a new file there is no
 		// data set available. So it makes no sense to complain here!
-		//throw std::invalid_argument("No header found in data file");		
+		//throw std::invalid_argument("No header found in data file");
 		return;
 	}
 	
@@ -345,85 +329,93 @@ void Norbert::readHeader(const char *filename){
 	// Read parameters
 	//
 	printf("Module: \t\t%s, ID %03d, Group %s ID %d\n", moduleName.c_str(), moduleNumber,
-		   sensorGroup.c_str(), sensorGroupNumber);
+		sensorGroup.c_str(), sensorGroupNumber);
 
-	
-	// Sampling time
-	
-	// Height (offset)
-	headerReadPtr = (const char *) headerRaw + 72;
-	sscanf(headerReadPtr, "%d", &heightOffset);
-	printf("Height = %d\n", heightOffset);
-	
-
-	// Unit (m/ft)
-	// In case of feet the values need to be converted to m
-	*heightUnit = 0;
-	headerReadPtr =  (const char *) headerRaw + 77;
-	strncpy(heightUnit, headerReadPtr, 2);
-	if (heightUnit[1] == ' ') heightUnit[1] = 0;
-	else heightUnit[2] = 0;
-	printf("Unit = <%s>\n", heightUnit);
-
-	// Device ID + fabrication date 
-	
-	// Software version DAQ + Processing
-	
-	
-	// Reference time == time stamp of first entry 
-	std::string timeString;
+	// Reference time == time stamp of first entry
 	std::string dateString;
+	std::string timeString;
 	unsigned long timestamp;
-	headerReadPtr = (const char *) headerRaw + 12; // Date
-	headerRaw[20] = 0;
+
+	headerReadPtr = (const char *) headerRaw + 0x28;	// position of date string in Header
+	headerRaw[0x32] = 0;
 	dateString = headerReadPtr;
-	dateString.insert(6,"20"); // Insert full year number in string
-	headerReadPtr = (const char *) headerRaw + 21; // Time
+
+/*
+	headerReadPtr = (const char *) headerRaw + 21;	// position of time string in header
 	headerRaw[26] = 0;
 	timeString = headerReadPtr;
 	timeString += ":";
 	headerRaw[235] = 0;
 	timeString += (const char *) headerRaw + 233;	
 	//timeString += ":00"; // Add missing seconds
+*/
+	timeString = "empty";
+
 	printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
 	
-	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
+	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());	// should work with timeString "empty", too
 	tRef.tv_sec = timestamp;
 	tRef.tv_usec = 0;
 	
 	
 	// Number of sensors
-	nSensors = 8;
+	nSensors = 1;
 	printf("Number of sensors %d\n", nSensors);
 	
 	// List of sensors
 	if (sensor > 0 ) delete [] sensor;
 	sensor = new struct sensorType [nSensors];
 	
-	sensor[0].comment = "Cloud level 1";
-	sensor[1].comment = "Cloud level 2";
-	sensor[2].comment = "Cloud level 3";
-	sensor[3].comment = "Penetration depth 1";
-	sensor[4].comment = "Penetration depth 2";
-	sensor[5].comment = "Penetration depth 3";
-	sensor[6].comment = "Vertical visibility";
-	sensor[7].comment = "Detection range";
+	sensor[0].comment = "Triangle Signal";
 
-	for (i=0;i<nSensors;i++){
-		sensor[i].height = heightOffset;
-	}
-
-	for (i=0;i<nSensors;i++){
-		sensor[i].height = heightOffset;
-		printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(),
-			   sensor[i].height, heightUnit);
-	}
 }
 
 
 
 void Norbert::writeHeader(){
-	// Nothing to do -- there is no header
+	// muss jetzt Header schreiben :-(
+	struct timezone tz;
+	const char *headerReadPtr;
+	struct tm *t;
+	char time[20];
+	char date[20];
+	int n;
+	std::string filename;
+	int len;
+	
+
+	if (fd_data <=0) throw std::invalid_argument("Data file not open");
+
+	// Read one sample data and replace the starting time by the original time
+	len = this->lenHeader;
+/*
+	// Read the template header
+	if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");	
+	filename = configDir + datafileTemplate;
+	printf("Reading header from template file %s\n", filename.c_str());
+	readHeader(filename.c_str());
+	headerReadPtr = (const char *) headerRaw;
+	
+	if (headerRaw == 0) {
+		printf("Error: No template header found\n");
+		throw std::invalid_argument("No template header found");
+	}
+*/
+	headerReadPtr = (const char *) headerRaw;
+
+	// Replace the date by the actual date
+	gettimeofday(&tRef, &tz);
+	t = gmtime( &tRef.tv_sec);
+	sprintf(time, "%02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
+	sprintf(date, "%02d.%02d.%4d", t->tm_mday, t->tm_mon+1, t->tm_year+1900);
+	
+	//replaceItem(&headerReadPtr, "Referenzzeit", time);
+	replaceItem(&headerReadPtr, "Datum", date);
+	//printf("%s\n", headerRaw);
+
+	// write header
+	n = write(fd_data, headerRaw, len);
+	printf("Write header of %d bytes\n", n);
 }
 
 
