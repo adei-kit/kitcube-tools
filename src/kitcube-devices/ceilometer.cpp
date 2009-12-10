@@ -386,12 +386,12 @@ void Ceilometer::readHeader(const char *filename){
 	dateString.insert(6,"20"); // Insert full year number in string
 	headerReadPtr = (const char *) headerRaw + 21; // Time
 	headerRaw[26] = 0;
-    timeString = headerReadPtr;	
+	timeString = headerReadPtr;	
 	timeString += ":";
 	headerRaw[235] = 0;
 	timeString += (const char *) headerRaw + 233;	
 	//timeString += ":00"; // Add missing seconds
-    printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
+	printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
 	
 	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
 	tRef.tv_sec = timestamp;

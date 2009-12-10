@@ -111,7 +111,7 @@ void DataServer::runReadout(FILE *fout){
 
 	gettimeofday(&t, &tz);
 	
-	//  Start run	
+	//  Start run
 	//tWait.tv_sec = 0;
 	//tWait.tv_usec = 250000;
 	tWait.tv_sec = 1;
@@ -144,7 +144,7 @@ void DataServer::runReadout(FILE *fout){
 	dev->readInifile(inifile.c_str(), moduleName.c_str());
 	dev->getSamplingTime(&tWait);
 	
-	dev->openFile(); 
+	dev->openFile();
 	dev->readHeader(); // Read the reference time from the data
 
 

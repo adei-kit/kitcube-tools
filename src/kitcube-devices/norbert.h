@@ -29,8 +29,6 @@
 
 
 /** Implementation for the norbert simulation device.
-  *
-  *
   */
 
 class Norbert : public DAQBinaryDevice {
@@ -40,7 +38,6 @@ public:
 
 	/** Destructor */
 	~Norbert();
-
 
 	/** Set default configuration */
 	void setConfigDefaults();

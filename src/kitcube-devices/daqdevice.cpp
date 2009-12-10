@@ -85,25 +85,23 @@ void DAQDevice::setDebugLevel(int level){
 
 
 void DAQDevice::setConfigDefaults(){
-	
 	// Note:
-	// The paramters are dependant of the module number that is not known at the creation 
+	// The paramters are dependant of the module number that is not known at the creation
 	// of the class but first time after reading from the inifile
-	// 
-	
+	//
 }
 
 
 void DAQDevice::readInifile(const char *filename, const char *group){
-  akInifile *ini;
-  Inifile::result error;
-  std::string value;
+	akInifile *ini;
+	Inifile::result error;
+	std::string value;
 	char line[256];
 	float tValue;
 	std::string tUnit;
 
 	//
-	// Get the module number 
+	// Get the module number
 	//
 	this->inifile = filename;
 	if (group > 0) this->iniGroup = group;
@@ -112,16 +110,16 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	ini = new akInifile(inifile.c_str());
 	if (ini->Status()==Inifile::kSUCCESS){
 		error = ini->SpecifyGroup(iniGroup.c_str());
-		if (error == Inifile::kSUCCESS){  
+		if (error == Inifile::kSUCCESS){
 			this->moduleNumber = ini->GetFirstValue("moduleNumber", (int) moduleNumber, &error);
 			this->sensorGroup = ini->GetFirstString("sensorGroup", sensorGroup.c_str(), &error);
 			this->sensorGroupNumber = getSensorGroup();
 		}
-	}	
+	}
 	delete ini;
 	
 	//
-    // Set other module number dependant parameters
+	// Set other module number dependant parameters
 	//
 	this->dbHost = "localhost";
 	this->dbName = "kitcube_active";
@@ -134,8 +132,8 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	this->configDir = "./";
 	this->dataDir = "./data";
 	this->remoteDir = "../kitcube-data/data";
-	this->archiveDir = "./data";	
-    this->rsyncArgs = "";
+	this->archiveDir = "./data";
+	this->rsyncArgs = "";
 	
 	// Use module number in template name
 	this->moduleName = "GEN";
@@ -149,12 +147,12 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	
 	sprintf(line, "Generic.%s.sensors", sensorGroup.c_str());
 	this->sensorListfile = line;
-		
+	
 	this->tSample = 1000; // ms
 	
 	
-    // Override default values by module specific implementation
-    setConfigDefaults();	
+	// Override default values by module specific implementation
+	setConfigDefaults();
 	
 	
 	// Read from inifile
@@ -172,7 +170,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->dbHost = ini->GetFirstString("dbHost", dbHost.c_str(), &error);
 		this->dbName = ini->GetFirstString("dbName", dbName.c_str(), &error);
 		this->dbUser = ini->GetFirstString("dbUser", dbUser.c_str(), &error);
-		this->dbPassword = ini->GetFirstString("dbPassword", dbPassword.c_str(), &error);		
+		this->dbPassword = ini->GetFirstString("dbPassword", dbPassword.c_str(), &error);
 		
 		this->configDir = ini->GetFirstString("configDir", configDir.c_str(), &error);
 		this->dataDir = ini->GetFirstString("dataDir", dataDir.c_str(), &error);
@@ -186,8 +184,8 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	
 		// Add module number to dataDir + archiveDir
 		if (dataDir.at(dataDir.length()-1) != '/') dataDir += "/";	
-		if (archiveDir.at(archiveDir.length()-1) != '/') archiveDir += "/";	
-		if (remoteDir.at(remoteDir.length()-1) != '/') remoteDir += "/";	
+		if (archiveDir.at(archiveDir.length()-1) != '/') archiveDir += "/";
+		if (remoteDir.at(remoteDir.length()-1) != '/') remoteDir += "/";
 		sprintf(line, "%03d/", moduleNumber);
 		this->dataDir += line;
 		this->remoteDir += line;
@@ -198,13 +196,13 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->moduleNumber = ini->GetFirstValue("moduleNumber", (int) moduleNumber, &error);
 		this->sensorGroup = ini->GetFirstString("sensorGroup", sensorGroup.c_str(), &error);
 		this->sensorGroupNumber = getSensorGroup();
-			
+		
 		this->moduleName = ini->GetFirstString("moduleName", moduleName.c_str(), &error);
 		this->moduleComment= ini->GetFirstString("moduleComment", moduleComment.c_str(), &error);
 		this->datafileTemplate = ini->GetFirstString("datafileTemplate", datafileTemplate.c_str(), &error);
 		tValue= ini->GetFirstValue("samplingTime", (float) tSample, &error);
 		tUnit = ini->GetNextString("ms", &error);
-		this->tSample = tValue; 
+		this->tSample = tValue;
 		if ((tUnit == "sec") || (tUnit == "s")) this->tSample = tValue * 1000;
 		if (tUnit == "min") this->tSample = tValue * 60000;
 
@@ -222,22 +220,20 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	
 
 	// Add slash at the end of the directories
-	//printf("ConfigDir: %c\n", configDir.at(configDir.length()-1));	
-	if (configDir.at(configDir.length()-1) != '/') configDir += "/";	
-	if (dataDir.at(dataDir.length()-1) != '/') dataDir += "/";	
-	if (remoteDir.at(remoteDir.length()-1) != '/') remoteDir += "/";	
-	if (archiveDir.at(archiveDir.length()-1) != '/') archiveDir += "/";	
+	//printf("ConfigDir: %c\n", configDir.at(configDir.length()-1));
+	if (configDir.at(configDir.length()-1) != '/') configDir += "/";
+	if (dataDir.at(dataDir.length()-1) != '/') dataDir += "/";
+	if (remoteDir.at(remoteDir.length()-1) != '/') remoteDir += "/";
+	if (archiveDir.at(archiveDir.length()-1) != '/') archiveDir += "/";
 	
 
 	// Check integrity of data fields
 	if (datafileMask.find("<index>") == -1){
-		printf("There is no tag <index> in datafileMask=%s specified in inifile %s\n", 
+		printf("There is no tag <index> in datafileMask=%s specified in inifile %s\n",
 			   datafileMask.c_str(), inifile.c_str());
 		throw std::invalid_argument("Missing <index> in datafileMask");
 	}
 
-	
-	
 }
 
 
@@ -417,13 +413,14 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 
 
 unsigned long DAQDevice::getSensorGroup(){
+	printf("DAQDevice::getSensorGroup\n");
 	return(0);
 }
 
 
 void DAQDevice::getSamplingTime(struct timeval *time){
-    time->tv_sec = tSample / 1000;
-	time->tv_usec = (tSample%1000) * 1000;	
+	time->tv_sec = tSample / 1000;
+	time->tv_usec = (tSample%1000) * 1000;
 }
 
 
@@ -480,12 +477,11 @@ void DAQDevice::openFile(){
 	printf("KITCube-Device (type %s): Open datafile %s\n", moduleType.c_str(), filename.c_str());
 	
 	createDirectories(filename.c_str());
-    fdata = fopen(filename.c_str(), "a+");
-    if (fdata <= 0) printf("Error opening data file %s\n", filename.c_str());	
+	fdata = fopen(filename.c_str(), "a+");
+	if (fdata <= 0) printf("Error opening data file %s\n", filename.c_str());
 	
 	// Write header if the file was not exisitng before
 	if (ftell(fdata) == 0) writeHeader();
-	
 }
 
 

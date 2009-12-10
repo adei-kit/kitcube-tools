@@ -36,18 +36,15 @@ struct axisDef {
 
 
 struct sensorType {
-	std::string name;        //< KITCube sensor name
-	std::string comment;     //< Description of the sensor (wo aggregation information)
-	std::string longComment; //< Description of the sensor (w aggregation information)
-	std::string unit;		 //< Unit from header -- not used
-	std::string type;        //< Estimated axis type -- not used
-	int aggregation;         //< type of aggregation
-	int axis;				 //< Number of axis used for the sensor (from axis definition in kitcube.ini)
-	float height;            //< Postion of the sensor (height in meters)
+	std::string name;		//< KITCube sensor name
+	std::string comment;		//< Description of the sensor (wo aggregation information)
+	std::string longComment;	//< Description of the sensor (w aggregation information)
+	std::string unit;		//< Unit from header -- not used
+	std::string type;		//< Estimated axis type -- not used
+	int aggregation;		//< type of aggregation
+	int axis;			//< Number of axis used for the sensor (from axis definition in kitcube.ini)
+	float height;			//< Postion of the sensor (height in meters)
 };
-
-
-
 
 
 /** Implementation for the weather mast DAQ devices that are
@@ -55,19 +52,20 @@ struct sensorType {
   * 
   */
 
-class DAQDevice  {
-public: 
-  /**  */
-  DAQDevice();
-  /**  */
-  virtual ~DAQDevice();
+class DAQDevice {
+public:
+	/**  */
+	DAQDevice();
+	
+	/**  */
+	virtual ~DAQDevice();
 
-  /** The function is called before reading the configuration from the inifile.
-    * Use this fucntion in the module specific implementation to override the standard defaults */
-  virtual void setConfigDefaults();
+	/** The function is called before reading the configuration from the inifile.
+	  * Use this fucntion in the module specific implementation to override the standard defaults */
+	virtual void setConfigDefaults();
 
-  /** Read parameter from inifile */
-  virtual void readInifile(const char *inifile, const char *group = 0);
+	/** Read parameter from inifile */
+	virtual void readInifile(const char *inifile, const char *group = 0);
 
 	/** Read axis definition from inifile and update the axsi definition in the database */
 	void readAxis(const char *inifile);
@@ -93,24 +91,23 @@ public:
 	/** Define a sensor group number for all the availble sensor group files */
 	virtual unsigned long getSensorGroup();	
 	
-	
 	/** Return the samping time of the device */
 	void getSamplingTime(struct timeval *time);
 	
-	void createDirectories(const char *path);	
+	void createDirectories(const char *path);
 	
 	/** Set filename for reading data */
 	virtual void openFile(const char *filenname);
 	
 	/** Open file for writing data */
-    virtual void openFile();
+	virtual void openFile();
 	
 	/** Close the actual output file and open a new one fro writing */
-	virtual void openNewFile();	
+	virtual void openNewFile();
 	
-    virtual void closeFile();
+	virtual void closeFile();
 	
-    virtual void copyRemoteData();
+	virtual void copyRemoteData();
 	
 	/** Get the path to the archive directory */
 	const char *getArchiveDir();
@@ -128,20 +125,20 @@ public:
 	virtual void readHeader(const char *header);
 
 	/** Get time until next sample and it's id */
-  virtual void readHeader();
+	virtual void readHeader();
   
-  virtual void writeHeader();
+	virtual void writeHeader();
 	
-  virtual void readData();	
+	virtual void readData();
 	
-  virtual void readData(const char *dir, const char *filename);	
+	virtual void readData(const char *dir, const char *filename);
 
-  /** Update the date of the current data set and replace it by the current date. 
-    * The function is used by writeData to generate simulated data with current time stamp
-    * using the sample data file */
-  virtual void updateDataSet(unsigned char *buf);
+	/** Update the date of the current data set and replace it by the current date. 
+	  * The function is used by writeData to generate simulated data with current time stamp
+	  * using the sample data file */
+	virtual void updateDataSet(unsigned char *buf);
 	
-  virtual void writeData();
+	virtual void writeData();
 
 	
 	/** Get index / time stamp of a folder or a filename.
@@ -150,14 +147,14 @@ public:
 	 * all following digit will be taken. 
 	 * In case of success the parsed numerical values will cut out of the passed filename. 
 	 */	
-	unsigned long getIndex(char *filename, char *firstTag, char *lastTag=0, int len = 0, char *next = 0);	
+	unsigned long getIndex(char *filename, char *firstTag, char *lastTag=0, int len = 0, char *next = 0);
 	
 	/** Get the ranking number from a filename. The returned number can be used
 	  * to order files by their date. Smaller numbers are processed before larger ones. */
 	virtual int getFileNumber(char *filename);
 	
-	/** Get list of new files */	
-	void getNewFiles();	
+	/** Get list of new files */
+	void getNewFiles();
 	
 	/** Return the module number */
 	unsigned int getModuleNumber();
@@ -167,9 +164,9 @@ public:
 	
 	/** Get a unix time stamp (in UTC) frm a date and time string of the form 
 	  *  dd.mm.yyy  and hh:mm:ss  */
-    unsigned long getTimestamp(const char *date, const char *time);
+	unsigned long getTimestamp(const char *date, const char *time);
 	
-    /** Set debug level */
+	/** Set debug level */
 	void setDebugLevel(int level);
 	
 	/** Reached EOF during reading data in readData() */
@@ -200,9 +197,8 @@ protected:
 	/** List of the official sensor properties */
 	struct sensorType *sensor;
 
-	
 	/** File pointer for the data file */
-	FILE *fdata;	
+	FILE *fdata;
 
 	/** Index of the data file */
 	unsigned long fileIndex;
@@ -212,7 +208,7 @@ protected:
 
 	std::string inifile;
 	
-	std::string iniGroup;	
+	std::string iniGroup;
 	
 	/** Path for writing data */
 	std::string path;
@@ -224,7 +220,6 @@ protected:
 	
 	std::string moduleComment;
 	
-
 	/** Module type */
 	std::string moduleType;
 
@@ -238,7 +233,6 @@ protected:
 	
 	std::string sensorListfile;
 	
-
 	/** Folder where all the configurations are stored */
 	std::string configDir; 
 	
@@ -246,7 +240,7 @@ protected:
 	  * this folder need to be the same as the dataDir */
 	std::string remoteDir;
 	
-	/** Folder to store the local copy of the raw data files on the server */ 
+	/** Folder to store the local copy of the raw data files on the server */
 	std::string archiveDir;
 	
 	/** Directory for writing the simulated data */
@@ -255,11 +249,10 @@ protected:
 	/** Mask used to identify the data files in getNewFiles() */
 	std::string datafileMask;
 	
-	/** The template file is used to generate an appropriate header and 
+	/** The template file is used to generate an appropriate header and
 	 * the data is used to have some realistic simulation when writing data */
 	std::string datafileTemplate;
 	
-
 	/** Argument for the rsync call to copy data from the modules to the archive */
 	std::string rsyncArgs;
 	
@@ -276,15 +269,13 @@ protected:
 	
 	std::string dbPassword;
 	
-	std::string sensorTableName; 
+	std::string sensorTableName;
 
 	std::string axisTableName;
 	
 	std::string moduleTableName;
 
 	std::string dataTableName;
-	
-
 	
 	/** Debug level (0 = no debug)*/
 	int debug;
@@ -293,25 +284,24 @@ protected:
 	
 	bool fd_eof;
 	
-private:	
-	
-  /** Template for the record filename */
-  std::string filenameTmpl;
+private:
+	/** Template for the record filename */
+	std::string filenameTmpl;
 
-  /** Basedir of the auger file */
-  std::string basedir;
+	/** Basedir of the auger file */
+	std::string basedir;
   
-  /** Template for the basedir of the auger file */
-  std::string basedirTmpl;
+	/** Template for the basedir of the auger file */
+	std::string basedirTmpl;
 
-  /** Location Id */
-  int locationId;
+	/** Location Id */
+	int locationId;
 
-  /** Name of the location */
-  std::string location;
+	/** Name of the location */
+	std::string location;
 
-  /** Flag to switch between unique and relative telescope id's */
-  int uniqueId;
+	/** Flag to switch between unique and relative telescope id's */
+	int uniqueId;
 
 };
 

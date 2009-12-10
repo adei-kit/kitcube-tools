@@ -30,18 +30,18 @@
   * The data files contain any kind of binary format.
   */
 
-class DAQBinaryDevice : public DAQDevice  {
-public: 
-  /**  */
-  DAQBinaryDevice();
-  /**  */
-  ~DAQBinaryDevice();
+class DAQBinaryDevice : public DAQDevice {
+public:
+	/**  */
+	DAQBinaryDevice();
+	/**  */
+	~DAQBinaryDevice();
 
 	/** Open file for writing data */
-    virtual void openFile();
+	virtual void openFile();
 	
-    /** Close file for reading */	
-    virtual void closeFile();
+	/** Close file for reading */
+	virtual void closeFile();
 	
 	/** Write simulated data set */
 	void writeData();
