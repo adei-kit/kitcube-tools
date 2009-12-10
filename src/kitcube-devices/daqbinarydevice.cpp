@@ -49,7 +49,7 @@ void DAQBinaryDevice::openFile(){ // for writing
 	
 	// Check if template file is existing and contains header + data
 	nameTemplate = configDir + datafileTemplate;
-	fd = open(nameTemplate.c_str(), O_RDWR); 
+	fd = open(nameTemplate.c_str(), O_RDWR);	// FIXME: file gets not closed again!
 	if (fd <= 0) {
 		msg = "Template file not found -- " + nameTemplate;
 		throw std::invalid_argument(msg.c_str());
@@ -71,8 +71,8 @@ void DAQBinaryDevice::openFile(){ // for writing
 			fclose(fmark);
 		}
 	}
-
-		
+	
+	
 	// Open binary file for writing the data
 	path = dataDir +  getDataDir();
 	filename = getDataFilename(); // Warning using global variable for returning data !!!
@@ -81,20 +81,17 @@ void DAQBinaryDevice::openFile(){ // for writing
 	printf("KITCube-Device (type %s): Open datafile %s\n", moduleType.c_str(), fullFilename.c_str());
 	createDirectories(fullFilename.c_str());
 	
-	fd_data = open(fullFilename.c_str(), O_APPEND | O_RDWR); 
+	fd_data = open(fullFilename.c_str(), O_APPEND | O_RDWR);
 	if (fd_data <= 0) {
         // The file does not exist. Create file and write header
 		printf("Creating new file \n");
-		fd_data = open(fullFilename.c_str(), O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH); 
+		fd_data = open(fullFilename.c_str(), O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 		if (fd_data > 0) {
 			writeHeader();
 		} else {
 			throw std::invalid_argument("Error crreating new file\n");
 		}
 	}
-	
-	
-	
 }
 
 
