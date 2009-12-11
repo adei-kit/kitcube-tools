@@ -29,10 +29,10 @@ int main(int argc, char *argv[]){
 	//sleep(2);
 	
 	dev->openFile();
-/*	dev->writeData();
 	dev->writeData();
 	dev->writeData();
-	*/
+	dev->writeData();
+
 /*
 	sleep(2);
 	dev->writeData();

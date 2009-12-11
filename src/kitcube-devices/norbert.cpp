@@ -203,7 +203,7 @@ void Norbert::replaceItem(const char **header, const char *itemTag, const char *
 	while ( (!findTag) && (i < 20)) {
 		ptr = strcasestr(*header,  itemTag);
 		if (ptr > 0){
-			startChar = strstr(ptr, ": ");
+			startChar = strstr(ptr, ":\t");
 			if (startChar > 0) {
 				
 				// Replace the data in the header
@@ -337,8 +337,7 @@ void Norbert::readHeader(const char *filename){
 	unsigned long timestamp;
 
 	headerReadPtr = (const char *) headerRaw + 0x28;	// position of date string in Header
-	headerRaw[0x32] = 0;
-	dateString = headerReadPtr;
+	dateString.assign(headerReadPtr, 10);
 
 /*
 	headerReadPtr = (const char *) headerRaw + 21;	// position of time string in header
@@ -411,7 +410,7 @@ void Norbert::writeHeader(){
 	
 	//replaceItem(&headerReadPtr, "Referenzzeit", time);
 	replaceItem(&headerReadPtr, "Datum", date);
-	//printf("%s\n", headerRaw);
+	printf("%s", headerRaw);
 
 	// write header
 	n = write(fd_data, headerRaw, len);
@@ -651,7 +650,7 @@ void Norbert::readData(const char *dir, const char *filename){
 
 void Norbert::updateDataSet(unsigned char *buf){
 	struct timeval t;
-	struct timezone tz;	
+	struct timezone tz;
 	struct tm *time;
 	
 
@@ -666,17 +665,19 @@ void Norbert::updateDataSet(unsigned char *buf){
 	}
 	
 	// Compile the data set for writing to the data file
-	if (debug > 2) printf("Line: %s", buf);
-	sprintf((char *) buf+12,"%02d.%02d.%02d;%02d:%02d", 
-			time->tm_mday, time->tm_mon+1, time->tm_year-100,
-			time->tm_hour, time->tm_min);
-	buf[26]=';';
-	sprintf((char *) buf+233,"%02d", time->tm_sec);
-	buf[235]=';';
-	if (debug > 2) printf("Line: %s", buf);
+	if (debug > 2)
+		printf("Line before: %s", buf);
+
+	// write actual timestamp to buffer
+	sprintf((char *) buf,"%02d:%02d:%02d", time->tm_hour, time->tm_min, time->tm_sec);
+	buf[8]='\t';
+
+	if (debug > 2)
+		printf("Line after : %s", buf);
 	
-	if (debug > 1) printf("%02d.%02d.%02d  %02d:%02d:%02d\n", 
-						  time->tm_mday, time->tm_mon+1, time->tm_year-100,
-						  time->tm_hour, time->tm_min, time->tm_sec);
+	if (debug > 1)
+		printf("%02d.%02d.%02d  %02d:%02d:%02d\n",
+			time->tm_mday, time->tm_mon+1, time->tm_year-100,
+			time->tm_hour, time->tm_min, time->tm_sec);
 	
 }
