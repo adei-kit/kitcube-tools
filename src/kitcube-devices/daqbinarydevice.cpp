@@ -100,17 +100,15 @@ void DAQBinaryDevice::closeFile(){
 	if (fd_data > 0) {
 		close(fd_data);
 		fd_data = 0;
-	}	
-}		
+	}
+}
 
 
 void DAQBinaryDevice::writeData(){
-	
 	unsigned char *buf;
-	
 	int fd_templ;
 	int len;
-    int lenHeader;
+	int lenHeader;
 	int n;
 	int i;
 	std::string filename;
@@ -118,7 +116,7 @@ void DAQBinaryDevice::writeData(){
 	if (fd_data <=0) return;
 
 	// Read header to get the reference time of this file !!!
-    // 
+	//
 	
 	if (debug > 2) printf("_____DAQBinaryDevice::writeData()______________\n");
 	
@@ -151,24 +149,16 @@ void DAQBinaryDevice::writeData(){
 	// Compile the data set for writing to the data file
 	if (debug > 1) printf("Received %4d bytes\n", n);
 	
-	
 	// Replace time stamp
 	updateDataSet(buf);
-	
 	
 	n = write(fd_data, buf, len);
 	//printf("Write %d bytes\n", n);
 	
-	
-	delete buf;	
+	delete buf;
 	
 	// Increment the counters
 	nSamples++;
 	nTemplate++;
 	
 }
-
-
-
-
-
