@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]){
 	DataServer *data;
 	int err;
-	std::string module;
+	std::string iniGroup;
 	std::string inifile;
 	bool runDaemon;
 	int debug;
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
 			//printf("Warning: Kitcube prefix is missing in the application file name\n");
 			throw std::invalid_argument("Kitcube prefix is missing in the application file name");
 		} else {
-			module = namePtr+8;
+			iniGroup = namePtr+8;
 		}
 	}
 	
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
 			case 'h': // help
 				printf("\t-d\t\tRun as daemon without input from keyboard\n");
 				printf("\t-i <inifile>\tSelect the inifile\n");
-				if (!isLinkedApp) printf("\t-m <module>\tSelect the module name as used in the inifile\n");
+				if (!isLinkedApp) printf("\t-m <iniGroup>\tSelect the iniGroup name as used in the inifile\n");
 				printf("\t-v <level>\tSet level of verbosity\n");	
 				exit(0);
 				break;
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]){
 				break;				
 			case 'm': // run in console
 				if (!isLinkedApp){
-				   if (optarg > 0) module = optarg;
+				   if (optarg > 0) iniGroup = optarg;
 				}
 				break;
 			case 'v': // set debug level (verbosity)
@@ -100,12 +100,12 @@ int main(int argc, char *argv[]){
 	// Parse the remaining arguments
 	if (argc - nOpts >= 2 ){
 		if (!isLinkedApp)
-			module = argv[1 + nOpts];
+			iniGroup = argv[1 + nOpts];
 	}
 	
 	
-	if (module.length() >  0)
-		printf("Start production of data for module %s\n", module.c_str());
+	if (iniGroup.length() >  0)
+		printf("Start production of data for iniGroup %s\n", iniGroup.c_str());
 	
 	
 	
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]){
 	try {
 		data = new DataServer();
 		data->setDebugLevel(debug);
-		data->readInifile(inifile.c_str(), module.c_str());
+		data->readInifile(inifile.c_str(), iniGroup.c_str());
 		data->runAsDaemon(runDaemon);
 		
 		// Start simulation of data file

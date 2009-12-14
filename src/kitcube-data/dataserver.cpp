@@ -51,7 +51,7 @@ DataServer::~DataServer(){
 }
 
 
-void DataServer::readInifile(const char *filename, const char *module){
+void DataServer::readInifile(const char *filename, const char *group){
 	akInifile *ini;
 	Inifile::result error;
 	std::string value;
@@ -59,24 +59,24 @@ void DataServer::readInifile(const char *filename, const char *module){
 	//printf("ReadInifile(%s)\n", filename);
 	
 	this->inifile = filename;
-	this->moduleName = "Simulation";
-	this->moduleType = "SimRandom";	
+	this->iniGroup = "Simulation";
+	this->moduleType = "SimRandom";
 	
 	ini = new akInifile(inifile.c_str(), stdout);
 	//ini = new akInifile(inifile.c_str());
 	if (ini->Status()==Inifile::kSUCCESS){
 		
-		if ((module == 0) || (module[0] == 0)){
-			//printf("Get module from inifile\n");
+		if ((group == 0) || (group[0] == 0)){
+			//printf("Get group from inifile\n");
 			// Read module name
 			ini->SpecifyGroup("DataServer");
-			this->moduleName = ini->GetFirstString("module", moduleName.c_str(), &error);
+			this->iniGroup = ini->GetFirstString("module", iniGroup.c_str(), &error);
 			// TODO: Guess type of the module ?!
 		} else {
-			this->moduleName = module;
+			iniGroup = group;
 		}
 		
-		error = ini->SpecifyGroup(moduleName.c_str());
+		error = ini->SpecifyGroup(iniGroup.c_str());
 		if (error == Inifile::kSUCCESS){
 			this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);
 		}
@@ -137,11 +137,11 @@ void DataServer::runReadout(FILE *fout){
 	timingMax = 0;
  
 
-	printf("Create module %s, type %s\n", moduleName.c_str(), moduleType.c_str());
+	printf("Create module %s, type %s\n", iniGroup.c_str(), moduleType.c_str());
 	dev = (DAQDevice *) createDevice(moduleType.c_str());
 	dev->setDebugLevel(debug);
 	
-	dev->readInifile(inifile.c_str(), moduleName.c_str());
+	dev->readInifile(inifile.c_str(), iniGroup.c_str());
 	dev->getSamplingTime(&tWait);
 	
 	dev->openFile();

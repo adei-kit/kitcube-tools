@@ -171,9 +171,16 @@ class DataServer : public SimpleServer  {
 		/** Flag to start the server as daemon - without interactive input */
 		bool runDaemon;
 		
+		/** Module name as given in sensor list */
 		std::string moduleName;
+		
+		/** module type describes the implementation, the class */
 		std::string moduleType;
-	
+		
+		/** a group in the *.ini file */
+		std::string iniGroup;
+		
+		/** */
 		DAQDevice *dev;
 		
 		/** File pointer for the data file */
