@@ -155,7 +155,7 @@ void DataServer::runReadout(FILE *fout){
 	init();
 	
 	// Set reference time and sampling time of the server loop
-	// TODO: Read the start time from configuration 
+	// TODO: Read the start time from configuration
 	// TODO: Read sampling phase from configuration
 	tStart.tv_sec = 1195487978;
 	tStart.tv_usec = 100000;      // If there are two independant loops with thee same

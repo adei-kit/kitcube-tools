@@ -108,7 +108,6 @@ int main(int argc, char *argv[]){
 		printf("Start production of data for iniGroup %s\n", iniGroup.c_str());
 	
 	
-	
 	// Read inifile
 	try {
 		data = new DataServer();
