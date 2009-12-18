@@ -13,7 +13,7 @@
 int main(int argc, char *argv[]){
 	Reader *data;
 	int err;
-	std::string module;
+	std::string iniGroup;
 	std::string inifile;
 	bool runDaemon;
 	int debug;
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
 	//
 	inifile = "kitcube.ini";
 	runDaemon = false; // Run interactive as default
-    debug = 2;
+	debug = 2;
 	
 	//
 	// Parse command line
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
 			case 'h': // help
 				printf("\t-d\t\tRun as daemon without input from keyboard\n");
 				printf("\t-i <inifile>\tSelect the inifile\n");
-				printf("\t-m <module>\tSelect the module name as used in the inifile\n");
+				printf("\t-m <iniGroup>\tSelect the iniGroup name as used in the inifile\n");
 				printf("\t-v <level>\tSet level of verbosity\n");	
 				exit(0);
 				break;
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
 				if (optarg > 0) inifile = optarg;
 				break;				
 			case 'm': // run in console
-				if (optarg > 0) module = optarg;
+				if (optarg > 0) iniGroup = optarg;
 				break;
 			case 'v': // set debug level (verbosity)
 				if (optarg > 0) debug = atoi(optarg);
@@ -76,19 +76,19 @@ int main(int argc, char *argv[]){
 	
 	// Parse the remaining arguments
 	if (argc - nOpts >= 2 ){
-		module = argv[1 + nOpts];
+		iniGroup = argv[1 + nOpts];
 	}
 	
 	
-	if (module.length() >  0)
-		printf("Starting readout for module %s (debug = %d)\n", module.c_str(), debug);	
+	if (iniGroup.length() >  0)
+		printf("Starting readout for iniGroup %s (debug = %d)\n", iniGroup.c_str(), debug);
 	
 	
 	try {
 		// Read inifile
 		data = new Reader();
 		data->setDebugLevel(debug);
-		data->readInifile(inifile.c_str(), module.c_str());
+		data->readInifile(inifile.c_str(), iniGroup.c_str());
 		data->runAsDaemon(runDaemon);
 		
 		// Start reading data file
@@ -104,6 +104,3 @@ int main(int argc, char *argv[]){
 	
 	exit(0);
 }
-
-
-

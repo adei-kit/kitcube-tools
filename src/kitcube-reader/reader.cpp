@@ -48,11 +48,7 @@ using std::string;
 
 
 
-
-
 Reader::Reader(): SimpleServer(READER_PORT){
-
-
 }
 
 
@@ -60,50 +56,49 @@ Reader::~Reader(){
 }
 
 
-void Reader::readInifile(const char *filename, const char *module){
-  akInifile *ini;
-  Inifile::result error;
-  std::string value;
+void Reader::readInifile(const char *filename, const char *group){
+	akInifile *ini;
+	Inifile::result error;
+	std::string value;
 	float tValue;
 	std::string tUnit;
 
-  this->inifile = filename;
-	this->tSampleFromInifile = 10000; // ms	
+	this->inifile = filename;
+	this->tSampleFromInifile = 10000; // ms
 	
-	this->moduleName = "Simulation";
+	this->iniGroup = "Simulation";
 	this->moduleType = "SimRandom";	
 	
 
-  ini = new akInifile(inifile.c_str(), stdout);
-  //ini = new akInifile(inifile.c_str());
-  if (ini->Status()==Inifile::kSUCCESS){
+	ini = new akInifile(inifile.c_str(), stdout);
+	//ini = new akInifile(inifile.c_str());
+	if (ini->Status()==Inifile::kSUCCESS){
 
-	  ini->SpecifyGroup("Reader");
+		ini->SpecifyGroup("Reader");
  
-	  //Try to read the module name from inifile if there no module name given
-	  if ((module == 0) || (module[0] == 0)){
-	     this->moduleName = ini->GetFirstString("module", moduleName.c_str(), &error);	  
-	  } else {
-		  this->moduleName = module;
-	  }
-	  
-	  // Read sampling time
-	  tValue= ini->GetFirstValue("samplingTime", (float) tSampleFromInifile, &error);
-	  tUnit = ini->GetNextString("ms", &error);
-	  this->tSampleFromInifile = tValue; 
-	  if ((tUnit == "sec") || (tUnit == "s")) this->tSampleFromInifile = tValue * 1000;
-	  if (tUnit == "min") this->tSampleFromInifile = tValue * 60000;
-	  
-	  
-	  
-	  // TODO: Guess type of the module ?!
-	  error = ini->SpecifyGroup(moduleName.c_str());
-	  if (error == Inifile::kSUCCESS){
-		  this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);		
-	  }
-	  	  
-  }
-  delete ini;
+		//Try to read the module name from inifile if there no module name given
+		if ((group == 0) || (group[0] == 0)){
+			this->iniGroup = ini->GetFirstString("module", iniGroup.c_str(), &error);
+		} else {
+			iniGroup = group;
+		}
+	
+		// Read sampling time
+		tValue= ini->GetFirstValue("samplingTime", (float) tSampleFromInifile, &error);
+		tUnit = ini->GetNextString("ms", &error);
+		this->tSampleFromInifile = tValue;
+		if ((tUnit == "sec") || (tUnit == "s")) this->tSampleFromInifile = tValue * 1000;
+		if (tUnit == "min") this->tSampleFromInifile = tValue * 60000;
+	
+	
+		// TODO: Guess type of the module ?!
+		error = ini->SpecifyGroup(iniGroup.c_str());
+		if (error == Inifile::kSUCCESS){
+			this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);
+		}
+
+	}
+	delete ini;
 
 }
 
@@ -116,21 +111,21 @@ void Reader::runAsDaemon(bool flag){
 
 
 void Reader::runReadout(FILE *fout){
-    int i;
+	int i;
 	//int iSample;
-    struct timeval tWait;
+	struct timeval tWait;
 	struct timeval tStart;
-    //char host[255];
+	//char host[255];
 
-    if (shutdown) return; // Do not start the server!!!
+	if (shutdown) return; // Do not start the server!!!
 
 	
 	struct timeval t;
 	struct timezone tz;
-    
+
 	gettimeofday(&t, &tz);
 	
-	//  Start run	
+	//  Start run
 	//tWait.tv_sec = 0;
 	//tWait.tv_usec = 250000;
 	tWait.tv_sec = tSampleFromInifile / 1000;
@@ -138,19 +133,18 @@ void Reader::runReadout(FILE *fout){
 	
 	// Initialize the QD simulation
 	// Set sampling time
-    //tWait.tv_sec = qdTSample / 1000;
+	//tWait.tv_sec = qdTSample / 1000;
 	//tWait.tv_usec = (qdTSample % 1000) * 1000;
 
 	
-
-    //tRef.setStart(); // Set reference time
-    // The first measurement point should be 5sec in the future
-    //tRef.setStart((unsigned long) (tRef.getStartSec() - tSample + 5.));
-    //tStart.tv_sec = tRef.getStartSec();
+	//tRef.setStart(); // Set reference time
+	// The first measurement point should be 5sec in the future
+	//tRef.setStart((unsigned long) (tRef.getStartSec() - tSample + 5.));
+	//tStart.tv_sec = tRef.getStartSec();
 	//tStart.tv_usec = tRef.getStartMicroSec();
 
-    // Clear the variables for the timing analysis
-    timingN = 0;
+	// Clear the variables for the timing analysis
+	timingN = 0;
 	timingSum = 0;
 	timingSum2 = 0;
 	timingMin = 0;
@@ -160,40 +154,39 @@ void Reader::runReadout(FILE *fout){
 	dev = (DAQDevice *) createDevice(moduleType.c_str());	
 	dev->setDebugLevel(debug);
 
-	dev->readInifile(this->inifile.c_str(), moduleName.c_str());	
+	dev->readInifile(this->inifile.c_str(), iniGroup.c_str());	
 	dev->readAxis(this->inifile.c_str());
 	
 	
-	
 	// For every module one fre port is existing
-	printf("_____Starting service for module %d at port %d_______________________________\n", 
+	printf("_____Starting service for module %d at port %d_______________________________\n",
 		   dev->getModuleNumber(), READER_PORT+dev->getModuleNumber());
 	printf("Debug level = %d\n", debug);
-    setPort(READER_PORT+dev->getModuleNumber()*10+dev->getSensorGroupNumber());	
-    init();
+	setPort(READER_PORT+dev->getModuleNumber()*10+dev->getSensorGroupNumber());
+	init();
 	
-    // Set reference time and sampling time of the server loop
+	// Set reference time and sampling time of the server loop
 	// TODO: Read the start time from configuration 
 	// TODO: Read sampling phase from configuration
 	tStart.tv_sec = 1195487978;
 	tStart.tv_usec = 100000;      // If there are two independant loops with thee same
 	                              // sample rate there should be a phase shift between sampling
 	setTRef(&tStart);
-    enableTimeout(&tWait);
+	enableTimeout(&tWait);
 
 
-    // Start the server waiting for the records
+	// Start the server waiting for the records
 	if (runDaemon)
 		init_server();
 	else
 		init_server(fileno(stdin));
 	
-    fprintf(fout, "\n");
+	fprintf(fout, "\n");
 
-    //tRef.setEnd();
+	//tRef.setEnd();
 
 	dev->closeDatabase();
-	delete dev;   
+	delete dev;
 }
 
 

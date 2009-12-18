@@ -23,11 +23,9 @@
 
 
 
-
-
 DAQDevice::DAQDevice(){
 	
-    debug = 0;
+	debug = 0;
 
 	moduleType = "Generic";
 	moduleNumber = 0;
@@ -252,14 +250,14 @@ void DAQDevice::readAxis(const char *inifile){
 	if (ini->Status()==Inifile::kSUCCESS){
 		
 		error = ini->SpecifyGroup("Axis");
+
 		if (error == Inifile::kSUCCESS){
-			
 			
 			// Get the number of defined axis
 			nAxis = 0;
-			ini->GetFirstString("axis", 0, &error);					
-			while (error == Inifile::kSUCCESS){
-				ini->GetNextString(0, &error);	
+			ini->GetFirstString("axis", 0, &error);
+			while (error == Inifile::kSUCCESS) {
+				ini->GetNextString(0, &error);
 				nAxis++;
 			}
 			if (debug > 1) printf("Number of axis: %d\n", nAxis);
@@ -269,27 +267,24 @@ void DAQDevice::readAxis(const char *inifile){
 			axis = new struct axisDef [nAxis];
 			
 			// Read the axis short names
-			axis[0].name = ini->GetFirstString("axis", 0, &error);					
-			for (i=1;i<nAxis;i++){
+			axis[0].name = ini->GetFirstString("axis", 0, &error);
+			for (i = 1; i < nAxis; i++) {
 				axis[i].name = ini->GetNextString(0, &error);
 			}
 			
 			// Read description and units
-			for (i = 0; i< nAxis; i++){
+			for (i = 0; i < nAxis; i++) {
 				item = axis[i].name + "_name";
-				axis[i].desc = ini->GetFirstString(item.c_str(), 0, &error);	
+				axis[i].desc = ini->GetFirstString(item.c_str(), 0, &error);
 				item = axis[i].name + "_unit";
-				axis[i].unit = ini->GetFirstString(item.c_str(), 0, &error);	
+				axis[i].unit = ini->GetFirstString(item.c_str(), 0, &error);
 				if (debug > 1) printf("%s - %s (%s)\n", axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
 				
 				axis[i].isNew = true;
 			}
-			
-			
-		}		
+		}
 	}
 	delete ini;
-	
 }
 
 
