@@ -192,37 +192,37 @@ void Reader::runReadout(FILE *fout){
 
 
 int Reader::handle_timeout(){
-  int i;
-  //procDuration t;  
-  //int iSample;
-  //struct timeval tWait;
-  struct timeval t0, t1;
-  struct timezone tz;
-    
+	int i;
+	//procDuration t;
+	//int iSample;
+	//struct timeval tWait;
+	struct timeval t0, t1;
+	struct timezone tz;
 
-  // TODO: Check timing
-  // The goal is to read data in periodic intervals 
-  // The reference time is given by the run start time
-  //t.setStart();
-  gettimeofday(&t0, &tz);
-  
-  
-  // Analyse the timeing quality of the readout process
-  //analyseTiming(&t);
-    
-  
-  // TODO: Read data / Simulate data
-  if (debug > 1) printf("=== Reading Data %10ld %06d=== \n", t0.tv_sec, t0.tv_usec);	
-  // Call rsync
-  // TODO: Include also in the device class as the specific filenames are needed!!	
 
-	try {	
+	// TODO: Check timing
+	// The goal is to read data in periodic intervals
+	// The reference time is given by the run start time
+	//t.setStart();
+	gettimeofday(&t0, &tz);
+
+
+	// Analyse the timeing quality of the readout process
+	//analyseTiming(&t);
+
+
+	// TODO: Read data / Simulate data
+	if (debug > 1) printf("=== Reading Data %10ld %06d=== \n", t0.tv_sec, t0.tv_usec);
+	// Call rsync
+	// TODO: Include also in the device class as the specific filenames are needed!!
+
+	try {
 		
-		dev->copyRemoteData();	
-                fflush(stderr);	
+		dev->copyRemoteData();
+                fflush(stderr);
 	
 		// List all new files?!
-		dev->getNewFiles();		
+		dev->getNewFiles();
 		
 	} catch (std::invalid_argument &err) {
 		shutdown = true;
@@ -232,7 +232,7 @@ int Reader::handle_timeout(){
 	gettimeofday(&t1, &tz);
 	printf("Reader cycle duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));	
 	
-    // Get free disk space
+	// Get free disk space
 	// Read the disk space from all devices. Report every device only once?!
 	analyseDiskSpace(dev->getArchiveDir());
 

@@ -189,6 +189,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->remoteDir += line;
 		this->archiveDir += line;
 		
+		
 		// Module specific parameters
 		ini->SpecifyGroup(iniGroup.c_str());
 		this->moduleNumber = ini->GetFirstValue("moduleNumber", (int) moduleNumber, &error);
@@ -499,7 +500,7 @@ void DAQDevice::closeFile(){
 
 void DAQDevice::copyRemoteData(){
 	struct timeval t0, t1;
-	struct timezone tz; 
+	struct timezone tz;
 	int err;
 	char line[256];
 	
@@ -514,9 +515,9 @@ void DAQDevice::copyRemoteData(){
 	//       Solution 1: Write output to file,
 	//       Solution 2: Use pipes (example can be found in README
 	//
-	sprintf(line, "rsync -avz %s --include='*/' --include='*.%s' --exclude='*' %s%s  %s%s", 
-			rsyncArgs.c_str(), sensorGroup.c_str(), 
-			remoteDir.c_str(), getDataDir(), 
+	sprintf(line, "rsync -avz %s --include='*/' --include='*.%s' --exclude='*' %s%s  %s%s",
+			rsyncArgs.c_str(), sensorGroup.c_str(),
+			remoteDir.c_str(), getDataDir(),
 			archiveDir.c_str(), getDataDir());
 	printf("_____Mast::copyRemoteData()________________\n");
 	printf("%s\n", line);
@@ -525,13 +526,12 @@ void DAQDevice::copyRemoteData(){
 	err = system(line); 
 	gettimeofday(&t1, &tz);
 	
-    if (err != 0){
+	if (err != 0){
 		printf("Synchronisation error (rsync)\n");
 		//throw std::invalid_argument("Synchronisation error (rsync)");
 	}
 	
 	printf("Rsync duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
-	
 }
 
 
@@ -1009,14 +1009,14 @@ void DAQDevice::getNewFiles(){
 	std::string *listName;
 	unsigned int *listIndex;
 	unsigned int *listNext;
-    int nList; 
+	int nList;
 	int i, j;
 	int next;
 	int err;
 	
 	// Handler for marker file
 	FILE *fmark;
-    std::string filenameMarker;
+	std::string filenameMarker;
 	struct timeval lastTime;
 	unsigned int lastPos;
 	unsigned int lastIndex;
@@ -1121,19 +1121,19 @@ void DAQDevice::getNewFiles(){
 
 	
 	if (debug > 2){
-	  for(i=0;i<nList;i++){
-		printf(" %d  %d %d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
-	  }
+		for(i=0;i<nList;i++){
+			printf(" %d  %d %d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
+		}
 	}
 	
 	
-	// Read the last file in the 
+	// Read the last file in the
 	err = 0;
 	lastIndex = 1;
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dataDir.c_str(), moduleNumber, sensorGroupNumber);
 	filenameMarker = line;
-    fmark = fopen(filenameMarker.c_str(), "r");
-    if (fmark > 0) {
+	fmark = fopen(filenameMarker.c_str(), "r");
+	if (fmark > 0) {
 		err = fscanf(fmark, "%d %ld %d %d", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	} else {
@@ -1143,9 +1143,9 @@ void DAQDevice::getNewFiles(){
 		if (fmark > 0) {
 			fprintf(fmark, "%d %d %d %d\n", lastIndex, 0, 0, 0);
 			fclose(fmark);
-		}			
-	}	
-	//printf("Marker %s (err=%d, errno=%d): %d\n", filenameMarker.c_str(), err, errno, lastIndex);	
+		}
+	}
+	//printf("Marker %s (err=%d, errno=%d): %d\n", filenameMarker.c_str(), err, errno, lastIndex);
 	
 	
 	// Read the data from the files
@@ -1158,7 +1158,7 @@ void DAQDevice::getNewFiles(){
 			if (listIndex[next] == lastIndex){
 				printf("Reading %d  %d  %s (continued)\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
-			}	
+			}
 			
 			if (listIndex[next] > lastIndex){
 				// Remove the pointers of the last file
@@ -1166,18 +1166,18 @@ void DAQDevice::getNewFiles(){
 				if (fmark > 0) {
 					fprintf(fmark, "%d %d %d %d\n", listIndex[next], 0, 0, 0);
 					fclose(fmark);
-				}			
+				}
 				
 				printf("Reading %d  %d  %s\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
-			}	
+			}
 			
 			// Check if file has been completely read
 			if (listIndex[next] >= lastIndex){
 				if (!reachedEOF()){
 					printf("EOF not reached - continue with %s at next call\n", listName[next].c_str());
 					break;
-				}				
+				}
 			}
 			
 			next = listNext[next];
