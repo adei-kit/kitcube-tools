@@ -192,7 +192,7 @@ protected:
 	struct axisDef *axis;
 
 	/** Number of sensors in the module */
-	unsigned int nSensors;	
+	unsigned int nSensors;
 	
 	/** List of the official sensor properties */
 	struct sensorType *sensor;
@@ -270,11 +270,11 @@ protected:
 	std::string dbPassword;
 	
 	std::string sensorTableName;
-
+	
 	std::string axisTableName;
 	
 	std::string moduleTableName;
-
+	
 	std::string dataTableName;
 	
 	/** Debug level (0 = no debug)*/
@@ -287,19 +287,19 @@ protected:
 private:
 	/** Template for the record filename */
 	std::string filenameTmpl;
-
+	
 	/** Basedir of the auger file */
 	std::string basedir;
-  
+	
 	/** Template for the basedir of the auger file */
 	std::string basedirTmpl;
-
+	
 	/** Location Id */
 	int locationId;
-
+	
 	/** Name of the location */
 	std::string location;
-
+	
 	/** Flag to switch between unique and relative telescope id's */
 	int uniqueId;
 

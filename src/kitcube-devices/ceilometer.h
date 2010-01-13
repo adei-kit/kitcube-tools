@@ -34,18 +34,19 @@
   */
 
 class Ceilometer: public DAQBinaryDevice  {
-public: 
-  /**  */
-  Ceilometer();
-  /**  */
-  ~Ceilometer();
+public:
+	/**  */
+	Ceilometer();
+
+	/**  */
+	~Ceilometer();
 
 
-  /** Set default configuration */	
-  void setConfigDefaults();
+	/** Set default configuration */
+	void setConfigDefaults();
 	
-  /** Read parameter from inifile */
-  //void readInifile(const char *inifile, const char *group = 0);
+	/** Read parameter from inifile */
+	//void readInifile(const char *inifile, const char *group = 0);
 
 	/** Returns the path relative to the base path to the data dir */
 	const char *getDataDir();
@@ -66,25 +67,25 @@ public:
 
 	/** Re-implement the calculation of the file numbering scheme. 
 	  * The ceilometer uses date and times in the filename 
-      */
+	  */
 	int getFileNumber(char *filename);
 	
-  /** Get time until next sample and it's id */
-  void readHeader(const char *header);
+	/** Get time until next sample and it's id */
+	void readHeader(const char *header);
 
-  void writeHeader();
+	void writeHeader();
 	
-  void readData(const char *dir, const char *filename);	
+	void readData(const char *dir, const char *filename);
 
-  /** Replace time stamp in the data set by the current time */
-  void updateDataSet(unsigned char *buf);
+	/** Replace time stamp in the data set by the current time */
+	void updateDataSet(unsigned char *buf);
 
 	
 	
-private:	
+private:
 	unsigned char *headerRaw;
-								
-    std::string experimentName;	
+	
+	std::string experimentName;
 	
 	unsigned long tSample;
 	

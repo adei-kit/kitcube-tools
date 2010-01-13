@@ -498,25 +498,22 @@ void Reader::displayStatus(FILE *fout){
 
 void Reader::analyseDiskSpace(const char *dir){
 
-//
-// Get size of file system 
-// TODO:  How to handle the 64bit data types??? 
-//        Change to 64bit version to be compatible...
-struct statfs fs;
-  
-statfs(dir, &fs);
+	//
+	// Get size of file system 
+	// TODO:  How to handle the 64bit data types??? 
+	//        Change to 64bit version to be compatible...
+	struct statfs fs;
 
-#ifndef linux	
-// Not supported under Linux?!	
-printf("Disk %s mounted to %s\n", fs.f_mntfromname, fs.f_mntonname);
+	statfs(dir, &fs);
+
+#ifndef linux
+	// Not supported under Linux?!
+	printf("Disk %s mounted to %s\n", fs.f_mntfromname, fs.f_mntonname);
 #endif
-printf("Total blocks  %12Ld %12.3f MByte (block size %d bytes)\n", fs.f_blocks, 
-	   (float) fs.f_blocks / 1024 / 1024 * fs.f_bsize, fs.f_bsize);
-printf("Free blocks   %12Ld %12.3f MByte %6.2f %s\n", fs.f_bfree, 
-	   (float) fs.f_bfree / 1024 / 1024 * fs.f_bsize,
-	   (float) fs.f_bfree / fs.f_blocks * 100, "%");
+	printf("Total blocks  %12Ld %12.3f MByte (block size %d bytes)\n", fs.f_blocks,
+		(float) fs.f_blocks / 1024 / 1024 * fs.f_bsize, fs.f_bsize);
+	printf("Free blocks   %12Ld %12.3f MByte %6.2f %s\n", fs.f_bfree, 
+		(float) fs.f_bfree / 1024 / 1024 * fs.f_bsize,
+		(float) fs.f_bfree / fs.f_blocks * 100, "%");
 
-	
 }
-
-

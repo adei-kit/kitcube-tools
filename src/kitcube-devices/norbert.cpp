@@ -127,13 +127,12 @@ int Norbert::getFileNumber(char *filename){
 	posIndex = datafileMask.find("<index>");
 	if (posIndex == -1) {
 		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
-			   datafileMask.c_str(), inifile.c_str());
+			datafileMask.c_str(), inifile.c_str());
 	}
 	filePrefix = datafileMask.substr(0,posIndex);
 	fileSuffix = datafileMask.substr(posIndex+7);
 	if (debug >3) printf("Position of <index> in %s is  %d -- data file prefix/suffix %s / %s (debug = %d)\n",
-						  datafileMask.c_str(), posIndex, 
-						  filePrefix.c_str(), fileSuffix.c_str(), debug);
+				datafileMask.c_str(), posIndex, filePrefix.c_str(), fileSuffix.c_str(), debug);
 	
 	fileString = filename;
 	lenIndex = fileString.length() - filePrefix.length() - fileSuffix.length();
@@ -152,7 +151,7 @@ int Norbert::getFileNumber(char *filename){
 	time.tm_year = atoi(numString.c_str()) + 100;
 	
 	numString = fileString.substr(posIndex+2, 2);
-	time.tm_mon = atoi(numString.c_str()) - 1; 
+	time.tm_mon = atoi(numString.c_str()) - 1;
 	
 	numString = fileString.substr(posIndex+4, 2);
 	time.tm_mday = atoi(numString.c_str());

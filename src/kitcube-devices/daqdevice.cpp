@@ -291,12 +291,12 @@ void DAQDevice::readAxis(const char *inifile){
 
 void DAQDevice::getSensorNames(const char *sensorListfile){
 	FILE *flist;
-    int i, j;
+	int i, j;
 	char line[256];
 	char *n;
 	char *namePtr;
 	char name[50];
-    int pos;
+	int pos;
 	std::string axisName;
 	std::string sLine;
 	
@@ -319,11 +319,11 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 		if (flist < 0){
 			throw std::invalid_argument("Error creating template file");
 		}	
-		for (i=0;i<nSensors;i++)
+		for (i = 0; i < nSensors; i++)
 			if (sensor[i].longComment.length() == 0){
-			  fprintf(flist,"%10d\t%s\t\n", i+1, sensor[i].comment.c_str());
+				fprintf(flist,"%10d\t%s\t\n", i+1, sensor[i].comment.c_str());
 			} else {
-			  fprintf(flist,"%10d\t%s\t\n", i+1, sensor[i].longComment.c_str());
+				fprintf(flist,"%10d\t%s\t\n", i+1, sensor[i].longComment.c_str());
 			}
 		fclose(flist);
 		
@@ -332,10 +332,10 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	
 	n = line;
 	i = 0;
-	while ((n>0) && (i<nSensors)){
+	while ((n > 0) && (i < nSensors)){
 		// Read names, compare with the names in the data base?!
 		n = fgets(line, 255, flist);
-	    if (n > 0) {
+		if (n > 0) {
 			// Parse the line <TAB> splits the fields
 			// Fields: Number <TAB> Description <TAB> KITCube Sensor name <TAB> Axis name
 			namePtr = strchr(line, '\t'); // Field 2
@@ -347,18 +347,18 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 			if (namePtr > 0) namePtr = strchr(namePtr+1, '\t'); // Field 3
 			if (namePtr == 0)
 				throw std::invalid_argument("No sensor name found in the *.sensors file");
-		    sscanf(namePtr, "%s", name);
+			sscanf(namePtr, "%s", name);
 			sensor[i].name = name;
 			
 			if (namePtr > 0) namePtr = strchr(namePtr+1, '\t'); // Field 3
-			if (namePtr == 0) 
+			if (namePtr == 0)
 				throw std::invalid_argument("No axis found in the *.sensors file");
-		    sscanf(namePtr, "%s", name);
+			sscanf(namePtr, "%s", name);
 			axisName = name;
 			
 			// Find the name of the axis in the axis list
 			sensor[i].axis = -1;
-			for (j=0; j<nAxis; j++){
+			for (j = 0; j < nAxis; j++){
 				if (axis[j].name == axisName) sensor[i].axis = j;
 			}
 			if (sensor[i].axis == -1){
@@ -377,16 +377,16 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	
 	// TODO: Check if the name are according to the naming conventions
 	// E.g. check aggregation type?!
-	for (i=0;i<nSensors;i++){
+	for (i = 0; i < nSensors; i++) {
 		pos = 0;
 		for (j=0;j<5;j++){
-		    pos = sensor[i].name.find('.', pos);
+			pos = sensor[i].name.find('.', pos);
 			if (pos == std::string::npos){
 				sprintf(line, "Sensor name #%d doesn't match naming convention: %s\n", i+1, sensor[i].name.c_str());
 				throw std::invalid_argument(line);
 			}
 		}
-    }	
+	}
 	
 	
 	// Replace the module name
@@ -399,11 +399,11 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	
 	
 	// Close list file
-    fclose(flist);	
+	fclose(flist);
 	
-	for (i=0;i<nSensors; i++){
-	  printf("Sensor %4d: %s %s (%s)\n", i+1, sensor[i].name.c_str(), 
-	  		 sensor[i].comment.c_str(), axis[sensor[i].axis].unit.c_str());
+	for (i = 0; i < nSensors; i++) {
+		printf("Sensor %4d: %s %s (%s)\n", i+1, sensor[i].name.c_str(),
+			sensor[i].comment.c_str(), axis[sensor[i].axis].unit.c_str());
 	}
 }
 
@@ -550,7 +550,7 @@ void DAQDevice::openDatabase(){
 #ifdef USE_MYSQL
 	//printf("Create data table\n");
 	
-    int i;
+	int i;
 	MYSQL_RES *res;
 	MYSQL_RES *resTables;
 	MYSQL_ROW row;
@@ -563,20 +563,19 @@ void DAQDevice::openDatabase(){
 	
 	
 	// Display arguments
-    for (i=0;i<nSensors; i++){
+	for (i=0;i<nSensors; i++){
 		//printf("Col %3d: %s\n", i+1, colNames[i].c_str());
 	}
 	
 	
 	// Create Database tables
 	sprintf(line, "Data_%03d_%s_%s", moduleNumber, 
-			moduleName.c_str(), sensorGroup.c_str());
+		moduleName.c_str(), sensorGroup.c_str());
 	printf("Data table name: \t%s\n", line);
 	this->dataTableName = line;	
 	
 	
 	//TODO:  Check if the data is available in the class?!
-	
 	
 	
 	// Open database
@@ -590,12 +589,12 @@ void DAQDevice::openDatabase(){
 		// Set db to zero to indicate missing connection
 		db = 0;
 		
-		return; 
+		return;
 	} 
 	
 	// Enable automatic reconnect
-    my_bool re_conn = 1;
-    mysql_options(db, MYSQL_OPT_RECONNECT, &re_conn);
+	my_bool re_conn = 1;
+	mysql_options(db, MYSQL_OPT_RECONNECT, &re_conn);
 
 	
 	// Read list of databases?!
@@ -623,7 +622,7 @@ void DAQDevice::openDatabase(){
 		}
 	}	
 	mysql_free_result(res);
-    printf("\n");
+	printf("\n");
 	
 	
 	// Select active database 
@@ -647,7 +646,7 @@ void DAQDevice::openDatabase(){
 			fprintf(stderr, "%s\n", mysql_error(db));
 			
 			return;
-		}	
+		}
 		
 	}
 	
@@ -683,7 +682,7 @@ void DAQDevice::openDatabase(){
 			fprintf(stderr, "%s\n", mysql_error(db));
 			
 			throw std::invalid_argument("Creation of axis table failed");
-		}		
+		}
 	}
 	res = mysql_store_result(db);
 	mysql_free_result(res);
@@ -706,18 +705,18 @@ void DAQDevice::openDatabase(){
 			if (axis[i].name == row[1]){
 				axis[i].isNew = false;
 				axis[i].id = atoi(row[0]);
-				if (debug > 2) printf("The axis %s is already defined in the axis list (id=%d)\n", 
+				if (debug > 2) printf("The axis %s is already defined in the axis list (id=%d)\n",
 									  axis[i].name.c_str(), axis[i].id);
 				break;
 			}
-		}	
+		}
 		
 		//for (i=0;i<mysql_num_fields(res); i++){
 		//	printf("%s", row[i]);
 		//}
 	}
 	mysql_free_result(res);
-    printf("\n");
+	printf("\n");
 	
 	// Add the new axis definitions to the database
 	nNewAxis = 0;
@@ -725,7 +724,7 @@ void DAQDevice::openDatabase(){
 		if (axis[i].isNew){
 			printf("Adding axis %s -- %s (%s) to the axis list\n", 
 				   axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
-			sprintf(sql,"INSERT INTO `%s` (`name`,`comment`,`unit`) VALUES ('%s','%s','%s')", 
+			sprintf(sql,"INSERT INTO `%s` (`name`,`comment`,`unit`) VALUES ('%s','%s','%s')",
 					axisTableName.c_str(),
 					axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
 			if (mysql_query(db, sql)){
@@ -741,8 +740,6 @@ void DAQDevice::openDatabase(){
 		}
 	}
 	printf("New axis definitions: %d\n", nNewAxis);
-	
-	
 	
 	
 	// Get list of cols in data table
@@ -776,7 +773,6 @@ void DAQDevice::openDatabase(){
 	mysql_free_result(res);
 	
 	
-	
 	// TODO: Check the sensor configuration
 	
 	
@@ -807,24 +803,22 @@ void DAQDevice::openDatabase(){
 			fprintf(stderr, "%s\n", mysql_error(db));
 			
 			throw std::invalid_argument("Creation of table for sensor list failed");
-		}			
+		}
 	}
 	res = mysql_store_result(db);
 	mysql_free_result(res);
-	
-	
 	
 	
 	// TODO: Check if the sensor names are in the list
 	// Store in sensor table
 	// Bug: Is not stored in the first time?! At this time the database is not open...
 	nNewSensors = 0;
-	for (i=0; i< nSensors; i++) {	
+	for (i=0; i< nSensors; i++) {
 		cmd = "INSERT INTO `";
 		cmd += sensorTableName + "` (`name`, `module`, `comment`, `axis`, `height`) VALUES (";
-		sprintf(line, "'%s', %d, '%s %s', '%d', %f )", 
-				sensor[i].name.c_str(), moduleNumber, 
-				sensor[i].name.c_str(), sensor[i].comment.c_str(), 
+		sprintf(line, "'%s', %d, '%s %s', '%d', %f )",
+				sensor[i].name.c_str(), moduleNumber,
+				sensor[i].name.c_str(), sensor[i].comment.c_str(),
 				axis[sensor[i].axis].id, sensor[i].height);
 		cmd += line;
 		
@@ -837,14 +831,12 @@ void DAQDevice::openDatabase(){
 			
 			// TODO: If this operation fails do not proceed in the file?!
 			//break;
-		}else {
+		} else {
 			nNewSensors++;
 		}
 	}
 	printf("New sensors: \t\t%d\n", nNewSensors);
-    printf("\n");
-	
-	
+	printf("\n");
 	
 #endif // USE_MYSQL
 }
@@ -1061,7 +1053,7 @@ void DAQDevice::getNewFiles(){
 	listNext = new unsigned int [ nFiles+1 ];
 	listName[0] = "START";
 	listIndex [0] = 0;
-	listNext[0]= 1; 
+	listNext[0]= 1;
 	listName[1] = "END";
 	listIndex[1] = 0xffffffff;
 	listNext[1] = 0;
@@ -1092,16 +1084,19 @@ void DAQDevice::getNewFiles(){
 				
 				// Read the index of the following item in order to find the right slot for the current file
 				i = 0; j = 0;
-				while ((index > listIndex[listNext[i]]) && (j<nList-1)){ i = listNext[i]; j++; }
+				while ((index > listIndex[listNext[i]]) && (j < nList - 1)){
+					i = listNext[i];
+					j++;
+				}
 				
 				//}
 				
-				// Fill in the new entry in the list	
-				listName[nList] = file->d_name;	
+				// Fill in the new entry in the list
+				listName[nList] = file->d_name;
 				listIndex[nList] = index;
 				listNext[nList] = listNext[i];
 				listNext[i] = nList;
-				nList++;	
+				nList++;
 				
 				//next = 0;
 				//for(i=0;i<nList;i++){
@@ -1117,7 +1112,7 @@ void DAQDevice::getNewFiles(){
 		
 	}
 	
-	closedir(din);	
+	closedir(din);
 
 	
 	if (debug > 2){
@@ -1151,7 +1146,7 @@ void DAQDevice::getNewFiles(){
 	// Read the data from the files
 	try {
 		next = 0;
-		for(i=0;i<nList-1;i++){	
+		for (i = 0; i < nList - 1; i++) {
 			//printf(" %d  %d %d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
 			//printf("Reading %d  %d  %s %d\n", next, listIndex[next], listName[next].c_str(), lastIndex);
 			
