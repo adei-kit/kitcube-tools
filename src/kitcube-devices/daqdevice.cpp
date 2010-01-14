@@ -563,7 +563,7 @@ void DAQDevice::openDatabase(){
 	
 	
 	// Display arguments
-	for (i=0;i<nSensors; i++){
+	for (i = 0; i < nSensors; i++) {
 		//printf("Col %3d: %s\n", i+1, colNames[i].c_str());
 	}
 	
@@ -1116,7 +1116,7 @@ void DAQDevice::getNewFiles(){
 
 	
 	if (debug > 2){
-		for(i=0;i<nList;i++){
+		for(i = 0; i < nList; i++) {
 			printf(" %d  %d %d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
 		}
 	}

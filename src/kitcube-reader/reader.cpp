@@ -464,43 +464,41 @@ void Reader::analyseTiming(struct timeval *t){
 
 void Reader::displayStatus(FILE *fout){
 
-  if (fout == 0) return;
+	if (fout == 0) return;
 
-
-  fprintf(fout, "\n");
-  fprintf(fout,   "Server start     : %lds %dus\n", tRef.tv_sec, tRef.tv_usec);
-  if (useTimeout){
-    fprintf(fout, "Sampling time    : %lds %dus\n", tSample.tv_sec, tSample.tv_usec);
-	fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
-	fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
+	fprintf(fout, "\n");
+	fprintf(fout,   "Server start     : %lds %dus\n", tRef.tv_sec, tRef.tv_usec);
+	if (useTimeout){
+		fprintf(fout, "Sampling time    : %lds %dus\n", tSample.tv_sec, tSample.tv_usec);
+		fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
+		fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
 	
-	if (timingN > 0){
-	  double var;
-	  var = (double) timingSum2 / timingN - (double) timingSum / timingN * timingSum / timingN;
-	  if (var >= 0)
-	    fprintf(fout, "Sample error     : %lld +- %8.1f  (%lld .. %lld) \n", timingSum/timingN, 
-				   sqrt(var),  timingMin, timingMax);
-	  else
-	    fprintf(fout, "Sample error     : %lld +- %8s  (%lld .. %lld) \n", timingSum/timingN, 
-				   "err", timingMin, timingMax);	    			   
-	}			  
+		if (timingN > 0){
+			double var;
+			var = (double) timingSum2 / timingN - (double) timingSum / timingN * timingSum / timingN;
+			if (var >= 0)
+				fprintf(fout, "Sample error     : %lld +- %8.1f  (%lld .. %lld) \n", timingSum/timingN,
+					sqrt(var),  timingMin, timingMax);
+			else
+				fprintf(fout, "Sample error     : %lld +- %8s  (%lld .. %lld) \n", timingSum/timingN,
+					"err", timingMin, timingMax);
+		}
 	
-	// TODO: Display error status of sensor groups
+		// TODO: Display error status of sensor groups
 	
 	
-  } else {
-    fprintf(fout, "Sampling         : Disabled\n");
-  }
-  fprintf(fout, "\n");
-  	
+	} else {
+		fprintf(fout, "Sampling         : Disabled\n");
+	}
+	fprintf(fout, "\n");
 }
 
 
 void Reader::analyseDiskSpace(const char *dir){
 
 	//
-	// Get size of file system 
-	// TODO:  How to handle the 64bit data types??? 
+	// Get size of file system
+	// TODO:  How to handle the 64bit data types???
 	//        Change to 64bit version to be compatible...
 	struct statfs fs;
 
@@ -512,8 +510,7 @@ void Reader::analyseDiskSpace(const char *dir){
 #endif
 	printf("Total blocks  %12Ld %12.3f MByte (block size %d bytes)\n", fs.f_blocks,
 		(float) fs.f_blocks / 1024 / 1024 * fs.f_bsize, fs.f_bsize);
-	printf("Free blocks   %12Ld %12.3f MByte %6.2f %s\n", fs.f_bfree, 
+	printf("Free blocks   %12Ld %12.3f MByte %6.2f %s\n", fs.f_bfree,
 		(float) fs.f_bfree / 1024 / 1024 * fs.f_bsize,
 		(float) fs.f_bfree / fs.f_blocks * 100, "%");
-
 }

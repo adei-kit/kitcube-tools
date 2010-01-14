@@ -413,17 +413,15 @@ void Ceilometer::readHeader(const char *filename){
 	sensor[6].comment = "Vertical visibility";
 	sensor[7].comment = "Detection range";
 
-	for (i=0;i<nSensors;i++){
-		sensor[i].height	= heightOffset;
+	for (i = 0; i < nSensors; i++) {
+		sensor[i].height = heightOffset;
 	}
 
-	for (i=0;i<nSensors;i++){
-		sensor[i].height	= heightOffset;
-		printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), 
-			   sensor[i].height, heightUnit);
+	for (i = 0; i < nSensors; i++) {
+		sensor[i].height = heightOffset;
+		printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
 	}
 }
-
 
 
 void Ceilometer::writeHeader(){
