@@ -212,7 +212,7 @@ int Reader::handle_timeout(){
 
 
 	// TODO: Read data / Simulate data
-	if (debug > 1) printf("=== Reading Data %10ld %06d=== \n", t0.tv_sec, t0.tv_usec);
+	if (debug > 1) printf("=== Reading Data %10ld %06ld=== \n", t0.tv_sec, t0.tv_usec);
 	// Call rsync
 	// TODO: Include also in the device class as the specific filenames are needed!!
 
@@ -230,7 +230,7 @@ int Reader::handle_timeout(){
 	}
 	
 	gettimeofday(&t1, &tz);
-	printf("Reader cycle duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));	
+	printf("Reader cycle duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 	
 	// Get free disk space
 	// Read the disk space from all devices. Report every device only once?!
@@ -455,7 +455,7 @@ void Reader::analyseTiming(struct timeval *t){
     unsigned long long buf; 
   
     buf = tRef.tv_sec;
-    if (fout) fprintf(fout, "%6d  | %ld.%06d \n", index, t->tv_sec, t->tv_usec);
+    if (fout) fprintf(fout, "%6d  | %ld.%06ld \n", index, t->tv_sec, t->tv_usec);
   }
 
 
@@ -467,9 +467,9 @@ void Reader::displayStatus(FILE *fout){
 	if (fout == 0) return;
 
 	fprintf(fout, "\n");
-	fprintf(fout,   "Server start     : %lds %dus\n", tRef.tv_sec, tRef.tv_usec);
+	fprintf(fout,   "Server start     : %lds %ldus\n", tRef.tv_sec, tRef.tv_usec);
 	if (useTimeout){
-		fprintf(fout, "Sampling time    : %lds %dus\n", tSample.tv_sec, tSample.tv_usec);
+		fprintf(fout, "Sampling time    : %lds %ldus\n", tSample.tv_sec, tSample.tv_usec);
 		fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
 		fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
 	
@@ -501,6 +501,10 @@ void Reader::analyseDiskSpace(const char *dir){
 	//        Change to 64bit version to be compatible...
 	struct statfs fs;
 
+	if (debug > 0)
+		printf("_____Reader::analyseDiskSpace(...)_____\n");
+
+	// get file system statistics
 	statfs(dir, &fs);
 
 #ifndef linux
