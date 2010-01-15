@@ -154,7 +154,7 @@ void Reader::runReadout(FILE *fout){
 	dev = (DAQDevice *) createDevice(moduleType.c_str());	
 	dev->setDebugLevel(debug);
 
-	dev->readInifile(this->inifile.c_str(), iniGroup.c_str());	
+	dev->readInifile(this->inifile.c_str(), iniGroup.c_str());
 	dev->readAxis(this->inifile.c_str());
 	
 	

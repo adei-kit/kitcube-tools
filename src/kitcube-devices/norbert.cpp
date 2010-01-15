@@ -109,7 +109,7 @@ const char *Norbert::getDataFilename(){
 
 int Norbert::getFileNumber(char *filename){
 	std::string name;
-	int posIndex;
+	size_t posIndex;
 	int index;
 	std::string filePrefix;
 	std::string fileSuffix;
@@ -124,24 +124,28 @@ int Norbert::getFileNumber(char *filename){
 	// The read pointer of the last file will be kept
 	
 	// Find <index> in data template
+	// FIXME: this is done in DAQDevice::readInifile already. Why repeat it here? What to do in case of error?
 	posIndex = datafileMask.find("<index>");
-	if (posIndex == -1) {
+	if (posIndex == std::string::npos) {
 		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
 			datafileMask.c_str(), inifile.c_str());
 	}
-	filePrefix = datafileMask.substr(0,posIndex);
-	fileSuffix = datafileMask.substr(posIndex+7);
-	if (debug >3) printf("Position of <index> in %s is  %d -- data file prefix/suffix %s / %s (debug = %d)\n",
+
+	// extract filename prefix and suffix out of datafileMask
+	filePrefix = datafileMask.substr(0, posIndex);
+	fileSuffix = datafileMask.substr(posIndex + 7);
+	if (debug > 3) printf("Position of <index> in %s is  %d -- data file prefix/suffix: %s / %s (debug = %d)\n",
 				datafileMask.c_str(), posIndex, filePrefix.c_str(), fileSuffix.c_str(), debug);
-	
+
+	// calculate actual length of <index> in filename
 	fileString = filename;
 	lenIndex = fileString.length() - filePrefix.length() - fileSuffix.length();
 	
 	// Check for starting tag
-	if (fileString.find(filePrefix) !=0){
+	if (fileString.find(filePrefix) != 0) {
 		throw std::invalid_argument("Prefix not found");
 	}
-	if (fileString.find(fileSuffix) <0){
+	if (fileString.find(fileSuffix) < 0) {
 		throw std::invalid_argument("Suffix not found");
 	}
 	
@@ -150,14 +154,14 @@ int Norbert::getFileNumber(char *filename){
 	numString = fileString.substr(posIndex, 2);
 	time.tm_year = atoi(numString.c_str()) + 100;
 	
-	numString = fileString.substr(posIndex+2, 2);
+	numString = fileString.substr(posIndex + 2, 2);
 	time.tm_mon = atoi(numString.c_str()) - 1;
 	
-	numString = fileString.substr(posIndex+4, 2);
+	numString = fileString.substr(posIndex + 4, 2);
 	time.tm_mday = atoi(numString.c_str());
 	
 	if (lenIndex > 6){
-		if (fileString.find("_") != posIndex+6){
+		if (fileString.find("_") != posIndex + 6){
 			throw std::invalid_argument("Separator between date and time not found");
 		}
 		
@@ -179,8 +183,10 @@ int Norbert::getFileNumber(char *filename){
 
 	
 	// Convert to unix time stamp
-	if (debug>3) printf("File index %s\n", asctime(&time));
 	index = timegm(&time);
+
+	if (debug > 3)
+		printf("File index %s\n", asctime(&time));
 	
 	return (index);
 }
@@ -190,7 +196,7 @@ void Norbert::replaceItem(const char **header, const char *itemTag, const char *
 	bool findTag;
 	char *ptr;
 	char *startChar;
-	char *endChar;
+	//char *endChar;
 	int i;
 	int len;
 	
@@ -282,7 +288,7 @@ unsigned long Norbert::getSensorGroup(){
 		buffer = "online";
 	}
 
-	printf("Sensor Group ID: %i\n", number);
+	printf("Sensor Group ID: %ld\n", number);
 	
 	return number;
 }
@@ -293,9 +299,6 @@ void Norbert::readHeader(const char *filename){
 	const char *headerReadPtr;
 	char line[256];
 	int n;
-	int i;
-	int heightOffset;
-	char heightUnit[5];
 	int len;
 	
 	
@@ -419,14 +422,11 @@ void Norbert::writeHeader(){
 
 // TODO: Move the parsing part to separate functions and move rest to base class
 void Norbert::readData(const char *dir, const char *filename){
-	struct timeval t0, t1;
-	struct timezone tz; 
-
 	unsigned char *buf;
 	int len;
 	int n;
 	int fd;
-	int i, j;
+	int j;
 	char *sensorString;
 	float *sensorValue;
 	int err;
@@ -443,14 +443,17 @@ void Norbert::readData(const char *dir, const char *filename){
 	unsigned long lastPos;
 	unsigned long lastIndex;
 	struct timeval tData;
-	struct timeval tWrite;
+	//struct timeval tWrite;
 	char line[256];
 
 #ifdef USE_MYSQL
-	MYSQL_RES *res;
-	MYSQL_RES *resTables;
-	MYSQL_ROW row;
-	MYSQL_ROW table;
+	struct timeval t0, t1;
+	struct timezone tz;
+	int i;
+	//MYSQL_RES *res;
+	//MYSQL_RES *resTables;
+	//MYSQL_ROW row;
+	//MYSQL_ROW table;
 	std::string tableName;
 	std::string sql;
 	char sData[50];
@@ -471,10 +474,10 @@ void Norbert::readData(const char *dir, const char *filename){
 	
 	// If number of sensors is unknown read the header first
 	if (nSensors == 0) readHeader(filenameData.c_str());
-	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());	
-#ifdef USE_MYSQL	
-	if (db == 0) { 
-		openDatabase(); 
+	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());
+#ifdef USE_MYSQL
+	if (db == 0) {
+		openDatabase();
 	} else {
 		// Automatic reconnect 
 		if (mysql_ping(db) != 0){
@@ -505,7 +508,7 @@ void Norbert::readData(const char *dir, const char *filename){
 	if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %d %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	}
 
@@ -555,7 +558,7 @@ void Norbert::readData(const char *dir, const char *filename){
 			tData.tv_sec = timestamp;
 			tData.tv_usec = 0;
 			
-			if (debug > 1) printf(" %ld  %d  ---- ", tData.tv_sec, tData.tv_usec);
+			if (debug > 1) printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
 			
 			// Read data values
 			//printf("%s\n", buf);
@@ -588,7 +591,7 @@ void Norbert::readData(const char *dir, const char *filename){
 					}
 				}
 				sql +=") VALUES (";
-				sprintf(sData, "%ld, %d", tData.tv_sec, tData.tv_usec);
+				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 				sql += sData;
 				for (i=0; i<nSensors; i++){
 					if (sensorValue[i] != noData) {
@@ -637,7 +640,7 @@ void Norbert::readData(const char *dir, const char *filename){
 	// Write the last valid time stamp / file position
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %d %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
 		fclose(fmark);
 	}
 	

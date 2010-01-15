@@ -98,6 +98,8 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	float tValue;
 	std::string tUnit;
 
+	printf("_____DAQDevice::readInifile()_____\n");
+
 	//
 	// Get the module number
 	//
@@ -227,7 +229,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	
 
 	// Check integrity of data fields
-	if (datafileMask.find("<index>") == -1){
+	if (datafileMask.find("<index>") == std::string::npos){
 		printf("There is no tag <index> in datafileMask=%s specified in inifile %s\n",
 			   datafileMask.c_str(), inifile.c_str());
 		throw std::invalid_argument("Missing <index> in datafileMask");
