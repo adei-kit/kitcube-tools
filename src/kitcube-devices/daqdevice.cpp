@@ -304,9 +304,9 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	if (axis == 0) readAxis(this->inifile.c_str());
 
 	
-	printf("______DAQDevice::getSensorNames()______________________\n");
+	printf("_____DAQDevice::getSensorNames()_____\n");
 	
-	sprintf(line, "%s%s", configDir.c_str(), sensorListfile);	
+	sprintf(line, "%s%s", configDir.c_str(), sensorListfile);
 	printf("Read sensor names from list %s\n", line);
 	
 	// Open list file
@@ -503,8 +503,11 @@ void DAQDevice::copyRemoteData(){
 	struct timezone tz;
 	int err;
 	char line[256];
-	
-	createDirectories((archiveDir+getDataDir()).c_str());
+
+
+	printf("_____DAQDevice::copyRemoteData()_____\n");
+
+	createDirectories((archiveDir + getDataDir()).c_str());
 	
 	// Transfer only files of the specified sensor group (== file type)
 	// The time to find changes in large file increases with the file size
@@ -519,19 +522,19 @@ void DAQDevice::copyRemoteData(){
 			rsyncArgs.c_str(), sensorGroup.c_str(),
 			remoteDir.c_str(), getDataDir(),
 			archiveDir.c_str(), getDataDir());
-	printf("_____Mast::copyRemoteData()________________\n");
+	
 	printf("%s\n", line);
 	
 	gettimeofday(&t0, &tz);
-	err = system(line); 
+	err = system(line);
 	gettimeofday(&t1, &tz);
 	
-	if (err != 0){
+	if (err != 0) {
 		printf("Synchronisation error (rsync)\n");
 		//throw std::invalid_argument("Synchronisation error (rsync)");
 	}
 	
-	printf("Rsync duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+	printf("Rsync duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 }
 
 

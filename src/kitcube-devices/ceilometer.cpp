@@ -39,11 +39,11 @@ Ceilometer::Ceilometer():DAQBinaryDevice(){
 	this->moduleNumber = 20; // Ceilometer default number
 	this->sensorGroup = "chm";
 
-	this->iniGroup = "Ceilometer"; 
+	this->iniGroup = "Ceilometer";
 	
 	this->lenHeader = 0;
 	this->lenDataSet = 237; // In the chm files is no check sum !?
-    this->noData = 99999;
+	this->noData = 99999;
 	
 	headerRaw = 0;
 }
@@ -92,7 +92,7 @@ const char *Ceilometer::getDataDir(){
 
 const char *Ceilometer::getDataFilename(){
 	struct timeval t;
-	struct timezone tz;	
+	struct timezone tz;
 	struct tm *date;
 	char line[256];
 
@@ -113,7 +113,7 @@ const char *Ceilometer::getDataFilename(){
 
 int Ceilometer::getFileNumber(char *filename){
 	std::string name;
-	int posIndex;
+	unsigned posIndex;
 	int index;
 	std::string filePrefix;
 	std::string fileSuffix;
@@ -129,13 +129,13 @@ int Ceilometer::getFileNumber(char *filename){
 	
 	// Find <index> in data template
 	posIndex = datafileMask.find("<index>");
-	if (posIndex == -1) {
+	if (posIndex == std::string::npos) {
 		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
 			datafileMask.c_str(), inifile.c_str());
 	}
-	filePrefix = datafileMask.substr(0,posIndex);
-	fileSuffix = datafileMask.substr(posIndex+7);
-	if (debug >3) printf("Position of <index> in %s is  %d -- data file prefix/suffix %s / %s (debug = %d)\n",
+	filePrefix = datafileMask.substr(0, posIndex);
+	fileSuffix = datafileMask.substr(posIndex + 7);
+	if (debug > 3) printf("Position of <index> in %s is  %d -- data file prefix/suffix %s / %s (debug = %d)\n",
 				datafileMask.c_str(), posIndex, filePrefix.c_str(), fileSuffix.c_str(), debug);
 	
 	fileString = filename;
@@ -154,24 +154,24 @@ int Ceilometer::getFileNumber(char *filename){
 	numString = fileString.substr(posIndex, 2);
 	time.tm_year = atoi(numString.c_str()) + 100;
 	
-	numString = fileString.substr(posIndex+2, 2);
+	numString = fileString.substr(posIndex + 2, 2);
 	time.tm_mon = atoi(numString.c_str()) - 1;
 	
-	numString = fileString.substr(posIndex+4, 2);
+	numString = fileString.substr(posIndex + 4, 2);
 	time.tm_mday = atoi(numString.c_str());
 	
-	if (lenIndex > 6){
-		if (fileString.find("_") != posIndex+6){
+	if (lenIndex > 6) {
+		if (fileString.find("_") != posIndex + 6){
 			throw std::invalid_argument("Separator between date and time not found");
 		}
 		
-		numString = fileString.substr(posIndex+7, 2);
+		numString = fileString.substr(posIndex + 7, 2);
 		time.tm_hour = atoi(numString.c_str());
 	
-		numString = fileString.substr(posIndex+9, 2);
+		numString = fileString.substr(posIndex + 9, 2);
 		time.tm_min = atoi(numString.c_str()); 
 
-		numString = fileString.substr(posIndex+11, 2);
+		numString = fileString.substr(posIndex + 11, 2);
 		time.tm_sec = atoi(numString.c_str());
 		
 	} else {
@@ -194,7 +194,7 @@ void Ceilometer::replaceItem(const char **header, const char *itemTag, const cha
 	bool findTag;
 	char *ptr;
 	char *startChar;
-	char *endChar;
+	//char *endChar;
 	int i;
 	int len;
 	
@@ -283,17 +283,17 @@ unsigned long Ceilometer::getSensorGroup(){
 	number = 0;
 	buffer = "";
 	if (sensorGroup == "chm") {
-		number = 1; 
+		number = 1;
 		buffer = "standard";
 	}
 
 	if (sensorGroup == "dat") {
-		number = 2; 
+		number = 2;
 		buffer = "online";
 	}
 	
 	if (sensorGroup == "nc") {
-		number = 3; 
+		number = 3;
 		buffer = "raw data";
 	}
 	
@@ -311,7 +311,7 @@ void Ceilometer::readHeader(const char *filename){
 	int i;
 	int heightOffset;
 	char heightUnit[5];
-	int len; 
+	int len;
 	
 	
 	// There is no header for this format
@@ -431,14 +431,11 @@ void Ceilometer::writeHeader(){
 
 // TODO: Move the parsing part to separate functions and move rest to base class
 void Ceilometer::readData(const char *dir, const char *filename){
-	struct timeval t0, t1;
-	struct timezone tz;
-
 	unsigned char *buf;
 	int len;
 	int n;
 	int fd;
-	int i, j;
+	int j;
 	char *sensorString;
 	float *sensorValue;
 	int err;
@@ -455,14 +452,17 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	unsigned long lastPos;
 	unsigned long lastIndex;
 	struct timeval tData;
-	struct timeval tWrite;
+	//struct timeval tWrite;
 	char line[256];
 
 #ifdef USE_MYSQL
-	MYSQL_RES *res;
-	MYSQL_RES *resTables;
-	MYSQL_ROW row;
-	MYSQL_ROW table;
+	struct timeval t0, t1;
+	struct timezone tz;
+	int i;
+	//MYSQL_RES *res;
+	//MYSQL_RES *resTables;
+	//MYSQL_ROW row;
+	//MYSQL_ROW table;
 	std::string tableName;
 	std::string sql;
 	char sData[50];
@@ -517,7 +517,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %d %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	}
 
@@ -567,7 +567,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			tData.tv_sec = timestamp;
 			tData.tv_usec = 0;
 			
-			if (debug > 1) printf(" %ld  %d  ---- ", tData.tv_sec, tData.tv_usec);
+			if (debug > 1) printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
 			
 			// Read data values
 			//printf("%s\n", buf);
@@ -592,7 +592,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		
 				sql = "INSERT INTO `";
 				sql += dataTableName + "` (`sec`,`usec`";
-				for (i=0; i<nSensors; i++){
+				for (i = 0; i < nSensors; i++){
 					if (sensorValue[i] != noData) {
 						sql += ",`";
 						sql += sensor[i].name;
@@ -600,9 +600,9 @@ void Ceilometer::readData(const char *dir, const char *filename){
 					}
 				}
 				sql +=") VALUES (";
-				sprintf(sData, "%ld, %d", tData.tv_sec, tData.tv_usec);
+				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 				sql += sData;
-				for (i=0; i<nSensors; i++){
+				for (i = 0; i < nSensors; i++){
 					if (sensorValue[i] != noData) {
 						sprintf(sData, "%f", sensorValue[i]);
 						sql += ",";
@@ -652,7 +652,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	// Write the last valid time stamp / file position
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %d %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
 		fclose(fmark);
 	}
 	

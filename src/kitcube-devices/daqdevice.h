@@ -192,7 +192,7 @@ protected:
 	struct axisDef *axis;
 
 	/** Number of sensors in the module */
-	unsigned int nSensors;
+	int nSensors;
 	
 	/** List of the official sensor properties */
 	struct sensorType *sensor;
