@@ -33,16 +33,17 @@
 
 
 Norbert::Norbert():DAQBinaryDevice(){
-	
+
 	moduleType = "NF";
 	moduleNumber = 190;	// Norbert default number
 	sensorGroup = "dat";
 
 	iniGroup = "Norbert";
-	
+
 	lenHeader = 0x33;	// CAUTION: header has 2 lines!
 	lenDataSet = 14;
-	
+	noData = 9999;
+
 	headerRaw = 0;		// unsigned char*
 }
 
@@ -60,25 +61,25 @@ void Norbert::setConfigDefaults(){
 	// The paramters are dependant of the module number that is not known at the creation
 	// of the class but first time after reading from the inifile
 	//
-	
+
 	moduleName = "Norbert";
 	moduleComment = "Norbert's";
-	
+
 	sprintf(line, "Norbert.%s.template", sensorGroup.c_str());
 	datafileTemplate = line;
 
 	sprintf(line, "20<index>.%s", sensorGroup.c_str());
 	datafileMask = line;
 	//printf("datafileMask = %s\n", datafileMask.c_str());
-	
+
 	sprintf(line, "Norbert.%s.sensors", sensorGroup.c_str());
 	this->sensorListfile = line;
 }
 
- 
+
 const char *Norbert::getDataDir(){
 	char line[256];
-	
+
 	// TODO: Create a single source for the filename convention...
 	sprintf(line, "%s/Daten/", moduleName.c_str());
 	buffer = line;
@@ -92,11 +93,11 @@ const char *Norbert::getDataFilename(){
 	struct tm *date;
 	char line[256];
 
-	
+
 	// Get the actual day
 	gettimeofday(&t, &tz);
 	date = gmtime((const time_t *) &t.tv_sec);
-	
+
 	// TODO: Create a single source for the filename convention...
 	sprintf(line, "%04d%02d%02d.%s", date->tm_year+1900, date->tm_mon+1, date->tm_mday, sensorGroup.c_str());
 	buffer = line;
@@ -117,12 +118,12 @@ int Norbert::getFileNumber(char *filename){
 	std::string fileString;
 	struct tm time;
 	int lenIndex;
-	
-	
-	// Write the index of the file to a list 
+
+
+	// Write the index of the file to a list
 	// Process in this list with the next index
 	// The read pointer of the last file will be kept
-	
+
 	// Find <index> in data template
 	// FIXME: this is done in DAQDevice::readInifile already. Why repeat it here? What to do in case of error?
 	posIndex = datafileMask.find("<index>");
@@ -140,7 +141,7 @@ int Norbert::getFileNumber(char *filename){
 	// calculate actual length of <index> in filename
 	fileString = filename;
 	lenIndex = fileString.length() - filePrefix.length() - fileSuffix.length();
-	
+
 	// Check for starting tag
 	if (fileString.find(filePrefix) != 0) {
 		throw std::invalid_argument("Prefix not found");
@@ -148,32 +149,32 @@ int Norbert::getFileNumber(char *filename){
 	if (fileString.find(fileSuffix) < 0) {
 		throw std::invalid_argument("Suffix not found");
 	}
-	
-	
+
+
 	// Get year
 	numString = fileString.substr(posIndex, 2);
 	time.tm_year = atoi(numString.c_str()) + 100;
-	
+
 	numString = fileString.substr(posIndex + 2, 2);
 	time.tm_mon = atoi(numString.c_str()) - 1;
-	
+
 	numString = fileString.substr(posIndex + 4, 2);
 	time.tm_mday = atoi(numString.c_str());
-	
+
 	if (lenIndex > 6){
 		if (fileString.find("_") != posIndex + 6){
 			throw std::invalid_argument("Separator between date and time not found");
 		}
-		
+
 		numString = fileString.substr(posIndex+7, 2);
 		time.tm_hour = atoi(numString.c_str());
-	
+
 		numString = fileString.substr(posIndex+9, 2);
-		time.tm_min = atoi(numString.c_str()); 
+		time.tm_min = atoi(numString.c_str());
 
 		numString = fileString.substr(posIndex+11, 2);
-		time.tm_sec = atoi(numString.c_str()); 
-		
+		time.tm_sec = atoi(numString.c_str());
+
 	} else {
 		time.tm_hour = 0;
 		time.tm_min = 0;
@@ -181,13 +182,13 @@ int Norbert::getFileNumber(char *filename){
 		time.tm_gmtoff = 0;
 	}
 
-	
+
 	// Convert to unix time stamp
 	index = timegm(&time);
 
 	if (debug > 3)
 		printf("File index %s\n", asctime(&time));
-	
+
 	return (index);
 }
 
@@ -199,10 +200,10 @@ void Norbert::replaceItem(const char **header, const char *itemTag, const char *
 	//char *endChar;
 	int i;
 	int len;
-	
-	
+
+
 	// TODO: Add length of the header to avoid searching outside the header !!!
-	
+
 	findTag = false;
 	i = 0;
 	while ( (!findTag) && (i < 20)) {
@@ -210,18 +211,18 @@ void Norbert::replaceItem(const char **header, const char *itemTag, const char *
 		if (ptr > 0){
 			startChar = strstr(ptr, ":\t");
 			if (startChar > 0) {
-				
+
 				// Replace the data in the header
 				// TODO: Move the rest of the header?!
 				//       Check if the value has the same length?!
 				len = strlen(newValue);
 				strncpy(startChar+2, newValue,len);
-				// TODO: End is not found properly?!	
+				// TODO: End is not found properly?!
 			}
 		}
 		i++;
 	}
-	
+
 	*header = startChar+2 + len;
 }
 
@@ -233,10 +234,10 @@ const char *Norbert::getStringItem(const char **header, const char *itemTag){
 	char *endChar;
 	int i;
 	int len;
-	
-	
+
+
 	// TODO: Add length of the header to avoid searching outside the header !!!
-	
+
 	findTag = false;
 	i = 0;
 	while ( (!findTag) && (i < 20)) {
@@ -244,15 +245,15 @@ const char *Norbert::getStringItem(const char **header, const char *itemTag){
 		if (ptr > 0){
 			startChar = strstr(ptr, ": ");
 			if (startChar > 0) {
-			
+
 				// Find the end of the line
 				// TODO: End is not found properly?!
 				endChar = strstr(ptr, "\n");
 				if (endChar > 0){
 					//printf("getStringItem:  %02x %02x %02x %02x --- ", *(endChar-2), *(endChar-1), endChar[0], endChar[1]);
-					
+
 					len = endChar - startChar - 3;
-					std::string tag(startChar+2, len); 
+					std::string tag(startChar+2, len);
 					buffer = tag;
 					findTag = true;
 				}
@@ -260,7 +261,7 @@ const char *Norbert::getStringItem(const char **header, const char *itemTag){
 		}
 		i++;
 	}
-	
+
 	*header = endChar+1;
 	return (buffer.c_str());
 }
@@ -269,17 +270,17 @@ const char *Norbert::getStringItem(const char **header, const char *itemTag){
 int Norbert::getNumericItem(const char **header, const char *itemTag){
 	int value;
 	const char *ptr;
-	
+
 	ptr = getStringItem(header, itemTag);
 	value = atoi(ptr);
-	
+
 	return(value);
 }
 
 
 unsigned long Norbert::getSensorGroup(){
 	unsigned long number;
-	
+
 	number = 0;
 	buffer = "";
 
@@ -289,7 +290,7 @@ unsigned long Norbert::getSensorGroup(){
 	}
 
 	printf("Sensor Group ID: %ld\n", number);
-	
+
 	return number;
 }
 
@@ -300,33 +301,34 @@ void Norbert::readHeader(const char *filename){
 	char line[256];
 	int n;
 	int len;
-	
-	
-	printf("_____Reading header information_____________________\n");
+
+
+	printf("_____Norbert::readHeader(...)_____\n");
+
 	fd = open(filename, O_RDONLY);
 	if (fd < 0) {
 		sprintf(line, "Error opening file %s", filename);
 		throw std::invalid_argument(line);
 	}
-	
+
 	// Read the complete header
 	// No need for character code conversions
 	len = lenHeader;
 	headerRaw = new unsigned char [ len ];	// Is stored in the class variables
 	n = read(fd, headerRaw, len);
 	printf("Bytes read %d from file %s\n", n, filename);
-	
+
 	close(fd);
-	
-	if (n<len) {
+
+	if (n < len) {
 		// There is no header defined in the data format. Instead the data from the
 		// First data set is read -- of course when starting with a new file there is no
 		// data set available. So it makes no sense to complain here!
 		//throw std::invalid_argument("No header found in data file");
 		return;
 	}
-	
-	
+
+
 	//
 	// Read parameters
 	//
@@ -341,36 +343,25 @@ void Norbert::readHeader(const char *filename){
 	headerReadPtr = (const char *) headerRaw + 0x28;	// position of date string in Header
 	dateString.assign(headerReadPtr, 10);
 
-/*
-	headerReadPtr = (const char *) headerRaw + 21;	// position of time string in header
-	headerRaw[26] = 0;
-	timeString = headerReadPtr;
-	timeString += ":";
-	headerRaw[235] = 0;
-	timeString += (const char *) headerRaw + 233;	
-	//timeString += ":00"; // Add missing seconds
-*/
 	timeString = "empty";
 
 	printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
-	
+
 	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());	// should work with timeString "empty", too
 	tRef.tv_sec = timestamp;
 	tRef.tv_usec = 0;
-	
-	
+
+
 	// Number of sensors
 	nSensors = 1;
 	printf("Number of sensors %d\n", nSensors);
-	
+
 	// List of sensors
 	if (sensor > 0 ) delete [] sensor;
 	sensor = new struct sensorType [nSensors];
-	
+
 	sensor[0].comment = "Triangle Signal";
-
 }
-
 
 
 void Norbert::writeHeader(){
@@ -383,20 +374,20 @@ void Norbert::writeHeader(){
 	int n;
 	std::string filename;
 	int len;
-	
 
-	if (fd_data <=0) throw std::invalid_argument("Data file not open");
+
+	if (fd_data <= 0) throw std::invalid_argument("Data file not open");
 
 	// Read one sample data and replace the starting time by the original time
 	len = this->lenHeader;
 /*
 	// Read the template header
-	if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");	
+	if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");
 	filename = configDir + datafileTemplate;
 	printf("Reading header from template file %s\n", filename.c_str());
 	readHeader(filename.c_str());
 	headerReadPtr = (const char *) headerRaw;
-	
+
 	if (headerRaw == 0) {
 		printf("Error: No template header found\n");
 		throw std::invalid_argument("No template header found");
@@ -409,7 +400,7 @@ void Norbert::writeHeader(){
 	t = gmtime( &tRef.tv_sec);
 	sprintf(time, "%02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
 	sprintf(date, "%02d.%02d.%4d", t->tm_mday, t->tm_mon+1, t->tm_year+1900);
-	
+
 	//replaceItem(&headerReadPtr, "Referenzzeit", time);
 	replaceItem(&headerReadPtr, "Datum", date);
 	printf("%s", headerRaw);
@@ -428,14 +419,12 @@ void Norbert::readData(const char *dir, const char *filename){
 	int fd;
 	int j;
 	char *sensorString;
-	float *sensorValue;
+	int *sensorValue;
 	int err;
-	int sensorPtr[] = {27, 33, 39, 45, 50, 55, 60, 66, 72};
+	int sensorPtr[] = {10};
 	std::string timeString;
 	std::string dateString;
 	unsigned long timestamp;
-	
-	
 	FILE *fmark;
 	std::string filenameMarker;
 	std::string filenameData;
@@ -458,192 +447,188 @@ void Norbert::readData(const char *dir, const char *filename){
 	std::string sql;
 	char sData[50];
 #endif
-	
-	// Data format:
-	// Integer values for the heights
-	// If no cloud is found than NODT is send
-	// If signal strenght is not high enough "NaN"
-	// Negative error codes
 
-	
+	printf("_____Norbert::readData(...)_____\n");
+
 	// Compile file name
 	filenameData = dir;
-	filenameData += filename;	
-	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());	
+	filenameData += filename;
+	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
 
-	
+
 	// If number of sensors is unknown read the header first
 	if (nSensors == 0) readHeader(filenameData.c_str());
 	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());
+
 #ifdef USE_MYSQL
 	if (db == 0) {
 		openDatabase();
 	} else {
-		// Automatic reconnect 
+		// Automatic reconnect
 		if (mysql_ping(db) != 0){
 			printf("Error: Lost connection to database - automatic reconnect failed\n");
 			throw std::invalid_argument("Database unavailable\n");
 		}
 	}
 #endif
-	
-	if (debug > 0) printf("_____Reading data_____________________\n");	
-	
+
 	// Allocate memory for one data set
-	len = 237;
+	len = lenDataSet;
 	buf = new unsigned char [len];
-	sensorValue = new float [nSensors];
-		
-	if (debug > 1) printf("Open data file %s\n", filenameData.c_str());
+	sensorValue = new int [nSensors];
+
+	if (debug > 1)
+		printf("Open data file %s\n", filenameData.c_str());
 	fd = open(filenameData.c_str(), O_RDONLY);
-	
-	
-	// Get the last time stamp + file pointer from 
+
+
+	// Get the last time stamp + file pointer from
 	lastPos = 0;
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
-	
+
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker =line;
-	if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
+	filenameMarker = line;
+	if (debug > 1)
+		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
 		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	}
 
-	if (lastPos == 0) lastPos = 0; // Move the the first data
-	
+	// if we have a new file to work on now, set data start position manually
+	if (lastPos == 0)
+		lastPos = lenHeader;
+
 	// Find the beginning of the new data
-	if (debug > 1) printf("LastPos: %ld\n", lastPos);
+	if (debug > 1)
+		printf("LastPos: %ld\n", lastPos);
 	lseek(fd, lastPos, SEEK_SET);
-	
-	
+
+
 	n = len;
 	int iLoop = 0;
+
 	while ((n == len) && (iLoop< 1000)) {
 		n = read(fd, buf, len);
-		
-		if (n == len){	
-			
-		    //
+
+		if (n == len) {
+			//
 			// TODO: Check for valid data format
 			//       If not stop with this file and continue with the next one
 			//
-		    if (strstr((const char *) buf, "X1TA") != (char *) (buf+1)) {
-				printf("No valid ceilometer data found -- will continue with next file\n");
-				
-				// Continue with the next file
-				break; // or n = 0
-			}
-			
-			if (debug > 1) printf("%4d: Received %4d bytes ---  ", iLoop, n);
-			
-			
+
+			if (debug > 1)
+				printf("%4d: Received %4d bytes ---  ", iLoop, n);
+
+
 			// TODO: Put in a separate function...
 			// Read the time stamp
-			buf[20] = 0;
-			dateString = (char *) (buf + 12);
-			dateString.insert(6,"20"); // Insert full year number in string
-			buf[26] = 0;
-			timeString = (char *) (buf + 21);	
-			timeString += ":";
-			buf[235] = 0;
-			timeString += (char *) (buf + 233);	
-			//timeString += ":00"; // Add missing seconds
-			if (debug > 1) printf("[%s] [%s]", dateString.c_str(), timeString.c_str());
+			dateString = "1.1.2010";	// TODO: read date from header
+			timeString.assign((const char*)buf, 8);
+			if (debug > 1)
+				printf("[%s] [%s]", dateString.c_str(), timeString.c_str());
 
-			
-			timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
+
+			timestamp = getTimestamp(dateString.c_str(), timeString.c_str());	// should work with dateString "empty", too
 			tData.tv_sec = timestamp;
 			tData.tv_usec = 0;
-			
-			if (debug > 1) printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
-			
+
+			if (debug > 1)
+				printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
+
 			// Read data values
 			//printf("%s\n", buf);
-			if (debug > 1) printf("Sensors:");
-			for (j=0;j<nSensors; j++){
-			   sensorString = (char *) (buf + sensorPtr[j]);
-			   //buf[sensorPtr[1]-1] = 0;
-			   sensorValue[j] = noData;
-			   err = sscanf(sensorString, "%f", &sensorValue[j]);
-				
-			   if (debug > 1) printf("%5.0f ", sensorValue[j]);	
+			if (debug > 1)
+				printf("Sensors:");
+			for (j = 0; j < nSensors; j++) {
+				sensorString = (char *) (buf + sensorPtr[j]);
+				//buf[sensorPtr[1]-1] = 0;
+				sensorValue[j] = noData;
+				err = sscanf(sensorString, "%d", &sensorValue[j]);
+
+				if (debug > 1)
+					printf("%4d ", sensorValue[j]);
 			}
-			if (debug > 1) printf("\n");
+			if (debug > 1)
+				printf("\n");
 			//if (debug > 1) printf("Sensor %s = %.0f  (err=%d)\n",sensorString, sensorValue[0], err);
-	
-			
-#ifdef USE_MYSQL	
+
+
+#ifdef USE_MYSQL
 			if (db > 0){
 				// Write dataset to database
-				// Store in the order of appearance	
+				// Store in the order of appearance
 				//printf("Write record to database\n");
-		
+
 				sql = "INSERT INTO `";
 				sql += dataTableName + "` (`sec`,`usec`";
-				for (i=0; i<nSensors; i++){
+				for (i = 0; i < nSensors; i++) {
 					if (sensorValue[i] != noData) {
-					  sql += ",`";
-					  sql += sensor[i].name;
-					  sql += "`";
+						sql += ",`";
+						sql += sensor[i].name;
+						sql += "`";
 					}
 				}
 				sql +=") VALUES (";
 				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 				sql += sData;
-				for (i=0; i<nSensors; i++){
+				for (i = 0; i < nSensors; i++) {
 					if (sensorValue[i] != noData) {
-  					  sprintf(sData, "%f", sensorValue[i]);
-					  sql += ",";
-					  sql += sData;
-					}	
+						sprintf(sData, "%d", sensorValue[i]);
+						sql += ",";
+						sql += sData;
+					}
 				}
 				sql += ")";
-				
+
 				//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
 
 				gettimeofday(&t0, &tz);
-			
+
 				if (mysql_query(db, sql.c_str())){
 					fprintf(stderr, "%s\n", sql.c_str());
 					fprintf(stderr, "%s\n", mysql_error(db));
-					
+
 					// If this operation fails do not proceed in the file?!
 					printf("Error: Unable to write data to database\n");
 					throw std::invalid_argument("Writing data failed");
 					break;
-				}	
-				
+				}
+
 				gettimeofday(&t1, &tz);
 				printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
-	
 			} else {
 				printf("Error: No database availabe\n");
 				throw std::invalid_argument("No database");
 			}
 #endif // of USE_MYSQL
-			
+
 			lastPos += n;
 		}
 		iLoop++;
 	}
-	
-	if (n < len) { fd_eof = true; }
-	else { fd_eof = false; }
 
-	if (debug > 1) printf("\n");
-	if (debug > 1) printf("Position of file %ld\n", lastPos);
-	
-	
+	if (n < len) {
+		fd_eof = true;
+	} else {
+		fd_eof = false;
+	}
+
+	if (debug > 1)
+		printf("\n");
+	if (debug > 1)
+		printf("Position of file %ld\n", lastPos);
+
+
 	// Write the last valid time stamp / file position
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
 		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
 		fclose(fmark);
 	}
-	
+
 	close(fd);
 	delete buf;
 	delete [] sensorValue;
@@ -654,18 +639,18 @@ void Norbert::updateDataSet(unsigned char *buf){
 	struct timeval t;
 	struct timezone tz;
 	struct tm *time;
-	
+
 
 	// Calculate the interval
-	gettimeofday(&t, &tz);	
+	gettimeofday(&t, &tz);
 	time = gmtime(&t.tv_sec);
-	
-	
+
+
 	// Analyse time stamp, if new day a new file needs to generated
 	if (this->filename != getDataFilename()) {
 		openNewFile();
 	}
-	
+
 	// Compile the data set for writing to the data file
 	if (debug > 2)
 		printf("Line before: %s", buf);
@@ -676,10 +661,10 @@ void Norbert::updateDataSet(unsigned char *buf){
 
 	if (debug > 2)
 		printf("Line after : %s", buf);
-	
+
 	if (debug > 1)
 		printf("%02d.%02d.%02d  %02d:%02d:%02d\n",
 			time->tm_mday, time->tm_mon+1, time->tm_year-100,
 			time->tm_hour, time->tm_min, time->tm_sec);
-	
+
 }
