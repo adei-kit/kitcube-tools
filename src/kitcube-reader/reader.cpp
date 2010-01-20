@@ -7,7 +7,6 @@
  ***************************************************************************/
 
 
-
 #include "reader.h"
 
 #include <stdlib.h>
@@ -47,7 +46,6 @@ using std::string;
 #include <../kitcube-devices/createdevice.h>
 
 
-
 Reader::Reader(): SimpleServer(READER_PORT){
 }
 
@@ -62,52 +60,50 @@ void Reader::readInifile(const char *filename, const char *group){
 	std::string value;
 	float tValue;
 	std::string tUnit;
-
+	
 	this->inifile = filename;
 	this->tSampleFromInifile = 10000; // ms
 	
 	this->iniGroup = "Simulation";
-	this->moduleType = "SimRandom";	
+	this->moduleType = "SimRandom";
 	
-
+	
 	ini = new akInifile(inifile.c_str(), stdout);
 	//ini = new akInifile(inifile.c_str());
 	if (ini->Status()==Inifile::kSUCCESS){
-
+		
 		ini->SpecifyGroup("Reader");
- 
+		
 		//Try to read the module name from inifile if there no module name given
 		if ((group == 0) || (group[0] == 0)){
 			this->iniGroup = ini->GetFirstString("module", iniGroup.c_str(), &error);
 		} else {
 			iniGroup = group;
 		}
-	
+		
 		// Read sampling time
 		tValue= ini->GetFirstValue("samplingTime", (float) tSampleFromInifile, &error);
 		tUnit = ini->GetNextString("ms", &error);
 		this->tSampleFromInifile = tValue;
 		if ((tUnit == "sec") || (tUnit == "s")) this->tSampleFromInifile = tValue * 1000;
 		if (tUnit == "min") this->tSampleFromInifile = tValue * 60000;
-	
-	
+		
+		
 		// TODO: Guess type of the module ?!
 		error = ini->SpecifyGroup(iniGroup.c_str());
 		if (error == Inifile::kSUCCESS){
 			this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);
 		}
-
+		
 	}
 	delete ini;
-
+	
 }
-
 
 
 void Reader::runAsDaemon(bool flag){
 	this->runDaemon = flag;
 }
-
 
 
 void Reader::runReadout(FILE *fout){
@@ -116,13 +112,13 @@ void Reader::runReadout(FILE *fout){
 	struct timeval tWait;
 	struct timeval tStart;
 	//char host[255];
-
+	
 	if (shutdown) return; // Do not start the server!!!
-
+	
 	
 	struct timeval t;
 	struct timezone tz;
-
+	
 	gettimeofday(&t, &tz);
 	
 	//  Start run
@@ -135,25 +131,25 @@ void Reader::runReadout(FILE *fout){
 	// Set sampling time
 	//tWait.tv_sec = qdTSample / 1000;
 	//tWait.tv_usec = (qdTSample % 1000) * 1000;
-
+	
 	
 	//tRef.setStart(); // Set reference time
 	// The first measurement point should be 5sec in the future
 	//tRef.setStart((unsigned long) (tRef.getStartSec() - tSample + 5.));
 	//tStart.tv_sec = tRef.getStartSec();
 	//tStart.tv_usec = tRef.getStartMicroSec();
-
+	
 	// Clear the variables for the timing analysis
 	timingN = 0;
 	timingSum = 0;
 	timingSum2 = 0;
 	timingMin = 0;
 	timingMax = 0;
- 
-
-	dev = (DAQDevice *) createDevice(moduleType.c_str());	
+	
+	
+	dev = (DAQDevice *) createDevice(moduleType.c_str());
 	dev->setDebugLevel(debug);
-
+	
 	dev->readInifile(this->inifile.c_str(), iniGroup.c_str());
 	dev->readAxis(this->inifile.c_str());
 	
@@ -166,15 +162,15 @@ void Reader::runReadout(FILE *fout){
 	init();
 	
 	// Set reference time and sampling time of the server loop
-	// TODO: Read the start time from configuration 
+	// TODO: Read the start time from configuration
 	// TODO: Read sampling phase from configuration
 	tStart.tv_sec = 1195487978;
 	tStart.tv_usec = 100000;      // If there are two independant loops with thee same
 	                              // sample rate there should be a phase shift between sampling
 	setTRef(&tStart);
 	enableTimeout(&tWait);
-
-
+	
+	
 	// Start the server waiting for the records
 	if (runDaemon)
 		init_server();
@@ -182,13 +178,12 @@ void Reader::runReadout(FILE *fout){
 		init_server(fileno(stdin));
 	
 	fprintf(fout, "\n");
-
+	
 	//tRef.setEnd();
-
+	
 	dev->closeDatabase();
 	delete dev;
 }
-
 
 
 int Reader::handle_timeout(){
@@ -198,29 +193,29 @@ int Reader::handle_timeout(){
 	//struct timeval tWait;
 	struct timeval t0, t1;
 	struct timezone tz;
-
-
+	
+	
 	// TODO: Check timing
 	// The goal is to read data in periodic intervals
 	// The reference time is given by the run start time
 	//t.setStart();
 	gettimeofday(&t0, &tz);
-
-
+	
+	
 	// Analyse the timeing quality of the readout process
 	//analyseTiming(&t);
-
-
+	
+	
 	// TODO: Read data / Simulate data
 	if (debug > 1) printf("=== Reading Data %10ld %06ld=== \n", t0.tv_sec, t0.tv_usec);
 	// Call rsync
 	// TODO: Include also in the device class as the specific filenames are needed!!
-
+	
 	try {
 		
 		dev->copyRemoteData();
-                fflush(stderr);
-	
+		fflush(stderr);
+		
 		// List all new files?!
 		dev->getNewFiles();
 		
@@ -235,7 +230,7 @@ int Reader::handle_timeout(){
 	// Get free disk space
 	// Read the disk space from all devices. Report every device only once?!
 	analyseDiskSpace(dev->getArchiveDir());
-
+	
 	// TODO: Write performance data to performance table?!
 	//       Optionally add the performance data also to the data tables?!
 	
@@ -244,110 +239,104 @@ int Reader::handle_timeout(){
 }
 
 
-
-
 int Reader::read_from_keyboard(){
-  int err;
-  char buf[256];
-
-  // Handle keyboard events
-  //handleKeyboard(floop, kb);
-
+	int err;
+	char buf[256];
+	
+	// Handle keyboard events
+	//handleKeyboard(floop, kb);
+	
 #ifdef __GNUC__
-  err = read (fileno(stdin), buf, 256);
+	err = read (fileno(stdin), buf, 256);
 #else // windows ?
-  err = _read (fileno(stdin), buf, 256);
+	err = _read (fileno(stdin), buf, 256);
 #endif
-
-  if (err > 0){
-    //keyboard_cmds(floop, buf);
-   buf[err] = 0; // Add string terminator
-    //printf("%s", buf); fflush(stdout);
-
-    // Command interpreter for stdin
-    switch (buf[0]){
-	  case 'd': // Enable / display debug
-	    //if (fout == stdout) fout = 0;
-		//else fout = stdout;
-
-			this->debug++;
-			if (this->debug > 2) this->debug = 0;
-			dev->setDebugLevel(debug);
-			printf("Switched debug level to %d\n", this->debug);	
-			break;
+	
+	if (err > 0){
+		//keyboard_cmds(floop, buf);
+		buf[err] = 0; // Add string terminator
+		//printf("%s", buf); fflush(stdout);
 		
-	  case 'h': // Help pages
-	    printf("Data server -  commands:\n");
-		printf("   d    Enable/disable debug output\n");
-		printf("   q    Quit\n");
-		printf("   s    Display status\n");
-		printf("   z    Test database connection\n");
-		printf(" SPACE  Add sleep command - load simulation\n");
-	    break;	
+		// Command interpreter for stdin
+		switch (buf[0]){
+			case 'd': // Enable / display debug
+				//if (fout == stdout) fout = 0;
+				//else fout = stdout;
+				
+				this->debug++;
+				if (this->debug > 2) this->debug = 0;
+				dev->setDebugLevel(debug);
+				printf("Switched debug level to %d\n", this->debug);
+				break;
+				
+			case 'h': // Help pages
+				printf("Data server -  commands:\n");
+				printf("   d    Enable/disable debug output\n");
+				printf("   q    Quit\n");
+				printf("   s    Display status\n");
+				printf("   z    Test database connection\n");
+				printf(" SPACE  Add sleep command - load simulation\n");
+				break;
+				
+			case 'q': // Shutdown server
+			case 'Q':
+				shutdown = true;
+				break;
+				
+			case ' ': // Simulate high load?!
+				SLEEP(600); //ms
+				break;
+				
+			case 's':
+			case 'S':
+				displayStatus(stdout);
+				//displayActiveSockets(stdout);
+				break;
+				
+			// Create new Experiment - means completely new database
+			// Create all database tables
+			case 'e': // new experiment
+				//createExperiment();
+				break;
+				
+			// Start RUN
+			case 'r': // Start run
+				//createRun();
+				break;
+				
+			// Stop RUN
+			case 'p': // Stop run
+				//stopRun();
+				break;
+				
+		}
 		
-      case 'q': // Shutdown server
-      case 'Q':
-        shutdown = true;
-        break;
-		
-      case ' ': // Simulate high load?!
-	    SLEEP(600); //ms
-	    break;
-
-      case 's':
-      case 'S':
-	    displayStatus(stdout);
-        //displayActiveSockets(stdout);
-        break;
-		
-      // Create new Experiment - means completely new database
-	  // Create all database tables
-	  case 'e': // new experiment
-	     //createExperiment();
-	     break;
-	  
-	  // Start RUN
-	  case 'r': // Start run
-	     //createRun();
-	     break;
-	  
-	  // Stop RUN
-	  case 'p': // Stop run
-	     //stopRun();
-		 break; 
-						
-    }
-				            
-  }
-
-  return(0);
-}  
-
-
-
-
+	}
+	
+	return(0);
+}
 
 
 void Reader::executeCmd(int client, short cmd, unsigned int *arg, short n){
-  //int i;
-  int err;
-  unsigned int res[10], *buf;
-  //float *pFloat;
-  short acklen;
-  
-
+	//int i;
+	int err;
+	unsigned int res[10], *buf;
+	//float *pFloat;
+	short acklen;
+	
+	
 #ifdef debug
-  fprintf(fout, "ExecuteCmd: %d \n",cmd);
+	fprintf(fout, "ExecuteCmd: %d \n",cmd);
 #endif
-
-  // local function call
-  buf = res;  // used, if the result is not longer than 2 words
-  buf[0] = 0; // no error
-  acklen = 1;
-  try { switch(cmd) {
-
+	
+	// local function call
+	buf = res;  // used, if the result is not longer than 2 words
+	buf[0] = 0; // no error
+	acklen = 1;
+	try { switch(cmd) {
+		
 /*
-    case 0: // save data
+		case 0: // save data
 
 
 #ifdef USE_DYN_BYTEORDER
@@ -378,7 +367,7 @@ void Reader::executeCmd(int client, short cmd, unsigned int *arg, short n){
 #endif
 
 
-  
+
        //acklen=1;
        break;
 
@@ -426,53 +415,50 @@ void Reader::executeCmd(int client, short cmd, unsigned int *arg, short n){
 // ========= periodically sampling Unit ============
 
 void Reader::analyseTiming(struct timeval *t){
-
-  unsigned long long tPlan;
-  unsigned long long tNow;
-  unsigned long long tDiff;
- 
-
-  tPlan = ((unsigned long long) tRef.tv_sec + lastIndex * tSample.tv_sec) * 1000000
-         + (unsigned long long) tRef.tv_usec + lastIndex * tSample.tv_usec;
-  tNow = (unsigned long long) t->tv_sec * 1000000 + (unsigned long long) t->tv_usec;
-  tDiff = tNow - tPlan;
-  
-  if (timingN == 0){
-    timingMin = tDiff;
-	timingMax = tDiff;
-  }
-  
-  timingN++;
-  
-  timingSum += tDiff;
-  timingSum2 += tDiff * tDiff;
-  
-  if (tDiff > (unsigned) timingMax)  timingMax = tDiff;
-  if (tDiff < (unsigned) timingMin)  timingMin = tDiff;
-
-
-  if (fout > 0){
-    unsigned long long buf; 
-  
-    buf = tRef.tv_sec;
-    if (fout) fprintf(fout, "%6d  | %ld.%06ld \n", index, t->tv_sec, t->tv_usec);
-  }
-
-
+	unsigned long long tPlan;
+	unsigned long long tNow;
+	unsigned long long tDiff;
+	
+	
+	tPlan = ((unsigned long long) tRef.tv_sec + lastIndex * tSample.tv_sec) * 1000000
+		+ (unsigned long long) tRef.tv_usec + lastIndex * tSample.tv_usec;
+	tNow = (unsigned long long) t->tv_sec * 1000000 + (unsigned long long) t->tv_usec;
+	tDiff = tNow - tPlan;
+	
+	if (timingN == 0){
+		timingMin = tDiff;
+		timingMax = tDiff;
+	}
+	
+	timingN++;
+	
+	timingSum += tDiff;
+	timingSum2 += tDiff * tDiff;
+	
+	if (tDiff > (unsigned) timingMax)  timingMax = tDiff;
+	if (tDiff < (unsigned) timingMin)  timingMin = tDiff;
+	
+	
+	if (fout > 0){
+		unsigned long long buf;
+		
+		buf = tRef.tv_sec;
+		if (fout) fprintf(fout, "%6d  | %ld.%06ld \n", index, t->tv_sec, t->tv_usec);
+	}
 }
 
 
 void Reader::displayStatus(FILE *fout){
-
+	
 	if (fout == 0) return;
-
+	
 	fprintf(fout, "\n");
 	fprintf(fout,   "Server start     : %lds %ldus\n", tRef.tv_sec, tRef.tv_usec);
 	if (useTimeout){
 		fprintf(fout, "Sampling time    : %lds %ldus\n", tSample.tv_sec, tSample.tv_usec);
 		fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
 		fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
-	
+		
 		if (timingN > 0){
 			double var;
 			var = (double) timingSum2 / timingN - (double) timingSum / timingN * timingSum / timingN;
@@ -483,10 +469,10 @@ void Reader::displayStatus(FILE *fout){
 				fprintf(fout, "Sample error     : %lld +- %8s  (%lld .. %lld) \n", timingSum/timingN,
 					"err", timingMin, timingMax);
 		}
-	
+		
 		// TODO: Display error status of sensor groups
-	
-	
+		
+		
 	} else {
 		fprintf(fout, "Sampling         : Disabled\n");
 	}
@@ -500,13 +486,13 @@ void Reader::analyseDiskSpace(const char *dir){
 	// TODO:  How to handle the 64bit data types???
 	//        Change to 64bit version to be compatible...
 	struct statfs fs;
-
+	
 	if (debug > 0)
 		printf("_____Reader::analyseDiskSpace(...)_____\n");
-
+	
 	// get file system statistics
 	statfs(dir, &fs);
-
+	
 #ifndef linux
 	// Not supported under Linux?!
 	printf("Disk %s mounted to %s\n", fs.f_mntfromname, fs.f_mntonname);

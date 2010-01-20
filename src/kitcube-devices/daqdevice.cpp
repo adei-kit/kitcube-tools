@@ -26,7 +26,7 @@
 DAQDevice::DAQDevice(){
 	
 	debug = 0;
-
+	
 	moduleType = "Generic";
 	moduleNumber = 0;
 	this->sensorGroup = "txt";
@@ -44,8 +44,8 @@ DAQDevice::DAQDevice(){
 	nAxis = 0;
 	sensor = 0;
 	nSensors = 0; // Unknown configuration
-
-#ifdef USE_MYSQL	
+	
+#ifdef USE_MYSQL
 	db = 0;
 #endif
 	
@@ -54,7 +54,7 @@ DAQDevice::DAQDevice(){
 
 DAQDevice::~DAQDevice(){
 	FILE *fmark;
-
+	
 	// Save current position
 	if (fileIndex > 0) {
 		fmark = fopen(filenameMarker.c_str(), "w");
@@ -62,7 +62,7 @@ DAQDevice::~DAQDevice(){
 			fprintf(fmark, "%ld\n", fileIndex);
 			fclose(fmark);
 		}
-	}	
+	}
 	
 	if (axis > 0) {
 		delete [] axis;
@@ -97,15 +97,15 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	char line[256];
 	float tValue;
 	std::string tUnit;
-
+	
 	printf("_____DAQDevice::readInifile()_____\n");
-
+	
 	//
 	// Get the module number
 	//
 	this->inifile = filename;
 	if (group > 0) this->iniGroup = group;
-
+	
 	//ini = new akInifile(inifile.c_str(), stdout);
 	ini = new akInifile(inifile.c_str());
 	if (ini->Status()==Inifile::kSUCCESS){
@@ -181,9 +181,9 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 			this->rsyncArgs += " ";
 			this->rsyncArgs += ini->GetNextString("", &error);
 		}
-	
+		
 		// Add module number to dataDir + archiveDir
-		if (dataDir.at(dataDir.length()-1) != '/') dataDir += "/";	
+		if (dataDir.at(dataDir.length()-1) != '/') dataDir += "/";
 		if (archiveDir.at(archiveDir.length()-1) != '/') archiveDir += "/";
 		if (remoteDir.at(remoteDir.length()-1) != '/') remoteDir += "/";
 		sprintf(line, "%03d/", moduleNumber);
@@ -206,7 +206,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->tSample = tValue;
 		if ((tUnit == "sec") || (tUnit == "s")) this->tSample = tValue * 1000;
 		if (tUnit == "min") this->tSample = tValue * 60000;
-
+		
 		
 		// Global parameters can be overwritten by the module settings
 		this->configDir = ini->GetFirstString("configDir", configDir.c_str(), &error);
@@ -219,7 +219,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	}
 	delete ini;
 	
-
+	
 	// Add slash at the end of the directories
 	//printf("ConfigDir: %c\n", configDir.at(configDir.length()-1));
 	if (configDir.at(configDir.length()-1) != '/') configDir += "/";
@@ -227,14 +227,13 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	if (remoteDir.at(remoteDir.length()-1) != '/') remoteDir += "/";
 	if (archiveDir.at(archiveDir.length()-1) != '/') archiveDir += "/";
 	
-
+	
 	// Check integrity of data fields
 	if (datafileMask.find("<index>") == std::string::npos){
 		printf("There is no tag <index> in datafileMask=%s specified in inifile %s\n",
 			   datafileMask.c_str(), inifile.c_str());
 		throw std::invalid_argument("Missing <index> in datafileMask");
 	}
-
 }
 
 
@@ -244,7 +243,7 @@ void DAQDevice::readAxis(const char *inifile){
 	std::string value;
 	int i;
 	std::string item;
-
+	
 	
 	printf("______DAQDevice::readAxis()______________________\n");
 	
@@ -253,7 +252,7 @@ void DAQDevice::readAxis(const char *inifile){
 	if (ini->Status()==Inifile::kSUCCESS){
 		
 		error = ini->SpecifyGroup("Axis");
-
+		
 		if (error == Inifile::kSUCCESS){
 			
 			// Get the number of defined axis
@@ -302,11 +301,11 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	std::string axisName;
 	std::string sLine;
 	
-	// Will need the axis definition for parsing the sensor names
-	if (axis == 0) readAxis(this->inifile.c_str());
-
 	
 	printf("_____DAQDevice::getSensorNames()_____\n");
+	
+	// Will need the axis definition for parsing the sensor names
+	if (axis == 0) readAxis(this->inifile.c_str());
 	
 	sprintf(line, "%s%s", configDir.c_str(), sensorListfile);
 	printf("Read sensor names from list %s\n", line);
@@ -320,13 +319,14 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 		flist = fopen(line, "w");
 		if (flist < 0){
 			throw std::invalid_argument("Error creating template file");
-		}	
-		for (i = 0; i < nSensors; i++)
+		}
+		for (i = 0; i < nSensors; i++) {
 			if (sensor[i].longComment.length() == 0){
 				fprintf(flist,"%10d\t%s\t\n", i+1, sensor[i].comment.c_str());
 			} else {
 				fprintf(flist,"%10d\t%s\t\n", i+1, sensor[i].longComment.c_str());
 			}
+		}
 		fclose(flist);
 		
 		throw std::invalid_argument("Fill in sensor names in template file");
@@ -334,7 +334,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	
 	n = line;
 	i = 0;
-	while ((n > 0) && (i < nSensors)){
+	while ((n > 0) && (i < nSensors)) {
 		// Read names, compare with the names in the data base?!
 		n = fgets(line, 255, flist);
 		if (n > 0) {
@@ -344,7 +344,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 			// Read the description back from file
 			// This feature can be used to overwrite the standard name from the header files
 			// e.g. replace german names or unsystematic ones?!
-			sLine = namePtr+1;
+			sLine = namePtr + 1;
 			sensor[i].comment = sLine.substr(0, sLine.find('\t'));
 			if (namePtr > 0) namePtr = strchr(namePtr+1, '\t'); // Field 3
 			if (namePtr == 0)
@@ -372,7 +372,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 			i++;
 		}
 	}
-	if (i < nSensors -1) {
+	if (i < nSensors - 1) {
 		printf("Found %d sensor names\n", i+1);
 		throw std::invalid_argument("Missing definitions in the sensor list");
 	}
@@ -381,7 +381,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	// E.g. check aggregation type?!
 	for (i = 0; i < nSensors; i++) {
 		pos = 0;
-		for (j=0;j<5;j++){
+		for (j = 0; j < 5; j++) {
 			pos = sensor[i].name.find('.', pos);
 			if (pos == std::string::npos){
 				sprintf(line, "Sensor name #%d doesn't match naming convention: %s\n", i+1, sensor[i].name.c_str());
@@ -392,7 +392,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	
 	
 	// Replace the module name
-	for (i=0;i<nSensors;i++){
+	for (i = 0; i < nSensors; i++) {
 		sensor[i].name.replace(0,sensor[i].name.find('.'), moduleName);
         //printf("%d %s\n", i+1, sensor[i].name.c_str());
 	}
@@ -453,19 +453,17 @@ void::DAQDevice::createDirectories(const char *path){
 		if (pos1 >= 0) {
 			dir = filename.substr(0,pos1);
 			if (debug > 2) printf("Create directory %s (%d, %d)\n", dir.c_str(),pos0, pos1);
-			if (dir.length() > 0) 
+			if (dir.length() > 0)
 				mkdir(dir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 			pos0 = pos1+1;
 			i++;
 		}
 	}
-	
 }
 
 
-
 void DAQDevice::openFile(const char *filename){
-	
+
 	// Define filename for reading?!
 	this->filename = filename;
 }
@@ -495,8 +493,7 @@ void DAQDevice::closeFile(){
 	if (fdata > 0) {
 		fclose(fdata);
 		fdata = 0;
-	}	
-	
+	}
 }
 
 
@@ -505,15 +502,15 @@ void DAQDevice::copyRemoteData(){
 	struct timezone tz;
 	int err;
 	char line[256];
-
-
+	
+	
 	printf("_____DAQDevice::copyRemoteData()_____\n");
-
+	
 	createDirectories((archiveDir + getDataDir()).c_str());
 	
 	// Transfer only files of the specified sensor group (== file type)
 	// The time to find changes in large file increases with the file size
-	// Therefore it is necessary to use the rsync option --append. This option 
+	// Therefore it is necessary to use the rsync option --append. This option
 	// will make rsync assume that exisitings files will only be added at the end.
 	//
 	// TODO: Improve output of the system call. The output is mixed with others
@@ -543,6 +540,7 @@ void DAQDevice::copyRemoteData(){
 const char *DAQDevice::getDataDir(){
 	return(0);
 }
+
 
 const char *DAQDevice::getDataFilename(){
 	return(0);
@@ -574,10 +572,10 @@ void DAQDevice::openDatabase(){
 	
 	
 	// Create Database tables
-	sprintf(line, "Data_%03d_%s_%s", moduleNumber, 
+	sprintf(line, "Data_%03d_%s_%s", moduleNumber,
 		moduleName.c_str(), sensorGroup.c_str());
 	printf("Data table name: \t%s\n", line);
-	this->dataTableName = line;	
+	this->dataTableName = line;
 	
 	
 	//TODO:  Check if the data is available in the class?!
@@ -595,12 +593,12 @@ void DAQDevice::openDatabase(){
 		db = 0;
 		
 		return;
-	} 
+	}
 	
 	// Enable automatic reconnect
 	my_bool re_conn = 1;
 	mysql_options(db, MYSQL_OPT_RECONNECT, &re_conn);
-
+	
 	
 	// Read list of databases?!
 	// Only kitcube.* are relevant
@@ -619,18 +617,18 @@ void DAQDevice::openDatabase(){
 	//            mysql_num_rows(res),
 	//            mysql_num_fields(res));
 	printf("KITCube databases: \t");
-	while ((row = mysql_fetch_row(res)) != NULL){
-		for (i=0;i<mysql_num_fields(res); i++){
+	while ((row = mysql_fetch_row(res)) != NULL) {
+		for (i = 0; i < mysql_num_fields(res); i++) {
 			
 			if (strstr(row[i], "kitcube") == row[i])
 				printf("%s", row[i]);
 		}
-	}	
+	}
 	mysql_free_result(res);
 	printf("\n");
 	
 	
-	// Select active database 
+	// Select active database
 	// Print the tables of the database
 	sprintf(sql,"USE %s", dbName.c_str());
 	if (mysql_query(db, sql)){
@@ -652,7 +650,6 @@ void DAQDevice::openDatabase(){
 			
 			return;
 		}
-		
 	}
 	
 	
@@ -692,7 +689,7 @@ void DAQDevice::openDatabase(){
 	res = mysql_store_result(db);
 	mysql_free_result(res);
 	
-	// Query all axis 
+	// Query all axis
 	sprintf(sql,"SELECT id,name FROM `%s`", axisTableName.c_str());
 	if (mysql_query(db, sql)){
 		fprintf(stderr, "%s\n", sql);
@@ -727,7 +724,7 @@ void DAQDevice::openDatabase(){
 	nNewAxis = 0;
 	for (i=0;i<nAxis;i++){
 		if (axis[i].isNew){
-			printf("Adding axis %s -- %s (%s) to the axis list\n", 
+			printf("Adding axis %s -- %s (%s) to the axis list\n",
 				   axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
 			sprintf(sql,"INSERT INTO `%s` (`name`,`comment`,`unit`) VALUES ('%s','%s','%s')",
 					axisTableName.c_str(),
@@ -762,7 +759,7 @@ void DAQDevice::openDatabase(){
 		cmd += "    `sec` int(10)  default '0', ";
 		cmd += "    `usec` int(10)  default '0', ";
 		for (i=0;i<nSensors;i++)
-			cmd += "`" + sensor[i].name + "` float(10), ";		
+			cmd += "`" + sensor[i].name + "` float(10), ";
 		cmd += "PRIMARY KEY (`id`), INDEX(`sec`) ) TYPE=MyISAM";
 		
 		//printf("SQL: %s\n", cmd.c_str());
@@ -772,7 +769,7 @@ void DAQDevice::openDatabase(){
 			fprintf(stderr, "%s\n", mysql_error(db));
 			
 			throw std::invalid_argument("Creation of data table failed");
-		}		
+		}
 	}
 	res = mysql_store_result(db);
 	mysql_free_result(res);
@@ -842,7 +839,6 @@ void DAQDevice::openDatabase(){
 	}
 	printf("New sensors: \t\t%d\n", nNewSensors);
 	printf("\n");
-	
 #endif // USE_MYSQL
 }
 
@@ -861,6 +857,7 @@ void DAQDevice::closeDatabase(){
 void DAQDevice::readHeader(const char *header){
 }
 
+
 void DAQDevice::readHeader(){
 	readHeader((path+filename).c_str());
 }
@@ -873,12 +870,14 @@ void DAQDevice::writeHeader(){
 void DAQDevice::readData(){
 }
 
-void DAQDevice::readData(const char *dir, const char *filename){ 
+
+void DAQDevice::readData(const char *dir, const char *filename){
 }
 
 
 void DAQDevice::updateDataSet(unsigned char *buf){
 }
+
 
 void DAQDevice::writeData(){
 }
@@ -899,7 +898,7 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 		if (ptr != filename) {
 			//printf("The file %s doesnot match the DAQ-naming convention\n", filename);
 			throw std::invalid_argument("Starting tag not found");
-    	}	
+		}
 		firstChar = filename + strlen(firstTag);
 	} else {
 		firstChar = filename;
@@ -920,7 +919,7 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 			if (ptr == 0) {
 				//printf("The file %s doesnot match the DAQ-naming convention (missing field termination)\n", filename);
 				throw std::invalid_argument("Termintation tag not found");
-			}	
+			}
 		} else {
 			// Find the next letter in the string
 			ptr = firstChar;
@@ -944,12 +943,12 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 	index = 0;
 	err = sscanf(indexTag, "%ld", &index);
 	if (err == 0){
-		throw std::invalid_argument("No numerical value read from the field");		
-    }
+		throw std::invalid_argument("No numerical value read from the field");
+	}
 	
 	// Remove the field and return the filename without the index field
 	//restOfName = lastChar + 1;
-	//strcpy(firstChar, restOfName.c_str());	
+	//strcpy(firstChar, restOfName.c_str());
 	
 	if (next > 0){
 		next = lastChar + 1;
@@ -957,7 +956,6 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 	
 	return (index);
 }
-
 
 
 int DAQDevice::getFileNumber(char *filename){
@@ -968,14 +966,14 @@ int DAQDevice::getFileNumber(char *filename){
 	std::string fileSuffix;
 	
 	
-	// Write the index of the file to a list 
+	// Write the index of the file to a list
 	// Process in this list with the next index
 	// The read pointer of the last file will be kept
 	
 	// Find <index> in data template
 	posIndex = datafileMask.find("<index>");
 	if (posIndex == -1) {
-		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n", 
+		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
 			   datafileMask.c_str(), inifile.c_str());
 	}
 	if (debug > 3) printf("Position of <index> in %s is  %d\n", datafileMask.c_str(), posIndex);
@@ -988,8 +986,7 @@ int DAQDevice::getFileNumber(char *filename){
 	index = getIndex(filename, (char *) filePrefix.c_str(), (char *) fileSuffix.c_str());
 	//printf("Index: %d\n",  index);
 	
-    return (index);	
-	
+	return (index);
 }
 
 
@@ -1033,7 +1030,7 @@ void DAQDevice::getNewFiles(){
 	//datafileMask = "M12_<index>.DAR";
 	//dataDir = "./"; // Open current dir
 	//dataDir = "./data/"; // Open current dir
-
+	
 	dataDir = archiveDir + getDataDir();
 	
 	
@@ -1085,7 +1082,7 @@ void DAQDevice::getNewFiles(){
 				//	//printf("Add to end of list\n");
 				//	i = nList-1;
 				//} else {
-					
+				
 				
 				// Read the index of the following item in order to find the right slot for the current file
 				i = 0; j = 0;
@@ -1114,11 +1111,10 @@ void DAQDevice::getNewFiles(){
 				//printf("Error: %s\n", err.what());
 			}
 		}
-		
 	}
 	
 	closedir(din);
-
+	
 	
 	if (debug > 2){
 		for(i = 0; i < nList; i++) {
@@ -1181,7 +1177,7 @@ void DAQDevice::getNewFiles(){
 			}
 			
 			next = listNext[next];
-		
+			
 		}
 	} catch (std::invalid_argument &err){
 		printf("Error: %s\n", err.what());
@@ -1192,9 +1188,7 @@ void DAQDevice::getNewFiles(){
 	delete [] listName;
 	delete [] listIndex;
 	delete [] listNext;
-	
 }
-
 
 
 unsigned long DAQDevice::getTimestamp(const char *date, const char *time){

@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
 	
 	
 	printf("KITCube Data Reader\n");
-
+	
 	//
 	// Default program switches
 	//
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
 	
 	//
 	// Parse command line
-	//	
+	//
 	while ((err = getopt(argc, argv, "dhi:m:v:")) > -1){
 		// Use a colon to specify these option that require an argument
 		
@@ -47,12 +47,12 @@ int main(int argc, char *argv[]){
 				printf("\t-d\t\tRun as daemon without input from keyboard\n");
 				printf("\t-i <inifile>\tSelect the inifile\n");
 				printf("\t-m <iniGroup>\tSelect the iniGroup name as used in the inifile\n");
-				printf("\t-v <level>\tSet level of verbosity\n");	
+				printf("\t-v <level>\tSet level of verbosity\n");
 				exit(0);
 				break;
 			case 'i': // inifile
 				if (optarg > 0) inifile = optarg;
-				break;				
+				break;
 			case 'm': // run in console
 				if (optarg > 0) iniGroup = optarg;
 				break;
