@@ -2,7 +2,7 @@
 #
 #
 
-EXTRA_DIST = M01_01.DAR.sensors M01_01.DAX.sensors kitcube.ini
+EXTRA_DIST = kitcube.ini
 
 
 if USE_MYSQL
