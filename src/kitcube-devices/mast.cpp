@@ -126,8 +126,8 @@ const char *Mast::getDataFilename(){
 // Move to base class?
 void Mast::replaceItem(const char **header, const char *itemTag, const char *newValue){
 	bool findTag;
-	char *ptr;
-	char *startChar;
+	const char *ptr;
+	const char *startChar;
 	char *endChar;
 	int i;
 	int len;
@@ -147,7 +147,7 @@ void Mast::replaceItem(const char **header, const char *itemTag, const char *new
 				// TODO: Move the rest of the header?!
 				//       Check if the value has the same length?!
 				len = strlen(newValue);
-				strncpy(startChar+2, newValue,len);
+				strncpy((char *)startChar+2, newValue,len);
 				// TODO: End is not found properly?!	
 			}
 		}
@@ -162,9 +162,9 @@ void Mast::replaceItem(const char **header, const char *itemTag, const char *new
 
 const char *Mast::getStringItem(const char **header, const char *itemTag){
 	bool findTag;
-	char *ptr;
-	char *startChar;
-	char *endChar;
+	const char *ptr;
+	const char *startChar;
+	const char *endChar;
 	int i;
 	int len;
 	
@@ -247,7 +247,7 @@ unsigned long Mast::getSensorGroup(){
 
 
 const char *Mast::getSensorName(const char *longName, unsigned long *aggregation){
-	char *ptr;
+	const char *ptr;
 	unsigned long type;
 	
 	

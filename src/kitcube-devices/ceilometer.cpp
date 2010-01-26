@@ -189,8 +189,8 @@ int Ceilometer::getFileNumber(char *filename){
 
 void Ceilometer::replaceItem(const char **header, const char *itemTag, const char *newValue){
 	bool findTag;
-	char *ptr;
-	char *startChar;
+	const char *ptr;
+	const char *startChar;
 	//char *endChar;
 	int i;
 	int len;
@@ -210,7 +210,7 @@ void Ceilometer::replaceItem(const char **header, const char *itemTag, const cha
 				// TODO: Move the rest of the header?!
 				//       Check if the value has the same length?!
 				len = strlen(newValue);
-				strncpy(startChar+2, newValue,len);
+				strncpy((char *)startChar+2, newValue,len);
 				// TODO: End is not found properly?!
 			}
 		}
@@ -225,9 +225,9 @@ void Ceilometer::replaceItem(const char **header, const char *itemTag, const cha
 
 const char *Ceilometer::getStringItem(const char **header, const char *itemTag){
 	bool findTag;
-	char *ptr;
-	char *startChar;
-	char *endChar;
+	const char *ptr;
+	const char *startChar;
+	const char *endChar;
 	int i;
 	int len;
 	

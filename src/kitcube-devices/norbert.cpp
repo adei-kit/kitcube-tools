@@ -195,8 +195,8 @@ int Norbert::getFileNumber(char *filename){
 
 void Norbert::replaceItem(const char **header, const char *itemTag, const char *newValue){
 	bool findTag;
-	char *ptr;
-	char *startChar;
+	const char *ptr;
+	const char *startChar;
 	//char *endChar;
 	int i;
 	int len;
@@ -216,7 +216,7 @@ void Norbert::replaceItem(const char **header, const char *itemTag, const char *
 				// TODO: Move the rest of the header?!
 				//       Check if the value has the same length?!
 				len = strlen(newValue);
-				strncpy(startChar+2, newValue,len);
+				strncpy((char *)startChar+2, newValue,len);
 				// TODO: End is not found properly?!
 			}
 		}
@@ -229,9 +229,9 @@ void Norbert::replaceItem(const char **header, const char *itemTag, const char *
 
 const char *Norbert::getStringItem(const char **header, const char *itemTag){
 	bool findTag;
-	char *ptr;
-	char *startChar;
-	char *endChar;
+	const char *ptr;
+	const char *startChar;
+	const char *endChar;
 	int i;
 	int len;
 

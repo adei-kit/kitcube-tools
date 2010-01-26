@@ -297,7 +297,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	char *n;
 	char *namePtr;
 	char name[50];
-	int pos;
+	unsigned int pos;
 	std::string axisName;
 	std::string sLine;
 	
@@ -555,9 +555,9 @@ void DAQDevice::openDatabase(){
 	
 	int i;
 	MYSQL_RES *res;
-	MYSQL_RES *resTables;
+	//MYSQL_RES *resTables;
 	MYSQL_ROW row;
-	MYSQL_ROW table;
+	//MYSQL_ROW table;
 	char sql[256];
 	char line[256];
 	std::string cmd;
@@ -1130,7 +1130,7 @@ void DAQDevice::getNewFiles(){
 	filenameMarker = line;
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
-		err = fscanf(fmark, "%d %ld %d %d", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		err = fscanf(fmark, "%d %ld %ld %d", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	} else {
 		// Create new marker file
@@ -1192,9 +1192,9 @@ void DAQDevice::getNewFiles(){
 
 
 unsigned long DAQDevice::getTimestamp(const char *date, const char *time){
-	char *ptr1, *ptr2;
+	const char *ptr1, *ptr2;
 	struct tm timestamp;
-	char buf[20];
+	// char buf[20];
 	
 	ptr1 = strstr(date, ".");
 	if (ptr1 > 0) {
