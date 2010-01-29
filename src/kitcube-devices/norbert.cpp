@@ -421,7 +421,7 @@ void Norbert::readData(const char *dir, const char *filename){
 	char *sensorString;
 	int *sensorValue;
 	int err;
-	int sensorPtr[] = {10};
+	int sensorPtr[] = {9};
 	std::string timeString;
 	std::string dateString;
 	unsigned long timestamp;
