@@ -16,6 +16,11 @@
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/mount.h>
+
+#include <sys/socket.h>
+#include <ifaddrs.h>
+#include <net/if.h> // BSD ???
+
 #ifdef linux
 #include <sys/vfs.h>
 #endif
@@ -45,18 +50,24 @@ using std::string;
 #include <../kitcube-devices/simrandom.h>
 #include <../kitcube-devices/mast.h>
 #include <../kitcube-devices/createdevice.h>
-
+#include <../kitcube-devices/syslog.h>
 
 
 
 
 Reader::Reader(): SimpleServer(READER_PORT){
 
-
+	rx = 0;
+	tx = 0;
+	
 }
 
 
 Reader::~Reader(){
+	
+	delete [] moduleName;
+	delete [] moduleType;
+
 }
 
 
@@ -66,26 +77,56 @@ void Reader::readInifile(const char *filename, const char *module){
   std::string value;
 	float tValue;
 	std::string tUnit;
+	int i;
 
   this->inifile = filename;
 	this->tSampleFromInifile = 10000; // ms	
 	
-	this->moduleName = "Simulation";
-	this->moduleType = "SimRandom";	
 	
 
-  ini = new akInifile(inifile.c_str(), stdout);
-  //ini = new akInifile(inifile.c_str());
+  //ini = new akInifile(inifile.c_str(), stdout);
+  ini = new akInifile(inifile.c_str());
   if (ini->Status()==Inifile::kSUCCESS){
 
 	  ini->SpecifyGroup("Reader");
  
 	  //Try to read the module name from inifile if there no module name given
 	  if ((module == 0) || (module[0] == 0)){
-	     this->moduleName = ini->GetFirstString("module", moduleName.c_str(), &error);	  
+		  
+		  // Get the number of modules from the inifile
+		  ini->GetFirstString("module", "", &error);
+		  
+		  nModules = 0;
+		  error = Inifile::kSUCCESS;
+		  while (error == Inifile::kSUCCESS){
+		     ini->GetNextString("", &error);
+			 nModules++;
+		  }
+		  
+		  // Allocate the arrays for all parameters
+		  // TODO: Check if space has been allocated before?!
+		  this->moduleName = new std::string [nModules];
+		  this->moduleType = new std::string [nModules];
+		  this->dev = new  DAQDevice * [nModules];
+		  
+		  // Read modules names
+		  this->moduleName[0] = ini->GetFirstString("module", "Simlation", &error);
+		  for (i=1;i<nModules;i++){
+			  this->moduleName[i] = ini->GetNextString("", &error);
+		  }	  
+		  
 	  } else {
-		  this->moduleName = module;
+		  
+		  // Use the module from the command line - only single module possible
+		  nModules = 1;
+
+		  this->moduleName = new std::string [nModules];
+		  this->moduleType = new std::string [nModules];
+		  
+		  this->moduleName[0] = module;
 	  }
+	  
+	  
 	  
 	  // Read sampling time
 	  tValue= ini->GetFirstValue("samplingTime", (float) tSampleFromInifile, &error);
@@ -96,12 +137,19 @@ void Reader::readInifile(const char *filename, const char *module){
 	  
 	  
 	  
-	  // TODO: Guess type of the module ?!
-	  error = ini->SpecifyGroup(moduleName.c_str());
-	  if (error == Inifile::kSUCCESS){
-		  this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);		
+	  // Read type of the modules
+	  for (i=0;i<nModules;i++){
+		  error = ini->SpecifyGroup(moduleName[i].c_str());
+		  if (error == Inifile::kSUCCESS){
+			  this->moduleType[i] = ini->GetFirstString("moduleType", 
+														moduleName[i].c_str(), &error);		
+		  } else {
+			  printf("Error: Section [%s] not found in inifile.\n", moduleName[i].c_str());
+			  printf("\n");
+			  throw std::invalid_argument("Module is not defined");
+		  }
 	  }
-	  	  
+	  
   }
   delete ini;
 
@@ -115,7 +163,7 @@ void Reader::runAsDaemon(bool flag){
 
 
 
-void Reader::runReadout(FILE *fout){
+void Reader::runReadout(){
     int i;
 	//int iSample;
     struct timeval tWait;
@@ -157,20 +205,76 @@ void Reader::runReadout(FILE *fout){
 	timingMax = 0;
  
 
-	dev = (DAQDevice *) createDevice(moduleType.c_str());	
-	dev->setDebugLevel(debug);
+	// Define the logging parameters
+	//  1 Tsync  Duration of one reader cycle (rsync + file read + db storage)  [s]
+	//  2 Free disk space [Bytes]
+	//  3 Free disk space [%]
+	//  4 Network transfer received [Bytes]
+	//  5 Network transfer send [Bytes]
+	// 
+	
+	if (debug > 2) printf("\n");
+	if (debug > 2) printf("______Starting system logging _______________________________\n"); 
+	log = new SysLog();
+	
+	log->setNData(5);
+	log->setConfig(0,"Reader cycle time");
+	log->setConfig(1,"Free disk space");
+	log->setConfig(2,"Percentage of free disk space");
+	log->setConfig(3,"Network received data");
+	log->setConfig(4,"Network send data");
+	log->setDebugLevel(debug);
 
-	dev->readInifile(this->inifile.c_str(), moduleName.c_str());	
-	dev->readAxis(this->inifile.c_str());
+	log->readInifile(this->inifile.c_str(), "SysLog");	
+    log->readAxis(this->inifile.c_str());
 	
+
+	// Display configuration
+	if (debug) {
+		printf("\n");
+		printf("______Starting service for  %d  module(s)_______________________________\n", nModules);
+		printf("Sampling time     : %d ms\n", tSampleFromInifile);
+		
+		
+		for (i=0;i<nModules;i++){
+			printf("Module %2d         : %s,  type  %s\n", 
+				   i+1, moduleName[i].c_str(), moduleType[i].c_str()); 
+		}
+		printf("Module %2d         : Performance module, type SysLog, %d items\n", 
+			   nModules+1, log->getNSensors());
+	}
 	
+	this->dev = new  DAQDevice * [nModules];	
+	for (i=0;i<nModules;i++){
+
+		
+		dev[i] = (DAQDevice *) createDevice(moduleType[i].c_str());	
+		if (!dev[i]) {
+			printf("Error: Module definition of type %s is unkown\n", moduleType[i].c_str());
+			printf("\n");
+			throw std::invalid_argument("Unknown module type");
+		}
+		
+		dev[i]->setDebugLevel(debug);
+		
+		dev[i]->readInifile(this->inifile.c_str(), moduleName[i].c_str());	
+		dev[i]->readAxis(this->inifile.c_str());
+		
+	}	
 	
-	// For every module one fre port is existing
-	printf("_____Starting service for module %d at port %d_______________________________\n", 
-		   dev->getModuleNumber(), READER_PORT+dev->getModuleNumber());
-	printf("Debug level = %d\n", debug);
-    setPort(READER_PORT+dev->getModuleNumber()*10+dev->getSensorGroupNumber());	
-    init();
+	// For every module one free port is existing
+	// For more than one module  the port of the first one is selected
+    setPort(READER_PORT+dev[0]->getModuleNumber()*10+dev[0]->getSensorGroup());	
+	
+	if (debug){ 
+		printf("Server port       : %d (for remote monitoring)\n", 
+			   READER_PORT+dev[0]->getModuleNumber());
+		printf("\n");
+	}	
+	
+	if (debug > 2) init();
+	else init(0); // No server messages
+	
 	
     // Set reference time and sampling time of the server loop
 	// TODO: Read the start time from configuration 
@@ -178,7 +282,9 @@ void Reader::runReadout(FILE *fout){
 	tStart.tv_sec = 1195487978;
 	tStart.tv_usec = 100000;      // If there are two independant loops with thee same
 	                              // sample rate there should be a phase shift between sampling
-	setTRef(&tStart);
+	
+	//setTRef(&tStart);
+	//setTRef();
     enableTimeout(&tWait);
 
 
@@ -188,65 +294,90 @@ void Reader::runReadout(FILE *fout){
 	else
 		init_server(fileno(stdin));
 	
-    fprintf(fout, "\n");
+    if (debug) printf("\n");
 
     //tRef.setEnd();
 
-	dev->closeDatabase();
-	delete dev;   
+	for (i=0;i<nModules;i++){
+	  dev[i]->closeDatabase();
+	  delete dev[i];
+	}
+	delete [] dev;
+		
+	log->closeDatabase();
+	delete log;	
 }
 
 
 
 int Reader::handle_timeout(){
-  int i;
-  //procDuration t;  
-  //int iSample;
-  //struct timeval tWait;
-  struct timeval t0, t1;
-  struct timezone tz;
+	int i;
+	//procDuration t;  
+	//int iSample;
+	//struct timeval tWait;
+	struct timeval t0, t1;
+	struct timezone tz;
+    unsigned int nData;
+	unsigned int tCycle;
+	
+	// TODO: Check timing
+	// The goal is to read data in periodic intervals 
+	// The reference time is given by the run start time
+	//t.setStart();
+	gettimeofday(&t0, &tz);
+	log->updateTimestamp(&t0);
+  	
+	
+	// Analyse the timeing quality of the readout process
+	//analyseTiming(&t);
     
-
-  // TODO: Check timing
-  // The goal is to read data in periodic intervals 
-  // The reference time is given by the run start time
-  //t.setStart();
-  gettimeofday(&t0, &tz);
-  
-  
-  // Analyse the timeing quality of the readout process
-  //analyseTiming(&t);
-    
-  
-  // TODO: Read data / Simulate data
-  if (debug > 1) printf("=== Reading Data %10ld %06d=== \n", t0.tv_sec, t0.tv_usec);	
-  // Call rsync
-  // TODO: Include also in the device class as the specific filenames are needed!!	
-
+	
+	// TODO: Read data / Simulate data
+	if (debug) { 
+		printf("     _____________________________________________________\n");
+		printf("____/__Reading Data %12ld %06d (sample %06d)___\\_______ \n", 
+					  t0.tv_sec, t0.tv_usec, nSamples);	
+	}
+	
+	nData = 0;
 	try {	
 		
-		dev->copyRemoteData();	
-                fflush(stderr);	
-	
-		// List all new files?!
-		dev->getNewFiles();		
+		for (i=0;i<nModules;i++){
+			dev[i]->copyRemoteData();	
+			fflush(stderr);	
+
+			// List all new files?!
+			dev[i]->getNewFiles();	
+			nData += dev[i]->getProcessedData();
+			
+			if (debug > 3) printf("Processed data %d Bytes\n", dev[i]->getProcessedData());
+		}
+		
+		
+		gettimeofday(&t1, &tz);
+		tCycle = (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec);
+		if (debug > 1) {
+			printf("Processed data = %d Bytes, cycle duration %dus\n", nData, tCycle);
+		}
+		log->updateData(0, ((float) t1.tv_sec - t0.tv_sec) + ((float) t1.tv_usec-t0.tv_usec) / 1000000.); // Time
+		
+		
+		// Get free disk space
+		// Read the disk space from all devices. Report every device only once?!
+		analyseDiskSpace(dev[0]->getArchiveDir());	
+		if (nSamples > 1) log->storeSensorData();
+		
 		
 	} catch (std::invalid_argument &err) {
 		shutdown = true;
 		printf("Error: %s\n", err.what());
 	}
 	
-	gettimeofday(&t1, &tz);
-	printf("Reader cycle duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));	
 	
-    // Get free disk space
-	// Read the disk space from all devices. Report every device only once?!
-	analyseDiskSpace(dev->getArchiveDir());
-
-	// TODO: Write performance data to performance table?!
-	//       Optionally add the performance data also to the data tables?!
-	
-	fflush(stdout);
+	if (debug) {
+		printf("\n");	
+		fflush(stdout);
+	}
 	return(0);
 }
 
@@ -254,6 +385,7 @@ int Reader::handle_timeout(){
 
 
 int Reader::read_from_keyboard(){
+	int i;
   int err;
   char buf[256];
 
@@ -278,9 +410,10 @@ int Reader::read_from_keyboard(){
 		//else fout = stdout;
 
 			this->debug++;
-			if (this->debug > 2) this->debug = 0;
-			dev->setDebugLevel(debug);
+			if (this->debug > 5) this->debug = 0;
+			for (i=0;i<nModules;i++) dev[i]->setDebugLevel(debug);
 			printf("Switched debug level to %d\n", this->debug);	
+			printf("\n");
 			break;
 		
 	  case 'h': // Help pages
@@ -290,6 +423,7 @@ int Reader::read_from_keyboard(){
 		printf("   s    Display status\n");
 		printf("   z    Test database connection\n");
 		printf(" SPACE  Add sleep command - load simulation\n");
+		printf("\n");
 	    break;	
 		
       case 'q': // Shutdown server
@@ -504,25 +638,157 @@ void Reader::displayStatus(FILE *fout){
 
 
 void Reader::analyseDiskSpace(const char *dir){
+	
+	//
+	// Get size of file system 
+	// TODO:  How to handle the 64bit data types??? 
+	//        Change to 64bit version to be compatible...
+	struct statfs fs;
+	uint64_t diff_rx;
+	uint64_t diff_tx;
 
-//
-// Get size of file system 
-// TODO:  How to handle the 64bit data types??? 
-//        Change to 64bit version to be compatible...
-struct statfs fs;
-  
-statfs(dir, &fs);
-
+	float rDiskFree;
+	
+	
+	statfs(dir, &fs);
+	
 #ifndef linux	
-// Not supported under Linux?!	
-printf("Disk %s mounted to %s\n", fs.f_mntfromname, fs.f_mntonname);
+	// Not supported under Linux?!	
+	if (debug > 2) printf("Disk %s mounted to %s\n", fs.f_mntfromname, fs.f_mntonname);
 #endif
-printf("Total blocks  %12Ld %12.3f MByte (block size %d bytes)\n", fs.f_blocks, 
-	   (float) fs.f_blocks / 1024 / 1024 * fs.f_bsize, fs.f_bsize);
-printf("Free blocks   %12Ld %12.3f MByte %6.2f %s\n", fs.f_bfree, 
-	   (float) fs.f_bfree / 1024 / 1024 * fs.f_bsize,
-	   (float) fs.f_bfree / fs.f_blocks * 100, "%");
+	
+	if (debug > 2) {
+		printf("Total blocks  %12Ld %12.3f MByte (block size %d bytes)\n", fs.f_blocks, 
+			   (float) fs.f_blocks / 1024 / 1024 * fs.f_bsize, fs.f_bsize);
+		printf("Free blocks   %12Ld %12.3f MByte %6.2f %s\n", fs.f_bfree, 
+			   (float) fs.f_bfree / 1024 / 1024 * fs.f_bsize,
+			   (float) fs.f_bfree / fs.f_blocks * 100, "%");
+	}
+	
+	// Write data to the syslog structure	
+	rDiskFree = (float) fs.f_bfree / fs.f_blocks * 100;
+	
+	log->updateData(1, fs.f_bfree * fs.f_bsize);        // Bytes
+	log->updateData(2, (float) fs.f_bfree / fs.f_blocks * 100); // %
+	
+	
+#ifndef linux // DARWIN 	
+	// 
+	// Read network statistics
+	// 
+	const char *iface = "en1"; // Name of the device
+	struct ifaddrs *ifap, *ifa;
+	struct if_data *ifd = NULL;
+	int check = 0;
+	
+	if (getifaddrs(&ifap) < 0) {
+		if (debug)
+			printf("getifaddrs() failed.. exiting.\n");
+		return;
+	}
+	
+	for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
+		if ((strcmp(ifa->ifa_name, iface) == 0) && (ifa->ifa_addr->sa_family == AF_LINK)) {
+			ifd = (struct if_data *) ifa->ifa_data;
+			check = 1;
+			break;
+		}
+	}
+	freeifaddrs(ifap);
+	
+	if (check == 0) {
+		if (debug)
+			printf("Requested interface \"%s\" not found.\n", iface);
+		return;
+	} else {
+		
+		diff_rx = ifd->ifi_ibytes -rx;
+		diff_tx = ifd->ifi_obytes -tx;
+		
+        rx = ifd->ifi_ibytes;
+ 		tx = ifd->ifi_obytes;
 
+		if (debug > 2) printf("Network %s rcv=%Ld Bytes send=%Ld Bytes\n", 
+			   iface, diff_rx, diff_tx);
+	
+		/*		
+		 strncpy(ifinfo.name, iface, 32);
+		 ifinfo.rx = ifd->ifi_ibytes;
+		 ifinfo.tx = ifd->ifi_obytes;
+		 ifinfo.rxp = ifd->ifi_ipackets;
+		 ifinfo.txp = ifd->ifi_opackets;
+		 ifinfo.filled = 1;
+		 */ 
+	}
+#endif	
+	
+	
+#ifdef linux		
+	//
+	// Linux
+	//
+	const char *iface = "eth0"; // Name of the device
+	
+	FILE *fp;
+	char temp[4][64], procline[512], *proclineptr, ifaceid[33];
+	int check;
+	
+#define PROCNETDEV "/proc/net/dev"
+	
+	if ((fp=fopen(PROCNETDEV, "r"))==NULL) {
+		if (debug)
+			printf("Error: Unable to read %s.\n", PROCNETDEV);
+		return;
+	}
+	
+	strncpy(ifaceid, iface, 32);
+	strcat(ifaceid, ":");
+	
+	check = 0;
+	while (fgets(procline, 512, fp)!=NULL) {
+		sscanf(procline, "%512s", temp[0]);
+		if (strncmp(ifaceid, temp[0], strlen(ifaceid))==0) {
+			/* if (debug)
+			 printf("\n%s\n", procline); */
+			check = 1;
+			break;
+		}
+	}
+	fclose(fp);
+	
+	if (check==0) {
+		if (debug)
+			printf("Requested interface \"%s\" not found.\n", iface);
+		return;
+	} else {
+		
+		
+		/* get rx and tx from procline */
+		proclineptr = strchr(procline, ':');
+		sscanf(proclineptr+1, "%64s %64s %*s %*s %*s %*s %*s %*s %64s %64s", 
+			   temp[0], temp[1], temp[2], temp[3]);
+		
+		
+		diff_rx = strtoull(temp[0], (char **)NULL, 0) -rx;
+		diff_tx = strtoull(temp[2], (char **)NULL, 0) -tx;
+		
+		rx = strtoull(temp[0], (char **)NULL, 0);
+		tx = strtoull(temp[2], (char **)NULL, 0);
+		
+		
+		if (debug > 2) printf("Network %s rcv=%Ld Bytes send=%Ld Bytes\n", 
+			   iface, diff_rx, diff_tx);		
+		
+	}
+	
+#endif	
+	
+	// Output
+	if ((nSamples > 1) &&(debug > 1)) printf("network rx = %Ld, tx = %Ld Bytes, free = %f %s\n", diff_rx,diff_tx, rDiskFree, "%");
+	
+	// Write data to the syslog structure
+	log->updateData(3, diff_rx);        // Bytes
+	log->updateData(4, diff_tx); // Bytes
 	
 }
 

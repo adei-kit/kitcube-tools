@@ -77,6 +77,24 @@ Results:
 -------------------------------------------------------
 
 Open Issues:
+* Performance measurement: Include the time of writing in the database also to the data
+  Write virtual DAQDevice class to store performance measurements and system load 
+  Parameters: Reader loop time, number of modules, bytes copied, free disk space 
+  
+  --> Available disk space, net transfers, overall rsync time, 
+      overall sql storage
+      Das alles sollte fŸr den Anfang reichen?!
+      DAQ-Device fŸr Performance-modul schreiben... 
+
+  --> Values:
+      Timestamp - when sampling timeout starts
+      
+
+
+  --> Berechnete Werte kšnnen u.U. auch in ADEI selbst berechnet werden.
+      Suren fragen, wie man ADEI Module ergŠnzen kann ?!   
+
+
 *  php-Webapplication fŸr ein Monitoring-Tool.       
    Die Befehle mŸssen dazu noch implementiert werden.
       - Aktive konfiguration (Module, Verzeichnisse, ...)
@@ -90,9 +108,6 @@ Open Issues:
   Kann man dann besser fŸr das Performance-Modul verwenden. Denn hier ist eine Dateien nicht
   unbedingt notwendig?!
 * Redirect rsync output to file and parse for performance
-* Performance measurement: Include the time of writing in the database also to the data
-  Write virtual DAQDevice class to store performance measurements and system load 
-  Parameters: Reader loop time, number of modules, bytes copied, free disk space 
 * Implement Ceilometer nc-support as example data for colored profiles
 * Profile graphics for ceilometer scatter?! 
   --> There might be only gnuplot?! Need for a completely redesigned viewing algorithm?!
@@ -121,6 +136,8 @@ Open Issues:
   about the order of file creating can be used to accelerate the copy. 
   It appears this will b needed to be able to copy teh data from all the modules in time?!
 * Use unique parameter in database for the timestamps!!!
+
+
 
 
 >>> ADEI

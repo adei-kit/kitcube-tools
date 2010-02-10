@@ -279,7 +279,7 @@ int Ceilometer::getNumericItem(const char **header, const char *itemTag){
 }
 
 
-unsigned long Ceilometer::getSensorGroup(){
+unsigned int Ceilometer::getSensorGroup(){
 	unsigned long number;
 	
 	number = 0;
@@ -401,7 +401,7 @@ void Ceilometer::readHeader(const char *filename){
 	// Number of sensors
 	nSensors = 8;
 	printf("Number of sensors %d\n", nSensors);
-	
+
 	// List of sensors
 	if (sensor > 0 ) delete [] sensor;
 	sensor = new struct sensorType [nSensors];

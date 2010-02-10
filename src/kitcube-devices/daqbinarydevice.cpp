@@ -57,6 +57,7 @@ void DAQBinaryDevice::openFile(){ // for writing
 	
 	// Read header, test if it exists and is valid?!
 	readHeader(nameTemplate.c_str());
+	close(fd);
 	
 	
 	// Read index from file, if the value has not been initialized before
@@ -170,7 +171,6 @@ void DAQBinaryDevice::writeData(){
 	nTemplate++;
 	
 }
-
 
 
 

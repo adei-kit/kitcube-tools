@@ -1,0 +1,8 @@
+         1	Time offset	Time_offset	K
+         2	Photo diode signal	Photo_diode_signal	E
+         3	Laser power	Laser_power	JE
+         4	Laser position x	Laser_position_x	GP
+         5	Laser position y	Laser_position_y	GP
+         6	Temperature 1	Temperature_1	E
+         7	Temperature 2	Temperature_2	E
+         8	Temperature 3	Temperature_3	E

@@ -211,9 +211,9 @@ int Mast::getNumericItem(const char **header, const char *itemTag){
 }
 
 
-unsigned long Mast::getSensorGroup(){
-	unsigned long number;
-	
+unsigned int Mast::getSensorGroup(){
+	unsigned int number;
+
 	    switch (sensorGroup.at(2)){
 			case 'L': 
 			case 'l': // slow / 1Hz data

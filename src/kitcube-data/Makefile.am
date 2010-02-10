@@ -1,7 +1,7 @@
 # Makefile.am
 #
 
-EXTRA_DIST = M12_01.DAR.template M12_01.DAX.template kitcube.ini
+EXTRA_DIST = kitcube.ini
 
 
 bin_PROGRAMS = kitcube-data

@@ -21,6 +21,7 @@ stamp-h1
 *.o
 *.a
 .deps/
+src/kitcube-device/test-device
 src/kitcube-data/kitcube-data
 src/kitcube-reader/kitcube-reader
 src/kitcube-reader/kitcube-reader-mysql

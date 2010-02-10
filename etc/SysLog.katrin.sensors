@@ -1,0 +1,5 @@
+         1	TSync	Reader_cycle_time	KD
+         2	Free disk space	Disk_space	Z
+         3	Percentage of free disk space	Disk_quota	QR
+         4	Network received data	Net_receive	Z
+         5	Network send data	Net_transmit	Z

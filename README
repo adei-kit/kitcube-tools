@@ -8,7 +8,7 @@ Installation instructions
 
 1. To compile the project from repository use
 
-cvs checkout -d ext:ipefser1.fzk.de:/home/ipefser1/kopmann/cvsroot fdhwlib
+cvs -d":ext:ipefser1.fzk.de:/home/ipefser1/kopmann/cvsroot" checkout fdhwlib
 
 git clone ssh://ipefser1.fzk.de/home/ipefser1/kopmann/gitroot/kitcube-tools.git
 cd kitcube-tools/src

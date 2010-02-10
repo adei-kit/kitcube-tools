@@ -58,7 +58,7 @@ public:
 	const char * getStringItem(const char **header, const char *itemTag);	
 	int getNumericItem(const char **header, const char *itemTag);	
 	
-	unsigned long getSensorGroup();
+	unsigned int getSensorGroup();
 
 	const char *getSensorName(const char *longname, unsigned long *aggregation = 0);
 

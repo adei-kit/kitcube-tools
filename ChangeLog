@@ -3,6 +3,15 @@ A. Kopmann
 
 
 
+Version 0.3:
+ - Re-structured debug output
+ - Added performance parameters to the reader. Cycle time, free disk space and the
+   transfered amount of data are logged. The database access is shifted to the base class.
+ - Added module to read the KATRIN Lara experiment files. These module contains
+   second data and header information in the file name. Both parts are stored in a
+   separate database table.
+ - Multi-module support for the reader 
+   28.1.10 ak  
 
 Version 0.2:
  - Added automatic reconnect of the database connection. 

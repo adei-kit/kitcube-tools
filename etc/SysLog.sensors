@@ -1,0 +1,5 @@
+         1	TSync	DAQ.SYSLOG.K.Sync.MOM		KD
+         2	Free disk space	DAQ.SYSLOG.Z.DiskFree.MOM	Z
+         3	Percentage of free disk space	DAQ.SYSLOG.ZR.DiskFree.MOM	ZR
+         4	Network received data	DAQ.SYSLOG.Z.NetReceived.MOM	Z
+         5	Network send data	DAQ.SYSLOG.Z.NetSend.MOM	Z
