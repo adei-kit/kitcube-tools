@@ -3,36 +3,25 @@
 #
 # History:
 #
-# /etc/init.d/kitcube-data
+# /etc/init.d/kitcube-reader
 #
-# Start generation of simulated data for kitcube modules
+# Start reading data file from kitcube modules
 #
 ### BEGIN INIT INFO
-# Provides:       kitcube-data 
+# Provides:       kitcube-reader
 # Required-Start: $network
 # Required-Stop:
 # Default-Start:  3 5
 # Default-Stop:   0 1 2 6
-# Description:    starts /home/cube/kitcube-tools-0.3/src/kitcube-data/kitcube-data
+# Description:    starts /home/cube/kitcube-tools-0.3/src/kitcube-reader/kitcube-reader-mysql
 ### END INIT INFO
-
-# Use second argument as module name
-#
-if [ "x$2" != "x" ] ; then
-	#echo "Starting service for module $2"
-	KITMOD=$2
-	KITMODTITLE="for $2"
-else
-	# Start default application
-	KITMOD="data"
-fi
 
 SERVICE_START="yes"
 SERVICE_USER="cube"
 SERVICE_GROUP="users"
-SERVICE_TITLE="KITCube DataServer $KITMODTITLE"
-SERVICE_NAME=kitcube-$KITMOD
-SERVICE=/home/cube/kitcube-tools-0.3/src/kitcube-data/kitcube-$KITMOD
+SERVICE_TITLE="KITCube Reader"
+SERVICE_NAME=kitcube-reader-mysql
+SERVICE=/home/cube/kitcube-tools-0.3/src/kitcube-reader/kitcube-reader-mysql
 SERVICE_ARGS="-d -i /home/cube/kitcube.ini -v 5"
 SERVICE_PROCESS=${SERVICE_NAME:0:15}
 
@@ -72,7 +61,6 @@ fi
 return=$rc_done	# FIXME: SUSE special
 case "$1" in
 	status)
-		# TODO: List all kitcube data processes?!
 		/sbin/checkproc $SERVICE_PROCESS	# FIXME: SUSE special
 		if test $? -eq 0 ; then
 			echo "$SERVICE_TITLE '$SERVICE_NAME' is running"
@@ -109,7 +97,7 @@ case "$1" in
 		$0 stop && $0 start || return=$rc_failed
 		;;
 	*)
-		echo "Usage: $0 {status|start|stop|restart} [module name]"
+		echo "Usage: $0 {status|start|stop|restart}"
 		exit 1
 		;;
 esac
