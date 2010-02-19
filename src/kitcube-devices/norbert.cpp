@@ -278,7 +278,7 @@ int Norbert::getNumericItem(const char **header, const char *itemTag){
 }
 
 
-unsigned long Norbert::getSensorGroup(){
+unsigned int Norbert::getSensorGroup(){
 	unsigned long number;
 
 	number = 0;

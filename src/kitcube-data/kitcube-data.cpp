@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
 	bool isLinkedApp;
 
 
-	printf("KITCube Data Generator\n");
+	printf("KITCube Data Generator (build %s %s)\n", __DATE__, __TIME__);
 
 	//
 	// Default program switches
@@ -38,8 +38,12 @@ int main(int argc, char *argv[]){
 	
 	// Get name of the application
 	// Strip the path and the kitcube prefix
-	namePtr = strrchr(argv[0],'/');
-	applicationName = namePtr+1;
+	//printf("Arguments: %d\n", argc);
+	namePtr = strrchr(argv[0], '/');
+	if (namePtr > 0)
+		applicationName = namePtr + 1;
+	else
+		applicationName = argv[0];
 	//printf("Running application %s\n", applicationName.c_str()); 
 	if (strcmp(applicationName.c_str(),"kitcube-data") != 0) {
 		isLinkedApp = true;

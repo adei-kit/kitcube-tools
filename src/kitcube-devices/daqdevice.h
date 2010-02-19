@@ -60,6 +60,10 @@ public:
 	/**  */
 	virtual ~DAQDevice();
 
+	/** Get the number of sensors */
+	int getNSensors();
+	
+	
 	/** The function is called before reading the configuration from the inifile.
 	  * Use this fucntion in the module specific implementation to override the standard defaults */
 	virtual void setConfigDefaults();
@@ -88,8 +92,6 @@ public:
 	  */
 	void getSensorNames(const char *sensorListfile);
 	
-	/** Define a sensor group number for all the availble sensor group files */
-	virtual unsigned long getSensorGroup();	
 	
 	/** Return the samping time of the device */
 	void getSamplingTime(struct timeval *time);
@@ -126,10 +128,12 @@ public:
 
 	/** Get time until next sample and it's id */
 	virtual void readHeader();
-  
+
 	virtual void writeHeader();
+
+	virtual void parseData(char *line, struct timeval *tData, float * sensorValue);
 	
-	virtual void readData();
+	virtual void storeSensorData();
 	
 	virtual void readData(const char *dir, const char *filename);
 
@@ -150,7 +154,12 @@ public:
 	unsigned long getIndex(char *filename, char *firstTag, char *lastTag=0, int len = 0, char *next = 0);
 	
 	/** Get the ranking number from a filename. The returned number can be used
-	  * to order files by their date. Smaller numbers are processed before larger ones. */
+	  * to order files by their date. Smaller numbers are processed before larger ones. 
+	  * The function needs also to check if the given filename is valid according to the 
+	  * file name specification of the device. In case of violation an exception 
+	  * std::invalid_argument has to be thrown.
+	  * 
+	  */
 	virtual int getFileNumber(char *filename);
 	
 	/** Get list of new files */
@@ -160,7 +169,7 @@ public:
 	unsigned int getModuleNumber();
 
 	/** Return the number of the sensor group */
-	unsigned int getSensorGroupNumber();
+	virtual unsigned int getSensorGroup();
 	
 	/** Get a unix time stamp (in UTC) frm a date and time string of the form 
 	  *  dd.mm.yyy  and hh:mm:ss  */
@@ -171,6 +180,9 @@ public:
 	
 	/** Reached EOF during reading data in readData() */
 	bool reachedEOF();
+	
+	/** Get the number of processed data in the last cycle */
+	unsigned int getProcessedData();
 	
 protected:
 	/** Length of the header block in the data file */
@@ -197,11 +209,26 @@ protected:
 	/** List of the official sensor properties */
 	struct sensorType *sensor;
 
+	struct timeval tData;
+	
+	float *sensorValue;
+	
+	/** Number of processed bytes in the last cycle */
+	unsigned int processedData;
+	
 	/** File pointer for the data file */
 	FILE *fdata;
 
-	/** Index of the data file */
+	/** Index of the data file 
+	  * This variable will be stored persitently (.kitcube-data.marker) */
 	unsigned long fileIndex;
+	
+	/* Number of the line in the data file 
+	 * This variable will be stored persitently (.kitcube-data.marker) */
+	int nLine;	
+	
+	/** Name of the project. This variable is used to generate the database */
+	std::string project;
 	
 	/** Name of the marker file. Used to make the file index persistent. */
 	std::string filenameMarker;
@@ -215,6 +242,9 @@ protected:
 	
 	/** Filename for writing data */
 	std::string filename;
+	
+	/** Filename for writing data */
+	std::string fullFilename;	
 	
 	std::string moduleName;
 	

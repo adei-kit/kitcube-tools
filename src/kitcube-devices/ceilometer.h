@@ -54,6 +54,10 @@ public:
 	/** Implements the data filename convention of the DAQ module. */
 	const char *getDataFilename();
 	
+	/** Re-implement the calculation of the file numbering scheme. 
+	 * The ceilometer uses date and times in the filename 
+	 */
+	int getFileNumber(char *filename);
 	
 	void replaceItem(const char **header, const char *itemTag, const char *newValue);
 	
@@ -63,12 +67,7 @@ public:
 	//const char *getModuleName(const char*filename, unsigned long *deviceNumber = 0);
 	
 	/** Define a sensor group number for all the availble sensor group files */
-	unsigned long getSensorGroup();
-
-	/** Re-implement the calculation of the file numbering scheme. 
-	  * The ceilometer uses date and times in the filename 
-	  */
-	int getFileNumber(char *filename);
+	unsigned int getSensorGroup();
 	
 	/** Get time until next sample and it's id */
 	void readHeader(const char *header);
@@ -79,7 +78,6 @@ public:
 
 	/** Replace time stamp in the data set by the current time */
 	void updateDataSet(unsigned char *buf);
-
 	
 	
 private:

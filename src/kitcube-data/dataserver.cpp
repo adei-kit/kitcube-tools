@@ -62,8 +62,8 @@ void DataServer::readInifile(const char *filename, const char *group){
 	this->iniGroup = "Simulation";
 	this->moduleType = "SimRandom";
 	
-	ini = new akInifile(inifile.c_str(), stdout);
-	//ini = new akInifile(inifile.c_str());
+	//ini = new akInifile(inifile.c_str(), stdout);
+	ini = new akInifile(inifile.c_str());
 	if (ini->Status()==Inifile::kSUCCESS){
 		
 		if ((group == 0) || (group[0] == 0)){
@@ -79,7 +79,12 @@ void DataServer::readInifile(const char *filename, const char *group){
 		error = ini->SpecifyGroup(iniGroup.c_str());
 		if (error == Inifile::kSUCCESS){
 			this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);
+		} else {
+			printf("Error: Section [%s] not found in inifile.\n", iniGroup.c_str());
+			printf("\n");
+			throw std::invalid_argument("iniGroup not defined.");
 		}
+
 		
 		//ini->SpecifyGroup("Readout");
 		//varianceClosedShutter = ini->GetFirstValue("varlevel", varianceClosedShutter, &error);
@@ -151,7 +156,7 @@ void DataServer::runReadout(FILE *fout){
 	// For every module one free port is existing
 	printf("_____Starting service for module %d at port %d_______________________________\n",
 		   dev->getModuleNumber(), DATASERVER_PORT+dev->getModuleNumber());
-	setPort(DATASERVER_PORT+dev->getModuleNumber()*10+dev->getSensorGroupNumber());
+	setPort(DATASERVER_PORT + dev->getModuleNumber() * 10 + dev->getSensorGroup());
 	init();
 	
 	// Set reference time and sampling time of the server loop

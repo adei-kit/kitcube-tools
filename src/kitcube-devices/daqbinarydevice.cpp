@@ -49,7 +49,7 @@ void DAQBinaryDevice::openFile(){ // for writing
 	
 	// Check if template file is existing and contains header + data
 	nameTemplate = configDir + datafileTemplate;
-	fd = open(nameTemplate.c_str(), O_RDWR);	// FIXME: file gets not closed again!
+	fd = open(nameTemplate.c_str(), O_RDWR);
 	if (fd <= 0) {
 		msg = "Template file not found -- " + nameTemplate;
 		throw std::invalid_argument(msg.c_str());
@@ -57,6 +57,7 @@ void DAQBinaryDevice::openFile(){ // for writing
 	
 	// Read header, test if it exists and is valid?!
 	readHeader(nameTemplate.c_str());
+	close(fd);
 	
 	
 	// Read index from file, if the value has not been initialized before

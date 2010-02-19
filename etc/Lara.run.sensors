@@ -1,0 +1,5 @@
+         1	Run number	Run_number	Q
+         2	Laser power	Laser_power	JE
+         3	Slit width	Slit_width	GU
+         4	CCD Temperature	CCD_Temperature	TA
+         5	N Samples	NSamples	Q

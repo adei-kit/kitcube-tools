@@ -16,16 +16,18 @@ int main(int argc, char *argv[]){
 	std::string iniGroup;
 	std::string inifile;
 	bool runDaemon;
+	bool printHelp;
 	int debug;
 	
-	
-	printf("KITCube Data Reader\n");
+
+	printf("KITCube Data Reader (build %s %s)\n", __DATE__, __TIME__);
 	
 	//
 	// Default program switches
 	//
 	inifile = "kitcube.ini";
 	runDaemon = false; // Run interactive as default
+	printHelp = false;
 	debug = 2;
 	
 	//
@@ -39,16 +41,11 @@ int main(int argc, char *argv[]){
 		
 		switch (err) {
 			case 'd': // run as daemon
-				printf("Run as daemon\n");
 				runDaemon = true;
 				debug = 0;
 				break;
 			case 'h': // help
-				printf("\t-d\t\tRun as daemon without input from keyboard\n");
-				printf("\t-i <inifile>\tSelect the inifile\n");
-				printf("\t-m <iniGroup>\tSelect the iniGroup name as used in the inifile\n");
-				printf("\t-v <level>\tSet level of verbosity\n");
-				exit(0);
+				printHelp = true;
 				break;
 			case 'i': // inifile
 				if (optarg > 0) inifile = optarg;
@@ -80,9 +77,22 @@ int main(int argc, char *argv[]){
 	}
 	
 	
-	if (iniGroup.length() >  0)
-		printf("Starting readout for iniGroup %s (debug = %d)\n", iniGroup.c_str(), debug);
-	
+	// Display help
+	if (printHelp){
+		printf("\t-d\t\tRun as daemon without input from keyboard\n");
+		printf("\t-i <inifile>\tSelect the inifile\n");
+		printf("\t-m <iniGroup>\tSelect the iniGroup name as used in the inifile\n");
+		printf("\t-v <level>\tSet level of verbosity\n");	
+		exit(0);
+	}
+
+	if (debug > 1) {
+		//printf("Debug level = %d (0 .. 5 -- low ... high verbosity)\n", debug);
+		if (runDaemon) printf("Run in daemon mode (no stdin/stdout)\n");
+		
+		if (iniGroup.length() >  0)
+			printf("Starting readout for iniGroup %s (debug = %d)\n", iniGroup.c_str(), debug);	
+	}
 	
 	try {
 		// Read inifile
@@ -92,8 +102,7 @@ int main(int argc, char *argv[]){
 		data->runAsDaemon(runDaemon);
 		
 		// Start reading data file
-		data->runReadout(stdout);
-		
+		data->runReadout();
 		
 		// Close file, terminate
 		delete data;

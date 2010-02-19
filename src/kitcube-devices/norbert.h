@@ -59,7 +59,7 @@ public:
 	//const char *getModuleName(const char*filename, unsigned long *deviceNumber = 0);
 	
 	/** Define a sensor group number for all the availble sensor group files */
-	unsigned long getSensorGroup();
+	unsigned int getSensorGroup();
 
 	/** Re-implement the calculation of the file numbering scheme. 
 	  * The ceilometer uses date and times in the filename 

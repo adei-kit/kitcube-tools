@@ -35,7 +35,9 @@
 class SimpleSocket;
 class SimpleServer;
 class procDuration;
-class DAQDevice; 
+class DAQDevice;
+class SysLog;
+
 
 /** Recorder process for background data.
   * The background data is collected at the
@@ -144,11 +146,11 @@ public:
 
 	/** Execute the command */
 	void executeCmd(int client, short cmd, unsigned int *arg, short n);
-
+	
 	/** Start the server and all the client recording the
 	  * telescopes background data.
 	  */
-	void runReadout(FILE *fout);
+	void runReadout();
 
 	/** Analyse timing */
 	void analyseTiming(struct timeval *t);
@@ -180,18 +182,24 @@ private:
 	/** Sampling time (ms) */
 	int tSampleFromInifile;
 
+	/** Number of DAQ modules added to the reader. 
+	 * The number is given by the entries in the inifile */
+	int nModules;
+	
 	/** Module name s given in sensor list */
 	std::string moduleName;
 
 	/** module type describes the implementation, the class */
-	std::string moduleType;
+	std::string *moduleType;
 
 	/** a group in the *.ini file */
-	std::string iniGroup;
+	std::string *iniGroup;
 
 	/** */
-	DAQDevice *dev;
-
+	DAQDevice **dev;
+	
+	SysLog *log;
+	
 	/** File pointer for the data file */
 	//FILE *fdata;
 
@@ -379,9 +387,12 @@ private:
 
 	/** Sampling time (ms) */
 	int qdTSample;
-
+	
 	/** Number of values (max 24) */
 	int qdNSensors;
+	
+	uint64_t rx;
+	uint64_t tx;
 };
 
 #endif

@@ -274,8 +274,8 @@ int Ceilometer::getNumericItem(const char **header, const char *itemTag){
 }
 
 
-unsigned long Ceilometer::getSensorGroup(){
-	unsigned long number;
+unsigned int Ceilometer::getSensorGroup(){
+	unsigned int number;
 	
 	number = 0;
 	buffer = "";
