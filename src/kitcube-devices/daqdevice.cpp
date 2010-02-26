@@ -1202,7 +1202,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 			if (debug > 4) printf("Last time stamp was %ld\n", lastTime.tv_sec);
 		}
 		
-		if (lastPos == 0) lastPos = 0; // Move the the first data ???
+		if (lastPos == 0) lastPos = lenHeader; // Move to the the first data
 		
 		// Find the beginning of the new data
 		if (debug > 4) printf("LastPos: %ld\n", lastPos);
@@ -1210,6 +1210,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		
 		//n = len;
 		int iLoop = 0;
+		lPtr = (char *) 1;
 		while ((lPtr > 0) && (iLoop< 100)) {
 			lPtr = fgets(line, 255, fdata);
 			

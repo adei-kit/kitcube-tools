@@ -33,6 +33,7 @@ SimRandom::SimRandom(){
 	// Read index from file
 	fileIndex = 0;
 	
+	lenHeader = 0x39;	// CAUTION: header has several lines!
 	
 	// List of sensors
 	nSensors = 3;
