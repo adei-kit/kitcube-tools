@@ -12,8 +12,8 @@ AM_PROG_LIBTOOL
 dnl
 dnl Add the base include directory
 dnl
-CXXFLAGS="$CXXFLAGS -I.. -Wall"
-CFLAGS="$CFLAGS -I.. -Wall"
+CXXFLAGS="$CXXFLAGS -I.. -Wall -O0"
+CFLAGS="$CFLAGS -I.. -Wall -O0"
 
 
 dnl
