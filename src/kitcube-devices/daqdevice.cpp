@@ -1328,7 +1328,7 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 	
 	
 	// Find the start of the index
-	if (firstTag > 0){
+	if (*firstTag != 0){	// take empty prefix into account
 		ptr = strcasestr(filename, firstTag);
 		if (ptr != filename) {
 			//printf("The file %s doesnot match the DAQ-naming convention\n", filename);
@@ -1349,7 +1349,7 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 	} else {
 		
 		// Find the end string
-		if (*lastTag != 0){
+		if (*lastTag != 0){	// take empty suffix into account
 			ptr = strcasestr(filename, lastTag);
 			if (ptr == 0) {
 				//printf("The file %s doesnot match the DAQ-naming convention (missing field termination)\n", filename);
