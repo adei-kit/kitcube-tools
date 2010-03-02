@@ -604,7 +604,7 @@ void DAQDevice::copyRemoteData(){
 	//
 	if (debug > 2) output = "";
 	else output = " > /dev/null";
-	sprintf(line, "rsync -avz %s --include='*/' --include='*.%s' --exclude='*' %s%s  %s%s %s", 
+	sprintf(line, "rsync -avz %s --include='*/' --include='*.%s' --exclude='*' %s%s  %s%s %s",
 			rsyncArgs.c_str(), sensorGroup.c_str(),
 			remoteDir.c_str(), getDataDir(),
 			archiveDir.c_str(), getDataDir(), output.c_str());
@@ -992,7 +992,6 @@ void DAQDevice::storeSensorData(){
 	int i, j;
 	char *sensorString;
 	int err;
-	//int sensorPtr[] = {27, 33, 39, 45, 50, 55, 60, 66, 72};
 	std::string timeString;
 	std::string dateString;
 	unsigned long timestamp;
@@ -1107,7 +1106,6 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		int i, j;
 		char *sensorString;
 		int err;
-		int sensorPtr[] = {27, 33, 39, 45, 50, 55, 60, 66, 72};
 		std::string timeString;
 		std::string dateString;
 		unsigned long timestamp;
@@ -1118,7 +1116,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		std::string filenameData;
 		struct timeval lastTime;
 		unsigned long lastPos;
-	    unsigned long currPos;
+		unsigned long currPos;
 		unsigned long lastIndex;
 		struct timeval tData;
 		struct timeval tWrite;
@@ -1144,21 +1142,21 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		
 		// Compile file name
 		filenameData = dir;
-		filenameData += filename;	
+		filenameData += filename;
 		//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());	
 		
 		
 		// If number of sensors is unknown read the header first
 		//if (nSensors == 0) readHeader(filenameData.c_str());
 		// For every file the header should be read ?!
-	    readHeader(filenameData.c_str());
+		readHeader(filenameData.c_str());
 		if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());	
 	
-#ifdef USE_MYSQL	
-		if (db == 0) { 
-			openDatabase(); 
+#ifdef USE_MYSQL
+		if (db == 0) {
+			openDatabase();
 		} else {
-			// Automatic reconnect 
+			// Automatic reconnect
 			if (mysql_ping(db) != 0){
 				printf("Error: Lost connection to database - automatic reconnect failed\n");
 				throw std::invalid_argument("Database unavailable\n");
@@ -1214,20 +1212,20 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		while ((lPtr > 0) && (iLoop< 100)) {
 			lPtr = fgets(line, 255, fdata);
 			
-			if (lPtr > 0){	
+			if (lPtr > 0){
 				
-				if (debug > 1) printf("%4d: Received %4d bytes ---  ", iLoop, (int) strlen(line));
+				if (debug > 1) printf("%4d: Received %4d bytes --- ", iLoop, (int) strlen(line));
 				
 				
 				// Module specific implementation
-				// Might be necessary to 
-			    parseData(line, &tData, sensorValue);
+				// Might be necessary to
+				parseData(line, &tData, sensorValue);
 				
 				
 				if (debug > 1) {
-					printf(" %ld  %d  ---- ", tData.tv_sec, tData.tv_usec);
-					for (j=0;j<nSensors; j++){				
-						printf("%5.3f ", sensorValue[j]);	
+					printf("%lds  %dus  ---- ", tData.tv_sec, tData.tv_usec);
+					for (j = 0; j < nSensors; j++) {
+						printf("%10.3f ", sensorValue[j]);
 					}
 					printf("\n");
 				}
@@ -1320,9 +1318,6 @@ void DAQDevice::writeData(){
 }
 
 
-
-
-
 unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,  int len, char *next){
 	unsigned long index;
 	char indexTag[20];
@@ -1354,7 +1349,7 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 	} else {
 		
 		// Find the end string
-		if (lastTag > 0){
+		if (*lastTag != 0){
 			ptr = strcasestr(filename, lastTag);
 			if (ptr == 0) {
 				//printf("The file %s doesnot match the DAQ-naming convention (missing field termination)\n", filename);
@@ -1418,7 +1413,7 @@ int DAQDevice::getFileNumber(char *filename){
 	}
 	if (debug > 3) printf("Position of <index> in %s is  %d\n", datafileMask.c_str(), posIndex);
 	filePrefix = datafileMask.substr(0, posIndex);
-	fileSuffix = datafileMask.substr(posIndex+7,datafileMask.length()-posIndex-7);
+	fileSuffix = datafileMask.substr(posIndex+7, datafileMask.length() - posIndex-7);	// TODO/FIXME: leave second argument
 	if (debug > 3) printf("Prefix is %s, suffix %s\n", filePrefix.c_str(), fileSuffix.c_str());
 	
 	//index = getIndex(file->d_name, "mast-", 0);
@@ -1562,7 +1557,7 @@ void DAQDevice::getNewFiles(){
 		printf("\nList of data files in %s:\n", dataDir.c_str());
 		printf(" %6s  %12s %6s %s\n", "No", "Index", "Next", "Filename");
 		for (i = 0; i < nList; i++) {
-			printf(" %6d  %12d %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
+			printf(" %6d  %12u %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
 		}
 		printf("\n");
 	}
@@ -1590,8 +1585,7 @@ void DAQDevice::getNewFiles(){
 		lastTime.tv_usec = 0;
 		lastPos = 0;
 	}	
-	//printf("Marker %s (err=%d, errno=%d): %d\n", filenameMarker.c_str(), err, errno, lastIndex);	
-	
+	//printf("Marker %s (err=%d, errno=%d): %d\n", filenameMarker.c_str(), err, errno, lastIndex);
 	
 	// Read the data from the files
 	try {
