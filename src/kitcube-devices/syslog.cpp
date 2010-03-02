@@ -73,6 +73,7 @@ void SysLog::setConfig(int ch, const char *name){
 	
 	if (ch < nSensors){
 		sensor[ch].comment = name;
+		sensor[ch].height = 0;
 	}	
 }
 
