@@ -88,54 +88,12 @@ void jwd::setConfigDefaults(){
 }
 
 
-/*
-const char *jwd::getDataFilename(){
-	char line[256];
-	
-	if (debug > 3) printf("fileIndex = %ld, nLine = %d\n", fileIndex, nLine);
-	
-	// TODO: Create a single source for the filename convention...
-	sprintf(line, "sim_%ld.%s", fileIndex, sensorGroup.c_str());
-	buffer = line;
-	
-	//printf("Lara: Get Datafilename = %s\n", line);
-	return(buffer.c_str());
-}
-*/
-
-
 const char *jwd::getDataDir(){
 	char line[256];
 	
 	sprintf(line, "%s/", moduleName.c_str());
 	buffer = line;
 	return(buffer.c_str());
-}
-
-
-
-void jwd::readHeader(){
-	// Not used
-}
-
-
-
-void jwd::writeHeader(){
-	struct timeval t;
-	struct timezone tz;
-	
-	if (fdata <=0) return;
-	
-	gettimeofday(&t, &tz);
-	
-	fprintf(fdata, "; Header");
-	fprintf(fdata, "; Started at %12ld %06d\n", t.tv_sec, t.tv_usec);
-	fprintf(fdata, "; Height:  4m\n"); 
-	fprintf(fdata, ";\n");
-	
-	
-	// Set seed for random generator
-	srand(t.tv_sec);
 }
 
 
@@ -181,21 +139,58 @@ void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 
 
 void jwd::writeData(){
-	struct timeval t;
-	struct timezone tz;
-	float data1, data2, data3;
+	FILE *file;
+	char line[256];
+	time_t times;
+	struct tm *date;
+	int day_min, i;
+	std::string data_set;
 	
 	
 	if (fdata <=0) return;
-
-	gettimeofday(&t, &tz);
 	
-	data1 = ( t.tv_sec)  % 10000 + (float) t.tv_usec / 1000000; // ramp data
-	data2 = sin( (2 * 3,14 *  (double)  t.tv_sec  + (double) t.tv_usec / 1000000) / 100) ; // sinus with 100s period
-	data3 = (float) rand()/RAND_MAX * 10; // random data 0..10
-	fprintf(fdata, "%12ld %06d %12f %12f %12f\n", t.tv_sec, t.tv_usec, data1, data2, data3);
+	// Read the template header
+	if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");
+
+	filename = configDir + datafileTemplate;
+	printf("Reading header from template file %s\n", filename.c_str());
+	
+	// open template file
+	file = fopen(filename.c_str(), "r");
+	
+	times = time(NULL);
+	date = gmtime((const time_t *) &times);
+	
+	day_min = date->tm_hour * 60 + date->tm_min;
+	
+	// throw away header
+	for (i = 0; i < 2; i++) {
+		// read header
+		fgets(line, 255, file);
+	}
+	
+	// throw away last (day_min - 1) data sets
+	for (i = 0; i < day_min; i++) {
+		// read header
+		fgets(line, 255, file);
+	}
+	
+	// read actual data set
+	fgets(line, 255, file);
+	
+	// replace date, year_day and time
+	data_set = line;
+	// print date string of file name to buffer
+	sprintf(line, "%02d%02d%02d", date->tm_year - 100, date->tm_mon + 1, date->tm_mday);
+	data_set.replace(1, 6, line);
+	sprintf(line, "%3d", date->tm_yday);
+	data_set.replace(10, 3, line);
+
+	fprintf(fdata, "%s", data_set.c_str());
 	fflush(fdata);
-	if (debug > 1) printf("%12ld %06d %12f %12f %12f\n", t.tv_sec, t.tv_usec, data1, data2, data3);
+	
+	if (debug > 1)
+		printf("%s", data_set.c_str());
 	
 }
 
@@ -246,4 +241,57 @@ void jwd::copyRemoteData(){
 	}
 	
 	if (debug > 2) printf("Rsync duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+}
+
+
+void jwd::writeHeader(){
+	std::string filename;
+	FILE *file;
+	char header_line[256];
+	int i;
+
+
+	// Read the template header
+	if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");
+
+	filename = configDir + datafileTemplate;
+	printf("Reading header from template file %s\n", filename.c_str());
+	
+	// open template file
+	file = fopen(filename.c_str(), "r");
+	
+	// work on 2 header lines here
+	for (i = 0; i < 2; i++) {
+		// read header
+		fgets(header_line, 255, file);
+		
+		// write header
+		fprintf(fdata, "%s", header_line);
+	}
+
+	// close template file
+	fclose(file);
+}
+
+
+const char *jwd::getDataFilename(){
+	time_t times;
+	struct tm *date;
+	char line[256];
+	int posIndex;
+	
+	
+	// Get the actual day
+	times = time(NULL);	// get seconds since the Epoch
+	date = gmtime((const time_t *) &times);
+	
+	// print date string of file name to buffer
+	sprintf(line, "%02d%02d%02d", date->tm_year - 100, date->tm_mon + 1, date->tm_mday);
+	
+	// replace <index> ind datafile mask with date string
+	buffer = datafileMask;
+	posIndex = buffer.find("<index>");
+	buffer.replace(posIndex, 7, line);
+	
+	return(buffer.c_str());
 }

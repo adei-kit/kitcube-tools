@@ -150,6 +150,7 @@ void DataServer::runReadout(FILE *fout){
 	dev->getSamplingTime(&tWait);
 	
 	dev->openFile();
+	fflush(fdata);
 	dev->readHeader(); // Read the reference time from the data
 
 
@@ -206,7 +207,7 @@ int DataServer::handle_timeout(){
 
 
 	// TODO: Read data / Simulate data
-	if (debug > 1) printf("=== Data %10ld %06d=== \n", t.tv_sec, t.tv_usec);
+	if (debug > 1) printf("=== Data %10lds %06dus === \n", t.tv_sec, t.tv_usec);
 	dev->writeData();
 	
 	fflush(stdout);

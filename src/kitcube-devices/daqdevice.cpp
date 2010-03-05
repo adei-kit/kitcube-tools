@@ -516,21 +516,20 @@ void DAQDevice::openFile(){ // for writing
 	std::string msg;
 	std::string nameTemplate;
 	
-	//printf("_____DAQDevice::openFile__________\n");
+	printf("_____DAQDevice::openFile()_____\n");
 	
 	// Check if template file is existing and contains header + data
-	if (nameTemplate.length() > 0){
-		nameTemplate = configDir + datafileTemplate;
-		fd = fopen(nameTemplate.c_str(), "r");
-		if (fd <= 0) {
-			msg = "Template file not found -- " + nameTemplate;
-			throw std::invalid_argument(msg.c_str());
-		}
-		
-		// Read header, test if it exists and is valid?!
-		readHeader(nameTemplate.c_str());
-		fclose(fd);
+	nameTemplate = configDir + datafileTemplate;
+	fd = fopen(nameTemplate.c_str(), "r");
+	if (fd <= 0) {
+		msg = "Template file not found -- " + nameTemplate;
+		throw std::invalid_argument(msg.c_str());
 	}
+	
+	// Read header, test if it exists and is valid?!
+	readHeader(nameTemplate.c_str());
+	fclose(fd);
+
 	
 	// Read index from file, if the value has not been initialized before
 	// The markers for the different modules are independant
@@ -562,6 +561,7 @@ void DAQDevice::openFile(){ // for writing
 	
 	// Write header if the file was not exisitng before
 	if (ftell(fdata) == 0) writeHeader();
+	// TODO/FIXME: write header only, if it does not exist already
 }
 
 
@@ -644,7 +644,7 @@ const char *DAQDevice::getDataFilename(){
 	posIndex = datafileMask.find("<index>");
 	if (posIndex == -1) {
 		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
-			   datafileMask.c_str(), inifile.c_str());
+			datafileMask.c_str(), inifile.c_str());
 	}
 	if (debug > 3) printf("Position of <index> in %s is  %d\n", datafileMask.c_str(), posIndex);
 	filePrefix = datafileMask.substr(0, posIndex);
@@ -1409,7 +1409,7 @@ int DAQDevice::getFileNumber(char *filename){
 	posIndex = datafileMask.find("<index>");
 	if (posIndex == -1) {
 		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
-			   datafileMask.c_str(), inifile.c_str());
+			datafileMask.c_str(), inifile.c_str());
 	}
 	if (debug > 3) printf("Position of <index> in %s is  %d\n", datafileMask.c_str(), posIndex);
 	filePrefix = datafileMask.substr(0, posIndex);

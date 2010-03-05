@@ -13,6 +13,7 @@
 
 #include <cstdio>
 #include <string>
+#include <ctime>
 #include <map>
 
 #ifdef USE_MYSQL
@@ -43,9 +44,6 @@ public:
 	
 	const char *getDataDir();
 	
-	/** Get time until next sample and it's id */
-	void readHeader();
-	
 	void writeHeader();
 	
 	void parseData(char *line, struct timeval *tData, float *sensorValue);
@@ -53,6 +51,8 @@ public:
 	void writeData();
 	
 	void copyRemoteData();
+	
+	const char *getDataFilename();
 	
 private:
 
