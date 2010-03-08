@@ -553,15 +553,15 @@ void DAQDevice::openFile(){ // for writing
 	printf("KITCube-Device (type %s): Open datafile \"%s\"\n", moduleType.c_str(), fullFilename.c_str());
 	createDirectories(fullFilename.c_str());
 	
-	fdata = fopen(fullFilename.c_str(), "a+");
+	fdata = fopen(fullFilename.c_str(), "a");	// use only "a", so ftell(...) works
 	if (fdata <= 0) {
 		printf("Error opening data file \"%s\"\n", filename.c_str());
 		throw std::invalid_argument("Error opening data file\n");
 	}
 	
 	// Write header if the file was not exisitng before
-	if (ftell(fdata) == 0) writeHeader();
-	// TODO/FIXME: write header only, if it does not exist already
+	if (ftell(fdata) == 0)	// use "a" when opening file, so this works
+		writeHeader();
 }
 
 
