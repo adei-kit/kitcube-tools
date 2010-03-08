@@ -144,30 +144,35 @@ void jwd::writeData(){
 	time_t times;
 	struct tm *date;
 	int day_min, i;
-	std::string data_set;
+	std::string data_set, template_filename;
 	
 	
 	if (fdata <=0) return;
 	
+	// Analyse time stamp, if new day a new file needs to generated
+	if (filename != getDataFilename()) {
+		openNewFile();
+	}
+	
 	// Read the template header
 	if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");
 
-	filename = configDir + datafileTemplate;
-	printf("Reading header from template file %s\n", filename.c_str());
+	template_filename = configDir + datafileTemplate;
+	printf("Reading data from template file %s\n", template_filename.c_str());
 	
 	// open template file
-	file = fopen(filename.c_str(), "r");
-	
-	times = time(NULL);
-	date = gmtime((const time_t *) &times);
-	
-	day_min = date->tm_hour * 60 + date->tm_min;
+	file = fopen(template_filename.c_str(), "r");
 	
 	// throw away header
 	for (i = 0; i < 2; i++) {
 		// read header
 		fgets(line, 255, file);
 	}
+	
+	// get minute of day
+	time(&times);
+	date = gmtime((const time_t *) &times);
+	day_min = date->tm_hour * 60 + date->tm_min;
 	
 	// throw away last (day_min - 1) data sets
 	for (i = 0; i < day_min; i++) {
@@ -282,7 +287,7 @@ const char *jwd::getDataFilename(){
 	
 	
 	// Get the actual day
-	times = time(NULL);	// get seconds since the Epoch
+	time(&times);	// get seconds since the Epoch
 	date = gmtime((const time_t *) &times);
 	
 	// print date string of file name to buffer
