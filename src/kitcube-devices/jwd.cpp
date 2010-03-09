@@ -118,7 +118,7 @@ void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 	std::string month(date + 2, 2);
 	std::string day(date + 4, 2);
 	
-	// ...and file tm structure
+	// ...and fill tm structure
 	timestamp.tm_mday = atoi(day.c_str());
 	timestamp.tm_mon = atoi(month.c_str()) -1;
 	timestamp.tm_year = atoi(year.c_str()) + 100;
@@ -133,7 +133,7 @@ void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 	timestamp.tm_min = atoi(min.c_str());
 	timestamp.tm_sec = atoi(sec.c_str());
 	
-	// get seconds since the Epoch
+	// get seconds since the Epoch; FIXME: function is non-standard GNU extension
 	tData->tv_sec = timegm(&timestamp);
 }
 
@@ -182,6 +182,8 @@ void jwd::writeData(){
 	
 	// read actual data set
 	fgets(line, 255, file);
+	
+	fclose(file);
 	
 	// replace date, year_day and time
 	data_set = line;
