@@ -31,11 +31,11 @@ endif
 
 bin_PROGRAMS = test-device
 test_device_SOURCES = test-device.cpp
-	
+
 
 # set the include path found by configure
 INCLUDES= $(all_includes)
 
 
 # the library search path.
-test_device_LDFLAGS = $(all_libraries) -L./ -L../akutil  -lkitcube-devices -lakutil $(ICONV_LIBS)
+test_device_LDFLAGS = $(all_libraries) -L./ -L../akutil  -lkitcube-devices -lakutil $(ICONV_LIBS) -lnetcdf -lnetcdf_c++

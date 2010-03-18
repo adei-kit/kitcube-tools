@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <string>
 #include <map>
+#include <netcdfcpp.h>
 
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
@@ -57,7 +58,7 @@ public:
 	/** Re-implement the calculation of the file numbering scheme. 
 	 * The ceilometer uses date and times in the filename 
 	 */
-	int getFileNumber(char *filename);
+	//int getFileNumber(char *filename);
 	
 	void replaceItem(const char **header, const char *itemTag, const char *newValue);
 	

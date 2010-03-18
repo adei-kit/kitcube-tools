@@ -108,7 +108,7 @@ const char *Ceilometer::getDataFilename(){
 }
 
 
-int Ceilometer::getFileNumber(char *filename){
+/*int Ceilometer::getFileNumber(char *filename){
 	std::string name;
 	unsigned posIndex;
 	int index;
@@ -184,7 +184,7 @@ int Ceilometer::getFileNumber(char *filename){
 	index = timegm(&time);
 	
 	return (index);
-}
+}*/
 
 
 void Ceilometer::replaceItem(const char **header, const char *itemTag, const char *newValue){
@@ -465,6 +465,130 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	char sData[50];
 #endif
 	
+	if (sensorGroup == "nc"){	// read NetCDF file here
+		printf("\nHandling NetCDF file now!\n");
+		
+		// Compile file name
+		filenameData = dir;
+		filenameData += filename;
+		
+		//open NetCDF file
+		NcFile dataFile(filenameData.c_str());
+		if (!dataFile.is_valid())
+			printf("Couldn't open NetCDF file!\n");
+		
+		// read and print all dimensions
+		int no_dims = dataFile.num_dims();
+		printf("Number of dimensions: %d\n", no_dims);
+		NcDim* dims[no_dims];
+		for (int i = 0; i < no_dims; i++) {
+			dims[i] = dataFile.get_dim(i);
+			if (!dims[i]->is_valid())
+				printf("Dimension is invalid!\n");
+			printf("Dimension name: %s, size: %ld, unlimited: %d\n",
+			       dims[i]->name(), dims[i]->size(), dims[i]->is_unlimited());
+		}
+		
+		// read and print all variables
+		int no_vars = dataFile.num_vars();
+		printf("Number of variables: %d\n", no_vars);
+		NcVar* vars[no_vars];
+		for (int i = 0; i < no_vars; i++) {
+			vars[i] = dataFile.get_var(i);
+			if (!vars[i]->is_valid())
+				printf("Variable not valid!\n");
+			printf("Variable name: %s, dimensions: %d, size: %ld, type: %d, attributes: %d\n",
+			       vars[i]->name(), vars[i]->num_dims(), vars[i]->num_vals(), vars[i]->type(), vars[i]->num_atts());
+		}
+		
+		// read and print all global attributes
+		printf("Number of attributes: %d\n", dataFile.num_atts());
+		
+		
+		// read timestamps = unlimited dimension?!
+		double* time_stamps;		// pointer to timestamp values of NetCDF file
+		int no_vals;			// number of values of timestamp variable
+		NcToken unlimited_dim_name;	// name of timestamp (=unlimited) dimension
+		for (int i = 0; i < no_dims; i++) {
+			// search for umlimited dimension, which should be "time"
+			if (dims[i]->is_unlimited()) {
+				unlimited_dim_name = dims[i]->name();
+				for (int j = 0; j < no_vars; j++) {
+					// search for variable with same name like unlimited dimension
+					if (strcmp(unlimited_dim_name, vars[j]->name()) == 0) {
+						// get data of this variable
+						no_vals = vars[j]->num_vals();
+						time_stamps = new double[no_vals];
+						vars[j]->get(time_stamps, no_vals);
+						break;
+					}
+				}
+				break;
+			}
+		}
+		
+		/**************************
+		 * recalculate timestamps *
+		 **************************/
+		// convert from seconds since 1904 to seconds since the Epoch:
+		// subtract (60 * 60 * 24 * 365 * 66 + 60 * 60 * 24 * 17) seconds
+		for (int i = 0; i < no_vals; i++) {
+			time_stamps[i] -= 2082844800.;
+		}
+		// convert all timestamps into timeval structure
+		struct timeval* time_stamp_data;
+		time_stamp_data = new struct timeval[no_vals];	// TODO: delete memory!
+		for (int i = 0; i < no_vals; i++) {
+			time_stamp_data[i].tv_sec = (int)time_stamps[i];
+			time_stamp_data[i].tv_usec = (int)((time_stamps[i] - (double)time_stamp_data[i].tv_sec) * 1000000.);	// TODO: maybe use floor() here
+		}
+		delete [] time_stamps;	// no longer needed now
+		
+		
+		// get number of time series variables in NetCDF file:
+		int num_time_series = 0;
+		for (int i = 0; i < no_vars; i++) {
+			if (vars[i]->num_dims() == 1) {
+				NcDim *temp_dim = vars[i]->get_dim(0);
+				if ( (strcmp(temp_dim->name(), unlimited_dim_name) == 0) &&
+				   !(strcmp(vars[i]->name(), unlimited_dim_name) == 0) ) {
+					num_time_series++;
+					
+				}
+				
+			}
+		}
+		
+		// read data of all time series variables
+		double** sensor_values = new double* [num_time_series];	// TODO: delete memory
+		for (int i = 0; i < num_time_series; i++) {
+			sensor_values[i] = new double [no_vals];
+		}
+		j = 0;
+		for (int i = 0; i < no_vars; i++) {
+			if (vars[i]->num_dims() == 1) {
+				NcDim *temp_dim = vars[i]->get_dim(0);
+				if ( (strcmp(temp_dim->name(), unlimited_dim_name) == 0) &&
+				   !(strcmp(vars[i]->name(), unlimited_dim_name) == 0) ) {
+					vars[i]->get(sensor_values[j], no_vals);
+					j++;
+				}
+				
+			}
+		}
+		
+		// print data
+		for (int i = 0; i < no_vals; i++) {
+			printf("%lds %ldus: ", time_stamp_data[i].tv_sec, time_stamp_data[i].tv_usec);
+			for (int j = 0; j < num_time_series; j++) {
+				printf("%f, ", sensor_values[j][i]);
+			}
+			printf("\n");
+		}
+		
+		// write data to DB
+		
+	} else {
 	// Data format:
 	// Integer values for the heights
 	// If no cloud is found than NODT is send
@@ -527,7 +651,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	
 	n = len;
 	int iLoop = 0;
-	while ((n == len) && (iLoop< 1000)) {
+	while ((n == len) && (iLoop< 100)) {
 		n = read(fd, buf, len);
 		
 		if (n == len){
@@ -657,6 +781,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	close(fd);
 	delete buf;
 	delete [] sensorValue;
+	}
 }
 
 
