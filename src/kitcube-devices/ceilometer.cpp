@@ -311,6 +311,38 @@ void Ceilometer::readHeader(const char *filename){
 	int len;
 	
 	
+	if (sensorGroup == "nc"){	// read NetCDF file header here
+		// Number of sensors
+		nSensors = 13;
+		printf("Number of sensors: %d\n", nSensors);
+		
+		// TODO: maybe better really read header of NetCDF file here,
+		//       at least because of sensor height,
+		//       but comments must be set manually here, due to mixed format of NetCDF file in this case!
+		
+		// List of sensors
+		if (sensor > 0 ) delete [] sensor;
+		sensor = new struct sensorType [nSensors];
+		
+		sensor[0].comment = "number of laser pulses";
+		sensor[1].comment = "average time per record";
+		sensor[2].comment = "31 Bit ServiceCode";
+		sensor[3].comment = "transmission of optics";
+		sensor[4].comment = "internal temperature in K*10";
+		sensor[5].comment = "external temperature in K*10";
+		sensor[6].comment = "detector temperature in K*10";
+		sensor[7].comment = "Laser fife time";
+		sensor[8].comment = "laser quality index - 255 max";
+		sensor[9].comment = "quality of detector signal - 255 max";
+		sensor[10].comment = "Daylight correction factor";
+		sensor[11].comment = "NN1";
+		sensor[12].comment = "Standard Deviation raw signal";
+		
+		for (i = 0; i < nSensors; i++) {
+			sensor[i].height = 110;
+		}
+	} else {
+	
 	// There is no header for this format
 	// This means all output is static all the time?!
 	// Some header informations are hidden in the data (e.g. height)
@@ -410,13 +442,12 @@ void Ceilometer::readHeader(const char *filename){
 	sensor[6].comment = "Vertical visibility";
 	sensor[7].comment = "Detection range";
 	
-	for (i = 0; i < nSensors; i++) {
-		sensor[i].height = heightOffset;
-	}
 	
 	for (i = 0; i < nSensors; i++) {
 		sensor[i].height = heightOffset;
 		printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
+	}
+	
 	}
 }
 
@@ -432,7 +463,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	int len;
 	int n;
 	int fd;
-	int j;
+	//int j;
 	char *sensorString;
 	float *sensorValue;
 	int err;
@@ -455,7 +486,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 #ifdef USE_MYSQL
 	struct timeval t0, t1;
 	struct timezone tz;
-	int i;
+	//int i;
 	//MYSQL_RES *res;
 	//MYSQL_RES *resTables;
 	//MYSQL_ROW row;
@@ -465,17 +496,44 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	char sData[50];
 #endif
 	
+	// Data format:
+	// Integer values for the heights
+	// If no cloud is found than NODT is send
+	// If signal strenght is not high enough "NaN"
+	// Negative error codes
+	
+	
+	// Compile file name
+	filenameData = dir;
+	filenameData += filename;
+	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
+	
+	
+	// If number of sensors is unknown read the header first
+	if (nSensors == 0) readHeader(filenameData.c_str());
+	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());
+	
+#ifdef USE_MYSQL
+	if (db == 0) {
+		openDatabase();
+	} else {
+		// Automatic reconnect
+		if (mysql_ping(db) != 0){
+			printf("Error: Lost connection to database - automatic reconnect failed\n");
+			throw std::invalid_argument("Database unavailable\n");
+		}
+	}
+#endif
+
 	if (sensorGroup == "nc"){	// read NetCDF file here
 		printf("\nHandling NetCDF file now!\n");
 		
-		// Compile file name
-		filenameData = dir;
-		filenameData += filename;
 		
 		//open NetCDF file
 		NcFile dataFile(filenameData.c_str());
 		if (!dataFile.is_valid())
 			printf("Couldn't open NetCDF file!\n");
+		
 		
 		// read and print all dimensions
 		int no_dims = dataFile.num_dims();
@@ -489,6 +547,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			       dims[i]->name(), dims[i]->size(), dims[i]->is_unlimited());
 		}
 		
+		
 		// read and print all variables
 		int no_vars = dataFile.num_vars();
 		printf("Number of variables: %d\n", no_vars);
@@ -500,6 +559,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			printf("Variable name: %s, dimensions: %d, size: %ld, type: %d, attributes: %d\n",
 			       vars[i]->name(), vars[i]->num_dims(), vars[i]->num_vals(), vars[i]->type(), vars[i]->num_atts());
 		}
+		
 		
 		// read and print all global attributes
 		printf("Number of attributes: %d\n", dataFile.num_atts());
@@ -527,14 +587,13 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			}
 		}
 		
-		/**************************
-		 * recalculate timestamps *
-		 **************************/
+		
 		// convert from seconds since 1904 to seconds since the Epoch:
 		// subtract (60 * 60 * 24 * 365 * 66 + 60 * 60 * 24 * 17) seconds
 		for (int i = 0; i < no_vals; i++) {
 			time_stamps[i] -= 2082844800.;
 		}
+		
 		// convert all timestamps into timeval structure
 		struct timeval* time_stamp_data;
 		time_stamp_data = new struct timeval[no_vals];	// TODO: delete memory!
@@ -542,16 +601,18 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			time_stamp_data[i].tv_sec = (int)time_stamps[i];
 			time_stamp_data[i].tv_usec = (int)((time_stamps[i] - (double)time_stamp_data[i].tv_sec) * 1000000.);	// TODO: maybe use floor() here
 		}
-		delete [] time_stamps;	// no longer needed now
+		
+		// delete no longer needed variables/memory now
+		delete [] time_stamps;
 		
 		
-		// get number of time series variables in NetCDF file:
+		// get number of all time series variables in NetCDF file automatically:
 		int num_time_series = 0;
 		for (int i = 0; i < no_vars; i++) {
 			if (vars[i]->num_dims() == 1) {
 				NcDim *temp_dim = vars[i]->get_dim(0);
 				if ( (strcmp(temp_dim->name(), unlimited_dim_name) == 0) &&
-				   !(strcmp(vars[i]->name(), unlimited_dim_name) == 0) ) {
+				     !(strcmp(vars[i]->name(), unlimited_dim_name) == 0) ) {
 					num_time_series++;
 					
 				}
@@ -559,19 +620,26 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			}
 		}
 		
-		// read data of all time series variables
+		
+		//
+		// read data of all time series variables automatically:
+		//
+		
+		// allocate memory
 		double** sensor_values = new double* [num_time_series];	// TODO: delete memory
 		for (int i = 0; i < num_time_series; i++) {
 			sensor_values[i] = new double [no_vals];
 		}
-		j = 0;
+		
+		// read data
+		int help = 0;
 		for (int i = 0; i < no_vars; i++) {
 			if (vars[i]->num_dims() == 1) {
 				NcDim *temp_dim = vars[i]->get_dim(0);
 				if ( (strcmp(temp_dim->name(), unlimited_dim_name) == 0) &&
-				   !(strcmp(vars[i]->name(), unlimited_dim_name) == 0) ) {
-					vars[i]->get(sensor_values[j], no_vals);
-					j++;
+				     !(strcmp(vars[i]->name(), unlimited_dim_name) == 0) ) {
+					vars[i]->get(sensor_values[help], no_vals);
+					help++;
 				}
 				
 			}
@@ -587,35 +655,55 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		}
 		
 		// write data to DB
-		
-	} else {
-	// Data format:
-	// Integer values for the heights
-	// If no cloud is found than NODT is send
-	// If signal strenght is not high enough "NaN"
-	// Negative error codes
-	
-	
-	// Compile file name
-	filenameData = dir;
-	filenameData += filename;
-	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
-	
-	
-	// If number of sensors is unknown read the header first
-	if (nSensors == 0) readHeader(filenameData.c_str());
-	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());
 #ifdef USE_MYSQL
-	if (db == 0) {
-		openDatabase();
-	} else {
-		// Automatic reconnect
-		if (mysql_ping(db) != 0){
-			printf("Error: Lost connection to database - automatic reconnect failed\n");
-			throw std::invalid_argument("Database unavailable\n");
+		if (db > 0){
+			// Write dataset to database
+			// Store in the order of appearance
+			//printf("Write record to database\n");
+			for (int i = 0; i < no_vals; i++) {
+				sql = "INSERT INTO `";
+				sql += dataTableName + "` (`sec`,`usec`";
+				for (int j = 0; j < nSensors; j++) {
+					sql += ",`";
+					sql += sensor[j].name;
+					sql += "`";
+				}
+				sql += ") VALUES (";
+				sprintf(sData, "%ld, %ld", time_stamp_data[i].tv_sec, time_stamp_data[i].tv_usec);
+				sql += sData;
+				for (int j = 0; j < nSensors; j++) {
+					sprintf(sData, "%f", sensor_values[j][i]);
+					sql += ",";
+					sql += sData;
+				}
+				sql += ")";
+				
+				//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
+				
+				gettimeofday(&t0, &tz);
+				
+				if (mysql_query(db, sql.c_str())){
+					fprintf(stderr, "%s\n", sql.c_str());
+					fprintf(stderr, "%s\n", mysql_error(db));
+					
+					// If this operation fails do not proceed in the file?!
+					printf("Error: Unable to write data to database\n");
+					throw std::invalid_argument("Writing data failed");
+					break;
+				}
+				
+				gettimeofday(&t1, &tz);
+				printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+			}
+		} else {
+			printf("Error: No database availabe\n");
+			throw std::invalid_argument("No database");
 		}
-	}
-#endif
+#endif // of USE_MYSQL
+		
+		// TODO: delete memory!
+		printf("fertig\n");
+	} else {
 	
 	if (debug > 0) printf("_____Reading data_____________________\n");
 	
@@ -693,7 +781,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			// Read data values
 			//printf("%s\n", buf);
 			if (debug > 1) printf("Sensors:");
-			for (j = 0; j < nSensors; j++) {
+			for (int j = 0; j < nSensors; j++) {
 				sensorString = (char *) (buf + sensorPtr[j]);
 				//buf[sensorPtr[1]-1] = 0;
 				sensorValue[j] = noData;
@@ -713,7 +801,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 				
 				sql = "INSERT INTO `";
 				sql += dataTableName + "` (`sec`,`usec`";
-				for (i = 0; i < nSensors; i++){
+				for (int i = 0; i < nSensors; i++){
 					if (sensorValue[i] != noData) {
 						sql += ",`";
 						sql += sensor[i].name;
@@ -723,7 +811,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 				sql +=") VALUES (";
 				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 				sql += sData;
-				for (i = 0; i < nSensors; i++){
+				for (int i = 0; i < nSensors; i++){
 					if (sensorValue[i] != noData) {
 						sprintf(sData, "%f", sensorValue[i]);
 						sql += ",";
