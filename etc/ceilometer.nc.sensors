@@ -1,0 +1,13 @@
+         1	number of laser pulses	CM.CM.Laser.Pulses.1.AVG	NO
+         2	average time per record	CM.CM.Average.Time.1.AVG	KMS
+         3	31 Bit ServiceCode	CM.CM.Error.Ext.1.MOM	NO
+         4	transmission of optics	CM.CM.State.Optics.1.MOM	NO
+         5	internal temperature in K*10	CM.CM.T.INT.1.MOM	TA
+         6	external temperature in K*10	CM.CM.T.EXT.1.MOM	TA
+         7	detector temperature in K*10	CM.CM.T.DET.1.MOM	TA
+         8	Laser fife time	CM.CM.Life.Time.1.MOM	KH
+         9	laser quality index - 255 max	CM.CM.State.Laser.1.MOM	NO
+        10	quality of detector signal - 255 max	CM.CM.State.Detector.1.MOM	NO
+        11	Daylight correction factor	CM.CM.Base.VIR.1.MOM	NO
+        12	NN1	CM.CM.NN1.VIR.1.MOM	NO
+        13	Standard Deviation raw signal	CM.CM.STD.DEV.1.MOM	NO
