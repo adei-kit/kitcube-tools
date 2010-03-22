@@ -1284,8 +1284,11 @@ void DAQDevice::readData(const char *dir, const char *filename){
 			iLoop++;
 		}
 		
-		if (lPtr == 0) { fd_eof = true; } 
-		else { fd_eof = false; }
+		if (lPtr == 0) {
+			fd_eof = true;
+		} else {
+			fd_eof = false;
+		}
 		
 		// Get the positio in this file
 		currPos = ftell(fdata);	
@@ -1618,7 +1621,9 @@ void DAQDevice::getNewFiles(){
 			// Check if file has been completely read
 			if (listIndex[next] >= lastIndex){
 				if (!reachedEOF()){
-					if (debug) printf("EOF not reached - continue with %s, position %d in next call\n", listName[next].c_str(), lastPos);
+					if (debug)
+						printf("EOF not reached - continue with %s, position %d in next call\n",
+							listName[next].c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)
 					break;
 				}
 			}
