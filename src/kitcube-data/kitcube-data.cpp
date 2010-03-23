@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
 	int debug;
 	char *namePtr;
 	std::string applicationName;
-	int posModulename;
+	//int posModulename;
 	bool isLinkedApp;
 
 

@@ -327,7 +327,7 @@ int Reader::handle_timeout(){
 	// TODO: Read data / Simulate data
 	if (debug) { 
 		printf("     _____________________________________________________\n");
-		printf("____/__Reading Data %12ld %06d (sample %06d)___\\_______ \n", 
+		printf("____/__Reading Data %12ld %06ld (sample %06d)___\\_______ \n", 
 					  t0.tv_sec, t0.tv_usec, nSamples);	
 	}
 	

@@ -333,7 +333,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	char *n;
 	char *namePtr;
 	char name[50];
-	unsigned int pos;
+	//unsigned int pos;
 	std::string axisName;
 	std::string sLine;
 	
@@ -511,7 +511,7 @@ void DAQDevice::openFile(const char *filename){
 void DAQDevice::openFile(){ // for writing
 	char line[256];
 	FILE *fmark;
-	char dataName[256];
+	//char dataName[256];
 	FILE *fd;
 	std::string msg;
 	std::string nameTemplate;
@@ -631,7 +631,7 @@ const char *DAQDevice::getDataDir(){
 const char *DAQDevice::getDataFilename(){
 	std::string name;
 	int posIndex;
-	int index;
+	//int index;
 	std::string filePrefix;
 	std::string fileSuffix;
 	char line[256];
@@ -982,37 +982,37 @@ void DAQDevice::parseData(char *line, struct timeval *tData, float *sensorValue)
 
 
 void DAQDevice::storeSensorData(){
-	struct timeval t0, t1;
-	struct timezone tz; 
-	
-	unsigned char *buf;
-	int len;
-	int n;
-	int fd;
-	int i, j;
-	char *sensorString;
-	int err;
+	//unsigned char *buf;
+	//int len;
+	//int n;
+	//int fd;
+	int j;
+	//char *sensorString;
+	//int err;
 	std::string timeString;
 	std::string dateString;
-	unsigned long timestamp;
+	//unsigned long timestamp;
 	
 	
 	std::string filenameMarker;
 	std::string filenameData;
-	struct timeval lastTime;
-	unsigned long lastPos;
-	unsigned long lastIndex;
-	struct timeval tWrite;
-	char line[256];
+	//struct timeval lastTime;
+	//unsigned long lastPos;
+	//unsigned long lastIndex;
+	//struct timeval tWrite;
+	//char line[256];
 	
 #ifdef USE_MYSQL
-	MYSQL_RES *res;
-	MYSQL_RES *resTables;
-	MYSQL_ROW row;
-	MYSQL_ROW table;
+	//MYSQL_RES *res;
+	//MYSQL_RES *resTables;
+	//MYSQL_ROW row;
+	//MYSQL_ROW table;
 	std::string tableName;
 	std::string sql;
 	char sData[50];
+	struct timeval t0, t1;
+	struct timezone tz;
+	int i;
 #endif
 	
 	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());		
@@ -1036,7 +1036,7 @@ void DAQDevice::storeSensorData(){
 		
 	// Display sensor data
 	if (debug > 1) {
-		printf(" %ld  %d  ---- ", tData.tv_sec, tData.tv_usec);
+		printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
 		for (j=0;j<nSensors; j++){				
 			printf("%5.3f ", sensorValue[j]);	
 		}
@@ -1058,7 +1058,7 @@ void DAQDevice::storeSensorData(){
 			sql += "`";
 		}
 		sql +=") VALUES (";
-		sprintf(sData, "%ld, %d", tData.tv_sec, tData.tv_usec);
+		sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 		sql += sData;
 		for (i=0; i<nSensors; i++){
 			
@@ -1095,20 +1095,16 @@ void DAQDevice::storeSensorData(){
 
 
 void DAQDevice::readData(const char *dir, const char *filename){
-	
-		struct timeval t0, t1;
-		struct timezone tz; 
-		
 		//unsigned char *buf;
 		int len;
-		int n;
-		int fd;
-		int i, j;
-		char *sensorString;
-		int err;
+		//int n;
+		//int fd;
+		int j;
+		//char *sensorString;
+		//int err;
 		std::string timeString;
 		std::string dateString;
-		unsigned long timestamp;
+		//unsigned long timestamp;
 		
 		
 		FILE *fmark;
@@ -1119,18 +1115,21 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		unsigned long currPos;
 		unsigned long lastIndex;
 		struct timeval tData;
-		struct timeval tWrite;
+		//struct timeval tWrite;
 		char line[256];
 		char *lPtr;
 		
 #ifdef USE_MYSQL
-		MYSQL_RES *res;
-		MYSQL_RES *resTables;
-		MYSQL_ROW row;
-		MYSQL_ROW table;
+		//MYSQL_RES *res;
+		//MYSQL_RES *resTables;
+		//MYSQL_ROW row;
+		//MYSQL_ROW table;
 		std::string tableName;
 		std::string sql;
 		char sData[50];
+		struct timeval t0, t1;
+		struct timezone tz;
+		int i;
 #endif
 		
 		// Data format:
@@ -1190,7 +1189,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		if (debug > 3) printf("Get marker from %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {
-			fscanf(fmark, "%ld %ld %d %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+			fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 			fclose(fmark);
 			
 			// Read back the data time stamp of the last call
@@ -1223,7 +1222,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 				
 				
 				if (debug > 1) {
-					printf("%lds  %dus  ---- ", tData.tv_sec, tData.tv_usec);
+					printf("%lds  %ldus  ---- ", tData.tv_sec, tData.tv_usec);
 					for (j = 0; j < nSensors; j++) {
 						printf("%10.3f ", sensorValue[j]);
 					}
@@ -1246,7 +1245,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 						}
 					}
 					sql +=") VALUES (";
-					sprintf(sData, "%ld, %d", tData.tv_sec, tData.tv_usec);
+					sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 					sql += sData;
 					for (i=0; i<nSensors; i++){
 						if (sensorValue[i] != noData) {
@@ -1301,7 +1300,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 	    lastPos = currPos;
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark > 0) {
-			fprintf(fmark, "%ld %ld %d %ld\n", lastIndex, tData.tv_sec, tData.tv_usec, lastPos);
+			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, tData.tv_sec, tData.tv_usec, lastPos);
 			fclose(fmark);
 		}
 		
@@ -1608,7 +1607,7 @@ void DAQDevice::getNewFiles(){
 				if (fmark > 0) {
 					//fprintf(fmark, "%d %d %d %d\n", listIndex[next], 0, 0, 0);
 					// Preserve the time stamp
-					fprintf(fmark, "%d %ld %d %d\n", listIndex[next], lastTime.tv_sec, lastTime.tv_usec, 0);
+					fprintf(fmark, "%d %ld %ld %d\n", listIndex[next], lastTime.tv_sec, lastTime.tv_usec, 0);
 					fclose(fmark);
 				}
 				

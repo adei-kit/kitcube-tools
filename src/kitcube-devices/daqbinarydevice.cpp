@@ -39,7 +39,7 @@ DAQBinaryDevice::~DAQBinaryDevice(){
 void DAQBinaryDevice::openFile(){ // for writing
 	char line[256];
 	FILE *fmark;
-	char dataName[256];
+	//char dataName[256];
 	int fd;
 	std::string msg;
 	std::string nameTemplate;
@@ -111,7 +111,7 @@ void DAQBinaryDevice::writeData(){
 	int len;
 	int lenHeader;
 	int n;
-	int i;
+	//int i;
 	std::string filename;
 	
 	if (fd_data <=0) return;

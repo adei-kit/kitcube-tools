@@ -56,7 +56,7 @@ void Lara::setConfigDefaults(){
 	
 	sprintf(line, "Lara.%s.template", sensorGroup.c_str());
 	this->datafileTemplate = line;
-	sprintf(line, "<index>_*.stab", sensorGroup.c_str());
+	sprintf(line, "<index>_*.stab");
 	this->datafileMask = line;
 	//printf("datafileMask = %s\n", datafileMask.c_str());
 	
@@ -117,8 +117,8 @@ int Lara::getFileNumber(char *filename){
 	std::string numString;
 	std::string fileString;
 	struct tm time;
-	int lenIndex;
-	char *pEnd;
+	//int lenIndex;
+	//char *pEnd;
 	int err;
 	
 		
@@ -227,16 +227,16 @@ void Lara::readHeader(const char *filename){
 	std::string dir; 
 	std::string fileString;
 	std::string numString;
-	struct tm time;
+	//struct tm time;
 	int posIndex;
-	int posFilename;
+	//int posFilename;
 	int i;
 	char *pEnd;
 	time_t timeFromFilename;
-	char line[256];
-	struct timeval lastTime;
-	unsigned long lastPos;
-	unsigned long lastIndex;
+	//char line[256];
+	//struct timeval lastTime;
+	//unsigned long lastPos;
+	//unsigned long lastIndex;
 	char *pFilename;
 	
 	errno = 0;
@@ -421,7 +421,7 @@ void Lara::readData(const char *dir, const char *filename){
 		if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {
-			fscanf(fmark, "%ld %ld %d %d", &lastIndex, &lastTime.tv_sec, &lastTime.tv_usec, &handled);
+			fscanf(fmark, "%ld %ld %ld %d", &lastIndex, &lastTime.tv_sec, &lastTime.tv_usec, &handled);
 			fclose(fmark);
 		}
 		
@@ -434,7 +434,7 @@ void Lara::readData(const char *dir, const char *filename){
 			// It is necessary to write back a marker (in lastpos) that this file has been handled
 			fmark = fopen(filenameMarker.c_str(), "w");
 			if (fmark > 0) {
-				fprintf(fmark, "%ld %ld %d %d\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, 1);
+				fprintf(fmark, "%ld %ld %ld %d\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, 1);
 				fclose(fmark);
 			}			
 
@@ -471,8 +471,8 @@ void Lara::writeData(){
 	FILE *ftempl;
 	int len;
 	int lenHeader;
-	int n;
-	int i;
+	//int n;
+	//int i;
 	std::string filename;
 	
 	if (fdata <=0) return;

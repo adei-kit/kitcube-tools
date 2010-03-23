@@ -102,12 +102,12 @@ void DataServer::runAsDaemon(bool flag){
 
 
 void DataServer::runReadout(FILE *fout){
-	int i;
+	//int i;
 	//int iSample;
 	struct timeval tWait;
 	struct timeval tStart;
 	//char host[255];
-	char dataName[255];
+	//char dataName[255];
 
 	if (shutdown) return; // Do not start the server!!!
 
@@ -187,7 +187,7 @@ void DataServer::runReadout(FILE *fout){
 
 
 int DataServer::handle_timeout(){
-	int i;
+	//int i;
 	//procDuration t;
 	//int iSample;
 	//struct timeval tWait;
@@ -207,7 +207,7 @@ int DataServer::handle_timeout(){
 
 
 	// TODO: Read data / Simulate data
-	if (debug > 1) printf("=== Data %10lds %06dus === \n", t.tv_sec, t.tv_usec);
+	if (debug > 1) printf("=== Data %10lds %06ldus === \n", t.tv_sec, t.tv_usec);
 	dev->writeData();
 	
 	fflush(stdout);
@@ -220,7 +220,7 @@ int DataServer::handle_timeout(){
 int DataServer::read_from_keyboard(){
 	int err;
 	char buf[256];
-	char dataName[255];
+	//char dataName[255];
 	
 	// Handle keyboard events
 	//handleKeyboard(floop, kb);
@@ -426,7 +426,7 @@ void DataServer::analyseTiming(struct timeval *t){
 		unsigned long long buf; 
 
 		buf = tRef.tv_sec;
-		if (fout) fprintf(fout, "%6d  | %ld.%06d \n", index, t->tv_sec, t->tv_usec);
+		if (fout) fprintf(fout, "%6d  | %ld.%06ld \n", index, t->tv_sec, t->tv_usec);
 	}
 }
 
@@ -436,9 +436,9 @@ void DataServer::displayStatus(FILE *fout){
 	if (fout == 0) return;
 
 	fprintf(fout, "\n");
-	fprintf(fout,   "Server start     : %lds %dus\n", tRef.tv_sec, tRef.tv_usec);
+	fprintf(fout,   "Server start     : %lds %ldus\n", tRef.tv_sec, tRef.tv_usec);
 	if (useTimeout){
-		fprintf(fout, "Sampling time    : %lds %dus\n", tSample.tv_sec, tSample.tv_usec);
+		fprintf(fout, "Sampling time    : %lds %ldus\n", tSample.tv_sec, tSample.tv_usec);
 		fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
 		fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
 	
@@ -476,7 +476,7 @@ void DataServer::simQDData(struct timeval t){
 	unsigned short data[24];
 	double scaled;
 	unsigned long nBuffer;
-	int fd2;
+	//int fd2;
 	
 	// TODO: Measure length of operation?
 	//        Precision of timing
@@ -507,7 +507,7 @@ void DataServer::simQDData(struct timeval t){
 */
 
 	// Filenames accordig to M Heiduk / A Augenstein
-	sprintf(filename, "%s%04d_%02d_%02d_%02d_%02d_%02d_%07d.k%2di16",
+	sprintf(filename, "%s%04d_%02d_%02d_%02d_%02d_%02d_%07ld.k%2di16",
 		qdPath.c_str(),
 		timestamp->tm_year+1900, timestamp->tm_mon+1, timestamp->tm_mday,
 		timestamp->tm_hour, timestamp->tm_min, timestamp->tm_sec,

@@ -128,7 +128,7 @@ void Mast::replaceItem(const char **header, const char *itemTag, const char *new
 	bool findTag;
 	const char *ptr;
 	const char *startChar;
-	char *endChar;
+	//char *endChar;
 	int i;
 	int len;
 	
@@ -454,7 +454,7 @@ void Mast::readHeader(const char *filename){
 
 	
 	std::string heightString;
-	float sensorHeight;
+	//float sensorHeight;
 	unsigned long aggregation;
 	const char *aggregationSymbols[] = { "AVG", "AVG", "MAX", "MIN", "STD" };
 	//const char aggregationSymbols[] = { "M", "M", "H", "L", "S" }; // Very Short form
@@ -572,7 +572,6 @@ void Mast::readData(const char *dir, const char *filename){
 	int len;
 	int n;
 	int fd;
-	int i;
 	float *sensorValue;
 	SPackedTime *time;
 	
@@ -583,17 +582,18 @@ void Mast::readData(const char *dir, const char *filename){
 	unsigned long lastPos;
 	unsigned long lastIndex;
 	struct timeval tData;
-	struct timeval tWrite;
+	//struct timeval tWrite;
 	char line[256];
 
 #ifdef USE_MYSQL
-	MYSQL_RES *res;
-	MYSQL_RES *resTables;
-	MYSQL_ROW row;
-	MYSQL_ROW table;
+	//MYSQL_RES *res;
+	//MYSQL_RES *resTables;
+	//MYSQL_ROW row;
+	//MYSQL_ROW table;
 	std::string tableName;
 	std::string sql;
 	char sData[50];
+	int i;
 #endif
 	
 	// Data format:
@@ -650,7 +650,7 @@ void Mast::readData(const char *dir, const char *filename){
 	if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
     fmark = fopen(filenameMarker.c_str(), "r");
     if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %d %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	}
 	
@@ -680,7 +680,7 @@ void Mast::readData(const char *dir, const char *filename){
 				tData.tv_sec += 1;
 			}
 			
-			if (debug > 1) printf("T_data = %ld   %d (sensors = %d)\n", tData.tv_sec, tData.tv_usec, nSensors);
+			if (debug > 1) printf("T_data = %ld   %ld (sensors = %d)\n", tData.tv_sec, tData.tv_usec, nSensors);
 	
 #ifdef USE_MYSQL	
 			if (db > 0){				
@@ -696,7 +696,7 @@ void Mast::readData(const char *dir, const char *filename){
 					sql += "`";
 				}
 				sql +=") VALUES (";
-				sprintf(sData, "%ld, %d", tData.tv_sec, tData.tv_usec);
+				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 				sql += sData;
 				for (i=0; i<nSensors; i++){
 					sprintf(sData, "%f", sensorValue[i]);
@@ -737,7 +737,7 @@ void Mast::readData(const char *dir, const char *filename){
 	// Write the last valid time stamp / file position
     fmark = fopen(filenameMarker.c_str(), "w");
     if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %d %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
 		fclose(fmark);
 	}
 	
