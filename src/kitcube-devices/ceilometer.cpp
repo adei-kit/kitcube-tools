@@ -637,7 +637,6 @@ void Ceilometer::readData(const char *dir, const char *filename){
 				if ( (strcmp(temp_dim->name(), unlimited_dim_name) == 0) &&
 				     !(strcmp(vars[i]->name(), unlimited_dim_name) == 0) ) {
 					num_time_series++;
-					
 				}
 				
 			}
@@ -648,7 +647,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		// read data of all time series variables automatically:
 		//
 		
-		// allocate memory
+		// allocate memory; TODO: evtl. auch sensor_values[...][...] moeglich?!?
 		double** sensor_values = new double* [num_time_series];
 		for (int i = 0; i < num_time_series; i++) {
 			sensor_values[i] = new double [no_vals];
@@ -677,6 +676,27 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			printf("\n");
 		}*/
 		
+		long* dimensions;
+		int num_2d_data;
+		for (int i = 0; i < no_vars; i++) {
+			if (vars[i]->num_dims() == 2) {
+				dimensions = vars[i]->edges();
+				num_2d_data = i;
+			}
+		}
+		
+		double* values_2d = new double [dimensions[0] * dimensions[1]];
+		vars[num_2d_data]->get(values_2d, dimensions[0], dimensions[1]);
+		
+		for (int i = 0; i < dimensions[0]; i++) {
+			printf("Zeit %d: ", i);
+			for (int j = 0; j < dimensions[1]; j++) {
+				printf("%f, ", values_2d[(i * dimensions[1]) + j]);
+			}
+			printf("\n");
+		}
+		
+		delete [] values_2d;
 		// write data to DB
 #ifdef USE_MYSQL
 		if (db > 0){
