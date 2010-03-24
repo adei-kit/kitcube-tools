@@ -313,7 +313,7 @@ void Ceilometer::readHeader(const char *filename){
 	
 	if (sensorGroup == "nc"){	// read NetCDF file header here
 		// Number of sensors
-		nSensors = 13;
+		nSensors = 14;
 		printf("Number of sensors: %d\n", nSensors);
 		
 		// TODO: maybe better really read header of NetCDF file here,
@@ -337,6 +337,8 @@ void Ceilometer::readHeader(const char *filename){
 		sensor[10].comment = "Daylight correction factor";
 		sensor[11].comment = "NN1";
 		sensor[12].comment = "Standard Deviation raw signal";
+		sensor[13].comment = "Profil";
+		sensor[13].type = "profile";
 		
 		for (i = 0; i < nSensors; i++) {
 			sensor[i].height = 110;
@@ -688,15 +690,15 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		double* values_2d = new double [dimensions[0] * dimensions[1]];
 		vars[num_2d_data]->get(values_2d, dimensions[0], dimensions[1]);
 		
-		for (int i = 0; i < dimensions[0]; i++) {
+		/*for (int i = 0; i < dimensions[0]; i++) {
 			printf("Zeit %d: ", i);
 			for (int j = 0; j < dimensions[1]; j++) {
 				printf("%f, ", values_2d[(i * dimensions[1]) + j]);
 			}
 			printf("\n");
-		}
+		}*/
 		
-		delete [] values_2d;
+		
 		// write data to DB
 #ifdef USE_MYSQL
 		if (db > 0){
@@ -714,12 +716,18 @@ void Ceilometer::readData(const char *dir, const char *filename){
 				sql += ") VALUES (";
 				sprintf(sData, "%ld, %ld", time_stamp_data[i].tv_sec, time_stamp_data[i].tv_usec);
 				sql += sData;
-				for (int j = 0; j < nSensors; j++) {
+				for (int j = 0; j < (nSensors - 1); j++) {
 					sprintf(sData, "%f", sensor_values[j][i]);
 					sql += ",";
 					sql += sData;
 				}
-				sql += ")";
+				sql += ",'";
+				// create profile data here
+				for (int k = 0; k < dimensions[1]; k++) {
+					sprintf(sData, "%f, ", values_2d[(i * dimensions[1]) + k]);
+					sql += sData;
+				}
+				sql += "')";
 				
 				//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
 				

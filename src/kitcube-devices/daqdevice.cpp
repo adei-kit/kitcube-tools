@@ -869,8 +869,12 @@ void DAQDevice::openDatabase(){
 		cmd += "` ( `id` int(12) auto_increment, ";
 		cmd += "    `sec` int(12)  default '0', ";
 		cmd += "    `usec` int(10)  default '0', ";
-		for (i=0;i<nSensors;i++)
-			cmd += "`" + sensor[i].name + "` float(10), ";
+		for (i = 0; i < nSensors; i++)
+			if (sensor[i].type == "profile") {
+				cmd += "`" + sensor[i].name + "` TEXT, ";
+			} else {
+				cmd += "`" + sensor[i].name + "` float(10), ";
+			}
 		cmd += "PRIMARY KEY (`id`), INDEX(`sec`) ) TYPE=MyISAM";
 		
 		//printf("SQL: %s\n", cmd.c_str());

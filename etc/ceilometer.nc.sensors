@@ -11,3 +11,4 @@
         11	Daylight correction factor	CM.CM.Base.VIR.1.MOM	NO
         12	NN1	CM.CM.NN1.VIR.1.MOM	NO
         13	Standard Deviation raw signal	CM.CM.STD.DEV.1.MOM	NO
+        14	Profil	CM.CM.B.VER.1.PROF	NO
