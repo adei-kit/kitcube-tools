@@ -325,130 +325,164 @@ void Ceilometer::readHeader(const char *filename){
 		sensor = new struct sensorType [nSensors];
 		
 		sensor[0].comment = "number of laser pulses";
+		sensor[0].data_format = "<scalar>";
+		
 		sensor[1].comment = "average time per record";
+		sensor[1].data_format = "<scalar>";
+		
 		sensor[2].comment = "31 Bit ServiceCode";
+		sensor[2].data_format = "<scalar>";
+		
 		sensor[3].comment = "transmission of optics";
+		sensor[3].data_format = "<scalar>";
+		
 		sensor[4].comment = "internal temperature in K*10";
+		sensor[4].data_format = "<scalar>";
+		
 		sensor[5].comment = "external temperature in K*10";
+		sensor[5].data_format = "<scalar>";
+		
 		sensor[6].comment = "detector temperature in K*10";
+		sensor[6].data_format = "<scalar>";
+		
 		sensor[7].comment = "Laser fife time";
+		sensor[7].data_format = "<scalar>";
+		
 		sensor[8].comment = "laser quality index - 255 max";
+		sensor[8].data_format = "<scalar>";
+		
 		sensor[9].comment = "quality of detector signal - 255 max";
+		sensor[9].data_format = "<scalar>";
+		
 		sensor[10].comment = "Daylight correction factor";
+		sensor[10].data_format = "<scalar>";
+		
 		sensor[11].comment = "NN1";
+		sensor[11].data_format = "<scalar>";
+		
 		sensor[12].comment = "Standard Deviation raw signal";
+		sensor[12].data_format = "<scalar>";
+		
 		sensor[13].comment = "Profil";
 		sensor[13].type = "profile";
+		sensor[13].data_format = "<profile size=\"1024\"> <height unit=\"m\">";
+		for (i = 1; i < 1024; i++) {
+			sprintf(line, "%i ", (i * 15));
+			sensor[13].data_format += line;
+		}
+		sensor[13].data_format += "15360</height> </profile>";
+		// TODO: read values from data file!
 		
 		for (i = 0; i < nSensors; i++) {
 			sensor[i].height = 110;
 		}
+		// TODO: read sensor height from data file!
 	} else {
 	
-	// There is no header for this format
-	// This means all output is static all the time?!
-	// Some header informations are hidden in the data (e.g. height)
-	// --> So read the first data set
-	
-	printf("_____Reading header information_____________________\n");
-	fd = open(filename, O_RDONLY);
-	if (fd < 0) {
-		sprintf(line, "Error opening file %s", filename);
-		throw std::invalid_argument(line);
-	}
-	
-	// Read the complete header
-	// No need for character code conversions
-	// Read the first data set - there is no header for these sensor group
-	len = this->lenDataSet;
-	headerRaw = new unsigned char [ len ]; // Is stored in the class variables
-	n = read(fd, headerRaw, len);
-	printf("Bytes read %d from file %s\n", n, filename);
-	
-	close(fd);
-	
-	if (n<len) {
-		// There is no header defined in the data format. Instead the data from the
-		// First data set is read -- of course when starting with a new file there is no
-		// data set available. So it makes no sense to complain here!
-		//throw std::invalid_argument("No header found in data file");
-		return;
-	}
-	
-	
-	//
-	// Read parameters
-	//
-	printf("Module: \t\t%s, ID %03d, Group %s ID %d\n", moduleName.c_str(), moduleNumber,
-		   sensorGroup.c_str(), sensorGroupNumber);
-	
-	
-	// Sampling time
-	
-	// Height (offset)
-	headerReadPtr = (const char *) headerRaw + 72;
-	sscanf(headerReadPtr, "%d", &heightOffset);
-	printf("Height = %d\n", heightOffset);
-	
-	
-	// Unit (m/ft)
-	// In case of feet the values need to be converted to m
-	*heightUnit = 0;
-	headerReadPtr =  (const char *) headerRaw + 77;
-	strncpy(heightUnit, headerReadPtr, 2);
-	if (heightUnit[1] == ' ') heightUnit[1] = 0;
-	else heightUnit[2] = 0;
-	printf("Unit = <%s>\n", heightUnit);
-	
-	// Device ID + fabrication date
-	
-	// Software version DAQ + Processing
-	
-	
-	// Reference time == time stamp of first entry
-	std::string timeString;
-	std::string dateString;
-	unsigned long timestamp;
-	headerReadPtr = (const char *) headerRaw + 12; // Date
-	headerRaw[20] = 0;
-	dateString = headerReadPtr;
-	dateString.insert(6,"20"); // Insert full year number in string
-	headerReadPtr = (const char *) headerRaw + 21; // Time
-	headerRaw[26] = 0;
-	timeString = headerReadPtr;
-	timeString += ":";
-	headerRaw[235] = 0;
-	timeString += (const char *) headerRaw + 233;
-	//timeString += ":00"; // Add missing seconds
-	printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
-	
-	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
-	tRef.tv_sec = timestamp;
-	tRef.tv_usec = 0;
-	
-	
-	// Number of sensors
-	nSensors = 8;
-	printf("Number of sensors %d\n", nSensors);
-	
-	// List of sensors
-	if (sensor > 0 ) delete [] sensor;
-	sensor = new struct sensorType [nSensors];
-	
-	sensor[0].comment = "Cloud level 1";
-	sensor[1].comment = "Cloud level 2";
-	sensor[2].comment = "Cloud level 3";
-	sensor[3].comment = "Penetration depth 1";
-	sensor[4].comment = "Penetration depth 2";
-	sensor[5].comment = "Penetration depth 3";
-	sensor[6].comment = "Vertical visibility";
-	sensor[7].comment = "Detection range";
-	
-	
-	for (i = 0; i < nSensors; i++) {
-		sensor[i].height = heightOffset;
-		printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
-	}
+		// There is no header for this format
+		// This means all output is static all the time?!
+		// Some header informations are hidden in the data (e.g. height)
+		// --> So read the first data set
+		
+		printf("_____Reading header information_____________________\n");
+		fd = open(filename, O_RDONLY);
+		if (fd < 0) {
+			sprintf(line, "Error opening file %s", filename);
+			throw std::invalid_argument(line);
+		}
+		
+		// Read the complete header
+		// No need for character code conversions
+		// Read the first data set - there is no header for these sensor group
+		len = this->lenDataSet;
+		headerRaw = new unsigned char [ len ]; // Is stored in the class variables
+		n = read(fd, headerRaw, len);
+		printf("Bytes read %d from file %s\n", n, filename);
+		
+		close(fd);
+		
+		if (n<len) {
+			// There is no header defined in the data format. Instead the data from the
+			// First data set is read -- of course when starting with a new file there is no
+			// data set available. So it makes no sense to complain here!
+			//throw std::invalid_argument("No header found in data file");
+			return;
+		}
+		
+		
+		//
+		// Read parameters
+		//
+		printf("Module: \t\t%s, ID %03d, Group %s ID %d\n", moduleName.c_str(), moduleNumber,
+			sensorGroup.c_str(), sensorGroupNumber);
+		
+		
+		// Sampling time
+		
+		// Height (offset)
+		headerReadPtr = (const char *) headerRaw + 72;
+		sscanf(headerReadPtr, "%d", &heightOffset);
+		printf("Height = %d\n", heightOffset);
+		
+		
+		// Unit (m/ft)
+		// In case of feet the values need to be converted to m
+		*heightUnit = 0;
+		headerReadPtr =  (const char *) headerRaw + 77;
+		strncpy(heightUnit, headerReadPtr, 2);
+		if (heightUnit[1] == ' ') heightUnit[1] = 0;
+		else heightUnit[2] = 0;
+		printf("Unit = <%s>\n", heightUnit);
+		
+		// Device ID + fabrication date
+		
+		// Software version DAQ + Processing
+		
+		
+		// Reference time == time stamp of first entry
+		std::string timeString;
+		std::string dateString;
+		unsigned long timestamp;
+		headerReadPtr = (const char *) headerRaw + 12; // Date
+		headerRaw[20] = 0;
+		dateString = headerReadPtr;
+		dateString.insert(6,"20"); // Insert full year number in string
+		headerReadPtr = (const char *) headerRaw + 21; // Time
+		headerRaw[26] = 0;
+		timeString = headerReadPtr;
+		timeString += ":";
+		headerRaw[235] = 0;
+		timeString += (const char *) headerRaw + 233;
+		//timeString += ":00"; // Add missing seconds
+		printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
+		
+		timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
+		tRef.tv_sec = timestamp;
+		tRef.tv_usec = 0;
+		
+		
+		// Number of sensors
+		nSensors = 8;
+		printf("Number of sensors %d\n", nSensors);
+		
+		// List of sensors
+		if (sensor > 0 ) delete [] sensor;
+		sensor = new struct sensorType [nSensors];
+		
+		sensor[0].comment = "Cloud level 1";
+		sensor[1].comment = "Cloud level 2";
+		sensor[2].comment = "Cloud level 3";
+		sensor[3].comment = "Penetration depth 1";
+		sensor[4].comment = "Penetration depth 2";
+		sensor[5].comment = "Penetration depth 3";
+		sensor[6].comment = "Vertical visibility";
+		sensor[7].comment = "Detection range";
+		
+		
+		for (i = 0; i < nSensors; i++) {
+			sensor[i].height = heightOffset;
+			printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
+		}
 	
 	}
 }
