@@ -36,14 +36,15 @@ struct axisDef {
 
 
 struct sensorType {
-	std::string name;		//< KITCube sensor name
-	std::string comment;		//< Description of the sensor (wo aggregation information)
-	std::string longComment;	//< Description of the sensor (w aggregation information)
-	std::string unit;		//< Unit from header -- not used
-	std::string type;		//< Estimated axis type -- not used
-	int aggregation;		//< type of aggregation
-	int axis;			//< Number of axis used for the sensor (from axis definition in kitcube.ini)
-	float height;			//< Postion of the sensor (height in meters)
+	std::string name;		// KITCube sensor name
+	std::string comment;		// Description of the sensor (wo aggregation information)
+	std::string longComment;	// Description of the sensor (w aggregation information)
+	std::string unit;		// Unit from header -- not used
+	std::string type;		// Estimated axis type -- not used
+	int aggregation;		// type of aggregation
+	int axis;			// Number of axis used for the sensor (from axis definition in kitcube.ini)
+	float height;			// Postion of the sensor (height in meters)
+	std::string data_format;	// <scalar>, <profile>, <2D>, <3D>
 };
 
 

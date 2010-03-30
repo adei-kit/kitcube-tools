@@ -896,21 +896,21 @@ void DAQDevice::openDatabase(){
 	// Create sensor list table
 	// Get list of cols in data table
 	sprintf(sql,"SHOW COLUMNS FROM `%s`", sensorTableName.c_str());
-	if (mysql_query(db, sql)){
+	if (mysql_query(db, sql)) {
 		//fprintf(stderr, "%s\n", sql);
 		//fprintf(stderr, "%s\n", mysql_error(db));
-		
 		
 		// Create table
 		printf("Creating sensor table\n");
 		cmd = "CREATE TABLE `";
 		cmd += sensorTableName;
-		cmd += "` ( `id` int(10) auto_increment, ";
-		cmd += "    `name` varchar(30) unique, ";
-		cmd += "    `module` int(10) unsigned default '0', ";
-		cmd += "    `comment` text, ";
-		cmd += "    `axis` int(10), ";
-		cmd += "    `height` float(10)  default '0', ";
+		cmd += "` (`id` int(10) auto_increment, ";
+		cmd += "`name` varchar(30) unique, ";
+		cmd += "`module` int(10) unsigned default '0', ";
+		cmd += "`comment` text, ";
+		cmd += "`axis` int(10), ";
+		cmd += "`height` float(10)  default '0', ";
+		cmd += "`data_format` text, ";
 		cmd += "PRIMARY KEY (`id`), INDEX(`name`) ) TYPE=MyISAM";
 		
 		//printf("SQL: %s\n", cmd.c_str());
@@ -930,14 +930,17 @@ void DAQDevice::openDatabase(){
 	// Store in sensor table
 	// Bug: Is not stored in the first time?! At this time the database is not open...
 	nNewSensors = 0;
-	for (i=0; i< nSensors; i++) {
-		cmd = "INSERT INTO `";
-		cmd += sensorTableName + "` (`name`, `module`, `comment`, `axis`, `height`) VALUES (";
-		sprintf(line, "'%s', %d, '%s %s', '%d', %f )",
-				sensor[i].name.c_str(), moduleNumber,
-				sensor[i].name.c_str(), sensor[i].comment.c_str(),
-				axis[sensor[i].axis].id, sensor[i].height);
+	for (i = 0; i < nSensors; i++) {
+		cmd = "INSERT INTO ";
+		cmd += "`" + sensorTableName + "` ";
+		cmd += "(`name`, `module`, `comment`, `axis`, `height`, `data_format`) VALUES (";
+		cmd += "'" + sensor[i].name + "', ";
+		sprintf(line, "'%d', ", moduleNumber);
 		cmd += line;
+		cmd += "'" + sensor[i].name + " " + sensor[i].comment + "', ";
+		sprintf(line, "'%d', '%f', ", axis[sensor[i].axis].id, sensor[i].height);
+		cmd += line;
+		cmd += "'" + sensor[i].data_format + "')";
 		
 		//printf("SQL: %s (db = %d)\n", cmd.c_str(), db);
 		
