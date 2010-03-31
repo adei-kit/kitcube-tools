@@ -23,45 +23,72 @@
 
 
 jwd::jwd(){
-	int i;
 	
 	moduleType = "JWD";
 	moduleNumber = 0;
 	this->sensorGroup = "txt";
 	
 	this->iniGroup = "JWD-dd";
-	
-	// Read index from file
-	fileIndex = 0;
-	
-	lenHeader = 0xd4;	// CAUTION: header has several lines!
-	
-	// List of sensors
-	nSensors = 8;
-	sensor = new struct sensorType [nSensors];
-	
-	for (i = 0; i < nSensors; i++) {
-		sensor[i].height = 0;
-	}
-	
-	sensor[0].comment = "Rain intensity";
-	sensor[1].comment = "Spectral number density";
-	sensor[2].comment = "Radar reflectivity";
-	sensor[3].comment = "unknown";
-	sensor[4].comment = "unknown";
-	sensor[5].comment = "unknown";
-	sensor[6].comment = "unknown";
-	sensor[7].comment = "Accumulated rain amount";
-	
-	if (debug) {
-		for (i = 0; i < nSensors; i++) {
-			printf("Sensor %3d: %s\n", i+1, sensor[i].comment.c_str());
-		}
-	}
 }
 
 
 jwd::~jwd(){
+}
+
+
+void jwd::readHeader(const char *filename){
+	if (sensorGroup == "dd") {
+		lenHeader = 0xd4;	// CAUTION: header has several lines!
+		
+		profile_length = 0;
+		
+		// List of sensors
+		nSensors = 8;
+		sensor = new struct sensorType [nSensors];
+		
+		// set default value for height
+		for (int i = 0; i < nSensors; i++) {
+			sensor[i].height = 0;
+		}
+		
+		sensor[0].comment = "Rain intensity";
+		sensor[1].comment = "Spectral number density";
+		sensor[2].comment = "Radar reflectivity";
+		sensor[3].comment = "unknown";
+		sensor[4].comment = "unknown";
+		sensor[5].comment = "unknown";
+		sensor[6].comment = "unknown";
+		sensor[7].comment = "Accumulated rain amount";
+		
+		if (debug) {
+			for (int i = 0; i < nSensors; i++) {
+				printf("Sensor %3d: %s\n", i + 1, sensor[i].comment.c_str());
+			}
+		}
+	} else if (sensorGroup == "rd") {
+		lenHeader = 0;	// no header
+		
+		// List of sensors
+		nSensors = 1;
+		profile_length = 20;
+		
+		sensor = new struct sensorType [nSensors];
+		
+		for (int i = 0; i < nSensors; i++) {
+			sensor[i].height = 0;
+		}
+		
+		sensor[0].comment = "unknown";
+		sensor[0].type = "profile";
+		
+		if (debug) {
+			for (int i = 0; i < nSensors; i++) {
+				printf("Sensor %3d: %s\n", i+1, sensor[i].comment.c_str());
+			}
+		}
+	} else {
+		printf("Unknown sensor group!\n");
+	}
 }
 
 
@@ -101,16 +128,30 @@ void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 	int yday, mod;
 	char date[7] = {0}, time[5] = {0};
 	struct tm timestamp;
+	std::string profile_data;
+	
 	
 	// TODO/FIXME: are data timestamps in UTC or local time?
 	
-	// read date, time and sensor values of one line of data
-	sscanf(line, "%s %i %s %i %f %f %f %f %f %f %f %f",
-		date, &yday, time, &mod,
-		&sensorValue[0], &sensorValue[1], &sensorValue[2], &sensorValue[3],
-		&sensorValue[4], &sensorValue[5], &sensorValue[6], &sensorValue[7]);
-	
-	
+	if (sensorGroup == "dd") {
+		// read date, time and sensor values of one line of data
+		sscanf(line, "%s %i %s %i %f %f %f %f %f %f %f %f",
+			date, &yday, time, &mod,
+			&sensorValue[0], &sensorValue[1], &sensorValue[2], &sensorValue[3],
+			&sensorValue[4], &sensorValue[5], &sensorValue[6], &sensorValue[7]);
+	} else if (sensorGroup == "rd") {
+		// read date and time of one line of data
+		sscanf(line, "%s %i %s", date, &yday, time);
+		
+		profile_data.assign(line + 21, 3);
+		mod = atoi(profile_data.c_str());
+		
+		// read sensor values of one line of data
+		for (int i = 0; i < profile_length; i++) {
+			profile_data.assign(line + 24 + i * 3, 3);
+			sensorValue[i] = atoi(profile_data.c_str());
+		}
+	}
 	// calculate timestamp in seconds:
 	
 	// evaluate date...
@@ -120,7 +161,7 @@ void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 	
 	// ...and fill tm structure
 	timestamp.tm_mday = atoi(day.c_str());
-	timestamp.tm_mon = atoi(month.c_str()) -1;
+	timestamp.tm_mon = atoi(month.c_str()) - 1;
 	timestamp.tm_year = atoi(year.c_str()) + 100;
 	
 	// evaluate time...
@@ -133,8 +174,8 @@ void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 	timestamp.tm_min = atoi(min.c_str());
 	timestamp.tm_sec = atoi(sec.c_str());
 	
-	// get seconds since the Epoch; FIXME: function is non-standard GNU extension
-	tData->tv_sec = timegm(&timestamp);
+	// get seconds since the Epoch
+	tData->tv_sec = timegm(&timestamp);	// FIXME: function is non-standard GNU extension
 }
 
 
@@ -301,4 +342,23 @@ const char *jwd::getDataFilename(){
 	buffer.replace(posIndex, 7, line);
 	
 	return(buffer.c_str());
+}
+
+
+unsigned int jwd::getSensorGroup(){
+	unsigned int number;
+	
+	number = 0;
+	buffer = "";
+	if (sensorGroup == "dd") {
+		number = 1;
+		buffer = "time series";
+	}
+	
+	if (sensorGroup == "rd") {
+		number = 2;
+		buffer = "profile";
+	}
+	
+	return number;
 }

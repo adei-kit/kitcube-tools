@@ -44,6 +44,8 @@ public:
 	
 	const char *getDataDir();
 	
+	void readHeader(const char *header);
+	
 	void writeHeader();
 	
 	void parseData(char *line, struct timeval *tData, float *sensorValue);
@@ -54,6 +56,9 @@ public:
 	
 	const char *getDataFilename();
 	
+	/** Define a sensor group number for all the availble sensor group files */
+	unsigned int getSensorGroup();
+
 private:
 
 
