@@ -207,6 +207,9 @@ protected:
 	/** Number of sensors in the module */
 	int nSensors;
 	
+	/** number of values in profile data */
+	int profile_length;
+	
 	/** List of the official sensor properties */
 	struct sensorType *sensor;
 

@@ -659,7 +659,6 @@ const char *DAQDevice::getDataFilename(){
 
 
 void DAQDevice::openDatabase(){
-	
 	//printf("=== Create data table === \n");
 #ifdef USE_MYSQL
 	//printf("Create data table\n");
@@ -681,10 +680,8 @@ void DAQDevice::openDatabase(){
 		//printf("Col %3d: %s\n", i+1, colNames[i].c_str());
 	}
 	
-	
 	// Create Database tables
-	sprintf(line, "Data_%03d_%s_%s", moduleNumber,
-		moduleName.c_str(), sensorGroup.c_str());
+	sprintf(line, "Data_%03d_%s_%s", moduleNumber, moduleName.c_str(), sensorGroup.c_str());
 	printf("Data table name: \t%s\n", line);
 	this->dataTableName = line;
 	
@@ -730,7 +727,6 @@ void DAQDevice::openDatabase(){
 	printf("Project \"%s\" database list: \t", project.c_str());
 	while ((row = mysql_fetch_row(res)) != NULL) {
 		for (i = 0; i < mysql_num_fields(res); i++) {
-			
 			if (strstr(row[i], project.c_str()) == row[i])
 				printf("%s", row[i]);
 		}
@@ -775,7 +771,6 @@ void DAQDevice::openDatabase(){
 		fprintf(stderr, "%s\n", sql);
 		fprintf(stderr, "%s\n", mysql_error(db));
 		
-		
 		// Create table
 		printf("Creating axis table\n");
 		std::string cmd = "CREATE TABLE `";
@@ -812,9 +807,8 @@ void DAQDevice::openDatabase(){
 	
 	// Find missing axis definitions
 	res = mysql_store_result(db);
-	while ((row = mysql_fetch_row(res)) != NULL){
-		
-		for (i=0;i<nAxis;i++){
+	while ((row = mysql_fetch_row(res)) != NULL) {
+		for (i = 0; i < nAxis; i++) {
 			if (axis[i].name == row[1]){
 				axis[i].isNew = false;
 				axis[i].id = atoi(row[0]);
@@ -823,7 +817,6 @@ void DAQDevice::openDatabase(){
 				break;
 			}
 		}
-		
 		//for (i=0;i<mysql_num_fields(res); i++){
 		//	printf("%s", row[i]);
 		//}
@@ -833,8 +826,8 @@ void DAQDevice::openDatabase(){
 	
 	// Add the new axis definitions to the database
 	nNewAxis = 0;
-	for (i=0;i<nAxis;i++){
-		if (axis[i].isNew){
+	for (i = 0; i < nAxis; i++) {
+		if (axis[i].isNew) {
 			printf("Adding axis %s -- %s (%s) to the axis list\n",
 				   axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
 			sprintf(sql,"INSERT INTO `%s` (`name`,`comment`,`unit`) VALUES ('%s','%s','%s')",
@@ -860,7 +853,6 @@ void DAQDevice::openDatabase(){
 	if (mysql_query(db, sql)){
 		//fprintf(stderr, "%s\n", sql);
 		//fprintf(stderr, "%s\n", mysql_error(db));
-		
 		
 		// Create table
 		printf("Creating data table\n");
@@ -947,7 +939,6 @@ void DAQDevice::openDatabase(){
 		if (mysql_query(db, cmd.c_str())){
 			//fprintf(stderr, "%s\n", cmd.c_str());
 			//fprintf(stderr, "%s\n", mysql_error(db));
-			
 			
 			// TODO: If this operation fails do not proceed in the file?!
 			//break;
@@ -1052,7 +1043,7 @@ void DAQDevice::storeSensorData(){
 	
 	
 #ifdef USE_MYSQL	
-	if (db > 0){				
+	if (db > 0){
 		// Write dataset to database
 		// Store in the order of appearance	
 		//printf("Write record to database\n");
@@ -1067,7 +1058,7 @@ void DAQDevice::storeSensorData(){
 		sql +=") VALUES (";
 		sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 		sql += sData;
-		for (i=0; i<nSensors; i++){
+		for (i = 0; i < nSensors; i++) {
 			
 			sprintf(sData, "%f", sensorValue[i]);
 			sql += ",";
@@ -1136,15 +1127,8 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		char sData[50];
 		struct timeval t0, t1;
 		struct timezone tz;
-		int i;
+		int i, k;
 #endif
-		
-		// Data format:
-		// Integer values for the heights
-		// If no cloud is found than NODT is send
-		// If signal strenght is not high enough "NaN"
-		// Negative error codes
-		
 		
 		// Compile file name
 		filenameData = dir;
@@ -1173,9 +1157,13 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		if (debug > 3) printf("______Reading data___%s_____________________\n", moduleName.c_str());	
 		
 		// Allocate memory for one data set
-		len = 0;
-		//buf = new unsigned char [len];
-		sensorValue = new float [nSensors];
+		if (profile_length != 0) {
+			sensorValue = new float [nSensors * profile_length];
+		} else {
+			len = 0;
+			//buf = new unsigned char [len];
+			sensorValue = new float [nSensors];
+		}
 		
 		if (debug > 3) printf("Open data file %s\n", filenameData.c_str());
 		//fd = open(filenameData.c_str(), O_RDONLY);
@@ -1215,18 +1203,15 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		//n = len;
 		int iLoop = 0;
 		lPtr = (char *) 1;
-		while ((lPtr > 0) && (iLoop< 100)) {
+		while ((lPtr > 0) && (iLoop < 100)) {
 			lPtr = fgets(line, 255, fdata);
 			
 			if (lPtr > 0){
-				
 				if (debug > 1) printf("%4d: Received %4d bytes --- ", iLoop, (int) strlen(line));
-				
 				
 				// Module specific implementation
 				// Might be necessary to
 				parseData(line, &tData, sensorValue);
-				
 				
 				if (debug > 1) {
 					printf("%lds  %ldus  ---- ", tData.tv_sec, tData.tv_usec);
@@ -1235,16 +1220,15 @@ void DAQDevice::readData(const char *dir, const char *filename){
 					}
 					printf("\n");
 				}
-				
 #ifdef USE_MYSQL	
-				if (db > 0){				
+				if (db > 0){
 					// Write dataset to database
 					// Store in the order of appearance	
 					//printf("Write record to database\n");
 					
 					sql = "INSERT INTO `";
 					sql += dataTableName + "` (`sec`,`usec`";
-					for (i=0; i<nSensors; i++){
+					for (i = 0 ; i < nSensors; i++) {
 						if (sensorValue[i] != noData) {
 							sql += ",`";
 							sql += sensor[i].name;
@@ -1254,12 +1238,23 @@ void DAQDevice::readData(const char *dir, const char *filename){
 					sql +=") VALUES (";
 					sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 					sql += sData;
-					for (i=0; i<nSensors; i++){
-						if (sensorValue[i] != noData) {
-							sprintf(sData, "%f", sensorValue[i]);
-							sql += ",";
-							sql += sData;
-						}	
+					if (profile_length != 0) {
+						for (i = 0; i < nSensors; i++) {
+							sql += ", '";
+							for (k = 0; k < profile_length; k++) {
+								sprintf(sData, "%f, ", sensorValue[i * profile_length + k]);
+								sql += sData;
+							}
+							sql += "'";
+						}
+					} else {
+						for (i = 0; i < nSensors; i++) {
+							if (sensorValue[i] != noData) {
+								sprintf(sData, "%f", sensorValue[i]);
+								sql += ",";
+								sql += sData;
+							}	
+						}
 					}
 					sql += ")";
 					
@@ -1286,7 +1281,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 				}
 #endif // of USE_MYSQL
 				
-			}		
+			}
 			iLoop++;
 		}
 		
@@ -1304,18 +1299,16 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		
 		
 		// Write the last valid time stamp / file position
-	    lastPos = currPos;
+		lastPos = currPos;
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark > 0) {
 			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, tData.tv_sec, tData.tv_usec, lastPos);
 			fclose(fmark);
 		}
 		
-		
 		fclose(fdata);
 		//delete buf;
 		//delete [] sensorValue;
-	
 }
 
 
