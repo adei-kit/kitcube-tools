@@ -74,18 +74,17 @@ void Reader::readInifile(const char *filename, const char *group){
 	float tValue;
 	std::string tUnit;
 	int i;
-
+	
+	
 	this->inifile = filename;
-	this->tSampleFromInifile = 10000; // ms	
+	this->tSampleFromInifile = 10000; // ms
 	
-	
-
 	//ini = new akInifile(inifile.c_str(), stdout);
 	ini = new akInifile(inifile.c_str());
 	if (ini->Status()==Inifile::kSUCCESS){
-
+		
 		ini->SpecifyGroup("Reader");
-	
+		
 		//Try to read the group name from inifile if there no group name given
 		if ((group == 0) || (group[0] == 0)){
 			
