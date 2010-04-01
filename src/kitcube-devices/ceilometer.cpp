@@ -221,8 +221,6 @@ void Ceilometer::replaceItem(const char **header, const char *itemTag, const cha
 }
 
 
-
-
 const char *Ceilometer::getStringItem(const char **header, const char *itemTag){
 	bool findTag;
 	const char *ptr;
@@ -298,8 +296,6 @@ unsigned int Ceilometer::getSensorGroup(){
 }
 
 
-
-
 void Ceilometer::readHeader(const char *filename){
 	int fd;
 	const char *headerReadPtr;
@@ -366,17 +362,15 @@ void Ceilometer::readHeader(const char *filename){
 		sensor[13].comment = "Profil";
 		sensor[13].type = "profile";
 		sensor[13].data_format = "<profile size=\"1024\"> <height unit=\"m\">";
-		for (i = 1; i < 1024; i++) {
-			sprintf(line, "%i ", (i * 15));
+		for (i = 1; i < 1024; i++) {	// TODO: read length from file?
+			sprintf(line, "%i ", (i * 15));	// TODO: read values from data file!
 			sensor[13].data_format += line;
 		}
 		sensor[13].data_format += "15360</height> </profile>";
-		// TODO: read values from data file!
 		
 		for (i = 0; i < nSensors; i++) {
-			sensor[i].height = 110;
+			sensor[i].height = 110;	// TODO: read sensor height from data file!
 		}
-		// TODO: read sensor height from data file!
 	} else {
 	
 		// There is no header for this format
