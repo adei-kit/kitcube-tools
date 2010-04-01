@@ -1097,7 +1097,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		int len;
 		//int n;
 		//int fd;
-		int j;
+		int j, k;
 		//char *sensorString;
 		//int err;
 		std::string timeString;
@@ -1127,7 +1127,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		char sData[50];
 		struct timeval t0, t1;
 		struct timezone tz;
-		int i, k;
+		int i;
 #endif
 		
 		// Compile file name
@@ -1215,8 +1215,16 @@ void DAQDevice::readData(const char *dir, const char *filename){
 				
 				if (debug > 1) {
 					printf("%lds  %ldus  ---- ", tData.tv_sec, tData.tv_usec);
-					for (j = 0; j < nSensors; j++) {
-						printf("%10.3f ", sensorValue[j]);
+					if (profile_length != 0) {
+						for (j = 0; j < nSensors; j++) {
+							for (k = 0; k < profile_length; k++) {
+								printf("%10.3f ", sensorValue[j * profile_length + k]);
+							}
+						}
+					} else {
+						for (j = 0; j < nSensors; j++) {
+							printf("%10.3f ", sensorValue[j]);
+						}
 					}
 					printf("\n");
 				}
