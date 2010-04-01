@@ -37,6 +37,8 @@ jwd::~jwd(){
 
 
 void jwd::readHeader(const char *filename){
+	char line[256];
+	
 	if (sensorGroup == "dd") {
 		lenHeader = 0xd4;	// CAUTION: header has several lines!
 		
@@ -52,13 +54,28 @@ void jwd::readHeader(const char *filename){
 		}
 		
 		sensor[0].comment = "Rain intensity";
+		sensor[0].data_format = "<scalar>";
+		
 		sensor[1].comment = "Spectral number density";
+		sensor[1].data_format = "<scalar>";
+		
 		sensor[2].comment = "Radar reflectivity";
+		sensor[2].data_format = "<scalar>";
+		
 		sensor[3].comment = "unknown";
+		sensor[3].data_format = "<scalar>";
+		
 		sensor[4].comment = "unknown";
+		sensor[4].data_format = "<scalar>";
+		
 		sensor[5].comment = "unknown";
+		sensor[5].data_format = "<scalar>";
+		
 		sensor[6].comment = "unknown";
+		sensor[6].data_format = "<scalar>";
+		
 		sensor[7].comment = "Accumulated rain amount";
+		sensor[7].data_format = "<scalar>";
 		
 		if (debug) {
 			for (int i = 0; i < nSensors; i++) {
@@ -68,9 +85,10 @@ void jwd::readHeader(const char *filename){
 	} else if (sensorGroup == "rd") {
 		lenHeader = 0;	// no header
 		
+		profile_length = 20;
+		
 		// List of sensors
 		nSensors = 1;
-		profile_length = 20;
 		
 		sensor = new struct sensorType [nSensors];
 		
@@ -80,6 +98,12 @@ void jwd::readHeader(const char *filename){
 		
 		sensor[0].comment = "unknown";
 		sensor[0].type = "profile";
+		sensor[0].data_format = "<profile size=\"20\"> <unknown unit=\"no unit\">";
+		for (int i = 1; i < profile_length; i++) {
+			sprintf(line, "%i ", i);
+			sensor[0].data_format += line;
+		}
+		sensor[0].data_format += "20</unknown> </profile>";
 		
 		if (debug) {
 			for (int i = 0; i < nSensors; i++) {
@@ -152,6 +176,7 @@ void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 			sensorValue[i] = atoi(profile_data.c_str());
 		}
 	}
+	
 	// calculate timestamp in seconds:
 	
 	// evaluate date...
