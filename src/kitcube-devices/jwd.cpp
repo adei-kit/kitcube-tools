@@ -206,14 +206,14 @@ void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 
 void jwd::writeData(){
 	FILE *file;
-	char line[256];
-	time_t times;
+	char line[128];
+	time_t time_in_sec;
 	struct tm *date;
 	int day_min, i;
 	std::string data_set, template_filename;
 	
 	
-	if (fdata <=0) return;
+	if (fdata <= 0) return;
 	
 	// Analyse time stamp, if new day a new file needs to generated
 	if (filename != getDataFilename()) {
@@ -229,42 +229,50 @@ void jwd::writeData(){
 	// open template file
 	file = fopen(template_filename.c_str(), "r");
 	
-	// throw away header
-	for (i = 0; i < 2; i++) {
-		// read header
-		fgets(line, 255, file);
+	// throw away 2 header lines for dd* data file
+	if (sensorGroup == "dd") {
+		for (i = 0; i < 2; i++) {
+			fgets(line, 127, file);
+		}
 	}
+	// rd* data files don't have a header
 	
 	// get minute of day
-	time(&times);
-	date = gmtime((const time_t *) &times);
+	time(&time_in_sec);
+	date = gmtime((const time_t *) &time_in_sec);
 	day_min = date->tm_hour * 60 + date->tm_min;
 	
 	// throw away last (day_min - 1) data sets
 	for (i = 0; i < day_min; i++) {
-		// read header
-		fgets(line, 255, file);
+		fgets(line, 127, file);
 	}
 	
 	// read actual data set
-	fgets(line, 255, file);
+	fgets(line, 127, file);
 	
 	fclose(file);
 	
-	// replace date, year_day and time
+	// replace date and year_day
 	data_set = line;
 	// print date string of file name to buffer
 	sprintf(line, "%02d%02d%02d", date->tm_year - 100, date->tm_mon + 1, date->tm_mday);
-	data_set.replace(1, 6, line);
+	if (sensorGroup == "dd") {
+		data_set.replace(1, 6, line);
+	} else if (sensorGroup == "rd") {
+		data_set.replace(0, 6, line);
+	}
 	sprintf(line, "%3d", date->tm_yday);
-	data_set.replace(10, 3, line);
+	if (sensorGroup == "dd") {
+		data_set.replace(10, 3, line);
+	} else if (sensorGroup == "rd") {
+		data_set.replace(9, 3, line);
+	}
 
 	fprintf(fdata, "%s", data_set.c_str());
 	fflush(fdata);
 	
 	if (debug > 1)
 		printf("%s", data_set.c_str());
-	
 }
 
 
@@ -319,44 +327,47 @@ void jwd::copyRemoteData(){
 
 void jwd::writeHeader(){
 	std::string filename;
-	FILE *file;
-	char header_line[256];
+	FILE *template_file;
+	char header_line[128];
 	int i;
 
 
-	// Read the template header
-	if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");
-
-	filename = configDir + datafileTemplate;
-	printf("Reading header from template file %s\n", filename.c_str());
+	if (sensorGroup == "dd") {
+		// Read the template header
+		if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");
 	
-	// open template file
-	file = fopen(filename.c_str(), "r");
-	
-	// work on 2 header lines here
-	for (i = 0; i < 2; i++) {
-		// read header
-		fgets(header_line, 255, file);
+		filename = configDir + datafileTemplate;
+		printf("Reading header from template file %s\n", filename.c_str());
 		
-		// write header
-		fprintf(fdata, "%s", header_line);
+		// open template file
+		template_file = fopen(filename.c_str(), "r");
+		
+		// work on 2 header lines here
+		for (i = 0; i < 2; i++) {
+			// read header
+			fgets(header_line, 127, template_file);
+			
+			// write header
+			fprintf(fdata, "%s", header_line);
+		}
+	
+		// close template file
+		fclose(template_file);
 	}
-
-	// close template file
-	fclose(file);
+	// rd* data files do not have a header
 }
 
 
 const char *jwd::getDataFilename(){
-	time_t times;
+	time_t time_in_sec;
 	struct tm *date;
 	char line[256];
 	int posIndex;
 	
 	
 	// Get the actual day
-	time(&times);	// get seconds since the Epoch
-	date = gmtime((const time_t *) &times);
+	time(&time_in_sec);	// get seconds since the Epoch
+	date = gmtime((const time_t *) &time_in_sec);
 	
 	// print date string of file name to buffer
 	sprintf(line, "%02d%02d%02d", date->tm_year - 100, date->tm_mon + 1, date->tm_mday);
