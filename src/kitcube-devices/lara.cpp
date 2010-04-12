@@ -223,7 +223,7 @@ void Lara::closeFile(){
 */
 
 
-void Lara::readHeader(const char *filename){
+void Lara::readHeader(char *filename){
 	std::string dir; 
 	std::string fileString;
 	std::string numString;
@@ -396,7 +396,7 @@ void Lara::parseData(char *line, struct timeval *tData, float *sensorValue){
 
 
 
-void Lara::readData(const char *dir, const char *filename){
+void Lara::readData(const char *dir, char *filename){
 
 	if (sensorGroup == "stab") {
 		DAQDevice::readData(dir, filename);

@@ -59,11 +59,11 @@ public:
 	//void closeFile();
 	
 	/** Get time until next sample and it's id */
-	void readHeader(const char *header);
+	void readHeader(char *header);
 	
     void parseData(char *line, struct timeval *tData, float *sensorValue);	
 	
-	void readData(const char *dir, const char *filename);
+	void readData(const char *dir, char *filename);
 	
 	void writeData();
 	
