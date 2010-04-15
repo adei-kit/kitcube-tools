@@ -284,7 +284,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 			
 			// Module specific implementation
 			// Might be necessary to
-			parseData(line, &tData, sensorValue);
+			parseData(buf, &tData, sensorValue);
 			
 			// print sensor values
 			if (debug > 1) {
