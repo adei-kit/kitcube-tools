@@ -808,14 +808,12 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		if (debug > 1) printf("LastPos: %ld\n", lastPos);
 		lseek(fd, lastPos, SEEK_SET);
 		
-		
 		n = len;
 		int iLoop = 0;
 		while ((n == len) && (iLoop< 100)) {
 			n = read(fd, buf, len);
 			
 			if (n == len){
-				
 				//
 				// TODO: Check for valid data format
 				//       If not stop with this file and continue with the next one
@@ -828,7 +826,6 @@ void Ceilometer::readData(const char *dir, const char *filename){
 				}
 				
 				if (debug > 1) printf("%4d: Received %4d bytes ---  ", iLoop, n);
-				
 				
 				// TODO: Put in a separate function...
 				// Read the time stamp
@@ -864,8 +861,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 				if (debug > 1) printf("\n");
 				//if (debug > 1) printf("Sensor %s = %.0f  (err=%d)\n",sensorString, sensorValue[0], err);
 				
-				
-	#ifdef USE_MYSQL
+#ifdef USE_MYSQL
 				if (db > 0){
 					// Write dataset to database
 					// Store in the order of appearance
@@ -880,13 +876,13 @@ void Ceilometer::readData(const char *dir, const char *filename){
 							sql += "`";
 						}
 					}
-					sql +=") VALUES (";
+					sql += ") VALUES (";
 					sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 					sql += sData;
 					for (int i = 0; i < nSensors; i++){
 						if (sensorValue[i] != noData) {
-							sprintf(sData, "%f", sensorValue[i]);
 							sql += ",";
+							sprintf(sData, "%f", sensorValue[i]);
 							sql += sData;
 						}
 					}
@@ -908,13 +904,11 @@ void Ceilometer::readData(const char *dir, const char *filename){
 					
 					gettimeofday(&t1, &tz);
 					printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
-					
 				} else {
 					printf("Error: No database availabe\n");
 					throw std::invalid_argument("No database");
 				}
-	#endif // of USE_MYSQL
-				
+#endif // of USE_MYSQL
 				lastPos += n;
 			}
 			iLoop++;

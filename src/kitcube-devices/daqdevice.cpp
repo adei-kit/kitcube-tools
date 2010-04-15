@@ -1166,7 +1166,6 @@ void DAQDevice::readData(const char *dir, const char *filename){
 	}
 	
 	if (debug > 3) printf("Open data file %s\n", filenameData.c_str());
-	//fd = open(filenameData.c_str(), O_RDONLY);
 	fdata = fopen(filenameData.c_str(), "r");
 	if (fdata <= 0) {
 		printf("Error opening data file %s\n", filenameData.c_str());
@@ -1204,17 +1203,18 @@ void DAQDevice::readData(const char *dir, const char *filename){
 	int iLoop = 0;
 	lPtr = (char *) 1;
 	while ((lPtr > 0) && (iLoop < 100)) {
-		lPtr = fgets(line, 255, fdata);
+		lPtr = fgets(line, 256, fdata);
 		
 		if (lPtr > 0){
-			if (debug > 1) printf("%4d: Received %4d bytes --- ", iLoop, (int) strlen(line));
+			if (debug > 1) printf("%4d: Received %4d bytes ---- ", iLoop, (int) strlen(line));
 			
 			// Module specific implementation
 			// Might be necessary to
 			parseData(line, &tData, sensorValue);
 			
+			// print sensor values
 			if (debug > 1) {
-				printf("%lds  %ldus  ---- ", tData.tv_sec, tData.tv_usec);
+				printf("%lds %ldus ---- ", tData.tv_sec, tData.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
 						for (k = 0; k < profile_length; k++) {
@@ -1258,8 +1258,8 @@ void DAQDevice::readData(const char *dir, const char *filename){
 				} else {
 					for (i = 0; i < nSensors; i++) {
 						if (sensorValue[i] != noData) {
-							sprintf(sData, "%f", sensorValue[i]);
 							sql += ",";
+							sprintf(sData, "%f", sensorValue[i]);
 							sql += sData;
 						}	
 					}
@@ -1281,8 +1281,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 				}	
 				
 				gettimeofday(&t1, &tz);
-				printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
-				
+				printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
 			} else {
 				printf("Error: No database availabe\n");
 				throw std::invalid_argument("No database");
