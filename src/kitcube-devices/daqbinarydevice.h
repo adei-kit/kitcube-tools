@@ -34,6 +34,7 @@ class DAQBinaryDevice : public DAQDevice {
 public:
 	/**  */
 	DAQBinaryDevice();
+	
 	/**  */
 	~DAQBinaryDevice();
 
@@ -45,6 +46,8 @@ public:
 	
 	/** Write simulated data set */
 	void writeData();
+	
+	virtual void readData(const char *dir, const char *filename);
 	
 protected:
 	/** File descriptor for reading binary data files */
