@@ -236,7 +236,6 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	if (profile_length != 0) {
 		sensorValue = new float [nSensors * profile_length];
 	} else {
-		len = 0;
 		sensorValue = new float [nSensors];
 	}
 	
@@ -284,7 +283,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 			
 			// Module specific implementation
 			// Might be necessary to
-			parseData(buf, &tData, sensorValue);
+			parseData((char *)buf, &tData, sensorValue);
 			
 			// print sensor values
 			if (debug > 1) {
@@ -382,7 +381,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		fclose(fmark);
 	}
 	
-	fclose(fdata);
+	close(fd_data_file);
 	delete buf;
 	delete [] sensorValue;
 }
