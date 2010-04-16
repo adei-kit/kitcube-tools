@@ -572,7 +572,7 @@ void Mast::readData(const char *dir, const char *filename){
 	int len;
 	int n;
 	int fd;
-	float *sensorValue;
+	float *local_sensorValue;
 	SPackedTime *time;
 	
 	FILE *fmark;
@@ -633,7 +633,7 @@ void Mast::readData(const char *dir, const char *filename){
 	
 	// Access pointer
 	tickCount = buf; 
-	sensorValue = (float *) buf+1;
+	local_sensorValue = (float *) buf+1;
 	time = (struct SPackedTime *) buf+1+nSensors; 
 	
 		
@@ -669,7 +669,7 @@ void Mast::readData(const char *dir, const char *filename){
 	
 		if (n == len){	
 			if (debug > 1) printf("%4d: Received %4d bytes (errno = %d) : Tickcount = %12d: %12f %12f %12f %12f %12f  ", 
-				   iLoop, n, errno, *tickCount, sensorValue[0], sensorValue[1], sensorValue[2], sensorValue[3], sensorValue[4]);
+				   iLoop, n, errno, *tickCount, local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);
 			
 			
 			// Calculate the time stamp
@@ -699,7 +699,7 @@ void Mast::readData(const char *dir, const char *filename){
 				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 				sql += sData;
 				for (i=0; i<nSensors; i++){
-					sprintf(sData, "%f", sensorValue[i]);
+					sprintf(sData, "%f", local_sensorValue[i]);
 					sql += ",";
 					sql += sData;
 				}
@@ -753,7 +753,7 @@ void Mast::updateDataSet(unsigned char *buf){
 	struct timezone tz;	
 	
 	unsigned int *tickCount;
-	float *sensorValue;
+	float *local_sensorValue;
 	
 	
 	// Compile the data set for writing to the data file
@@ -762,10 +762,10 @@ void Mast::updateDataSet(unsigned char *buf){
 	gettimeofday(&t, &tz);	
 	
 	tickCount = (unsigned int *) buf; 
-	sensorValue = (float *) buf + 4;
+	local_sensorValue = (float *) buf + 4;
 	
 	if (debug > 1) printf( "Tickcount = %12d:  %12f %12f %12f %12f %12f   ", 
-						  *tickCount,  sensorValue[0], sensorValue[1], sensorValue[2], sensorValue[3], sensorValue[4]);	
+						  *tickCount,  local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);	
 	
 	// Replace 
 	*tickCount = (t.tv_sec - tRef.tv_sec) *100 ; // 10ms units?!

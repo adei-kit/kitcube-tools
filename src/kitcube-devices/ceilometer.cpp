@@ -495,7 +495,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	int fd;
 	//int j;
 	char *sensorString;
-	float *sensorValue;
+	float *local_sensorValue;
 	int err;
 	int sensorPtr[] = {27, 33, 39, 45, 50, 55, 60, 66, 72};
 	std::string timeString;
@@ -796,7 +796,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		// Allocate memory for one data set
 		len = 237;
 		buf = new unsigned char [len];
-		sensorValue = new float [nSensors];
+		local_sensorValue = new float [nSensors];
 		
 		if (debug > 1) printf("Open data file %s\n", filenameData.c_str());
 		fd = open(filenameData.c_str(), O_RDONLY);
@@ -853,13 +853,13 @@ void Ceilometer::readData(const char *dir, const char *filename){
 				for (int j = 0; j < nSensors; j++) {
 					sensorString = (char *) (buf + sensorPtr[j]);
 					//buf[sensorPtr[1]-1] = 0;
-					sensorValue[j] = noData;
-					err = sscanf(sensorString, "%f", &sensorValue[j]);
+					local_sensorValue[j] = noData;
+					err = sscanf(sensorString, "%f", &local_sensorValue[j]);
 					
-					if (debug > 1) printf("%5.0f ", sensorValue[j]);
+					if (debug > 1) printf("%5.0f ", local_sensorValue[j]);
 				}
 				if (debug > 1) printf("\n");
-				//if (debug > 1) printf("Sensor %s = %.0f  (err=%d)\n",sensorString, sensorValue[0], err);
+				//if (debug > 1) printf("Sensor %s = %.0f  (err=%d)\n",sensorString, local_sensorValue[0], err);
 				
 #ifdef USE_MYSQL
 				if (db > 0){
@@ -870,7 +870,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 					sql = "INSERT INTO `";
 					sql += dataTableName + "` (`sec`,`usec`";
 					for (int i = 0; i < nSensors; i++){
-						if (sensorValue[i] != noData) {
+						if (local_sensorValue[i] != noData) {
 							sql += ",`";
 							sql += sensor[i].name;
 							sql += "`";
@@ -880,9 +880,9 @@ void Ceilometer::readData(const char *dir, const char *filename){
 					sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 					sql += sData;
 					for (int i = 0; i < nSensors; i++){
-						if (sensorValue[i] != noData) {
+						if (local_sensorValue[i] != noData) {
 							sql += ",";
-							sprintf(sData, "%f", sensorValue[i]);
+							sprintf(sData, "%f", local_sensorValue[i]);
 							sql += sData;
 						}
 					}
@@ -926,7 +926,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		
 		close(fd);
 		delete buf;
-		delete [] sensorValue;
+		delete [] local_sensorValue;
 	}
 	
 	// Write the last valid time stamp / file position

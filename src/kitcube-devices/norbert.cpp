@@ -419,7 +419,7 @@ void Norbert::readData(const char *dir, const char *filename){
 	int fd;
 	int j;
 	char *sensorString;
-	int *sensorValue;
+	int *local_sensorValue;
 	int err;
 	int sensorPtr[] = {9};
 	std::string timeString;
@@ -475,7 +475,7 @@ void Norbert::readData(const char *dir, const char *filename){
 	// Allocate memory for one data set
 	len = lenDataSet;
 	buf = new unsigned char [len];
-	sensorValue = new int [nSensors];
+	local_sensorValue = new int [nSensors];
 
 	if (debug > 1)
 		printf("Open data file %s\n", filenameData.c_str());
@@ -545,15 +545,15 @@ void Norbert::readData(const char *dir, const char *filename){
 			for (j = 0; j < nSensors; j++) {
 				sensorString = (char *) (buf + sensorPtr[j]);
 				//buf[sensorPtr[1]-1] = 0;
-				sensorValue[j] = noData;
-				err = sscanf(sensorString, "%d", &sensorValue[j]);
+				local_sensorValue[j] = noData;
+				err = sscanf(sensorString, "%d", &local_sensorValue[j]);
 
 				if (debug > 1)
-					printf("%4d ", sensorValue[j]);
+					printf("%4d ", local_sensorValue[j]);
 			}
 			if (debug > 1)
 				printf("\n");
-			//if (debug > 1) printf("Sensor %s = %.0f  (err=%d)\n",sensorString, sensorValue[0], err);
+			//if (debug > 1) printf("Sensor %s = %.0f  (err=%d)\n",sensorString, local_sensorValue[0], err);
 
 
 #ifdef USE_MYSQL
@@ -565,7 +565,7 @@ void Norbert::readData(const char *dir, const char *filename){
 				sql = "INSERT INTO `";
 				sql += dataTableName + "` (`sec`,`usec`";
 				for (i = 0; i < nSensors; i++) {
-					if (sensorValue[i] != noData) {
+					if (local_sensorValue[i] != noData) {
 						sql += ",`";
 						sql += sensor[i].name;
 						sql += "`";
@@ -575,8 +575,8 @@ void Norbert::readData(const char *dir, const char *filename){
 				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
 				sql += sData;
 				for (i = 0; i < nSensors; i++) {
-					if (sensorValue[i] != noData) {
-						sprintf(sData, "%d", sensorValue[i]);
+					if (local_sensorValue[i] != noData) {
+						sprintf(sData, "%d", local_sensorValue[i]);
 						sql += ",";
 						sql += sData;
 					}
@@ -631,7 +631,7 @@ void Norbert::readData(const char *dir, const char *filename){
 
 	close(fd);
 	delete buf;
-	delete [] sensorValue;
+	delete [] local_sensorValue;
 }
 
 
