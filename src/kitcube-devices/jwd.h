@@ -10,22 +10,7 @@
 #ifndef JWD_H
 #define JWD_H
 
-
-#include <cstdio>
-#include <string>
-#include <ctime>
-#include <map>
-
-#ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#endif // of USE_MYSQL
-
-#include <akutil/simpleserver.h>
-#include <akutil/procDuration.h>
-
-
 #include "daqdevice.h"
-
 
 
 /** Implementation for the weather mast DAQ devices that are

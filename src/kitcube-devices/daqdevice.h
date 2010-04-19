@@ -10,18 +10,18 @@
 #ifndef DAQDEVICE_H
 #define DAQDEVICE_H
 
-
-#include <cstdio>
-#include <string>
-#include <map>
+#include <cstdlib>
+#include <dirent.h>
+#include <fcntl.h>
+#include <cstring>
+#include <stdexcept>
 #include <sys/time.h>
 
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
 #endif // of USE_MYSQL
 
-#include <akutil/simpleserver.h>
-#include <akutil/procDuration.h>
+#include <akutil/akinifile.h>
 
 
 struct axisDef {

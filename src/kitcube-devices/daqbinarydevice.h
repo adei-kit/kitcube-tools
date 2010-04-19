@@ -10,18 +10,6 @@
 #ifndef DAQBINARYDEVICE_H
 #define DAQBINARYDEVICE_H
 
-
-#include <cstdio>
-#include <string>
-#include <map>
-
-#ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#endif // of USE_MYSQL
-
-#include <akutil/simpleserver.h>
-#include <akutil/procDuration.h>
-
 #include "daqdevice.h"
 
 
