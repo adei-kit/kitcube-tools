@@ -42,7 +42,6 @@ public:
 	/**  */
 	~Ceilometer();
 
-
 	/** Set default configuration */
 	void setConfigDefaults();
 	
@@ -76,7 +75,9 @@ public:
 	void writeHeader();
 	
 	void readData(const char *dir, const char *filename);
-
+	
+	void parseData(char *line, struct timeval *tData, float * sensorValue);
+	
 	/** Replace time stamp in the data set by the current time */
 	void updateDataSet(unsigned char *buf);
 	

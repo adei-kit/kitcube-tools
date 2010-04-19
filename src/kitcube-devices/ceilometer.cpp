@@ -7,7 +7,6 @@
  ***************************************************************************/
 
 
-
 #include "ceilometer.h"
 
 #include <stdlib.h>
@@ -23,14 +22,11 @@
 #include <string>
 #include <stdexcept>
 
-
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
 #endif
 
-
 #include <akutil/akinifile.h>
-
 
 
 Ceilometer::Ceilometer():DAQBinaryDevice(){
@@ -372,7 +368,6 @@ void Ceilometer::readHeader(const char *filename){
 			sensor[i].height = 110;	// TODO: read sensor height from data file!
 		}
 	} else {
-	
 		// There is no header for this format
 		// This means all output is static all the time?!
 		// Some header informations are hidden in the data (e.g. height)
@@ -403,6 +398,7 @@ void Ceilometer::readHeader(const char *filename){
 			return;
 		}
 		
+		profile_length = 0;
 		
 		//
 		// Read parameters
@@ -410,14 +406,12 @@ void Ceilometer::readHeader(const char *filename){
 		printf("Module: \t\t%s, ID %03d, Group %s ID %d\n", moduleName.c_str(), moduleNumber,
 			sensorGroup.c_str(), sensorGroupNumber);
 		
-		
 		// Sampling time
 		
 		// Height (offset)
 		headerReadPtr = (const char *) headerRaw + 72;
 		sscanf(headerReadPtr, "%d", &heightOffset);
 		printf("Height = %d\n", heightOffset);
-		
 		
 		// Unit (m/ft)
 		// In case of feet the values need to be converted to m
@@ -431,7 +425,6 @@ void Ceilometer::readHeader(const char *filename){
 		// Device ID + fabrication date
 		
 		// Software version DAQ + Processing
-		
 		
 		// Reference time == time stamp of first entry
 		std::string timeString;
@@ -454,7 +447,6 @@ void Ceilometer::readHeader(const char *filename){
 		tRef.tv_sec = timestamp;
 		tRef.tv_usec = 0;
 		
-		
 		// Number of sensors
 		nSensors = 8;
 		printf("Number of sensors %d\n", nSensors);
@@ -472,12 +464,10 @@ void Ceilometer::readHeader(const char *filename){
 		sensor[6].comment = "Vertical visibility";
 		sensor[7].comment = "Detection range";
 		
-		
 		for (i = 0; i < nSensors; i++) {
 			sensor[i].height = heightOffset;
 			printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
 		}
-	
 	}
 }
 
@@ -487,20 +477,51 @@ void Ceilometer::writeHeader(){
 }
 
 
-// TODO: Move the parsing part to separate functions and move rest to base class
-void Ceilometer::readData(const char *dir, const char *filename){
-	unsigned char *buf;
-	int len;
-	int n;
-	int fd;
-	//int j;
-	char *sensorString;
-	float *local_sensorValue;
-	int err;
-	int sensorPtr[] = {27, 33, 39, 45, 50, 55, 60, 66, 72};
+void Ceilometer::parseData(char *line, struct timeval *tData, float *sensorValue){
 	std::string timeString;
 	std::string dateString;
 	unsigned long timestamp;
+	int sensorPtr[] = {27, 33, 39, 45, 50, 55, 60, 66, 72};
+	int err;
+	unsigned char* buf;
+	char *sensorString;
+	
+	
+	buf = (unsigned char*)line;
+	// TODO: Put in a separate function...
+	// Read the time stamp
+	buf[20] = 0;
+	dateString = (char *) (buf + 12);
+	dateString.insert(6,"20"); // Insert full year number in string
+	buf[26] = 0;
+	timeString = (char *) (buf + 21);
+	timeString += ":";
+	buf[235] = 0;
+	timeString += (char *) (buf + 233);
+	//timeString += ":00"; // Add missing seconds
+	
+	if (debug > 1) printf("[%s] [%s] ", dateString.c_str(), timeString.c_str());
+		
+	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
+	tData->tv_sec = timestamp;
+	tData->tv_usec = 0;
+	
+	// Read data values
+	//printf("%s\n", buf);
+	for (int j = 0; j < nSensors; j++) {
+		sensorString = (char *) (buf + sensorPtr[j]);
+		//buf[sensorPtr[1]-1] = 0;
+		sensorValue[j] = noData;
+		err = sscanf(sensorString, "%f", &sensorValue[j]);
+	}
+}
+
+
+// TODO: Move the parsing part to separate functions and move rest to base class
+void Ceilometer::readData(const char *dir, const char *filename){
+	//int j;
+	std::string timeString;
+	std::string dateString;
 	
 	
 	FILE *fmark;
@@ -509,7 +530,6 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long lastIndex;
-	struct timeval tData;
 	//struct timeval tWrite;
 	char line[256];
 	
@@ -532,46 +552,47 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	// If signal strenght is not high enough "NaN"
 	// Negative error codes
 	
-	if (debug > 0) printf("_____Reading data_____________________\n");
-	
-	// Compile file name
-	filenameData = dir;
-	filenameData += filename;
-	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
-	
-	
-	// If number of sensors is unknown read the header first
-	if (nSensors == 0) readHeader(filenameData.c_str());
-	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());
+	if (sensorGroup == "chm") {	// read *.chm file here
+		DAQBinaryDevice::readData(dir, filename);
+	} else if (sensorGroup == "nc") {	// read NetCDF file here
+		if (debug > 0) printf("_____Reading data_____________________\n");
+		
+		// Compile file name
+		filenameData = dir;
+		filenameData += filename;
+		//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
+		
+		
+		// If number of sensors is unknown read the header first
+		if (nSensors == 0) readHeader(filenameData.c_str());
+		if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());
 	
 #ifdef USE_MYSQL
-	if (db == 0) {
-		openDatabase();
-	} else {
-		// Automatic reconnect
-		if (mysql_ping(db) != 0){
-			printf("Error: Lost connection to database - automatic reconnect failed\n");
-			throw std::invalid_argument("Database unavailable\n");
+		if (db == 0) {
+			openDatabase();
+		} else {
+			// Automatic reconnect
+			if (mysql_ping(db) != 0){
+				printf("Error: Lost connection to database - automatic reconnect failed\n");
+				throw std::invalid_argument("Database unavailable\n");
+			}
 		}
-	}
 #endif
 
-	// Get the last time stamp + file pointer from
-	lastPos = 0;
-	lastTime.tv_sec = 0;
-	lastTime.tv_usec = 0;
-	
-	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker = line;
-	if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
-	fmark = fopen(filenameMarker.c_str(), "r");
-	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
-		fclose(fmark);
-	}
-	
-	
-	if (sensorGroup == "nc"){	// read NetCDF file here
+		// Get the last time stamp + file pointer from
+		lastPos = 0;
+		lastTime.tv_sec = 0;
+		lastTime.tv_usec = 0;
+		
+		sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
+		filenameMarker = line;
+		if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
+		fmark = fopen(filenameMarker.c_str(), "r");
+		if (fmark > 0) {
+			fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+			fclose(fmark);
+		}
+		
 		printf("\nHandling NetCDF file now!\n");
 		
 		// if file already read, return
@@ -791,149 +812,13 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		lastPos = 1;	// file read
 		fd_eof = true;
 		
-	} else {	// read *.chm file here
-		
-		// Allocate memory for one data set
-		len = 237;
-		buf = new unsigned char [len];
-		local_sensorValue = new float [nSensors];
-		
-		if (debug > 1) printf("Open data file %s\n", filenameData.c_str());
-		fd = open(filenameData.c_str(), O_RDONLY);
-		
-		
-		if (lastPos == 0) lastPos = 0; // Move the the first data
-		
-		// Find the beginning of the new data
-		if (debug > 1) printf("LastPos: %ld\n", lastPos);
-		lseek(fd, lastPos, SEEK_SET);
-		
-		n = len;
-		int iLoop = 0;
-		while ((n == len) && (iLoop< 100)) {
-			n = read(fd, buf, len);
-			
-			if (n == len){
-				//
-				// TODO: Check for valid data format
-				//       If not stop with this file and continue with the next one
-				//
-				if (strstr((const char *) buf, "X1TA") != (char *) (buf+1)) {
-					printf("No valid ceilometer data found -- will continue with next file\n");
-					
-					// Continue with the next file
-					break; // or n = 0
-				}
-				
-				if (debug > 1) printf("%4d: Received %4d bytes ---  ", iLoop, n);
-				
-				// TODO: Put in a separate function...
-				// Read the time stamp
-				buf[20] = 0;
-				dateString = (char *) (buf + 12);
-				dateString.insert(6,"20"); // Insert full year number in string
-				buf[26] = 0;
-				timeString = (char *) (buf + 21);
-				timeString += ":";
-				buf[235] = 0;
-				timeString += (char *) (buf + 233);
-				//timeString += ":00"; // Add missing seconds
-				if (debug > 1) printf("[%s] [%s]", dateString.c_str(), timeString.c_str());
-				
-				
-				timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
-				tData.tv_sec = timestamp;
-				tData.tv_usec = 0;
-				
-				if (debug > 1) printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
-				
-				// Read data values
-				//printf("%s\n", buf);
-				if (debug > 1) printf("Sensors:");
-				for (int j = 0; j < nSensors; j++) {
-					sensorString = (char *) (buf + sensorPtr[j]);
-					//buf[sensorPtr[1]-1] = 0;
-					local_sensorValue[j] = noData;
-					err = sscanf(sensorString, "%f", &local_sensorValue[j]);
-					
-					if (debug > 1) printf("%5.0f ", local_sensorValue[j]);
-				}
-				if (debug > 1) printf("\n");
-				//if (debug > 1) printf("Sensor %s = %.0f  (err=%d)\n",sensorString, local_sensorValue[0], err);
-				
-#ifdef USE_MYSQL
-				if (db > 0){
-					// Write dataset to database
-					// Store in the order of appearance
-					//printf("Write record to database\n");
-					
-					sql = "INSERT INTO `";
-					sql += dataTableName + "` (`sec`,`usec`";
-					for (int i = 0; i < nSensors; i++){
-						if (local_sensorValue[i] != noData) {
-							sql += ",`";
-							sql += sensor[i].name;
-							sql += "`";
-						}
-					}
-					sql += ") VALUES (";
-					sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
-					sql += sData;
-					for (int i = 0; i < nSensors; i++){
-						if (local_sensorValue[i] != noData) {
-							sql += ",";
-							sprintf(sData, "%f", local_sensorValue[i]);
-							sql += sData;
-						}
-					}
-					sql += ")";
-					
-					//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
-					
-					gettimeofday(&t0, &tz);
-					
-					if (mysql_query(db, sql.c_str())){
-						fprintf(stderr, "%s\n", sql.c_str());
-						fprintf(stderr, "%s\n", mysql_error(db));
-						
-						// If this operation fails do not proceed in the file?!
-						printf("Error: Unable to write data to database\n");
-						throw std::invalid_argument("Writing data failed");
-						break;
-					}
-					
-					gettimeofday(&t1, &tz);
-					printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
-				} else {
-					printf("Error: No database availabe\n");
-					throw std::invalid_argument("No database");
-				}
-#endif // of USE_MYSQL
-				lastPos += n;
-			}
-			iLoop++;
-		}
-		
-		if (n < len) {
-			fd_eof = true;
-		} else {
-			fd_eof = false;
-		}
-		
-		if (debug > 1) printf("\n");
-		if (debug > 1) printf("Position of file %ld\n", lastPos);
-		
-		
-		close(fd);
-		delete buf;
-		delete [] local_sensorValue;
-	}
 	
-	// Write the last valid time stamp / file position
-	fmark = fopen(filenameMarker.c_str(), "w");
-	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
-		fclose(fmark);
+		// Write the last valid time stamp / file position
+		fmark = fopen(filenameMarker.c_str(), "w");
+		if (fmark > 0) {
+			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
+			fclose(fmark);
+		}
 	}
 }
 
