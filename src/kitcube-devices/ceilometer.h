@@ -54,11 +54,6 @@ public:
 	/** Implements the data filename convention of the DAQ module. */
 	const char *getDataFilename();
 	
-	/** Re-implement the calculation of the file numbering scheme. 
-	 * The ceilometer uses date and times in the filename 
-	 */
-	//int getFileNumber(char *filename);
-	
 	void replaceItem(const char **header, const char *itemTag, const char *newValue);
 	
 	const char * getStringItem(const char **header, const char *itemTag);	
