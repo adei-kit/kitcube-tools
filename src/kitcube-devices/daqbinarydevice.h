@@ -33,7 +33,7 @@ public:
 	virtual void closeFile();
 	
 	/** Write simulated data set */
-	void writeData();
+	virtual void writeData();
 	
 	virtual void readData(const char *dir, const char *filename);
 	
