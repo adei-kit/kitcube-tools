@@ -10,7 +10,7 @@
 #ifndef JWD_H
 #define JWD_H
 
-#include "daqdevice.h"
+#include "daqasciidevice.h"
 
 
 /** Implementation for the weather mast DAQ devices that are
@@ -18,7 +18,7 @@
   * 
   */
 
-class jwd : public DAQDevice {
+class jwd : public DAQAsciiDevice {
 public:
 	/**  */
 	jwd();
