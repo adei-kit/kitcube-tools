@@ -157,6 +157,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	int fd_data_file;
 	int j, k;
 	//char *sensorString;
+	float* local_sensorValue;
 	//int err;
 	std::string timeString;
 	std::string dateString;
@@ -219,9 +220,9 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	buf = new unsigned char [len];
 	
 	if (profile_length != 0) {
-		sensorValue = new float [nSensors * profile_length];
+		local_sensorValue = new float [nSensors * profile_length];
 	} else {
-		sensorValue = new float [nSensors];
+		local_sensorValue = new float [nSensors];
 	}
 	
 	if (debug > 3) printf("Open data file %s\n", filenameData.c_str());
@@ -268,7 +269,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 			
 			// Module specific implementation
 			// Might be necessary to
-			parseData((char *)buf, &tData, sensorValue);
+			parseData((char *)buf, &tData, local_sensorValue);
 			
 			// print sensor values
 			if (debug > 1) {
@@ -276,12 +277,12 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
 						for (k = 0; k < profile_length; k++) {
-							printf("%10.3f ", sensorValue[j * profile_length + k]);
+							printf("%10.3f ", local_sensorValue[j * profile_length + k]);
 						}
 					}
 				} else {
 					for (j = 0; j < nSensors; j++) {
-						printf("%10.3f ", sensorValue[j]);
+						printf("%10.3f ", local_sensorValue[j]);
 					}
 				}
 				printf("\n");
@@ -295,7 +296,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 				sql = "INSERT INTO `";
 				sql += dataTableName + "` (`sec`,`usec`";
 				for (i = 0 ; i < nSensors; i++) {
-					if (sensorValue[i] != noData) {
+					if (local_sensorValue[i] != noData) {
 						sql += ",`";
 						sql += sensor[i].name;
 						sql += "`";
@@ -308,16 +309,16 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 					for (i = 0; i < nSensors; i++) {
 						sql += ", '";
 						for (k = 0; k < profile_length; k++) {
-							sprintf(sData, "%f, ", sensorValue[i * profile_length + k]);
+							sprintf(sData, "%f, ", local_sensorValue[i * profile_length + k]);
 							sql += sData;
 						}
 						sql += "'";
 					}
 				} else {
 					for (i = 0; i < nSensors; i++) {
-						if (sensorValue[i] != noData) {
+						if (local_sensorValue[i] != noData) {
 							sql += ",";
-							sprintf(sData, "%f", sensorValue[i]);
+							sprintf(sData, "%f", local_sensorValue[i]);
 							sql += sData;
 						}
 					}
@@ -368,5 +369,5 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	
 	close(fd_data_file);
 	delete buf;
-	delete [] sensorValue;
+	delete [] local_sensorValue;
 }
