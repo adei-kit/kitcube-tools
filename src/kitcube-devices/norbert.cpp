@@ -12,25 +12,6 @@
 
 #include "norbert.h"
 
-#include <stdlib.h>
-#include <time.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <math.h>
-#include <errno.h>
-#include <fstream>
-#include <nl_types.h>
-#include <string>
-#include <stdexcept>
-
-#ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#endif
-
-#include <akutil/akinifile.h>
-
 
 Norbert::Norbert():DAQBinaryDevice(){
 

@@ -4,10 +4,10 @@
 // A. Kopmann 4.6.09
 //
 
-#include <stdlib.h>
 
 #include "createdevice.h"
-#include "daqdevice.h"
+#include "daqasciidevice.h"
+#include "daqbinarydevice.h"
 
 
 int main(int argc, char *argv[]){

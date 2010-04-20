@@ -13,25 +13,13 @@
 #ifndef NORBERT_H
 #define NORBERT_H
 
-
-#include <cstdio>
-#include <string>
-#include <map>
-
-#ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#endif // of USE_MYSQL
-
-#include <akutil/simpleserver.h>
-#include <akutil/procDuration.h>
-
 #include "daqbinarydevice.h"
 
 
 /** Implementation for the norbert simulation device.
   */
 
-class Norbert : public DAQBinaryDevice {
+class Norbert: public DAQBinaryDevice {
 public:
 	/** Constructor */
 	Norbert();
