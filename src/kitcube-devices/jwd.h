@@ -18,7 +18,7 @@
   * 
   */
 
-class jwd : public DAQAsciiDevice {
+class jwd: public DAQAsciiDevice {
 public:
 	/**  */
 	jwd();
@@ -29,7 +29,7 @@ public:
 	
 	const char *getDataDir();
 	
-	void readHeader(const char *header);
+	void readHeader(const char *filename);
 	
 	void writeHeader();
 	
