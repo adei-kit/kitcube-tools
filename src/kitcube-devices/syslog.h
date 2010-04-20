@@ -10,21 +10,7 @@
 #ifndef SYSLOG_H
 #define SYSLOG_H
 
-
-#include <cstdio>
-#include <string>
-#include <map>
-
-#ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#endif 
-
-#include <akutil/simpleserver.h>
-#include <akutil/procDuration.h>
-
 #include "daqdevice.h"
-
-
 
 
 /** Implementation for the performance module.
