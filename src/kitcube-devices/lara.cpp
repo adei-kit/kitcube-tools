@@ -7,19 +7,7 @@
  ***************************************************************************/
 
 
-
 #include "lara.h"
-
-#include <stdlib.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <math.h>
-#include <errno.h>
-#include <fstream>
-
-#include <akutil/akinifile.h>
 
 
 Lara::Lara(){
@@ -399,7 +387,7 @@ void Lara::parseData(char *line, struct timeval *tData, float *sensorValue){
 void Lara::readData(const char *dir, char *filename){
 
 	if (sensorGroup == "stab") {
-		DAQDevice::readData(dir, filename);
+		DAQAsciiDevice::readData(dir, filename);
 	}	
 	
 	if (sensorGroup == "run"){

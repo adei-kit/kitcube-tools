@@ -10,21 +10,9 @@
 #ifndef SIMRANDOM_H
 #define SIMRANDOM_H
 
+#include "daqasciidevice.h"
 
-#include <cstdio>
-#include <string>
-#include <map>
-
-#ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#endif // of USE_MYSQL
-
-#include <akutil/simpleserver.h>
-#include <akutil/procDuration.h>
-
-
-#include "daqdevice.h"
-
+#include <math.h>
 
 
 /** Implementation for the weather mast DAQ devices that are
@@ -32,7 +20,7 @@
   * 
   */
 
-class SimRandom : public DAQDevice  {
+class SimRandom: public DAQAsciiDevice  {
 public: 
 	/**  */
 	SimRandom();

@@ -10,21 +10,9 @@
 #ifndef LARA_H
 #define LARA_H
 
+#include "daqasciidevice.h"
 
-#include <cstdio>
-#include <string>
-#include <map>
-
-#ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#endif // of USE_MYSQL
-
-#include <akutil/simpleserver.h>
-#include <akutil/procDuration.h>
-
-
-#include "daqdevice.h"
-
+#include <errno.h>
 
 
 /** Implementation for the weather mast DAQ devices that are
@@ -34,7 +22,7 @@
   *       The feature should be configurable from the inifile
   */
 
-class Lara : public DAQDevice  {
+class Lara: public DAQAsciiDevice  {
 public: 
   /**  */
   Lara();
@@ -59,7 +47,7 @@ public:
 	//void closeFile();
 	
 	/** Get time until next sample and it's id */
-	void readHeader(char *header);
+	void readHeader(char *filename);
 	
     void parseData(char *line, struct timeval *tData, float *sensorValue);	
 	
