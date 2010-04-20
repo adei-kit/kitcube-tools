@@ -18,7 +18,7 @@
   * The data files contain any kind of binary format.
   */
 
-class DAQBinaryDevice : public DAQDevice {
+class DAQBinaryDevice: public DAQDevice {
 public:
 	/**  */
 	DAQBinaryDevice();

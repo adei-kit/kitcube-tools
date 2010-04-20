@@ -16,7 +16,7 @@
 #include "daqdevice.h"
 
 
-class DAQAsciiDevice : public DAQDevice {
+class DAQAsciiDevice: public DAQDevice {
 public:
 	/**  */
 	DAQAsciiDevice();
