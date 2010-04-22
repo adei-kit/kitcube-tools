@@ -557,7 +557,12 @@ void DAQDevice::copyRemoteData(){
 
 
 const char *DAQDevice::getDataDir(){
-	return(0);
+	char line[256];
+	
+	sprintf(line, "%s/", moduleName.c_str());
+	buffer = line;
+	
+	return(buffer.c_str());
 }
 
 
