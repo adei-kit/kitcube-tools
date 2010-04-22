@@ -15,6 +15,7 @@
 #include "simrandom.h"
 #include "norbert.h"
 #include "jwd.h"
+#include "parsivel.h"
 
 
 extern "C" void *createDevice(const char *devType) {
@@ -26,6 +27,7 @@ extern "C" void *createDevice(const char *devType) {
 	if (strcasestr(devType, "SimRandom") > 0) return( new (SimRandom));
 	if (strcasestr(devType, "Norbert") > 0) return( new (Norbert));
 	if (strcasestr(devType, "JWD") > 0) return( new (jwd));
+	if (strcasestr(devType, "Parsivel") > 0) return( new (parsivel));
 
 	if (strcasestr(devType, "Lara") > 0) return( new (Lara));
 	
