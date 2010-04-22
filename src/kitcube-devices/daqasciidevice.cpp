@@ -45,7 +45,7 @@ void DAQAsciiDevice::openFile(){ // for writing
 	fclose(fd);
 	
 	// Read header, test if it exists and is valid?!
-	readHeader(nameTemplate.c_str());
+	readHeader(nameTemplate.c_str());	// FIXME/TODO: do we really need this here?!?
 
 	
 	// Read index from file, if the value has not been initialized before
@@ -62,7 +62,7 @@ void DAQAsciiDevice::openFile(){ // for writing
 	}
 	
 	
-	// Open data file for writing the data
+	// Open ASCII file for writing the data
 	path = dataDir +  getDataDir();
 	filename = getDataFilename(); // Warning using global variable for returning data !!!
 	fullFilename = path + filename;

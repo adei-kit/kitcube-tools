@@ -64,6 +64,7 @@ const char *Norbert::getDataDir(){
 	// TODO: Create a single source for the filename convention...
 	sprintf(line, "%s/Daten/", moduleName.c_str());
 	buffer = line;
+	
 	return(buffer.c_str());
 }
 
