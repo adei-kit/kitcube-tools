@@ -361,7 +361,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	i = 0;
 	while ((n > 0) && (i < nSensors)) {
 		// Read names, compare with the names in the data base?!
-		n = fgets(line, 255, flist);
+		n = fgets(line, 256, flist);
 		if (n > 0) {
 			if (debug > 4) printf("%d: %s", i+1, line);
 			// Parse the line <TAB> splits the fields

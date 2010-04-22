@@ -211,7 +211,7 @@ void jwd::writeData(){
 	// throw away 2 header lines for dd* data file
 	if (sensorGroup == "dd") {
 		for (i = 0; i < 2; i++) {
-			fgets(line, 127, file);
+			fgets(line, 128, file);
 		}
 	}
 	// rd* data files don't have a header
@@ -223,11 +223,11 @@ void jwd::writeData(){
 	
 	// throw away last (day_min - 1) data sets
 	for (i = 0; i < day_min; i++) {
-		fgets(line, 127, file);
+		fgets(line, 128, file);
 	}
 	
 	// read actual data set
-	fgets(line, 127, file);
+	fgets(line, 128, file);
 	
 	fclose(file);
 	
@@ -324,7 +324,7 @@ void jwd::writeHeader(){
 		// work on 2 header lines here
 		for (i = 0; i < 2; i++) {
 			// read header
-			fgets(header_line, 127, template_file);
+			fgets(header_line, 128, template_file);
 			
 			// write header
 			fprintf(fdata, "%s", header_line);
@@ -351,7 +351,7 @@ const char *jwd::getDataFilename(){
 	// print date string of file name to buffer
 	sprintf(line, "%02d%02d%02d", date->tm_year - 100, date->tm_mon + 1, date->tm_mday);
 	
-	// replace <index> ind datafile mask with date string
+	// replace <index> in datafile mask with date string
 	buffer = datafileMask;
 	posIndex = buffer.find("<index>");
 	buffer.replace(posIndex, 7, line);
