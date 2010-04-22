@@ -24,13 +24,12 @@ DAQBinaryDevice::~DAQBinaryDevice(){
 void DAQBinaryDevice::openFile(){ // for writing
 	char line[256];
 	FILE *fmark;
-	//char dataName[256];
 	int fd;
 	std::string msg;
 	std::string nameTemplate;
 	std::string fullFilename;
 	
-	//printf("_____DAQBinaryDevice::openFile__________\n");	
+	printf("_____DAQBinaryDevice::openFile__________\n");
 	
 	// Check if template file is existing and contains header + data
 	nameTemplate = configDir + datafileTemplate;
@@ -39,10 +38,10 @@ void DAQBinaryDevice::openFile(){ // for writing
 		msg = "Template file not found -- " + nameTemplate;
 		throw std::invalid_argument(msg.c_str());
 	}
+	close(fd);
 	
 	// Read header, test if it exists and is valid?!
-	readHeader(nameTemplate.c_str());
-	close(fd);
+	readHeader(nameTemplate.c_str());	// FIXME/TODO: do we really need this here?!?
 	
 	
 	// Read index from file, if the value has not been initialized before
@@ -53,7 +52,7 @@ void DAQBinaryDevice::openFile(){ // for writing
 		filenameMarker = line;
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {
-			fscanf(fmark, "%ld", &fileIndex);
+			fscanf(fmark, "%ld%d", &fileIndex, &nLine);
 			fclose(fmark);
 		}
 	}
