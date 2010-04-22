@@ -27,8 +27,6 @@ public:
 	
 	void setConfigDefaults();
 	
-	const char *getDataDir();
-	
 	void readHeader(const char *filename);
 	
 	void writeHeader();

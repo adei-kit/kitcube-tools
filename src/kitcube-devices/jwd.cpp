@@ -127,15 +127,6 @@ void jwd::setConfigDefaults(){
 }
 
 
-const char *jwd::getDataDir(){
-	char line[256];
-	
-	sprintf(line, "%s/", moduleName.c_str());
-	buffer = line;
-	return(buffer.c_str());
-}
-
-
 void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 	int yday, mod;
 	char date[7] = {0}, time[5] = {0};
