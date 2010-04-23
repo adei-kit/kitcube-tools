@@ -459,30 +459,37 @@ unsigned int DAQDevice::getSensorGroup(){
 }
 
 
-const char * DAQDevice::getArchiveDir(){
+const char* DAQDevice::getArchiveDir(){
 	return(this->archiveDir.c_str());
 }
 
 
 void::DAQDevice::createDirectories(const char *path){
-	std::string filename;
+	std::string pathname;
 	std::string dir;
-	int pos0, pos1;
+	size_t pos0, pos1;
 	int i;
 	
+	
+	if (debug >= 1) {
+		printf("\n_____DAQDevice::createDirectories(const char *path)_____\n");
+		printf("Creating directory: %s\n", path);
+	}
+	
 	// Check if the base directory exists
-	filename = path;
+	pathname = path;
 	pos0 = 0;
 	pos1 = 0;
 	i = 0;
-	while ((pos1 >= 0) && (i<10)){
-		pos1 = filename.find("/", pos0);
-		if (pos1 >= 0) {
-			dir = filename.substr(0,pos1);
-			if (debug > 2) printf("Create directory %s (%d, %d)\n", dir.c_str(),pos0, pos1);
-			if (dir.length() > 0)
+	while ((pos1 != std::string::npos) && (i < 10)) {	// FIXME: why the limitation to 10 subdirectories?
+		pos1 = pathname.find("/", pos0);
+		if (pos1 != std::string::npos) {
+			dir = pathname.substr(0, pos1);
+			if (debug > 2)
+				printf("Create directory %s (%d, %d)\n", dir.c_str(), pos0, pos1);
+			if (dir.length() > 0)	// FIXME: do we really need this check?
 				mkdir(dir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-			pos0 = pos1+1;
+			pos0 = pos1 + 1;
 			i++;
 		}
 	}
@@ -522,7 +529,8 @@ void DAQDevice::copyRemoteData(){
 	std::string output;
 	
 	
-	if (debug > 2) printf("_____DAQDevice::copyRemoteData()_____\n");
+	if (debug >= 1)
+		printf("\n_____DAQDevice::copyRemoteData()_____\n");
 	
 	createDirectories((archiveDir + getDataDir()).c_str());
 	
@@ -535,13 +543,15 @@ void DAQDevice::copyRemoteData(){
 	//       Solution 1: Write output to file,
 	//       Solution 2: Use pipes (example can be found in README
 	//
-	if (debug > 2) output = "";
-	else output = " > /dev/null";
+	if (debug >= 2)
+		output = "";
+	else
+		output = " > /dev/null";
 	sprintf(line, "rsync -avz %s --include='*/' --include='*.%s' --exclude='*' %s%s  %s%s %s",
 			rsyncArgs.c_str(), sensorGroup.c_str(),
 			remoteDir.c_str(), getDataDir(),
 			archiveDir.c_str(), getDataDir(), output.c_str());
-	if (debug > 2) printf("%s\n", line);
+	if (debug >= 2) printf("%s\n", line);
 	
 	gettimeofday(&t0, &tz);
 	err = system(line);
@@ -552,7 +562,8 @@ void DAQDevice::copyRemoteData(){
 		//throw std::invalid_argument("Synchronisation error (rsync)");
 	}
 	
-	if (debug > 2) printf("Rsync duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+	if (debug >= 2)
+		printf("Rsync duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 }
 
 
@@ -1043,7 +1054,7 @@ void DAQDevice::writeData(){
 }
 
 
-unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,  int len, char *next){
+unsigned long DAQDevice::getIndex(char* filename, char* firstTag, char* lastTag,  int len, char* next){
 	unsigned long index;
 	char indexTag[20];
 	int indexTagLen;
@@ -1070,9 +1081,7 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 	if (len > 0) {
 		indexTagLen = len;
 		lastChar = firstChar + indexTagLen -1;
-		
 	} else {
-		
 		// Find the end string
 		if (*lastTag != 0){	// take empty suffix into account
 			ptr = strcasestr(filename, lastTag);
@@ -1085,7 +1094,7 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 			ptr = firstChar;
 			while (isdigit(*ptr)){ptr++;}
 		}
-		lastChar = ptr -1;
+		lastChar = ptr - 1;
 		indexTagLen = lastChar - firstChar + 1;
 	}
 	
@@ -1114,39 +1123,46 @@ unsigned long DAQDevice::getIndex(char *filename, char *firstTag, char *lastTag,
 		next = lastChar + 1;
 	}
 	
-	return (index);
+	return index;
 }
 
 
-int DAQDevice::getFileNumber(char *filename){
-	std::string name;
-	int posIndex;
+int DAQDevice::getFileNumber(char* filename){
+	//std::string name;
+	size_t posIndex;
 	int index;
 	std::string filePrefix;
 	std::string fileSuffix;
 	
 	
+	if (debug >= 1) {
+		printf("\n_____DAQDevice::getFileNumber(char* filename)_____\n");
+		printf("From file %s\n", filename);
+	}
 	// Write the index of the file to a list
 	// Process in this list with the next index
 	// The read pointer of the last file will be kept
 	
 	// Find <index> in data template
 	posIndex = datafileMask.find("<index>");
-	if (posIndex == -1) {
+	if (posIndex == std::string::npos) {
 		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
 			datafileMask.c_str(), inifile.c_str());
 	}
-	if (debug > 3) printf("Position of <index> in %s is  %d\n", datafileMask.c_str(), posIndex);
-	filePrefix = datafileMask.substr(0, posIndex);
-	fileSuffix = datafileMask.substr(posIndex+7, datafileMask.length() - posIndex-7);	// TODO/FIXME: leave second argument
-	if (debug > 3) printf("Prefix is %s, suffix %s\n", filePrefix.c_str(), fileSuffix.c_str());
 	
-	//index = getIndex(file->d_name, "mast-", 0);
-	//index = getIndex(file->d_name, "M12_", 0);
-	index = getIndex(filename, (char *) filePrefix.c_str(), (char *) fileSuffix.c_str());
+	if (debug >= 2)
+		printf("Position of <index> in %s is: %d\n", datafileMask.c_str(), posIndex);
+	
+	filePrefix = datafileMask.substr(0, posIndex);
+	fileSuffix = datafileMask.substr(posIndex + 7);
+	
+	if (debug >= 2)
+		printf("Prefix is: %s, suffix is: %s\n", filePrefix.c_str(), fileSuffix.c_str());
+	
+	index = getIndex(filename, (char*) filePrefix.c_str(), (char*) fileSuffix.c_str());
 	//printf("Index: %d\n",  index);
 	
-	return (index);
+	return index;
 }
 
 
@@ -1191,12 +1207,15 @@ void DAQDevice::getNewFiles(){
 	//dataDir = "./"; // Open current dir
 	//dataDir = "./data/"; // Open current dir
 
+	if (debug >= 1) {
+		printf("\n_____DAQDevice::getNewFiles()_____\n");
+		printf("Reading from %s\n", dataDir.c_str());
+	}
+	
+	
 	processedData = 0; // Counter for the processed bytes
+	
 	dataDir = archiveDir + getDataDir();
-	
-	
-	if (debug > 3) printf("______DAQDevice::getNewFiles()______________________\n");
-	if (debug) printf("Reading from %s\n", dataDir.c_str());
 	
 	// Get all alphabetical following files
 	din  = opendir(dataDir.c_str());
@@ -1207,30 +1226,33 @@ void DAQDevice::getNewFiles(){
 	
 	// How many entries are in the dir?
 	nFiles = 0;
-	while ((file = readdir( din)) != NULL) {nFiles++;};
+	while ((file = readdir(din)) != NULL) {nFiles++;};
 	
 	// Initialize the file list
 	// The lists starts at 0 and ends 0 again
-	listName = new std::string [ nFiles+1 ];
-	listIndex = new unsigned int[ nFiles+1 ];
-	listNext = new unsigned int [ nFiles+1 ];
+	listName = new std::string [nFiles + 1];
+	listIndex = new unsigned int[nFiles + 1];
+	listNext = new unsigned int [nFiles + 1];
+	
 	listName[0] = "START";
 	listIndex [0] = 0;
 	listNext[0]= 1;
+	
 	listName[1] = "END";
 	listIndex[1] = 0xffffffff;
 	listNext[1] = 0;
+	
 	nList = 2;
 	
-
+	
 	rewinddir(din);
-	while ((file = readdir( din)) != NULL) {
+	
+	while ((file = readdir(din)) != NULL) {
 		
-		if (debug > 4) printf("Type: %2d, name: %s\n", file->d_type, file->d_name);
+		if (debug >= 2) printf("File type: %2d, file name: %s\n", file->d_type, file->d_name);
 		
 		if (file->d_type == DT_REG){
 			try {
-				
 				// Get the number of the file that can be used to order the files
 				// Which one to read first
 				index = getFileNumber(file->d_name);
@@ -1247,7 +1269,8 @@ void DAQDevice::getNewFiles(){
 				
 				
 				// Read the index of the following item in order to find the right slot for the current file
-				i = 0; j = 0;
+				i = 0;
+				j = 0;
 				while ((index > listIndex[listNext[i]]) && (j < nList - 1)){
 					i = listNext[i];
 					j++;
@@ -1343,15 +1366,15 @@ void DAQDevice::getNewFiles(){
 			// Check if file has been completely read
 			if (listIndex[next] >= lastIndex){
 				if (!reachedEOF()){
-					if (debug)
+					if (debug) {
 						printf("EOF not reached - continue with %s, position %d in next call\n",
 							listName[next].c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)
+					}
 					break;
 				}
 			}
 			
 			next = listNext[next];
-			
 		}
 	} catch (std::invalid_argument &err){
 		printf("Error: %s\n", err.what());

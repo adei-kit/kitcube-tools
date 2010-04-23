@@ -132,36 +132,36 @@ public:
 
 	virtual void writeHeader();
 
-	virtual void parseData(char *line, struct timeval *tData, float * sensorValue);
+	virtual void parseData(char* line, struct timeval* tData, float* sensorValue);
 	
 	virtual void storeSensorData();
 	
-	virtual void readData(const char *dir, const char *filename);
+	virtual void readData(const char* dir, const char* filename);
 
 	/** Update the date of the current data set and replace it by the current date. 
 	  * The function is used by writeData to generate simulated data with current time stamp
 	  * using the sample data file */
-	virtual void updateDataSet(unsigned char *buf);
+	virtual void updateDataSet(unsigned char* buf);
 	
 	virtual void writeData();
 
 	
 	/** Get index / time stamp of a folder or a filename.
-	 * The index field is defined by a starting tag directly before the numerical values.
-	 * The length of the field can be given by a final string of the length of the field or
-	 * all following digit will be taken. 
-	 * In case of success the parsed numerical values will cut out of the passed filename. 
-	 */	
-	unsigned long getIndex(char *filename, char *firstTag, char *lastTag=0, int len = 0, char *next = 0);
+	  * The index field is defined by a starting tag directly before the numerical values.
+	  * The length of the field can be given by a final string of the length of the field or
+	  * all following digit will be taken.
+	  * In case of success the parsed numerical values will cut out of the passed filename.
+	  */
+	unsigned long getIndex(char* filename, char* firstTag, char* lastTag = 0, int len = 0, char* next = 0);
 	
 	/** Get the ranking number from a filename. The returned number can be used
-	  * to order files by their date. Smaller numbers are processed before larger ones. 
-	  * The function needs also to check if the given filename is valid according to the 
-	  * file name specification of the device. In case of violation an exception 
+	  * to order files by their date. Smaller numbers are processed before larger ones.
+	  * The function needs also to check if the given filename is valid according to the
+	  * file name specification of the device. In case of violation an exception
 	  * std::invalid_argument has to be thrown.
-	  * 
+	  *
 	  */
-	virtual int getFileNumber(char *filename);
+	virtual int getFileNumber(char* filename);
 	
 	/** Get list of new files */
 	void getNewFiles();
@@ -174,7 +174,7 @@ public:
 	
 	/** Get a unix time stamp (in UTC) frm a date and time string of the form 
 	  *  dd.mm.yyy  and hh:mm:ss  */
-	unsigned long getTimestamp(const char *date, const char *time);
+	unsigned long getTimestamp(const char* date, const char* time);
 	
 	/** Set debug level */
 	void setDebugLevel(int level);
