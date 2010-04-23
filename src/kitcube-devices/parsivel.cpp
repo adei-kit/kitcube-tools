@@ -121,3 +121,8 @@ unsigned int parsivel::getSensorGroup(){
 	
 	return number;
 }
+
+
+void parsivel::readData(const char *dir, const char *filename){
+	fd_eof = false;
+}
