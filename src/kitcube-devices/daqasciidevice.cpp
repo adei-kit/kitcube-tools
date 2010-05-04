@@ -68,7 +68,7 @@ void DAQAsciiDevice::openFile(){ // for writing
 	fullFilename = path + filename;
 	
 	printf("KITCube-Device (type %s): Open datafile \"%s\"\n", moduleType.c_str(), fullFilename.c_str());
-	createDirectories(fullFilename.c_str());
+	createDirectories(fullFilename.c_str());	// FIXME: don't use fullFilename here!
 	
 	fdata = fopen(fullFilename.c_str(), "a");	// use only "a", so ftell(...) works
 	if (fdata <= 0) {

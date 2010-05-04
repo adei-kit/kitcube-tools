@@ -64,7 +64,7 @@ void DAQBinaryDevice::openFile(){ // for writing
 	fullFilename = path + filename;
 	
 	printf("KITCube-Device (type %s): Open datafile %s\n", moduleType.c_str(), fullFilename.c_str());
-	createDirectories(fullFilename.c_str());
+	createDirectories(fullFilename.c_str());	// FIXME: don't use fullFilename here!
 	
 	fd_data = open(fullFilename.c_str(), O_APPEND | O_RDWR);
 	if (fd_data <= 0) {
