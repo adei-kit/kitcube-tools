@@ -154,13 +154,17 @@ void mrr::writeData(){
 }
 
 
+/* - parsivel files (p<index>.dat) get handled by parsivel class, so they have
+     sensor group number 1
+   - int01_<index>.dat gets sensor group number 2
+*/
 unsigned int mrr::getSensorGroup(){
 	unsigned int number;
 	
 	number = 0;
 	buffer = "";
 	if (sensorGroup == "dat") {
-		number = 1;
+		number = 2;
 		buffer = "Mikro Regenradar 1D Profile";
 	}
 	
