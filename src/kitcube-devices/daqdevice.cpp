@@ -578,32 +578,25 @@ const char *DAQDevice::getDataDir(){
 
 
 const char *DAQDevice::getDataFilename(){
-	std::string name;
-	int posIndex;
-	//int index;
-	std::string filePrefix;
-	std::string fileSuffix;
-	char line[256];
+	time_t time_in_sec;
+	struct tm *date;
+	char tmp_line[16];
+	int pos_index;
 	
-	// Write the index of the file to a list 
-	// Process in this list with the next index
-	// The read pointer of the last file will be kept
 	
-	// Find <index> in data template
-	posIndex = datafileMask.find("<index>");
-	if (posIndex == -1) {
-		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
-			datafileMask.c_str(), inifile.c_str());
-	}
-	if (debug > 3) printf("Position of <index> in %s is  %d\n", datafileMask.c_str(), posIndex);
-	filePrefix = datafileMask.substr(0, posIndex);
-	fileSuffix = datafileMask.substr(posIndex+7,datafileMask.length()-posIndex-7);
-	if (debug > 3) printf("Prefix is %s, suffix %s\n", filePrefix.c_str(), fileSuffix.c_str());
+	// Get the actual day
+	time(&time_in_sec);	// get seconds since the Epoch
+	date = gmtime((const time_t *) &time_in_sec);
 	
-	sprintf(line, "%s%ld%s", filePrefix.c_str(), fileIndex, fileSuffix.c_str());
+	// print date string of file name to buffer
+	sprintf(tmp_line, "%02d%02d%02d", date->tm_year - 100, date->tm_mon + 1, date->tm_mday);
 	
-	buffer = line;
-	return(buffer.c_str());
+	// replace <index> in datafile mask with date string
+	buffer = datafileMask;
+	pos_index = buffer.find("<index>");
+	buffer.replace(pos_index, 7, tmp_line);
+	
+	return buffer.c_str();
 }
 
 

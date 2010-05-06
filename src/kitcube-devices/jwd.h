@@ -37,8 +37,6 @@ public:
 	
 	void copyRemoteData();
 	
-	const char *getDataFilename();
-	
 	/** Define a sensor group number for all the availble sensor group files */
 	unsigned int getSensorGroup();
 

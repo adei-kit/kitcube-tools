@@ -69,27 +69,6 @@ const char *Norbert::getDataDir(){
 }
 
 
-const char *Norbert::getDataFilename(){
-	struct timeval t;
-	struct timezone tz;
-	struct tm *date;
-	char line[256];
-
-
-	// Get the actual day
-	gettimeofday(&t, &tz);
-	date = gmtime((const time_t *) &t.tv_sec);
-
-	// TODO: Create a single source for the filename convention...
-	sprintf(line, "%04d%02d%02d.%s", date->tm_year+1900, date->tm_mon+1, date->tm_mday, sensorGroup.c_str());
-	buffer = line;
-
-	//printf("Norbert: Get Datafilename = %s\n", line);
-	return(buffer.c_str());
-}
-
-
-
 int Norbert::getFileNumber(char *filename){
 	std::string name;
 	size_t posIndex;

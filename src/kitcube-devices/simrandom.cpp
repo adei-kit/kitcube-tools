@@ -67,20 +67,21 @@ void SimRandom::setConfigDefaults(){
 }
 
 
-/*
 const char *SimRandom::getDataFilename(){
-	char line[256];
+	char tmp_line[16];
+	int pos_index;
 	
-	if (debug > 3) printf("fileIndex = %ld, nLine = %d\n", fileIndex, nLine);
 	
-	// TODO: Create a single source for the filename convention...
-	sprintf(line, "sim_%ld.%s", fileIndex, sensorGroup.c_str());
-	buffer = line;
+	// print file index to buffer
+	sprintf(tmp_line, "%ld", fileIndex);
 	
-	//printf("Lara: Get Datafilename = %s\n", line);
-	return(buffer.c_str());
+	// replace <index> in datafile mask with file index
+	buffer = datafileMask;
+	pos_index = buffer.find("<index>");
+	buffer.replace(pos_index, 7, tmp_line);
+	
+	return buffer.c_str();
 }
-*/
 
 
 const char *SimRandom::getDataDir(){

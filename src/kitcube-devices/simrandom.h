@@ -17,18 +17,18 @@
 
 /** Implementation for the weather mast DAQ devices that are
   * used for turbulence, energy balance and 20m mast.
-  * 
+  *
   */
 
 class SimRandom: public DAQAsciiDevice  {
-public: 
+public:
 	/**  */
 	SimRandom();
 	/**  */
 	~SimRandom();
 	
 	void setConfigDefaults();
-		
+	
 	const char *getDataDir();
 	
 	/** Get time until next sample and it's id */
@@ -36,12 +36,13 @@ public:
 	
 	void writeHeader();
 	
-    void parseData(char *line, struct timeval *tData, float *sensorValue);	
+	void parseData(char *line, struct timeval *tData, float *sensorValue);
 	
 	void writeData();
 	
-private:	
-
+	const char *getDataFilename();
+	
+private:
 
 };
 

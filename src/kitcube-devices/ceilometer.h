@@ -38,9 +38,6 @@ public:
 	/** Returns the path relative to the base path to the data dir */
 	const char *getDataDir();
 	
-	/** Implements the data filename convention of the DAQ module. */
-	const char *getDataFilename();
-	
 	void replaceItem(const char **header, const char *itemTag, const char *newValue);
 	
 	const char * getStringItem(const char **header, const char *itemTag);	

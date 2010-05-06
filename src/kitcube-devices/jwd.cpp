@@ -337,29 +337,6 @@ void jwd::writeHeader(){
 }
 
 
-const char *jwd::getDataFilename(){
-	time_t time_in_sec;
-	struct tm *date;
-	char line[256];
-	int posIndex;
-	
-	
-	// Get the actual day
-	time(&time_in_sec);	// get seconds since the Epoch
-	date = gmtime((const time_t *) &time_in_sec);
-	
-	// print date string of file name to buffer
-	sprintf(line, "%02d%02d%02d", date->tm_year - 100, date->tm_mon + 1, date->tm_mday);
-	
-	// replace <index> in datafile mask with date string
-	buffer = datafileMask;
-	posIndex = buffer.find("<index>");
-	buffer.replace(posIndex, 7, line);
-	
-	return(buffer.c_str());
-}
-
-
 unsigned int jwd::getSensorGroup(){
 	unsigned int number;
 	
