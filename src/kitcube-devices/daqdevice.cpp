@@ -1052,7 +1052,6 @@ unsigned long DAQDevice::getIndex(char* filename, char* firstTag, char* lastTag,
 	char indexTag[20];
 	int indexTagLen;
 	char *ptr, *firstChar, *lastChar;
-	std::string restOfName;
 	int err;
 	
 	
@@ -1100,17 +1099,12 @@ unsigned long DAQDevice::getIndex(char* filename, char* firstTag, char* lastTag,
 	indexTag[indexTagLen] = 0; // Without there the termination is missing?!
 	//printf("Numerical field:  %s %c (len=%d)\n", firstChar, indexTag, indexTagLen);
 	
-	
 	// Get the index
 	index = 0;
 	err = sscanf(indexTag, "%ld", &index);
 	if (err == 0){
 		throw std::invalid_argument("No numerical value read from the field");
 	}
-	
-	// Remove the field and return the filename without the index field
-	//restOfName = lastChar + 1;
-	//strcpy(firstChar, restOfName.c_str());
 	
 	if (next > 0){
 		next = lastChar + 1;
@@ -1121,11 +1115,11 @@ unsigned long DAQDevice::getIndex(char* filename, char* firstTag, char* lastTag,
 
 
 int DAQDevice::getFileNumber(char* filename){
-	//std::string name;
-	size_t posIndex;
+	std::string filename_prefix;
+	std::string filename_suffix;
+	std::string filename_string;
+	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, filename_length;
 	int index;
-	std::string filePrefix;
-	std::string fileSuffix;
 	
 	
 	if (debug >= 1) {
@@ -1137,23 +1131,47 @@ int DAQDevice::getFileNumber(char* filename){
 	// The read pointer of the last file will be kept
 	
 	// Find <index> in data template
-	posIndex = datafileMask.find("<index>");
-	if (posIndex == std::string::npos) {
-		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
+	pos_index = datafileMask.find("<index>");
+	// FIXME: this is done in DAQDevice::readInifile already. Why repeat it here? What to do in case of error?
+	if (pos_index == std::string::npos) {
+		printf("Error: There is no tag <index> in datafileMask '%s' specified in inifile %s\n",
 			datafileMask.c_str(), inifile.c_str());
 	}
 	
+	filename_prefix = datafileMask.substr(0, pos_index);
+	length_prefix = filename_prefix.length();
+	filename_suffix = datafileMask.substr(pos_index + 7);
+	length_suffix = filename_suffix.length();
+	
 	if (debug >= 2)
-		printf("Position of <index> in %s is: %d\n", datafileMask.c_str(), posIndex);
+		printf("Position of <index> in %s is: %d -- Prefix is: %s, suffix is: %s\n",
+		       datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
 	
-	filePrefix = datafileMask.substr(0, posIndex);
-	fileSuffix = datafileMask.substr(posIndex + 7);
+	filename_string = filename;
+	filename_length = filename_string.length();
 	
-	if (debug >= 2)
-		printf("Prefix is: %s, suffix is: %s\n", filePrefix.c_str(), fileSuffix.c_str());
+	// if there is a prefix, check for prefix at beginning of file name and delete it
+	if (filename_prefix.size() != 0) {
+		pos_prefix = filename_string.find(filename_prefix);
+		if (pos_prefix == 0) {
+			filename_string.erase(pos_prefix, length_prefix);
+		} else {
+			throw std::invalid_argument("Prefix not found or not at the beginning of file name");
+		}
+	}
 	
-	index = getIndex(filename, (char*) filePrefix.c_str(), (char*) fileSuffix.c_str());
-	//printf("Index: %d\n",  index);
+	// if there is a suffix, check for suffix at end of filename and delete it
+	if (filename_suffix.size() != 0) {
+		pos_suffix = filename_string.find(filename_suffix);
+		if ((pos_suffix != std::string::npos) && ((pos_suffix + length_suffix) == filename_length)) {
+			filename_string.erase(pos_suffix, length_suffix);
+		} else {
+			throw std::invalid_argument("Suffix not found or not at end of file name");
+		}
+	}
+	
+	// we assume, that after the removal of prefix and suffix, there are only numbers left
+	index = atoi(filename_string.c_str());
 	
 	return index;
 }
