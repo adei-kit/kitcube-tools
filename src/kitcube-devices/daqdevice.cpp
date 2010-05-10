@@ -1122,10 +1122,11 @@ int DAQDevice::getFileNumber(char* filename){
 	int index;
 	
 	
-	if (debug >= 1) {
+	if (debug >= 1)
 		printf("\n_____DAQDevice::getFileNumber(char* filename)_____\n");
+	if (debug >= 2)
 		printf("From file %s\n", filename);
-	}
+	
 	// Write the index of the file to a list
 	// Process in this list with the next index
 	// The read pointer of the last file will be kept
@@ -1171,7 +1172,11 @@ int DAQDevice::getFileNumber(char* filename){
 	}
 	
 	// we assume, that after the removal of prefix and suffix, there are only numbers left
+	// FIXME/TODO: check, if this is really only a number
 	index = atoi(filename_string.c_str());
+	
+	if (debug >= 2)
+		printf("Index is: %d\n", index);
 	
 	return index;
 }
@@ -1267,7 +1272,6 @@ void DAQDevice::getNewFiles(){
 				// Get the number of the file that can be used to order the files
 				// Which one to read first
 				index = getFileNumber(file->d_name);
-				if (debug > 5) printf("Index: %d\n", index);
 				
 				// Insert in the list.
 				
@@ -1304,7 +1308,7 @@ void DAQDevice::getNewFiles(){
 				//}
 				
 			} catch (std::invalid_argument &err) {
-				//printf("Error in filelist: %s\n", err.what());
+				printf("Error in file name '%s': %s\n", file->d_name, err.what());
 			}
 		}
 	}
