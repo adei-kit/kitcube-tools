@@ -5,16 +5,16 @@ AM_INIT_AUTOMAKE(kitcube-tools, 0.3)
 
 
 AC_LANG_CPLUSPLUS
-AC_PROG_CXX
 AM_PROG_LIBTOOL
 
 
 dnl
 dnl Add the base include directory
 dnl
-CXXFLAGS="$CXXFLAGS -I.. -Wall -O0"
-CFLAGS="$CFLAGS -I.. -Wall -O0"
+CXXFLAGS="-I.. -Wall -g"
+CFLAGS="-I.. -Wall -g"
 
+AC_PROG_CXX
 
 dnl
 dnl Define libraries for IEEE1394
