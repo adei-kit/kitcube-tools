@@ -1,7 +1,7 @@
 AC_INIT(configure.in)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(kitcube-tools, 0.3)
+AM_INIT_AUTOMAKE(kitcube-tools, 0.4)
 
 
 AC_LANG_CPLUSPLUS
@@ -11,8 +11,8 @@ AM_PROG_LIBTOOL
 dnl
 dnl Add the base include directory
 dnl
-CXXFLAGS="-I.. -Wall -g"
-CFLAGS="-I.. -Wall -g"
+CXXFLAGS="-I.. -I../../fdhwlib/src -Wall -g"
+CFLAGS="-I.. -I../../fdhwlib/src -Wall -g"
 
 AC_PROG_CXX
 
@@ -134,5 +134,5 @@ AC_SUBST(FDHWLIB_BUILDDATE)
 
 
 
-AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile etc/Makefile src/Makefile src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile)
+AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile etc/Makefile src/Makefile fdhwlib/src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile)
 

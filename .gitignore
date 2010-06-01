@@ -51,4 +51,5 @@ old/*
 # Links from other packages
 akutil
 fdhwlib.h
+fdhwlib
 

@@ -39,4 +39,4 @@ INCLUDES= $(all_includes)
 
 
 # the library search path.
-test_device_LDFLAGS = $(all_libraries) -L./ -L../akutil  -lkitcube-devices -lakutil $(ICONV_LIBS) -lnetcdf -lnetcdf_c++
+test_device_LDFLAGS = $(all_libraries) -L./ -L../../fdhwlib/src/akutil  -lkitcube-devices -lakutil $(ICONV_LIBS) -lnetcdf -lnetcdf_c++

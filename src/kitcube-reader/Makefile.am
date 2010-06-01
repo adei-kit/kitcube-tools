@@ -19,7 +19,7 @@ INCLUDES= $(all_includes)
 
 
 # the library search path.
-kitcube_reader_LDFLAGS = $(all_libraries)  -L../kitcube-devices -L../akutil \
+kitcube_reader_LDFLAGS = $(all_libraries)  -L../kitcube-devices -L../../fdhwlib/src/akutil \
 			-lkitcube-devices  -lakutil $(ICONV_LIBS) -lnetcdf -lnetcdf_c++
 
 
@@ -28,6 +28,6 @@ kitcube_reader_mysql_SOURCES = $(kitcube_reader_SOURCES)
 
 kitcube_reader_mysql_CXXFLAGS = -DUSE_MYSQL
 
-kitcube_reader_mysql_LDFLAGS = $(all_libraries) $(MYSQL_LIBS) -L../kitcube-devices -L../akutil \
+kitcube_reader_mysql_LDFLAGS = $(all_libraries) $(MYSQL_LIBS) -L../kitcube-devices -L../../fdhwlib/src/akutil \
 				-lkitcube-devices-mysql  -lakutil $(ICONV_LIBS) -lnetcdf -lnetcdf_c++
 endif
