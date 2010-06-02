@@ -1149,7 +1149,6 @@ int DAQDevice::getFileNumber(char* filename){
 		       datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
 	
 	filename_string = filename;
-	filename_length = filename_string.length();
 	
 	// if there is a prefix, check for prefix at beginning of file name and delete it
 	if (filename_prefix.size() != 0) {
@@ -1164,6 +1163,7 @@ int DAQDevice::getFileNumber(char* filename){
 	// if there is a suffix, check for suffix at end of filename and delete it
 	if (filename_suffix.size() != 0) {
 		pos_suffix = filename_string.find(filename_suffix);
+		filename_length = filename_string.length();
 		if ((pos_suffix != std::string::npos) && ((pos_suffix + length_suffix) == filename_length)) {
 			filename_string.erase(pos_suffix, length_suffix);
 		} else {
