@@ -27,6 +27,8 @@ jwd::~jwd(){
 void jwd::readHeader(const char *filename){
 	char line[256];
 	
+	noData = 999999;
+	
 	if (sensorGroup == "dd") {
 		lenHeader = 0xd4;	// CAUTION: header has several lines!
 		
