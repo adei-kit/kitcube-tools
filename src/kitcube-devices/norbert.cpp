@@ -96,7 +96,7 @@ int Norbert::getFileNumber(char *filename){
 	// extract filename prefix and suffix out of datafileMask
 	filePrefix = datafileMask.substr(0, posIndex);
 	fileSuffix = datafileMask.substr(posIndex + 7);
-	if (debug > 3) printf("Position of <index> in %s is  %d -- data file prefix/suffix: %s / %s (debug = %d)\n",
+	if (debug > 3) printf("Position of <index> in %s is  %ld -- data file prefix/suffix: %s / %s (debug = %d)\n",
 				datafileMask.c_str(), posIndex, filePrefix.c_str(), fileSuffix.c_str(), debug);
 
 	// calculate actual length of <index> in filename
@@ -442,7 +442,11 @@ void Norbert::readData(const char *dir, const char *filename){
 		printf("Open data file %s\n", filenameData.c_str());
 	fd = open(filenameData.c_str(), O_RDONLY);
 
-
+	// read date from header
+	lseek(fd, 0x28, SEEK_SET);
+	n = read(fd, line, 10);
+	dateString.assign((const char*)line, 10);
+	
 	// Get the last time stamp + file pointer from
 	lastPos = 0;
 	lastTime.tv_sec = 0;
@@ -471,7 +475,7 @@ void Norbert::readData(const char *dir, const char *filename){
 	n = len;
 	int iLoop = 0;
 
-	while ((n == len) && (iLoop< 1000)) {
+	while ((n == len) && (iLoop < 1000)) {
 		n = read(fd, buf, len);
 
 		if (n == len) {
@@ -486,7 +490,6 @@ void Norbert::readData(const char *dir, const char *filename){
 
 			// TODO: Put in a separate function...
 			// Read the time stamp
-			dateString = "1.1.2010";	// TODO: read date from header
 			timeString.assign((const char*)buf, 8);
 			if (debug > 1)
 				printf("[%s] [%s]", dateString.c_str(), timeString.c_str());
