@@ -42,6 +42,7 @@ kitcube-tools.spec
 .kitcube-*
 #
 # Old files
+*~
 *.old
 *.off
 *.orig
