@@ -640,7 +640,7 @@ void Reader::analyseDiskSpace(const char *dir){
 #endif
 	
 	if (debug > 2) {
-		printf("Total blocks  %12ld %12.3f MByte (block size %d bytes)\n",
+		printf("Total blocks  %12ld %12.3f MByte (block size %ld bytes)\n",
 			fs.f_blocks, ((float) fs.f_blocks) / 1048576. * fs.f_bsize, fs.f_bsize);
 		printf("Free blocks   %12ld %12.3f MByte %.2f %%\n",
 			fs.f_bfree, ((float) fs.f_bfree) / 1048576. * fs.f_bsize, ((float) fs.f_bfree) / ((float) fs.f_blocks) * 100.);
@@ -761,7 +761,7 @@ void Reader::analyseDiskSpace(const char *dir){
 		tx = strtoull(temp[2], (char **)NULL, 0);
 		
 		
-		if (debug > 2) printf("Network %s rcv=%Ld Bytes send=%Ld Bytes\n", 
+		if (debug > 2) printf("Network %s rcv=%ld Bytes send=%ld Bytes\n", 
 			   iface, diff_rx, diff_tx);		
 		
 	}
@@ -769,7 +769,7 @@ void Reader::analyseDiskSpace(const char *dir){
 #endif	
 	
 	// Output
-	if ((nSamples > 1) &&(debug > 1)) printf("network rx = %Ld, tx = %Ld Bytes, free = %f %s\n", diff_rx,diff_tx, rDiskFree, "%");
+	if ((nSamples > 1) &&(debug > 1)) printf("network rx = %ld, tx = %ld Bytes, free = %f %s\n", diff_rx,diff_tx, rDiskFree, "%");
 	
 	// Write data to the syslog structure
 	log->updateData(3, diff_rx);        // Bytes

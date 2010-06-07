@@ -486,7 +486,7 @@ void::DAQDevice::createDirectories(const char *path){
 		if (pos1 != std::string::npos) {
 			dir = pathname.substr(0, pos1);
 			if (debug > 2)
-				printf("Create directory %s (%d, %d)\n", dir.c_str(), pos0, pos1);
+				printf("Create directory %s (%ld, %ld)\n", dir.c_str(), pos0, pos1);
 			if (dir.length() > 0)	// FIXME: do we really need this check?
 				mkdir(dir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 			pos0 = pos1 + 1;
@@ -1145,7 +1145,7 @@ int DAQDevice::getFileNumber(char* filename){
 	length_suffix = filename_suffix.length();
 	
 	if (debug >= 2)
-		printf("Position of <index> in %s is: %d -- Prefix is: %s, suffix is: %s\n",
+		printf("Position of <index> in %s is: %ld -- Prefix is: %s, suffix is: %s\n",
 		       datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
 	
 	filename_string = filename;
