@@ -28,8 +28,9 @@ void DAQBinaryDevice::openFile(){ // for writing
 	std::string msg;
 	std::string nameTemplate;
 	std::string fullFilename;
+	std::string copy_command;
 	
-	printf("_____DAQBinaryDevice::openFile__________\n");
+	printf("_____DAQBinaryDevice::openFile_____\n");
 	
 	// Check if template file is existing and contains header + data
 	nameTemplate = configDir + datafileTemplate;
@@ -40,9 +41,10 @@ void DAQBinaryDevice::openFile(){ // for writing
 	}
 	close(fd);
 	
-	// Read header, test if it exists and is valid?!
-	readHeader(nameTemplate.c_str());	// FIXME/TODO: do we really need this here?!?
-	
+	if (sensorGroup != "nc"){
+		// Read header, test if it exists and is valid?!
+		readHeader(nameTemplate.c_str());	// FIXME/TODO: do we really need this here?!?
+	}
 	
 	// Read index from file, if the value has not been initialized before
 	// The markers for the different modules are independant
@@ -66,19 +68,26 @@ void DAQBinaryDevice::openFile(){ // for writing
 	printf("KITCube-Device (type %s): Open datafile %s\n", moduleType.c_str(), fullFilename.c_str());
 	createDirectories(fullFilename.c_str());	// FIXME: don't use fullFilename here!
 	
-	fd_data = open(fullFilename.c_str(), O_APPEND | O_RDWR);
-	if (fd_data <= 0) {
-        // The file does not exist. Create file and write header
-		printf("Creating new file \n");
-		fd_data = open(fullFilename.c_str(), O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-		if (fd_data > 0) {
-			writeHeader();
-		} else {
-			throw std::invalid_argument("Error crreating new file\n");
+	if (sensorGroup == "nc"){
+		copy_command = "cp ";
+		copy_command += nameTemplate;
+		copy_command += " ";
+		copy_command += fullFilename;
+		system(copy_command.c_str());
+	} else {
+		fd_data = open(fullFilename.c_str(), O_APPEND | O_RDWR);
+		if (fd_data <= 0) {
+			// The file does not exist. Create file and write header
+			printf("Creating new file \n");
+			fd_data = open(fullFilename.c_str(), O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+			if (fd_data > 0) {
+				writeHeader();
+			} else {
+				throw std::invalid_argument("Error crreating new file\n");
+			}
 		}
 	}
 }
-
 
 
 void DAQBinaryDevice::closeFile(){
@@ -98,54 +107,61 @@ void DAQBinaryDevice::writeData(){
 	//int i;
 	std::string filename;
 	
-	if (fd_data <=0) return;
-
-	// Read header to get the reference time of this file !!!
-	//
 	
-	if (debug > 2) printf("_____DAQBinaryDevice::writeData()______________\n");
+	if (debug > 1) printf("_____DAQBinaryDevice::writeData()_____\n");
 	
-	//
-	// Use one sample file to generate continuously data - by repetition of the sample data
-	//
-	
-	// Allocate memory for one data set
-	len = this->lenDataSet;    // (4 + nSensors * sizeof(float) + 8);
-	lenHeader = this->lenHeader; // 0x10000; // Length of the header data
-	buf = new unsigned char  [len];
-	
-	// Open template file 
-	filename = configDir + datafileTemplate;
-	fd_templ = open(filename.c_str(), O_RDONLY);
-	lseek(fd_templ, lenHeader + len * nTemplate, SEEK_SET); // Go to the required data set
-	
-	// Read data set 
-	n = read(fd_templ, buf, len);
-	if (n < len) {
-		nTemplate = 0; // Reset template counter and try again
-		lseek(fd_templ, lenHeader + len * nTemplate, SEEK_SET); // Go to the required data set
-		n = read(fd_templ, buf, len);
-		if (n< len) {
-			printf("Error: No data set found in template\n");
+	if (sensorGroup == "nc"){
+		// Analyse time stamp, if new day a new file needs to copied
+		if (this->filename != getDataFilename()) {
+			openNewFile();
 		}
+	} else {
+		if (fd_data <= 0) return;
+		
+		// Read header to get the reference time of this file !!!
+		//
+		
+		//
+		// Use one sample file to generate continuously data - by repetition of the sample data
+		//
+		
+		// Allocate memory for one data set
+		len = this->lenDataSet;    // (4 + nSensors * sizeof(float) + 8);
+		lenHeader = this->lenHeader; // 0x10000; // Length of the header data
+		buf = new unsigned char  [len];
+		
+		// Open template file 
+		filename = configDir + datafileTemplate;
+		fd_templ = open(filename.c_str(), O_RDONLY);
+		lseek(fd_templ, lenHeader + len * nTemplate, SEEK_SET); // Go to the required data set
+		
+		// Read data set 
+		n = read(fd_templ, buf, len);
+		if (n < len) {
+			nTemplate = 0; // Reset template counter and try again
+			lseek(fd_templ, lenHeader + len * nTemplate, SEEK_SET); // Go to the required data set
+			n = read(fd_templ, buf, len);
+			if (n< len) {
+				printf("Error: No data set found in template\n");
+			}
+		}
+		close(fd_templ);
+		
+		// Compile the data set for writing to the data file
+		if (debug > 1) printf("Received %4d bytes\n", n);
+		
+		// Replace time stamp
+		updateDataSet(buf);
+		
+		n = write(fd_data, buf, len);
+		//printf("Write %d bytes\n", n);
+		
+		delete buf;
+		
+		// Increment the counters
+		nSamples++;
+		nTemplate++;
 	}
-	close(fd_templ);
-	
-	// Compile the data set for writing to the data file
-	if (debug > 1) printf("Received %4d bytes\n", n);
-	
-	// Replace time stamp
-	updateDataSet(buf);
-	
-	n = write(fd_data, buf, len);
-	//printf("Write %d bytes\n", n);
-	
-	delete buf;
-	
-	// Increment the counters
-	nSamples++;
-	nTemplate++;
-	
 }
 
 
