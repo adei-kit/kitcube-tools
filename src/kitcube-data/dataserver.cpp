@@ -207,7 +207,7 @@ int DataServer::handle_timeout(){
 
 
 	// TODO: Read data / Simulate data
-	if (debug > 1) printf("=== Data %10lds %06ldus === \n", t.tv_sec, t.tv_usec);
+	if (debug > 1) printf("=== Writing data at: %10lds %06ldus ===\n", t.tv_sec, t.tv_usec);
 	dev->writeData();
 	
 	fflush(stdout);

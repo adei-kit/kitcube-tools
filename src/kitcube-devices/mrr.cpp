@@ -23,7 +23,7 @@ mrr::~mrr(){
 
 void mrr::readHeader(const char *filename){
 	printf("\n_____mrr::readHeader(const char *filename)_____\n");
-			
+	
 	if (sensorGroup == "dat") {
 		printf("Reading header of %s\n", filename);
 		
