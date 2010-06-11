@@ -186,7 +186,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	unsigned long lastPos;
 	//unsigned long currPos;
 	unsigned long lastIndex;
-	struct timeval tData;
+	struct timeval timestamp_data;
 	//struct timeval tWrite;
 	char line[256];
 	//char *lPtr;
@@ -262,8 +262,8 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		fclose(fmark);
 		
 		// Read back the data time stamp of the last call
-		tData.tv_sec = lastTime.tv_sec;
-		tData.tv_usec = lastTime.tv_usec;
+		timestamp_data.tv_sec = lastTime.tv_sec;
+		timestamp_data.tv_usec = lastTime.tv_usec;
 		
 		if (debug > 4) printf("Last time stamp was %ld\n", lastTime.tv_sec);
 	}
@@ -284,11 +284,11 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 			
 			// Module specific implementation
 			// Might be necessary to
-			parseData((char *)buf, &tData, local_sensorValue);
+			parseData((char *)buf, &timestamp_data, local_sensorValue);
 			
 			// print sensor values
 			if (debug > 1) {
-				printf("%lds %ldus ---- ", tData.tv_sec, tData.tv_usec);
+				printf("%lds %ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
 						for (k = 0; k < profile_length; k++) {
@@ -318,7 +318,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 					}
 				}
 				sql += ") VALUES (";
-				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
+				sprintf(sData, "%ld, %ld", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				sql += sData;
 				if (profile_length != 0) {
 					for (i = 0; i < nSensors; i++) {
@@ -378,7 +378,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	// Write the last valid time stamp / file position
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, tData.tv_sec, tData.tv_usec, lastPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp_data.tv_sec, timestamp_data.tv_usec, lastPos);
 		fclose(fmark);
 	}
 	
