@@ -917,7 +917,7 @@ void DAQDevice::readHeader(){
 void DAQDevice::writeHeader(){
 }
 
-void DAQDevice::parseData(char *line, struct timeval *tData, float *sensorValue){
+void DAQDevice::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 }
 
 

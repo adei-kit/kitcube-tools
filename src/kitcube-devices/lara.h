@@ -49,7 +49,7 @@ public:
 	/** Get time until next sample and it's id */
 	void readHeader(char *filename);
 	
-    void parseData(char *line, struct timeval *tData, float *sensorValue);	
+    void parseData(char *line, struct timeval *l_tData, float *sensorValue);	
 	
 	void readData(const char *dir, char *filename);
 	

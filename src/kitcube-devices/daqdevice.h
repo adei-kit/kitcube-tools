@@ -132,7 +132,7 @@ public:
 
 	virtual void writeHeader();
 
-	virtual void parseData(char* line, struct timeval* tData, float* sensorValue);
+	virtual void parseData(char* line, struct timeval* l_tData, float* sensorValue);
 	
 	virtual void storeSensorData();
 	

@@ -129,7 +129,7 @@ void jwd::setConfigDefaults(){
 }
 
 
-void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
+void jwd::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 	int yday, mod;
 	char date[7] = {0}, time[5] = {0};
 	struct tm timestamp;
@@ -181,7 +181,7 @@ void jwd::parseData(char *line, struct timeval *tData, float *sensorValue){
 	timestamp.tm_sec = atoi(sec.c_str());
 	
 	// get seconds since the Epoch
-	tData->tv_sec = timegm(&timestamp);	// FIXME: function is non-standard GNU extension
+	l_tData->tv_sec = timegm(&timestamp);	// FIXME: function is non-standard GNU extension
 }
 
 

@@ -280,7 +280,7 @@ void Ceilometer::readHeader(const char *filename){
 			return;
 		}
 		
-		profile_length = 0;
+		profile_length = 0;	// TODO/FIXME: do we need this here? this is done in daqdevice constructor, too
 		
 		//
 		// Read parameters
@@ -359,7 +359,7 @@ void Ceilometer::writeHeader(){
 }
 
 
-void Ceilometer::parseData(char *line, struct timeval *tData, float *sensorValue){
+void Ceilometer::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 	std::string timeString;
 	std::string dateString;
 	unsigned long timestamp;
@@ -385,8 +385,8 @@ void Ceilometer::parseData(char *line, struct timeval *tData, float *sensorValue
 	if (debug > 1) printf("[%s] [%s] ", dateString.c_str(), timeString.c_str());
 		
 	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
-	tData->tv_sec = timestamp;
-	tData->tv_usec = 0;
+	l_tData->tv_sec = timestamp;
+	l_tData->tv_usec = 0;
 	
 	// Read data values
 	//printf("%s\n", buf);

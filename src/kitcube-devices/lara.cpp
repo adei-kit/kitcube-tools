@@ -354,7 +354,7 @@ void Lara::readHeader(char *filename){
 }
 
 
-void Lara::parseData(char *line, struct timeval *tData, float *sensorValue){
+void Lara::parseData(char *line, struct timeval *l_tData, float *sensorValue){
     unsigned long tNew;
 	unsigned long nShift;
 	
@@ -365,18 +365,18 @@ void Lara::parseData(char *line, struct timeval *tData, float *sensorValue){
 		   &sensorValue[4], &sensorValue[5], &sensorValue[6], &sensorValue[7]);
 	
 	// Check reference time - shift in order to aviod over lap
-	if (debug > 3) printf("Last time %ld -- new time %ld\n", tData->tv_sec, tRef.tv_sec + (int) sensorValue[0]);
+	if (debug > 3) printf("Last time %ld -- new time %ld\n", l_tData->tv_sec, tRef.tv_sec + (int) sensorValue[0]);
     tNew = tRef.tv_sec + (int) sensorValue[0];
-	if (tNew <= tData->tv_sec){
-		nShift = tData->tv_sec - tNew +1;
+	if (tNew <= l_tData->tv_sec){
+		nShift = l_tData->tv_sec - tNew +1;
 		tRef.tv_sec = tRef.tv_sec + nShift;
 
 		if (debug > 1) printf("Note: Shifting reference time by %ldsec in order to avoid overlaping time stamps\n", nShift);
 	}
 	
 	// Update time stamp
-	tData->tv_sec = tRef.tv_sec + (int) sensorValue[0];
-	tData->tv_usec = 0;
+	l_tData->tv_sec = tRef.tv_sec + (int) sensorValue[0];
+	l_tData->tv_usec = 0;
 	
 	//printf("Time stamp: %ld  %ld  %f--- ", tRef.tv_sec, tData->tv_sec, sensorValue[0]);
 	
