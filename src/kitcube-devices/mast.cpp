@@ -581,7 +581,7 @@ void Mast::readData(const char *dir, const char *filename){
 	struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long lastIndex;
-	struct timeval tData;
+	struct timeval l_timestamp_data;
 	//struct timeval tWrite;
 	char line[256];
 
@@ -673,14 +673,14 @@ void Mast::readData(const char *dir, const char *filename){
 			
 			
 			// Calculate the time stamp
-			tData.tv_sec = tRef.tv_sec + *tickCount/100;
-			tData.tv_usec = tRef.tv_usec + (*tickCount %100) * 10000;
-			if (tData.tv_usec >= 1000000) {
-				tData.tv_usec = tData.tv_usec % 1000000;
-				tData.tv_sec += 1;
+			l_timestamp_data.tv_sec = tRef.tv_sec + *tickCount/100;
+			l_timestamp_data.tv_usec = tRef.tv_usec + (*tickCount %100) * 10000;
+			if (l_timestamp_data.tv_usec >= 1000000) {
+				l_timestamp_data.tv_usec = l_timestamp_data.tv_usec % 1000000;
+				l_timestamp_data.tv_sec += 1;
 			}
 			
-			if (debug > 1) printf("T_data = %ld   %ld (sensors = %d)\n", tData.tv_sec, tData.tv_usec, nSensors);
+			if (debug > 1) printf("T_data = %ld   %ld (sensors = %d)\n", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec, nSensors);
 	
 #ifdef USE_MYSQL	
 			if (db > 0){				
@@ -696,7 +696,7 @@ void Mast::readData(const char *dir, const char *filename){
 					sql += "`";
 				}
 				sql +=") VALUES (";
-				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
+				sprintf(sData, "%ld, %ld", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
 				sql += sData;
 				for (i=0; i<nSensors; i++){
 					sprintf(sData, "%f", local_sensorValue[i]);

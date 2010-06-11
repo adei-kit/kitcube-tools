@@ -392,7 +392,7 @@ void Norbert::readData(const char *dir, const char *filename){
 	struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long lastIndex;
-	struct timeval tData;
+	struct timeval l_timestamp_data;
 	//struct timeval tWrite;
 	char line[256];
 
@@ -496,11 +496,11 @@ void Norbert::readData(const char *dir, const char *filename){
 
 
 			timestamp = getTimestamp(dateString.c_str(), timeString.c_str());	// should work with dateString "empty", too
-			tData.tv_sec = timestamp;
-			tData.tv_usec = 0;
+			l_timestamp_data.tv_sec = timestamp;
+			l_timestamp_data.tv_usec = 0;
 
 			if (debug > 1)
-				printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
+				printf(" %ld  %ld  ---- ", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
 
 			// Read data values
 			//printf("%s\n", buf);
@@ -536,7 +536,7 @@ void Norbert::readData(const char *dir, const char *filename){
 					}
 				}
 				sql +=") VALUES (";
-				sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
+				sprintf(sData, "%ld, %ld", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
 				sql += sData;
 				for (i = 0; i < nSensors; i++) {
 					if (local_sensorValue[i] != noData) {
