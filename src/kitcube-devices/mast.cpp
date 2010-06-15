@@ -6,35 +6,8 @@
     email                : kopmann@ipe.fzk.de
  ***************************************************************************/
 
-#include <config.h>
 
 #include "mast.h"
-
-#include <stdlib.h>
-#include <time.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <math.h>
-#include <errno.h>
-#include <fstream>
-#include <nl_types.h>
-#include <string>
-#include <stdexcept>
-
-#ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#endif
-
-#ifdef HAVE_ICONV_H
-//#error Compiling ICONV_OVER // ???
-#include <iconv.h>
-#endif
-
-#include <akutil/akinifile.h>
-
-
 
 
 #define ICONV_DONE() (r>=0)
@@ -51,7 +24,6 @@ struct SPackedTime{
 	unsigned char nSekunde;
 	unsigned char nHundertstel;
 };
-
 
 
 Mast::Mast(): DAQBinaryDevice(){
@@ -83,7 +55,7 @@ void Mast::setConfigDefaults(){
 	// Note:
 	// The paramters are dependant of the module number that is not known at the creation 
 	// of the class but first time after reading from the inifile
-	// 	
+	//
 	
 	// Use module number in template name
 	sprintf(line, "M%02d", moduleNumber);
@@ -122,7 +94,6 @@ const char *Mast::getDataFilename(){
 }
 
 
-
 // Move to base class?
 void Mast::replaceItem(const char **header, const char *itemTag, const char *newValue){
 	bool findTag;
@@ -158,8 +129,6 @@ void Mast::replaceItem(const char **header, const char *itemTag, const char *new
 }
 
 
-
-
 const char *Mast::getStringItem(const char **header, const char *itemTag){
 	bool findTag;
 	const char *ptr;
@@ -178,9 +147,9 @@ const char *Mast::getStringItem(const char **header, const char *itemTag){
 		if (ptr > 0){
 			startChar = strstr(ptr, ": "); 
 			if (startChar > 0) {
-			 			
-			  // Find the end of the line
-			  // TODO: End is not found properly?!	
+			 
+				// Find the end of the line
+				// TODO: End is not found properly?!	
 				endChar = strstr(ptr, "\n");
 				if (endChar > 0){
 					//printf("getStringItem:  %02x %02x %02x %02x --- ", *(endChar-2), *(endChar-1), endChar[0], endChar[1]);
@@ -188,7 +157,7 @@ const char *Mast::getStringItem(const char **header, const char *itemTag){
 					len = endChar - startChar - 3;
 					std::string tag(startChar+2, len); 
 					buffer = tag;
-			        findTag = true;
+					findTag = true;
 				}
 			}
 		}
@@ -203,7 +172,7 @@ const char *Mast::getStringItem(const char **header, const char *itemTag){
 int Mast::getNumericItem(const char **header, const char *itemTag){
 	int value;
 	const char *ptr;
-		
+	
 	ptr = getStringItem(header, itemTag);
 	value = atoi(ptr);
 	
@@ -214,33 +183,31 @@ int Mast::getNumericItem(const char **header, const char *itemTag){
 unsigned int Mast::getSensorGroup(){
 	unsigned int number;
 
-	    switch (sensorGroup.at(2)){
-			case 'L': 
-			case 'l': // slow / 1Hz data
-				number = 1;
-				buffer = "slow sensors (1Hz)";
-				break;
-			case 'S': 
-			case 's': // fast / 20Hz data
-				number = 2;
-				buffer = "fast sensors (20Hz)";
-				break;
-			case 'R':
-			case 'r': // 10min mean data (contains groups l + s)
-				number = 3;
-				buffer = "10min mean values";
-				break;
-			case 'X': 
-			case 'x': // 10min mean calculated data (based on r data)
-				number = 4;
-				buffer = "10min calculates values";
-				break;
-				
-			default:
-				number = 0;
-				
-		}
-
+	switch (sensorGroup.at(2)){
+		case 'L': 
+		case 'l': // slow / 1Hz data
+			number = 1;
+			buffer = "slow sensors (1Hz)";
+			break;
+		case 'S': 
+		case 's': // fast / 20Hz data
+			number = 2;
+			buffer = "fast sensors (20Hz)";
+			break;
+		case 'R':
+		case 'r': // 10min mean data (contains groups l + s)
+			number = 3;
+			buffer = "10min mean values";
+			break;
+		case 'X': 
+		case 'x': // 10min mean calculated data (based on r data)
+			number = 4;
+			buffer = "10min calculates values";
+			break;
+			
+		default:
+			number = 0;
+	}
 	
 	return( number);
 }
@@ -294,8 +261,6 @@ const char *Mast::getSensorName(const char *longName, unsigned long *aggregation
 }
 
 
-
-
 const char *Mast::getSensorType(const char *unit){
 	int res;
 	buffer = "";
@@ -341,17 +306,16 @@ const char *Mast::getSensorType(const char *unit){
 }
 
 
-
 void Mast::readHeader(const char *filename){
-	int fd; 
+	int fd;
 	unsigned char *header;
 	const char *headerReadPtr;
 	char line[256];
 	int n;
 	int i;
-	int len; 
+	int len;
 	
-	// ID of the device 
+	// ID of the device
 	// NOT in the header
 	// Get it from the filename?!
 	// --> use parser function in reader...
@@ -376,7 +340,7 @@ void Mast::readHeader(const char *filename){
 		throw std::invalid_argument("No header found in data file");		
 	}
 	
-#ifdef HAVE_ICONV_H	
+#ifdef HAVE_ICONV_H
 	//
 	// Convert character encoding
 	//
@@ -423,7 +387,7 @@ void Mast::readHeader(const char *filename){
 	// Header parameters
 	headerReadPtr = (const char *) header;	
 	// Sampling time (min)
-    tSample = getNumericItem(&headerReadPtr, "Mittelung");
+	tSample = getNumericItem(&headerReadPtr, "Mittelung");
 	printf("Sampling (min): \t%d\n", tSample);
 		
 	// Reference time - the ticks are relative to this time stamp
@@ -431,9 +395,9 @@ void Mast::readHeader(const char *filename){
 	std::string timeString;
 	std::string dateString;
 	unsigned long timestamp;
-    timeString = getStringItem(&headerReadPtr, "Referenzzeit");
-    dateString = getStringItem(&headerReadPtr, "Referenzdatum");
-    printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
+	timeString = getStringItem(&headerReadPtr, "Referenzzeit");
+	dateString = getStringItem(&headerReadPtr, "Referenzdatum");
+	printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
 
 	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
 	tRef.tv_sec = timestamp;
@@ -444,7 +408,7 @@ void Mast::readHeader(const char *filename){
 	// Experiment name
 	experimentName = getStringItem( &headerReadPtr, "Versuchskennung");
 	printf("Experiment name: \t[%s]\n", experimentName.c_str());
-    //printf("Next %c%c%c \n", headerReadPtr[0], headerReadPtr[1], headerReadPtr[2]);
+	//printf("Next %c%c%c \n", headerReadPtr[0], headerReadPtr[1], headerReadPtr[2]);
 	
 	nSensors = getNumericItem(&headerReadPtr, "Anzahl");
 	printf("Number of sensors: \t%d\n", nSensors);
@@ -512,13 +476,9 @@ void Mast::readHeader(const char *filename){
 	// The name of the data table is given by the name of the device number
 	// Only data of one file can go to a table - it's not possible to merge at this level
 	// Data table name:  Data_<module number><daq group number>_<module name><daqgroup>
-
-
 	
 	printf("\n");
-	
 }
-
 
 
 void Mast::writeHeader(){
@@ -535,7 +495,7 @@ void Mast::writeHeader(){
 	if (fd_data <=0) throw std::invalid_argument("Data file not open");
 		
 	// Read one sample data and replace the starting time by the original time
-    len = this->lenHeader;
+	len = this->lenHeader;
 	
 	// Read the template header
 	if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");	
@@ -555,13 +515,13 @@ void Mast::writeHeader(){
 	sprintf(time, "%02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
 	sprintf(date, "%02d.%02d.%4d", t->tm_mday, t->tm_mon+1, t->tm_year+1900);
 	
-    replaceItem(&headerReadPtr, "Referenzzeit", time);
-    replaceItem(&headerReadPtr, "Referenzdatum", date);
+	replaceItem(&headerReadPtr, "Referenzzeit", time);
+	replaceItem(&headerReadPtr, "Referenzdatum", date);
 	//printf("%s\n", headerRaw);
 
 	// Write 64k header
 	n = write(fd_data, headerRaw, len);
-	printf("Write header of %d bytes\n", n);		
+	printf("Write header of %d bytes\n", n);
 }
 
 
@@ -648,8 +608,8 @@ void Mast::readData(const char *dir, const char *filename){
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
 	filenameMarker =line;
 	if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
-    fmark = fopen(filenameMarker.c_str(), "r");
-    if (fmark > 0) {
+	fmark = fopen(filenameMarker.c_str(), "r");
+	if (fmark > 0) {
 		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	}
@@ -667,7 +627,7 @@ void Mast::readData(const char *dir, const char *filename){
 	while ((n == len) && (iLoop < 1000)) {
 		n = read(fd, buf, len);
 	
-		if (n == len){	
+		if (n == len){
 			if (debug > 1) printf("%4d: Received %4d bytes (errno = %d) : Tickcount = %12d: %12f %12f %12f %12f %12f  ", 
 				   iLoop, n, errno, *tickCount, local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);
 			
@@ -723,7 +683,7 @@ void Mast::readData(const char *dir, const char *filename){
 #endif // of USE_MYSQL
 			
 			lastPos += n;
-	    }		
+		}
 		iLoop++;
 	}
 	
@@ -732,25 +692,23 @@ void Mast::readData(const char *dir, const char *filename){
 	
 	if (debug > 1) printf("\n");
 	if (debug > 1) printf("Position of file %ld\n", lastPos);
-		
+	
 	
 	// Write the last valid time stamp / file position
-    fmark = fopen(filenameMarker.c_str(), "w");
-    if (fmark > 0) {
+	fmark = fopen(filenameMarker.c_str(), "w");
+	if (fmark > 0) {
 		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
 		fclose(fmark);
 	}
 	
 	close(fd);
 	delete buf;
-
 }
-
 
 
 void Mast::updateDataSet(unsigned char *buf){
 	struct timeval t;
-	struct timezone tz;	
+	struct timezone tz;
 	
 	unsigned int *tickCount;
 	float *local_sensorValue;
@@ -767,9 +725,7 @@ void Mast::updateDataSet(unsigned char *buf){
 	if (debug > 1) printf( "Tickcount = %12d:  %12f %12f %12f %12f %12f   ", 
 						  *tickCount,  local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);	
 	
-	// Replace 
+	// Replace
 	*tickCount = (t.tv_sec - tRef.tv_sec) *100 ; // 10ms units?!
 	if (debug > 1) printf(" --> %12d \n", *tickCount);
-	
-	
 }
