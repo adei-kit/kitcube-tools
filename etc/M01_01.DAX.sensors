@@ -3,7 +3,7 @@
          3	Kovarianz-uw	EB1.SONIC.F.CUW.001.AVG	FV
          4	Kovarianz-vw	EB1.SONIC.F.CVW.001.AVG	FV
          5	kinWaermestrom	EB1.SONIC.F.CWT.001.AVG	FH
-         6	Bodenwärmestrom	EB1.SHF.F.SHF.000.AVG	R
+         6	Bodenwärmestrom	EB1.SHF.F.SHF.001.AVG	R
          7	kinFeuchtestrom	EB1.LICOR.F.NEE.001.MAX	FM
          8	EinstrahlungBerechnet	EB1.XXX.R.SWDR.001.AVG	R
          9	AusstrahlungBerechnet	EB1.XXX.R.SWUR.001.AVG	R
