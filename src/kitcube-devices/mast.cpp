@@ -428,7 +428,7 @@ void Mast::readHeader(const char *filename){
 	printf("Number of sensors:\t%d\n", nSensors);
 
 	// Update length of data sets
-	this->lenDataSet = (4 + nSensors * sizeof(float) + 8);
+	this->lenDataSet = 4 + nSensors * 4 + 8;
 	
 	std::string heightString;
 	//float sensorHeight;
@@ -490,7 +490,7 @@ void Mast::readHeader(const char *filename){
 
 
 void Mast::writeHeader(){
-	struct timezone tz;	
+	struct timezone tz;
 	const char *headerReadPtr;
 	struct tm *t;
 	char time[20];
@@ -536,7 +536,7 @@ void Mast::writeHeader(){
 
 void Mast::readData(const char *dir, const char *filename){
 	unsigned int *tickCount;
-	unsigned int *buf;
+	unsigned int *buf;	// TODO/FIXME: that's risky, as you don't now this size of "int"!
 	int len;
 	int n;
 	int fd;
@@ -597,16 +597,16 @@ void Mast::readData(const char *dir, const char *filename){
 		printf("_____Reading data_____________________\n");
 	
 	// Allocate memory for one data set
-	len = (sizeof(*tickCount) + nSensors * sizeof(float) + 8);	// TODO/FIXME: better use lenDataSet here?!
-	buf = new unsigned int [len / sizeof(unsigned int)];
+	len = lenDataSet;
+	buf = new unsigned int [len / sizeof(unsigned int)];	// TODO/FIXME: that's risky, as you don't now the size of "int"!
 	
 	
 	// Access pointer
-	tickCount = buf;
-	local_sensorValue = (float *) buf+1;
-	time = (struct SPackedTime *) buf+1+nSensors; 
+	tickCount = buf;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
+	local_sensorValue = (float *) buf+1;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
+	time = (struct SPackedTime *) buf+1+nSensors;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
 	
-		
+	
 	printf("Open data file %s\n", filenameData.c_str());
 	fd = open(filenameData.c_str(), O_RDONLY);
 	
@@ -642,11 +642,11 @@ void Mast::readData(const char *dir, const char *filename){
 		if (n == len){
 			if (debug > 1)
 				printf("%4d: Received %4d bytes (errno = %d): Tickcount = %12d: %12f %12f %12f %12f %12f  ",
-				       iLoop, n, errno, *tickCount, local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);
+				       iLoop, n, errno, *tickCount, local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);	// TODO/FIXME: that's risky, as you don't now the size of "int"!
 			
 			// Calculate the time stamp
-			l_timestamp_data.tv_sec = tRef.tv_sec + *tickCount/100;
-			l_timestamp_data.tv_usec = tRef.tv_usec + (*tickCount %100) * 10000;
+			l_timestamp_data.tv_sec = tRef.tv_sec + *tickCount/100;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
+			l_timestamp_data.tv_usec = tRef.tv_usec + (*tickCount %100) * 10000;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
 			if (l_timestamp_data.tv_usec >= 1000000) {
 				l_timestamp_data.tv_usec = l_timestamp_data.tv_usec % 1000000;
 				l_timestamp_data.tv_sec += 1;
@@ -672,7 +672,7 @@ void Mast::readData(const char *dir, const char *filename){
 				sprintf(sData, "%ld, %ld", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
 				sql += sData;
 				for (i=0; i<nSensors; i++){
-					sprintf(sData, "%f", local_sensorValue[i]);
+					sprintf(sData, "%f", local_sensorValue[i]);	// TODO/FIXME: that's risky, as you don't now the size of "int"!
 					sql += ",";
 					sql += sData;
 				}
