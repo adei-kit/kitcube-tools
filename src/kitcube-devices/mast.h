@@ -58,7 +58,7 @@ public:
 	
 	const char *getSensorName(const char *longname, unsigned long *aggregation = 0);
 	
-	const char *getSensorType(const char *unit);
+//	const char *getSensorType(const char *unit);
 	
 	/** Get time until next sample and it's id */
 	void readHeader(const char *header);

@@ -261,7 +261,7 @@ const char *Mast::getSensorName(const char *longName, unsigned long *aggregation
 }
 
 
-const char *Mast::getSensorType(const char *unit){
+/*const char *Mast::getSensorType(const char *unit){
 	int res;
 	buffer = "";
 	
@@ -315,7 +315,7 @@ const char *Mast::getSensorType(const char *unit){
 	
 	
 	return (buffer.c_str());
-}
+}*/
 
 
 void Mast::readHeader(const char *filename){
@@ -445,7 +445,7 @@ void Mast::readHeader(const char *filename){
 		sensor[i].comment= getSensorName( sensor[i].longComment.c_str(), &aggregation);
 		
 		sensor[i].unit = getStringItem( &headerReadPtr, "Kanalgruppe");	// nice to have...
-		sensor[i].type = getSensorType(sensor[i].unit.c_str());	// not needed
+		//sensor[i].type = getSensorType(sensor[i].unit.c_str());	// not needed
 		//printf("Ch %3d -- %s [%s] -- %d %s\n", i+1, sensorName.c_str(),
 		//	    sensorUnit.c_str(), aggregation, sensorType.c_str());
 
