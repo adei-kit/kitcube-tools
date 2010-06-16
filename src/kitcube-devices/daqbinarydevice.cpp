@@ -228,7 +228,8 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	}
 #endif
 	
-	if (debug > 3) printf("______Reading data___%s_____________________\n", moduleName.c_str());	
+	if (debug > 3)
+		printf("______Reading data___%s_____________________\n", moduleName.c_str());	
 	
 	// Allocate memory for one data set
 	len = lenDataSet;
@@ -240,7 +241,8 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		local_sensorValue = new float [nSensors];
 	}
 	
-	if (debug > 3) printf("Open data file %s\n", filenameData.c_str());
+	if (debug > 3)
+		printf("Open data file %s\n", filenameData.c_str());
 	fd_data_file = open(filenameData.c_str(), O_RDONLY);
 	if (fd_data_file <= 0) {
 		printf("Error opening data file %s\n", filenameData.c_str());
@@ -255,7 +257,8 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
 	filenameMarker = line;
-	if (debug > 3) printf("Get marker from %s\n", filenameMarker.c_str());
+	if (debug > 3)
+		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
 		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
@@ -265,13 +268,16 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		timestamp_data.tv_sec = lastTime.tv_sec;
 		timestamp_data.tv_usec = lastTime.tv_usec;
 		
-		if (debug > 4) printf("Last time stamp was %ld\n", lastTime.tv_sec);
+		if (debug > 4)
+			printf("Last time stamp was %ld\n", lastTime.tv_sec);
 	}
 	
-	if (lastPos == 0) lastPos = lenHeader; // Move to the the first data
+	if (lastPos == 0)
+		lastPos = lenHeader; // Move to the the first data
 	
 	// Find the beginning of the new data
-	if (debug > 4) printf("LastPos: %ld\n", lastPos);
+	if (debug > 4)
+		printf("LastPos: %ld\n", lastPos);
 	lseek(fd_data_file, lastPos, SEEK_SET);
 	
 	n = len;
@@ -280,7 +286,8 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		n = read(fd_data_file, buf, len);
 		
 		if (n == len){
-			if (debug > 1) printf("%4d: Received %4d bytes ---- ", iLoop, n);
+			if (debug > 1)
+				printf("%4d: Received %4d bytes ---- ", iLoop, n);
 			
 			// Module specific implementation
 			// Might be necessary to
@@ -372,8 +379,10 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		fd_eof = false;
 	}
 	
-	if (debug > 2) printf("\n");
-	if (debug > 1) printf("Position of file: %ld\n", lastPos);
+	if (debug > 2)
+		printf("\n");
+	if (debug > 1)
+		printf("Position of file: %ld\n", lastPos);
 	
 	// Write the last valid time stamp / file position
 	fmark = fopen(filenameMarker.c_str(), "w");

@@ -240,6 +240,7 @@ void parsivel::readData(const char *dir, const char *filename){
 	iLoop = 0;
 	lPtr = (char *) 1;
 	while ((lPtr > 0) && (iLoop < 100)) {
+		
 		lPtr = fgets(line, 4150, fdata);
 		
 		if (lPtr != NULL) {

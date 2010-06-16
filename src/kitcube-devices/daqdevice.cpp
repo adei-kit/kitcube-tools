@@ -269,7 +269,8 @@ void DAQDevice::readAxis(const char *inifile){
 	std::string item;
 	
 	
-	if (debug > 3) printf("______DAQDevice::readAxis()______________________\n");
+	if (debug > 3)
+		printf("_____DAQDevice::readAxis()_____\n");
 	
 	//ini = new akInifile(inifile, stdout);
 	ini = new akInifile(inifile);
@@ -286,10 +287,12 @@ void DAQDevice::readAxis(const char *inifile){
 				ini->GetNextString(0, &error);
 				nAxis++;
 			}
-			if (debug > 3) printf("Number of axis: %d\n", nAxis);
+			if (debug > 3)
+				printf("Number of axis: %d\n", nAxis);
 			
 			// Allocate axis definition
-			if (axis > 0) delete [] axis;
+			if (axis > 0)
+				delete [] axis;
 			axis = new struct axisDef [nAxis];
 			
 			// Read the axis short names
@@ -304,7 +307,8 @@ void DAQDevice::readAxis(const char *inifile){
 				axis[i].desc = ini->GetFirstString(item.c_str(), 0, &error);
 				item = axis[i].name + "_unit";
 				axis[i].unit = ini->GetFirstString(item.c_str(), 0, &error);
-				if (debug > 3) printf("%s - %s (%s)\n", axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
+				if (debug > 3)
+					printf("%s - %s (%s)\n", axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
 				
 				axis[i].isNew = true;
 			}
@@ -326,7 +330,8 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	std::string sLine;
 	
 	
-	if (debug > 3) printf("______DAQDevice::getSensorNames()______________________\n");
+	if (debug > 3)
+		printf("_____DAQDevice::getSensorNames()_____\n");
 	
 	// Will need the axis definition for parsing the sensor names
 	if (axis == 0) readAxis(this->inifile.c_str());
@@ -372,13 +377,15 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 			// e.g. replace german names or unsystematic ones?!
 			sLine = namePtr + 1;
 			sensor[i].comment = sLine.substr(0, sLine.find('\t'));
-			if (namePtr > 0) namePtr = strchr(namePtr+1, '\t'); // Field 3
+			if (namePtr > 0)
+				namePtr = strchr(namePtr+1, '\t'); // Field 3
 			if (namePtr == 0)
 				throw std::invalid_argument("No sensor name found in the *.sensors file");
 			sscanf(namePtr, "%s", name);
 			sensor[i].name = name;
 			
-			if (namePtr > 0) namePtr = strchr(namePtr+1, '\t'); // Field 3
+			if (namePtr > 0)
+				namePtr = strchr(namePtr+1, '\t'); // Field 3
 			if (namePtr == 0)
 				throw std::invalid_argument("No axis found in the *.sensors file");
 			sscanf(namePtr, "%s", name);
@@ -387,14 +394,16 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 			// Find the name of the axis in the axis list
 			sensor[i].axis = -1;
 			for (j = 0; j < nAxis; j++){
-				if (axis[j].name == axisName) sensor[i].axis = j;
+				if (axis[j].name == axisName)
+					sensor[i].axis = j;
 			}
 			if (sensor[i].axis == -1){
 				printf("Analysing sensor %s, axis type %s \n", sensor[i].name.c_str(), axisName.c_str());
 				throw std::invalid_argument("Axis type is not defined in the inifile");
 			}
 			
-			if (debug > 2) printf("%d %s %s\n", i+1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str());
+			if (debug > 2)
+				printf("%d %s %s\n", i+1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str());
 			i++;
 		}
 	}

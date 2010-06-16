@@ -32,7 +32,7 @@ Mast::Mast(): DAQBinaryDevice(){
 	this->moduleNumber = 1; // Default values
 	this->sensorGroup = "DAR";
 
-	this->iniGroup = "Mast"; // Default	
+	this->iniGroup = "Mast"; // Default
 	
 	this->lenHeader = 0x10000; // 64k Header block
 	this->lenDataSet = 0; // Depends on the number of sensors - updated in readHeader
@@ -42,7 +42,6 @@ Mast::Mast(): DAQBinaryDevice(){
 
 
 Mast::~Mast(){
-
 	// Free header memory
 	if (headerRaw > 0) delete [] headerRaw;
 	
@@ -144,18 +143,18 @@ const char *Mast::getStringItem(const char **header, const char *itemTag){
 	i = 0;
 	while ( (!findTag) && (i < 20)) {
 		ptr = strcasestr(*header,  itemTag);
-		if (ptr > 0){
-			startChar = strstr(ptr, ": "); 
+		if (ptr > 0) {
+			startChar = strstr(ptr, ": ");
 			if (startChar > 0) {
 			 
 				// Find the end of the line
-				// TODO: End is not found properly?!	
+				// TODO: End is not found properly?!
 				endChar = strstr(ptr, "\n");
-				if (endChar > 0){
+				if (endChar > 0) {
 					//printf("getStringItem:  %02x %02x %02x %02x --- ", *(endChar-2), *(endChar-1), endChar[0], endChar[1]);
 					
 					len = endChar - startChar - 3;
-					std::string tag(startChar+2, len); 
+					std::string tag(startChar + 2, len);
 					buffer = tag;
 					findTag = true;
 				}
@@ -164,7 +163,7 @@ const char *Mast::getStringItem(const char **header, const char *itemTag){
 		i++;
 	}
 	
-	*header = endChar+1;
+	*header = endChar + 1;
 	return (buffer.c_str());
 }
 
@@ -227,7 +226,7 @@ const char *Mast::getSensorName(const char *longName, unsigned long *aggregation
 		buffer = result;
 		type = 1;
 	}
-
+	
 	ptr = strstr(longName, "max");
 	if (ptr > 0){
 		std::string result(longName, ptr - longName);
@@ -238,25 +237,26 @@ const char *Mast::getSensorName(const char *longName, unsigned long *aggregation
 	ptr = strstr(longName, "min");
 	if (ptr > 0){
 		std::string result(longName, ptr - longName);
-		buffer = result;		
+		buffer = result;
 		type = 3;
 	}
 	
 	ptr = strstr(longName, "sigma");
 	if (ptr > 0){
 		std::string result(longName, ptr - longName);
-		buffer = result;		
+		buffer = result;
 		type = 4;
 	}
 	
 	
-	
-	if (aggregation > 0) *aggregation = type;
+	if (aggregation > 0)
+		*aggregation = type;
 	
 	// Remove with characters at the end of the name
-	if (buffer.at(buffer.length()-1) == ' ') buffer.erase(buffer.length()-1, buffer.length()-1);
-		
-		//buffer.erase(buffer.end(),buffer.end());
+	if (buffer.at(buffer.length()-1) == ' ')
+		buffer.erase(buffer.length()-1, buffer.length()-1);
+	
+	//buffer.erase(buffer.end(),buffer.end());
 	return(buffer.c_str());
 }
 
@@ -266,40 +266,52 @@ const char *Mast::getSensorType(const char *unit){
 	buffer = "";
 	
 	res = strcmp(unit, "W/m²"); // Radiation
-	if (res == 0) buffer = "R"; 
+	if (res == 0)
+		buffer = "R";
 
 	res = strcmp(unit, "°C");  //  Temperature
-	if (res == 0) buffer = "T";
+	if (res == 0)
+		buffer = "T";
 
 	res = strcmp(unit, "hPa");  // Pressure
-	if (res == 0) buffer = "P";
+	if (res == 0)
+		buffer = "P";
 	
 	res = strcmp(unit, "V");  // Voltage
-	if (res == 0) buffer = "E";
+	if (res == 0)
+		buffer = "E";
 	
 	res = strcmp(unit, "g/m³");  // Voltage
-	if (res == 0) buffer = "M";
+	if (res == 0)
+		buffer = "M";
 
 	res = strcmp(unit, "mg/m³");  // Voltage
-	if (res == 0) buffer = "M";
+	if (res == 0)
+		buffer = "M";
 
 	res = strcmp(unit, "mm");  // Rain Heigth
-	if (res == 0) buffer = "G";
+	if (res == 0)
+		buffer = "G";
 
 	res = strcmp(unit, "mm/s");  // Rain Rate
-	if (res == 0) buffer = "G";
+	if (res == 0)
+		buffer = "G";
 	
 	res = strcmp(unit, "Grad");  // Direction
-	if (res == 0) buffer = "G";
+	if (res == 0)
+		buffer = "G";
 
 	res = strcmp(unit, "%");  // Relative humidity
-	if (res == 0) buffer = "MR";
+	if (res == 0)
+		buffer = "MR";
 	
 	res = strcmp(unit, "m/s");  // Wind speed
-	if (res == 0) buffer = "V";
+	if (res == 0)
+		buffer = "V";
 
 	res = strcmp(unit, "K");  // Absolute temperature
-	if (res == 0) buffer = "TA";
+	if (res == 0)
+		buffer = "TA";
 	
 	
 	return (buffer.c_str());
@@ -320,24 +332,27 @@ void Mast::readHeader(const char *filename){
 	// Get it from the filename?!
 	// --> use parser function in reader...
 	
-	printf("_____Reading header information_____________________\n");
+	if(debug >= 1)
+		printf("_____void Mast::readHeader(const char *filename)_____\n");
+	
 	fd = open(filename, O_RDONLY);
 	if (fd < 0) {
 		sprintf(line, "Error opening file %s", filename);
 		throw std::invalid_argument(line);
 	}
 	
-	// Read the complete header 
+	// Read the complete header
 	len = this->lenHeader;
-	headerRaw = new unsigned char [ len ]; // Is stored in the class variables
-	header = new unsigned char [ len  + 100 ];
+	headerRaw = new unsigned char [len]; // Is stored in the class variables
+	header = new unsigned char [len + 100];
+	
 	n = read(fd, headerRaw, len);
 	//printf("Bytes read %d from file %s\n", n, filename);
 	
 	close(fd);
 	
-	if (n< len) {
-		throw std::invalid_argument("No header found in data file");		
+	if (n < len) {
+		throw std::invalid_argument("No header found in data file");
 	}
 	
 #ifdef HAVE_ICONV_H
@@ -353,7 +368,7 @@ void Mast::readHeader(const char *filename){
 	// Windows --> Mac
 	//ic = iconv_open("ISO-8859-1", "ISO-8859-1"); // Test
 	ic = iconv_open("UTF-8", "ISO-8859-1");
-	if (ic <0 ) {
+	if (ic < 0) {
 		printf("Conversion codes not available\n");
 	}
 
@@ -366,30 +381,30 @@ void Mast::readHeader(const char *filename){
 		r = iconv(ic, &in, &nIn, &out, &nOut);
      	//printf("nIn = %d, nOut = %d\n", nIn, nOut);
 		
-	if(r<0){
+	if (r < 0) {
 		printf("Error during iconv (errno = %d)\n", errno);
 		if (errno == EILSEQ) 
 			printf("Character not available in output or input sream (%d %d %d)\n", in[0], in[1], in[2]);
-	} 	
+	}
 	iconv_close(ic);
 #else
 	memcpy(header, headerRaw, len);
-#endif	
-	
+#endif
 	
 	//
 	// Read parameters
 	//
 	printf("Module: \t\t%s, ID %03d, Group %s ID %d\n", moduleName.c_str(), moduleNumber, 
-		   sensorGroup.c_str(), sensorGroupNumber);	
+		   sensorGroup.c_str(), sensorGroupNumber);
 	
 	
 	// Header parameters
-	headerReadPtr = (const char *) header;	
+	headerReadPtr = (const char *) header;
+	
 	// Sampling time (min)
 	tSample = getNumericItem(&headerReadPtr, "Mittelung");
 	printf("Sampling (min): \t%d\n", tSample);
-		
+	
 	// Reference time - the ticks are relative to this time stamp
 	// and Convert to unix time stamp
 	std::string timeString;
@@ -397,25 +412,23 @@ void Mast::readHeader(const char *filename){
 	unsigned long timestamp;
 	timeString = getStringItem(&headerReadPtr, "Referenzzeit");
 	dateString = getStringItem(&headerReadPtr, "Referenzdatum");
-	printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
-
+	printf("Reference time stamp:\t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
 	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
 	tRef.tv_sec = timestamp;
 	tRef.tv_usec = 0;
 	//printf("Timestamp: %d -- %s", timestamp, asctime(gmtime((const time_t*) &timestamp)));
 	
-	
 	// Experiment name
 	experimentName = getStringItem( &headerReadPtr, "Versuchskennung");
-	printf("Experiment name: \t[%s]\n", experimentName.c_str());
+	printf("Experiment name:\t[%s]\n", experimentName.c_str());
 	//printf("Next %c%c%c \n", headerReadPtr[0], headerReadPtr[1], headerReadPtr[2]);
 	
+	// number of sensors
 	nSensors = getNumericItem(&headerReadPtr, "Anzahl");
-	printf("Number of sensors: \t%d\n", nSensors);
+	printf("Number of sensors:\t%d\n", nSensors);
 
 	// Update length of data sets
 	this->lenDataSet = (4 + nSensors * sizeof(float) + 8);
-
 	
 	std::string heightString;
 	//float sensorHeight;
@@ -423,23 +436,22 @@ void Mast::readHeader(const char *filename){
 	const char *aggregationSymbols[] = { "AVG", "AVG", "MAX", "MIN", "STD" };
 	//const char aggregationSymbols[] = { "M", "M", "H", "L", "S" }; // Very Short form
 	
-	
-	if (sensor > 0 ) delete [] sensor;
+	if (sensor > 0 )
+		delete [] sensor;
 	sensor = new struct sensorType [nSensors];
-
 	
-	for (i=0; i< nSensors; i++) {
+	for (i = 0; i < nSensors; i++) {
 		sensor[i].longComment = getStringItem( &headerReadPtr, "Kanalbeschreibung");
 		sensor[i].comment= getSensorName( sensor[i].longComment.c_str(), &aggregation);
 		
-		sensor[i].unit = getStringItem( &headerReadPtr, "Kanalgruppe");
-		sensor[i].type = getSensorType(sensor[i].unit.c_str());
-		//printf("Ch %3d -- %s [%s] -- %d %s\n", i+1, sensorName.c_str(), 
+		sensor[i].unit = getStringItem( &headerReadPtr, "Kanalgruppe");	// nice to have...
+		sensor[i].type = getSensorType(sensor[i].unit.c_str());	// not needed
+		//printf("Ch %3d -- %s [%s] -- %d %s\n", i+1, sensorName.c_str(),
 		//	    sensorUnit.c_str(), aggregation, sensorType.c_str());
 
 		heightString = getStringItem( &headerReadPtr, "Montagehoehe");
 		sscanf(heightString.c_str(), "%f", &sensor[i].height);
-				
+		
 		// Analyse the aggregation item that is stored?!
 		// Always four entries might form a group (mean, min, max, variance)
 		
@@ -452,10 +464,7 @@ void Mast::readHeader(const char *filename){
 		
 		// TODO: Alternative - only store the mean values in the database.
 		// This is may be a good start point with a better focus on the real data/ sensors?!
-		
-		
 	}
-
 	
 	delete [] header;
 	
@@ -470,7 +479,6 @@ void Mast::readHeader(const char *filename){
 	// Might be necessary to have 6 digits here?
 	//
 	
-		
 	// Write to database
 	// Check if datatable is already existing?! Only once if the class is created !
 	// The name of the data table is given by the name of the device number
@@ -559,7 +567,6 @@ void Mast::readData(const char *dir, const char *filename){
 	// Data format:
 	// Unsigned Long tickCount : ms since start time
 	// Float  sensor: Sensor values (pyhical unit and channel name from header
-
 	
 	
 	// Compile file name
@@ -570,13 +577,15 @@ void Mast::readData(const char *dir, const char *filename){
 	
 	
 	// If number of sensors is unknown read the header first
-	if (nSensors == 0) readHeader(filenameData.c_str());
-	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());	
-#ifdef USE_MYSQL	
-	if (db == 0) { 
-		openDatabase(); 
+	if (nSensors == 0)
+		readHeader(filenameData.c_str());
+	if (sensor[0].name.length() == 0)
+		getSensorNames(sensorListfile.c_str());	
+#ifdef USE_MYSQL
+	if (db == 0) {
+		openDatabase();
 	} else {
-		// Automatic reconnect 
+		// Automatic reconnect
 		if (mysql_ping(db) != 0){
 			printf("Error: Lost connection to database - automatic reconnect failed\n");
 			throw std::invalid_argument("Database unavailable\n");
@@ -584,15 +593,16 @@ void Mast::readData(const char *dir, const char *filename){
 	}
 #endif
 	
-	if (debug > 0) printf("_____Reading data_____________________\n");		
+	if (debug > 0)
+		printf("_____Reading data_____________________\n");
 	
 	// Allocate memory for one data set
-	len = (sizeof(*tickCount) + nSensors * sizeof(float) + 8);
+	len = (sizeof(*tickCount) + nSensors * sizeof(float) + 8);	// TODO/FIXME: better use lenDataSet here?!
 	buf = new unsigned int [len / sizeof(unsigned int)];
 	
 	
 	// Access pointer
-	tickCount = buf; 
+	tickCount = buf;
 	local_sensorValue = (float *) buf+1;
 	time = (struct SPackedTime *) buf+1+nSensors; 
 	
@@ -607,20 +617,22 @@ void Mast::readData(const char *dir, const char *filename){
 	
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
 	filenameMarker =line;
-	if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
+	if (debug > 1)
+		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
 		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	}
 	
-	if (lastPos == 0) lastPos = this->lenHeader; // Move the the first data
+	if (lastPos == 0)
+		lastPos = this->lenHeader; // Move the the first data
 	
 	// Find the beginning of the new data
-	if (debug > 1) printf("LastPos: %ld\n", lastPos);
+	if (debug > 1)
+		printf("LastPos: %ld\n", lastPos);
 	lseek(fd, lastPos, SEEK_SET);
 	
-  
 	
 	n = len;
 	int iLoop = 0;
@@ -628,9 +640,9 @@ void Mast::readData(const char *dir, const char *filename){
 		n = read(fd, buf, len);
 	
 		if (n == len){
-			if (debug > 1) printf("%4d: Received %4d bytes (errno = %d) : Tickcount = %12d: %12f %12f %12f %12f %12f  ", 
-				   iLoop, n, errno, *tickCount, local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);
-			
+			if (debug > 1)
+				printf("%4d: Received %4d bytes (errno = %d): Tickcount = %12d: %12f %12f %12f %12f %12f  ",
+				       iLoop, n, errno, *tickCount, local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);
 			
 			// Calculate the time stamp
 			l_timestamp_data.tv_sec = tRef.tv_sec + *tickCount/100;
@@ -640,10 +652,11 @@ void Mast::readData(const char *dir, const char *filename){
 				l_timestamp_data.tv_sec += 1;
 			}
 			
-			if (debug > 1) printf("T_data = %ld   %ld (sensors = %d)\n", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec, nSensors);
-	
-#ifdef USE_MYSQL	
-			if (db > 0){				
+			if (debug > 1)
+				printf("T_data = %lds %ldus (sensors = %d)\n", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec, nSensors);
+			
+#ifdef USE_MYSQL
+			if (db > 0){
 				// Write dataset to database
 				// Store in the order of appearance	
 				//printf("Write record to database\n");
@@ -675,7 +688,7 @@ void Mast::readData(const char *dir, const char *filename){
 					printf("Error: Unable to write data to database\n");
 					throw std::invalid_argument("Writing data failed");
 					break;
-				}	
+				}
 			} else {
 				printf("Error: No database availabe\n");
 				throw std::invalid_argument("No database");
@@ -687,11 +700,16 @@ void Mast::readData(const char *dir, const char *filename){
 		iLoop++;
 	}
 	
-	if (n < len) { fd_eof = true; } 
-	else { fd_eof = false; }
+	if (n < len) {
+		fd_eof = true;
+	} else {
+		fd_eof = false;
+	}
 	
-	if (debug > 1) printf("\n");
-	if (debug > 1) printf("Position of file %ld\n", lastPos);
+	if (debug > 1)
+		printf("\n");
+	if (debug > 1)
+		printf("Position of file %ld\n", lastPos);
 	
 	
 	// Write the last valid time stamp / file position
@@ -709,21 +727,20 @@ void Mast::readData(const char *dir, const char *filename){
 void Mast::updateDataSet(unsigned char *buf){
 	struct timeval t;
 	struct timezone tz;
-	
 	unsigned int *tickCount;
 	float *local_sensorValue;
 	
 	
 	// Compile the data set for writing to the data file
 	
-	
-	gettimeofday(&t, &tz);	
+	gettimeofday(&t, &tz);
 	
 	tickCount = (unsigned int *) buf; 
 	local_sensorValue = (float *) buf + 4;
 	
-	if (debug > 1) printf( "Tickcount = %12d:  %12f %12f %12f %12f %12f   ", 
-						  *tickCount,  local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);	
+	if (debug > 1)
+		printf("Tickcount = %12d:  %12f %12f %12f %12f %12f   ",
+		       *tickCount,  local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);
 	
 	// Replace
 	*tickCount = (t.tv_sec - tRef.tv_sec) *100 ; // 10ms units?!
