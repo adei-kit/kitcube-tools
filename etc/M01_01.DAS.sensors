@@ -1,0 +1,6 @@
+         1	Licor H2O	EB1.LICOR.M.AH.001.MOM	MA
+         2	Licor CO2	EB1.LICOR.D.CD.001.MOM	DC
+         3	U-Wind	EB1.SONIC.V.U.001.MOM	V
+         4	V-Wind	EB1.SONIC.V.V.001.MOM	V
+         5	W-Wind	EB1.SONIC.V.W.001.MOM	V
+         6	T-Sonic	EB1.SONIC.T.AIR.001.MOM	TA
