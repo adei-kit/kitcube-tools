@@ -21,6 +21,7 @@ struct SPackedTime{
 	unsigned char nMonat;
 	unsigned short nJahr;
 	unsigned char nStunde;
+	unsigned char nMinute;
 	unsigned char nSekunde;
 	unsigned char nHundertstel;
 };
@@ -535,14 +536,13 @@ void Mast::writeHeader(){
 
 
 void Mast::readData(const char *dir, const char *filename){
-	unsigned int *tickCount;
-	unsigned int *buf;	// TODO/FIXME: that's risky, as you don't now this size of "int"!
+	u_int32_t *buf;
+	long tickCount;
+	float *local_sensorValue;
+	struct SPackedTime *time;
 	int len;
 	int n;
 	int fd;
-	float *local_sensorValue;
-	SPackedTime *time;
-	
 	FILE *fmark;
 	std::string filenameMarker;
 	std::string filenameData;
@@ -552,6 +552,7 @@ void Mast::readData(const char *dir, const char *filename){
 	struct timeval l_timestamp_data;
 	//struct timeval tWrite;
 	char line[256];
+	tm tm_zeit;
 
 #ifdef USE_MYSQL
 	//MYSQL_RES *res;
@@ -564,6 +565,14 @@ void Mast::readData(const char *dir, const char *filename){
 	int i;
 #endif
 	
+	if (debug >= 1)
+		printf("_____Mast::readData(const char *dir, const char *filename)_____\n");
+	
+	if (sizeof(float) != 4) {
+		printf("Size of 'float' is not 4! So not reading any data!\n");
+		return;
+	}
+	
 	// Data format:
 	// Unsigned Long tickCount : ms since start time
 	// Float  sensor: Sensor values (pyhical unit and channel name from header
@@ -575,12 +584,12 @@ void Mast::readData(const char *dir, const char *filename){
 	
 	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
 	
-	
 	// If number of sensors is unknown read the header first
 	if (nSensors == 0)
 		readHeader(filenameData.c_str());
 	if (sensor[0].name.length() == 0)
-		getSensorNames(sensorListfile.c_str());	
+		getSensorNames(sensorListfile.c_str());
+	
 #ifdef USE_MYSQL
 	if (db == 0) {
 		openDatabase();
@@ -593,22 +602,17 @@ void Mast::readData(const char *dir, const char *filename){
 	}
 #endif
 	
-	if (debug > 0)
-		printf("_____Reading data_____________________\n");
-	
 	// Allocate memory for one data set
 	len = lenDataSet;
-	buf = new unsigned int [len / sizeof(unsigned int)];	// TODO/FIXME: that's risky, as you don't now the size of "int"!
+	buf = new u_int32_t [len / sizeof(u_int32_t)];
+	local_sensorValue =  (float *)(buf + 1);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
+	time = (struct SPackedTime *)(buf + 1 + nSensors);	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
 	
 	
-	// Access pointer
-	tickCount = buf;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
-	local_sensorValue = (float *) buf+1;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
-	time = (struct SPackedTime *) buf+1+nSensors;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
-	
-	
-	printf("Open data file %s\n", filenameData.c_str());
+	if (debug >= 1)
+		printf("Open data file %s\n", filenameData.c_str());
 	fd = open(filenameData.c_str(), O_RDONLY);
+	
 	
 	// Get the last time stamp + file pointer from 
 	lastPos = 0;
@@ -616,8 +620,8 @@ void Mast::readData(const char *dir, const char *filename){
 	lastTime.tv_usec = 0;
 	
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker =line;
-	if (debug > 1)
+	filenameMarker = line;
+	if (debug >= 1)
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
@@ -641,19 +645,28 @@ void Mast::readData(const char *dir, const char *filename){
 	
 		if (n == len){
 			if (debug > 1)
-				printf("%4d: Received %4d bytes (errno = %d): Tickcount = %12d: %12f %12f %12f %12f %12f  ",
-				       iLoop, n, errno, *tickCount, local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);	// TODO/FIXME: that's risky, as you don't now the size of "int"!
+				printf("%4d: Received %4d bytes ---- ", iLoop, n);
+			
+			// read timestamp
+			// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
+			tm_zeit.tm_mday = time->nTag;
+			tm_zeit.tm_mon = time->nMonat - 1;
+			tm_zeit.tm_year = time->nJahr - 1900;
+			tm_zeit.tm_hour = time->nStunde;
+			tm_zeit.tm_min = time->nMinute;
+			tm_zeit.tm_sec = time->nSekunde;
 			
 			// Calculate the time stamp
-			l_timestamp_data.tv_sec = tRef.tv_sec + *tickCount/100;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
-			l_timestamp_data.tv_usec = tRef.tv_usec + (*tickCount %100) * 10000;	// TODO/FIXME: that's risky, as you don't now the size of "int"!
-			if (l_timestamp_data.tv_usec >= 1000000) {
-				l_timestamp_data.tv_usec = l_timestamp_data.tv_usec % 1000000;
-				l_timestamp_data.tv_sec += 1;
-			}
+			l_timestamp_data.tv_sec = timegm(&tm_zeit);
+			l_timestamp_data.tv_usec = time->nHundertstel * 10000;
 			
-			if (debug > 1)
-				printf("T_data = %lds %ldus (sensors = %d)\n", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec, nSensors);
+			if (debug > 1) {
+				printf("%lds %ldus ---- ", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
+				for (int j = 0; j < nSensors; j++){
+					printf("%f ", local_sensorValue[j]);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
+				}
+				printf("\n");
+			}
 			
 #ifdef USE_MYSQL
 			if (db > 0){
@@ -671,8 +684,8 @@ void Mast::readData(const char *dir, const char *filename){
 				sql +=") VALUES (";
 				sprintf(sData, "%ld, %ld", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
 				sql += sData;
-				for (i=0; i<nSensors; i++){
-					sprintf(sData, "%f", local_sensorValue[i]);	// TODO/FIXME: that's risky, as you don't now the size of "int"!
+				for (i = 0; i < nSensors; i++) {
+					sprintf(sData, "%f", local_sensorValue[i]);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
 					sql += ",";
 					sql += sData;
 				}
