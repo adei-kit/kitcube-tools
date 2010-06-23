@@ -91,16 +91,16 @@ void DAQAsciiDevice::closeFile(){
 
 
 void DAQAsciiDevice::readData(const char *dir, const char *filename){
-	//unsigned char *buf;
+	char *buf;
 	int len;
 	//int n;
-	//int fd;
+	FILE *fd_data_file;
 	int j, k;
 	//char *sensorString;
 	float* local_sensorValue;
 	//int err;
-	std::string timeString;
-	std::string dateString;
+	//std::string timeString;
+	//std::string dateString;
 	//unsigned long timestamp;
 	
 	
@@ -129,6 +129,9 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	int i;
 #endif
 	
+	if (debug >= 1)
+		printf("\n_____DAQBinaryDevice::readData(const char *dir, const char *filename)_____\n");
+	
 	// Compile file name
 	filenameData = dir;
 	filenameData += filename;
@@ -138,8 +141,10 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	// If number of sensors is unknown read the header first
 	//if (nSensors == 0) readHeader(filenameData.c_str());
 	// For every file the header should be read ?!
-	if (nSensors == 0) readHeader(filenameData.c_str());
-	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());
+	if (nSensors == 0)
+		readHeader(filenameData.c_str());
+	if (sensor[0].name.length() == 0)
+		getSensorNames(sensorListfile.c_str());
 	
 #ifdef USE_MYSQL
 	if (db == 0) {
@@ -153,20 +158,21 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	}
 #endif
 	
-	if (debug > 3) printf("______Reading data___%s_____________________\n", moduleName.c_str());	
-	
 	// Allocate memory for one data set
+	len = lenDataSet;
+	buf = new char [len];
+	
+	// Allocate memory for sensor values
 	if (profile_length != 0) {
 		local_sensorValue = new float [nSensors * profile_length];
 	} else {
-		len = 0;
-		//buf = new unsigned char [len];
 		local_sensorValue = new float [nSensors];
 	}
 	
-	if (debug > 3) printf("Open data file %s\n", filenameData.c_str());
-	fdata = fopen(filenameData.c_str(), "r");
-	if (fdata <= 0) {
+	if (debug >= 1)
+		printf("Open data file: %s\n", filenameData.c_str());
+	fd_data_file = fopen(filenameData.c_str(), "r");
+	if (fd_data_file <= 0) {
 		printf("Error opening data file %s\n", filenameData.c_str());
 		return;
 	}
@@ -178,8 +184,9 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	lastTime.tv_usec = 0;
 	
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker =line;
-	if (debug > 3) printf("Get marker from %s\n", filenameMarker.c_str());
+	filenameMarker = line;
+	if (debug >= 1)
+		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
 		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
@@ -189,31 +196,36 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 		timestamp_data.tv_sec = lastTime.tv_sec;
 		timestamp_data.tv_usec = lastTime.tv_usec;
 		
-		if (debug > 4) printf("Last time stamp was %ld\n", lastTime.tv_sec);
+		if (debug >= 1)
+			printf("Last time stamp was %ld\n", lastTime.tv_sec);
 	}
 	
-	if (lastPos == 0) lastPos = lenHeader; // Move to the the first data
+	if (lastPos == 0)
+		lastPos = lenHeader; // Move to the the first data
+	
 	
 	// Find the beginning of the new data
-	if (debug > 4) printf("LastPos: %ld\n", lastPos);
-	fseek(fdata, lastPos, SEEK_SET);
+	if (debug >= 1)
+		printf("Last position in file: %ld\n", lastPos);
 	
-	//n = len;
-	int iLoop = 0;
+	fseek(fd_data_file, lastPos, SEEK_SET);
+	
 	lPtr = (char *) 1;
+	int iLoop = 0;
 	while ((lPtr > 0) && (iLoop < 100)) {
-		lPtr = fgets(line, 256, fdata);
+		lPtr = fgets(buf, len, fd_data_file);
 		
 		if (lPtr > 0){
-			if (debug > 1) printf("%4d: Received %4d bytes ---- ", iLoop, (int) strlen(line));
+			if (debug >= 1)
+				printf("%4d: Received %4d bytes ---- ", iLoop, (int) strlen(buf));
 			
 			// Module specific implementation
 			// Might be necessary to
-			parseData(line, &timestamp_data, local_sensorValue);
+			parseData(buf, &timestamp_data, local_sensorValue);
 			
 			// print sensor values
-			if (debug > 1) {
-				printf("%lds %ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
+			if (debug >= 1) {
+				printf("%lds %6ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
 						for (k = 0; k < profile_length; k++) {
@@ -242,7 +254,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 						sql += "`";
 					}
 				}
-				sql +=") VALUES (";
+				sql += ") VALUES (";
 				sprintf(sData, "%ld, %ld", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				sql += sData;
 				if (profile_length != 0) {
@@ -260,7 +272,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 							sql += ",";
 							sprintf(sData, "%f", local_sensorValue[i]);
 							sql += sData;
-						}	
+						}
 					}
 				}
 				sql += ")";
@@ -297,22 +309,21 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 		fd_eof = false;
 	}
 	
-	// Get the positio in this file
-	currPos = ftell(fdata);
+	// Get the position in this file
+	currPos = ftell(fd_data_file);
 	processedData += currPos - lastPos;
-	if (debug > 2) printf("\n");
-	if (debug > 1) printf("Position of file %ld processed data %ld Bytes\n", currPos, currPos - lastPos);
 	
+	if (debug >= 1)
+		printf("Position in file: %ld; processed data: %ld Bytes\n", currPos, currPos - lastPos);
 	
 	// Write the last valid time stamp / file position
-	lastPos = currPos;
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp_data.tv_sec, timestamp_data.tv_usec, lastPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp_data.tv_sec, timestamp_data.tv_usec, currPos);
 		fclose(fmark);
 	}
 	
-	fclose(fdata);
-	//delete buf;
+	fclose(fd_data_file);
+	delete buf;
 	delete [] local_sensorValue;
 }

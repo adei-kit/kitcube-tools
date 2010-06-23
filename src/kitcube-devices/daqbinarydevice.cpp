@@ -174,8 +174,8 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	//char *sensorString;
 	float* local_sensorValue;
 	//int err;
-	std::string timeString;
-	std::string dateString;
+	//std::string timeString;
+	//std::string dateString;
 	//unsigned long timestamp;
 	
 	
@@ -184,7 +184,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
-	//unsigned long currPos;
+	unsigned long currPos;
 	unsigned long lastIndex;
 	struct timeval timestamp_data;
 	//struct timeval tWrite;
@@ -204,6 +204,9 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	int i;
 #endif
 	
+	if (debug >= 1)
+		printf("\n_____DAQBinaryDevice::readData(const char *dir, const char *filename)_____\n");
+	
 	// Compile file name
 	filenameData = dir;
 	filenameData += filename;
@@ -213,8 +216,10 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	// If number of sensors is unknown read the header first
 	//if (nSensors == 0) readHeader(filenameData.c_str());
 	// For every file the header should be read ?!
-	if (nSensors == 0) readHeader(filenameData.c_str());
-	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());	
+	if (nSensors == 0)
+		readHeader(filenameData.c_str());
+	if (sensor[0].name.length() == 0)
+		getSensorNames(sensorListfile.c_str());	
 	
 #ifdef USE_MYSQL
 	if (db == 0) {
@@ -228,21 +233,19 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	}
 #endif
 	
-	if (debug > 3)
-		printf("______Reading data___%s_____________________\n", moduleName.c_str());	
-	
 	// Allocate memory for one data set
 	len = lenDataSet;
 	buf = new unsigned char [len];
 	
+	// Allocate memory for sensor values
 	if (profile_length != 0) {
 		local_sensorValue = new float [nSensors * profile_length];
 	} else {
 		local_sensorValue = new float [nSensors];
 	}
 	
-	if (debug > 3)
-		printf("Open data file %s\n", filenameData.c_str());
+	if (debug >= 1)
+		printf("Open data file: %s\n", filenameData.c_str());
 	fd_data_file = open(filenameData.c_str(), O_RDONLY);
 	if (fd_data_file <= 0) {
 		printf("Error opening data file %s\n", filenameData.c_str());
@@ -250,14 +253,14 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	}
 	
 	
-	// Get the last time stamp + file pointer from 
+	// Get the last time stamp + file pointer from
 	lastPos = 0;
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
 	
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
 	filenameMarker = line;
-	if (debug > 3)
+	if (debug >= 1)
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
@@ -268,16 +271,18 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		timestamp_data.tv_sec = lastTime.tv_sec;
 		timestamp_data.tv_usec = lastTime.tv_usec;
 		
-		if (debug > 4)
+		if (debug >= 1)
 			printf("Last time stamp was %ld\n", lastTime.tv_sec);
 	}
 	
 	if (lastPos == 0)
 		lastPos = lenHeader; // Move to the the first data
+	currPos = lastPos;
 	
 	// Find the beginning of the new data
-	if (debug > 4)
-		printf("LastPos: %ld\n", lastPos);
+	if (debug >= 1)
+		printf("Last position in file: %ld\n", lastPos);
+	
 	lseek(fd_data_file, lastPos, SEEK_SET);
 	
 	n = len;
@@ -286,7 +291,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		n = read(fd_data_file, buf, len);
 		
 		if (n == len){
-			if (debug > 1)
+			if (debug >= 1)
 				printf("%4d: Received %4d bytes ---- ", iLoop, n);
 			
 			// Module specific implementation
@@ -294,8 +299,8 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 			parseData((char *)buf, &timestamp_data, local_sensorValue);
 			
 			// print sensor values
-			if (debug > 1) {
-				printf("%lds %ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
+			if (debug >= 1) {
+				printf("%lds %6ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
 						for (k = 0; k < profile_length; k++) {
@@ -359,16 +364,17 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 					printf("Error: Unable to write data to database\n");
 					throw std::invalid_argument("Writing data failed");
 					break;
-				}	
+				}
 				
 				gettimeofday(&t1, &tz);
-				printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
+				if (debug >= 10)
+					printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
 			} else {
 				printf("Error: No database availabe\n");
 				throw std::invalid_argument("No database");
 			}
 #endif // of USE_MYSQL
-			lastPos += n;
+			currPos += n;
 		}
 		iLoop++;
 	}
@@ -379,15 +385,17 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		fd_eof = false;
 	}
 	
-	if (debug > 2)
-		printf("\n");
-	if (debug > 1)
-		printf("Position of file: %ld\n", lastPos);
+	
+	
+	processedData += currPos - lastPos;
+	
+	if (debug >= 1)
+		printf("Position in file: %ld; processed data: %ld Bytes\n", currPos, currPos - lastPos);
 	
 	// Write the last valid time stamp / file position
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp_data.tv_sec, timestamp_data.tv_usec, lastPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp_data.tv_sec, timestamp_data.tv_usec, currPos);
 		fclose(fmark);
 	}
 	
