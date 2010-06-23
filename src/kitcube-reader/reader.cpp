@@ -331,14 +331,14 @@ int Reader::handle_timeout(){
 	}
 	
 	nData = 0;
-	try {	
+	try {
 		
 		for (i=0;i<nModules;i++){
-			dev[i]->copyRemoteData();	
-			fflush(stderr);	
+			dev[i]->copyRemoteData();
+			fflush(stderr);
 
 			// List all new files?!
-			dev[i]->getNewFiles();	
+			dev[i]->getNewFiles();
 			nData += dev[i]->getProcessedData();
 			
 			if (debug > 3) printf("Processed data %d Bytes\n", dev[i]->getProcessedData());
@@ -366,7 +366,7 @@ int Reader::handle_timeout(){
 	
 	
 	if (debug) {
-		printf("\n");	
+		printf("\n");
 		fflush(stdout);
 	}
 	return(0);

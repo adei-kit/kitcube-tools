@@ -964,12 +964,13 @@ void DAQDevice::storeSensorData(){
 	int i;
 #endif
 	
-	if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());		
-#ifdef USE_MYSQL	
-	if (db == 0) { 
-		openDatabase(); 
+	if (sensor[0].name.length() == 0)
+		getSensorNames(sensorListfile.c_str());
+#ifdef USE_MYSQL
+	if (db == 0) {
+		openDatabase();
 	} else {
-		// Automatic reconnect 
+		// Automatic reconnect
 		if (mysql_ping(db) != 0){
 			printf("Error: Lost connection to database - automatic reconnect failed\n");
 			throw std::invalid_argument("Database unavailable\n");
@@ -977,7 +978,8 @@ void DAQDevice::storeSensorData(){
 	}
 #endif
 	
-	if (debug > 2) printf("_____Store sensor data___%s_____________________\n", moduleName.c_str());	
+	if (debug > 2)
+		printf("_____Store sensor data___%s_____________________\n", moduleName.c_str());
 	
 	
 	// Use the function setNdata, updateTimeStamp, updateData to 
@@ -986,17 +988,17 @@ void DAQDevice::storeSensorData(){
 	// Display sensor data
 	if (debug > 1) {
 		printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
-		for (j=0;j<nSensors; j++){				
-			printf("%5.3f ", sensorValue[j]);	
+		for (j=0;j<nSensors; j++){
+			printf("%5.3f ", sensorValue[j]);
 		}
 		printf("\n");
 	}
 	
 	
-#ifdef USE_MYSQL	
+#ifdef USE_MYSQL
 	if (db > 0){
 		// Write dataset to database
-		// Store in the order of appearance	
+		// Store in the order of appearance
 		//printf("Write record to database\n");
 		
 		sql = "INSERT INTO `";

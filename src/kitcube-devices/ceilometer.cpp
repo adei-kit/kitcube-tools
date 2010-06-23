@@ -382,7 +382,8 @@ void Ceilometer::parseData(char *line, struct timeval *l_tData, float *sensorVal
 	timeString += (char *) (buf + 233);
 	//timeString += ":00"; // Add missing seconds
 	
-	if (debug > 1) printf("[%s] [%s] ", dateString.c_str(), timeString.c_str());
+	if (debug > 1)
+		printf("[%s] [%s] ", dateString.c_str(), timeString.c_str());
 		
 	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
 	l_tData->tv_sec = timestamp;
