@@ -534,39 +534,11 @@ void Mast::writeHeader(){
 }
 
 
-
-void Mast::readData(const char *dir, const char *filename){
-	u_int32_t *buf;
-	long tickCount;
+void Mast::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 	float *local_sensorValue;
 	struct SPackedTime *time;
-	int len;
-	int n;
-	int fd;
-	FILE *fmark;
-	std::string filenameMarker;
-	std::string filenameData;
-	struct timeval lastTime;
-	unsigned long lastPos;
-	unsigned long lastIndex;
-	struct timeval l_timestamp_data;
-	//struct timeval tWrite;
-	char line[256];
 	tm tm_zeit;
 
-#ifdef USE_MYSQL
-	//MYSQL_RES *res;
-	//MYSQL_RES *resTables;
-	//MYSQL_ROW row;
-	//MYSQL_ROW table;
-	std::string tableName;
-	std::string sql;
-	char sData[50];
-	int i;
-#endif
-	
-	if (debug >= 1)
-		printf("_____Mast::readData(const char *dir, const char *filename)_____\n");
 	
 	if (sizeof(float) != 4) {
 		printf("Size of 'float' is not 4! So not reading any data!\n");
@@ -574,166 +546,32 @@ void Mast::readData(const char *dir, const char *filename){
 	}
 	
 	// Data format:
-	// Unsigned Long tickCount : ms since start time
-	// Float  sensor: Sensor values (pyhical unit and channel name from header
+	// long Tickcount : Hundertstel seit Messbeginn (wird nicht benutzt)
+	// float Sensorwerte: Messdaten, Anzahl steht im Header
+	// struct SPackedTime: Zeitstempel-Struktur
+	
+	local_sensorValue =  (float *)(line + 4);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
+	time = (struct SPackedTime *)(line + 4 + 4 * nSensors);	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
 	
 	
-	// Compile file name
-	filenameData = dir;
-	filenameData += filename;
-	
-	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
-	
-	// If number of sensors is unknown read the header first
-	if (nSensors == 0)
-		readHeader(filenameData.c_str());
-	if (sensor[0].name.length() == 0)
-		getSensorNames(sensorListfile.c_str());
-	
-#ifdef USE_MYSQL
-	if (db == 0) {
-		openDatabase();
-	} else {
-		// Automatic reconnect
-		if (mysql_ping(db) != 0){
-			printf("Error: Lost connection to database - automatic reconnect failed\n");
-			throw std::invalid_argument("Database unavailable\n");
-		}
-	}
-#endif
-	
-	// Allocate memory for one data set
-	len = lenDataSet;
-	buf = new u_int32_t [len / sizeof(u_int32_t)];
-	local_sensorValue =  (float *)(buf + 1);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
-	time = (struct SPackedTime *)(buf + 1 + nSensors);	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
-	
-	
-	if (debug >= 1)
-		printf("Open data file %s\n", filenameData.c_str());
-	fd = open(filenameData.c_str(), O_RDONLY);
-	
-	
-	// Get the last time stamp + file pointer from 
-	lastPos = 0;
-	lastTime.tv_sec = 0;
-	lastTime.tv_usec = 0;
-	
-	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker = line;
-	if (debug >= 1)
-		printf("Get marker from %s\n", filenameMarker.c_str());
-	fmark = fopen(filenameMarker.c_str(), "r");
-	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
-		fclose(fmark);
+	// read data
+	for (int i = 0; i < nSensors; i++) {
+		sensorValue[i] = local_sensorValue[i];
 	}
 	
-	if (lastPos == 0)
-		lastPos = this->lenHeader; // Move the the first data
 	
-	// Find the beginning of the new data
-	if (debug > 1)
-		printf("LastPos: %ld\n", lastPos);
-	lseek(fd, lastPos, SEEK_SET);
+	// read timestamp
+	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
+	tm_zeit.tm_mday = time->nTag;
+	tm_zeit.tm_mon = time->nMonat - 1;
+	tm_zeit.tm_year = time->nJahr - 1900;
+	tm_zeit.tm_hour = time->nStunde;
+	tm_zeit.tm_min = time->nMinute;
+	tm_zeit.tm_sec = time->nSekunde;
 	
-	
-	n = len;
-	int iLoop = 0;
-	while ((n == len) && (iLoop < 1000)) {
-		n = read(fd, buf, len);
-	
-		if (n == len){
-			if (debug > 1)
-				printf("%4d: Received %4d bytes ---- ", iLoop, n);
-			
-			// read timestamp
-			// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
-			tm_zeit.tm_mday = time->nTag;
-			tm_zeit.tm_mon = time->nMonat - 1;
-			tm_zeit.tm_year = time->nJahr - 1900;
-			tm_zeit.tm_hour = time->nStunde;
-			tm_zeit.tm_min = time->nMinute;
-			tm_zeit.tm_sec = time->nSekunde;
-			
-			// Calculate the time stamp
-			l_timestamp_data.tv_sec = timegm(&tm_zeit);
-			l_timestamp_data.tv_usec = time->nHundertstel * 10000;
-			
-			if (debug > 1) {
-				printf("%lds %ldus ---- ", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
-				for (int j = 0; j < nSensors; j++){
-					printf("%f ", local_sensorValue[j]);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
-				}
-				printf("\n");
-			}
-			
-#ifdef USE_MYSQL
-			if (db > 0){
-				// Write dataset to database
-				// Store in the order of appearance	
-				//printf("Write record to database\n");
-				
-				sql = "INSERT INTO `";
-				sql += dataTableName + "` (`sec`,`usec`";
-				for (i=0; i<nSensors; i++){
-					sql += ",`";
-					sql += sensor[i].name;
-					sql += "`";
-				}
-				sql +=") VALUES (";
-				sprintf(sData, "%ld, %ld", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
-				sql += sData;
-				for (i = 0; i < nSensors; i++) {
-					sprintf(sData, "%f", local_sensorValue[i]);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
-					sql += ",";
-					sql += sData;
-				}
-				sql += ")";
-				
-				//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
-				
-				if (mysql_query(db, sql.c_str())){
-					fprintf(stderr, "%s\n", sql.c_str());
-					fprintf(stderr, "%s\n", mysql_error(db));
-					
-					// If this operation fails do not proceed in the file?!
-					printf("Error: Unable to write data to database\n");
-					throw std::invalid_argument("Writing data failed");
-					break;
-				}
-			} else {
-				printf("Error: No database availabe\n");
-				throw std::invalid_argument("No database");
-			}
-#endif // of USE_MYSQL
-			
-			lastPos += n;
-		}
-		iLoop++;
-	}
-	
-	if (n < len) {
-		fd_eof = true;
-	} else {
-		fd_eof = false;
-	}
-	
-	if (debug > 1)
-		printf("\n");
-	if (debug > 1)
-		printf("Position of file %ld\n", lastPos);
-	
-	
-	// Write the last valid time stamp / file position
-	fmark = fopen(filenameMarker.c_str(), "w");
-	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
-		fclose(fmark);
-	}
-	
-	close(fd);
-	delete buf;
+	// Calculate the time stamp
+	l_tData->tv_sec = timegm(&tm_zeit);
+	l_tData->tv_usec = time->nHundertstel * 10000;
 }
 
 
