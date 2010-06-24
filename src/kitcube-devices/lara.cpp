@@ -262,7 +262,9 @@ void Lara::readHeader(char *filename){
 	
 	if (sensorGroup == "stab") {
 		
-		if (nSensors == 0){			
+		if (nSensors == 0){
+			lenDataSet = 128;	// 122 plus kleiner Puffer, hier OK, da fgets nach "\n" stoppt
+			
 			// Number of sensors
 			// TODO: Move to the end of the inifile reader?!
 			nSensors = 8;

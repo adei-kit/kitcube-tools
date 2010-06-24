@@ -32,6 +32,8 @@ void jwd::readHeader(const char *filename){
 	if (sensorGroup == "dd") {
 		lenHeader = 0xd4;	// CAUTION: header has several lines!
 		
+		lenDataSet = 128;	// 106 plus kleiner Puffer, hier OK, da fgets nach "\n" stoppt
+		
 		profile_length = 0;
 		
 		// List of sensors
@@ -74,6 +76,8 @@ void jwd::readHeader(const char *filename){
 		}
 	} else if (sensorGroup == "rd") {
 		lenHeader = 0;	// no header
+		
+		lenDataSet = 128;	// 85 plus kleiner Puffer, hier OK, da fgets nach "\n" stoppt
 		
 		profile_length = 20;
 		

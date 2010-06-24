@@ -23,6 +23,8 @@ SimRandom::SimRandom(){
 	
 	lenHeader = 0x39;	// CAUTION: header has several lines!
 	
+	lenDataSet = 64;	// 58 plus kleiner Puffer, hier OK, da fgets nach "\n" stoppt
+	
 	// List of sensors
 	nSensors = 3;
 	sensor = new struct sensorType [nSensors];
