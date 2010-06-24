@@ -17,6 +17,7 @@
 #include "jwd.h"
 #include "parsivel.h"
 #include "mrr.h"
+#include "regenwippe.h"
 
 
 extern "C" void *createDevice(const char *devType) {
@@ -30,6 +31,7 @@ extern "C" void *createDevice(const char *devType) {
 	if (strcasestr(devType, "JWD") > 0) return( new (jwd));
 	if (strcasestr(devType, "Parsivel") > 0) return( new (parsivel));
 	if (strcasestr(devType, "MRR") > 0) return( new (mrr));
+	if (strcasestr(devType, "Regenwippe") > 0) return( new (regenwippe));
 	
 	if (strcasestr(devType, "Lara") > 0) return( new (Lara));
 	
