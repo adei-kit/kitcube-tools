@@ -131,7 +131,7 @@ void regenwippe::writeData(){
 	
 	// replace date and time in data set
 	data_set = line;
-	n = strftime(line, 19, "%d.%m.%Y %T", date);
+	n = strftime(line, 20, "%d.%m.%Y %T", date);
 	if (n != 19) {
 		printf("Regenwippe: Error writing date and time string!\n");
 		return;
