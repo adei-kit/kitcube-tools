@@ -29,12 +29,6 @@ struct SPackedTime{
 
 Mast::Mast(): DAQBinaryDevice(){
 	
-	this->moduleType = "Mast";
-	this->moduleNumber = 1; // Default values
-	this->sensorGroup = "DAR";
-
-	this->iniGroup = "Mast"; // Default
-	
 	this->lenHeader = 0x10000; // 64k Header block
 	this->lenDataSet = 0; // Depends on the number of sensors - updated in readHeader
 	
@@ -50,26 +44,6 @@ Mast::~Mast(){
 
 
 void Mast::setConfigDefaults(){
-	char line[256];
-
-	// Note:
-	// The paramters are dependant of the module number that is not known at the creation 
-	// of the class but first time after reading from the inifile
-	//
-	
-	// Use module number in template name
-	sprintf(line, "M%02d", moduleNumber);
-	this->moduleName = line;
-	sprintf(line, "Mast%d", moduleNumber);
-	this->moduleComment = line;
-	
-	sprintf(line, "M%02d_01.%s.template", moduleNumber, sensorGroup.c_str());
-	this->datafileTemplate = line;
-	sprintf(line, "M%02d_<index>.%s", moduleNumber, sensorGroup.c_str());
-	this->datafileMask = line;
-	
-	sprintf(line, "M%02d_01.%s.sensors", moduleNumber, sensorGroup.c_str());
-	this->sensorListfile = line;	
 	
 }
 
@@ -80,6 +54,7 @@ const char *Mast::getDataDir(){
 	// TODO: Create a single source for the filename convention...
 	sprintf(line, "Mast%02d/Data/", moduleNumber);
 	buffer = line;
+	
 	return(buffer.c_str());
 }
 
@@ -90,6 +65,7 @@ const char *Mast::getDataFilename(){
 	// TODO: Create a single source for the filename convention...
 	sprintf(line, "M%02d_%02ld.%s", moduleNumber, fileIndex, sensorGroup.c_str());
 	buffer = line;
+	
 	return(buffer.c_str());
 }
 
@@ -108,10 +84,10 @@ void Mast::replaceItem(const char **header, const char *itemTag, const char *new
 	
 	findTag = false;
 	i = 0;
-	while ( (!findTag) && (i < 20)) {
+	while ((!findTag) && (i < 20)) {
 		ptr = strcasestr(*header,  itemTag);
 		if (ptr > 0){
-			startChar = strstr(ptr, ": "); 
+			startChar = strstr(ptr, ": ");
 			if (startChar > 0) {
 				
 				// Replace the data in the header
@@ -125,7 +101,7 @@ void Mast::replaceItem(const char **header, const char *itemTag, const char *new
 		i++;
 	}
 	
-	*header = startChar+2 + len;
+	*header = startChar + 2 + len;
 }
 
 
@@ -493,7 +469,7 @@ void Mast::readHeader(const char *filename){
 void Mast::writeHeader(){
 	struct timezone tz;
 	const char *headerReadPtr;
-	struct tm *t;
+	struct tm *tm_ptr;
 	char time[20];
 	char date[20];
 	int n;
@@ -501,13 +477,15 @@ void Mast::writeHeader(){
 	int len; 
 	
 
-	if (fd_data <=0) throw std::invalid_argument("Data file not open");
+	if (fd_data <= 0)
+		throw std::invalid_argument("Data file not open");
 		
 	// Read one sample data and replace the starting time by the original time
 	len = this->lenHeader;
 	
 	// Read the template header
-	if (datafileTemplate.length() == 0) throw std::invalid_argument("No template file given");	
+	if (datafileTemplate.length() == 0)
+		throw std::invalid_argument("No template file given");	
 	filename = configDir + datafileTemplate;
 	printf("Reading header from template file %s\n", filename.c_str());
 	readHeader(filename.c_str());
@@ -520,9 +498,9 @@ void Mast::writeHeader(){
 	
 	// Replace the start time by the actual time
 	gettimeofday(&tRef, &tz);
-	t = gmtime( &tRef.tv_sec);
-	sprintf(time, "%02d:%02d:%02d", t->tm_hour, t->tm_min, t->tm_sec);
-	sprintf(date, "%02d.%02d.%4d", t->tm_mday, t->tm_mon+1, t->tm_year+1900);
+	tm_ptr = gmtime(&tRef.tv_sec);
+	sprintf(time, "%02d:%02d:%02d", tm_ptr->tm_hour, tm_ptr->tm_min, tm_ptr->tm_sec);
+	sprintf(date, "%02d.%02d.%4d", tm_ptr->tm_mday, tm_ptr->tm_mon+1, tm_ptr->tm_year+1900);
 	
 	replaceItem(&headerReadPtr, "Referenzzeit", time);
 	replaceItem(&headerReadPtr, "Referenzdatum", date);
@@ -537,7 +515,7 @@ void Mast::writeHeader(){
 void Mast::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 	float *local_sensorValue;
 	struct SPackedTime *time;
-	tm tm_zeit;
+	struct tm tm_zeit;
 
 	
 	if (sizeof(float) != 4) {
@@ -576,24 +554,38 @@ void Mast::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 
 
 void Mast::updateDataSet(unsigned char *buf){
-	struct timeval t;
+	struct timeval tv;
 	struct timezone tz;
-	unsigned int *tickCount;
+	struct SPackedTime *time;
 	float *local_sensorValue;
+	struct tm *tm_zeit;
+	int32_t *tickcount;
+	char puffer[32];
 	
 	
-	// Compile the data set for writing to the data file
+	tickcount = (int32_t *) buf;
+	local_sensorValue = (float *) (buf + 4);
+	time = (struct SPackedTime *) (buf + 4 + 4 * nSensors);
 	
-	gettimeofday(&t, &tz);
 	
-	tickCount = (unsigned int *) buf; 
-	local_sensorValue = (float *) buf + 4;
+	gettimeofday(&tv, &tz);
 	
-	if (debug > 1)
-		printf("Tickcount = %12d:  %12f %12f %12f %12f %12f   ",
-		       *tickCount,  local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3], local_sensorValue[4]);
+	tm_zeit = gmtime(&tv.tv_sec);
 	
-	// Replace
-	*tickCount = (t.tv_sec - tRef.tv_sec) *100 ; // 10ms units?!
-	if (debug > 1) printf(" --> %12d \n", *tickCount);
+	time->nTag = tm_zeit->tm_mday;
+	time->nMonat = tm_zeit->tm_mon + 1;
+	time->nJahr = tm_zeit->tm_year + 1900;
+	time->nStunde = tm_zeit->tm_hour;
+	time->nMinute = tm_zeit->tm_min;
+	time->nSekunde = tm_zeit->tm_sec;
+	
+	time->nHundertstel = tv.tv_usec / 10000;
+	
+	
+	if (debug > 1) {
+		printf("Tickcount: %12d Sensors: %f %f %f %f ",
+		       *tickcount,  local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3]);
+		strftime(puffer, 20, "%d.%m.%Y %T", tm_zeit);
+		printf("%s,%d\n", puffer, time->nHundertstel);
+	}
 }
