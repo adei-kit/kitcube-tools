@@ -10,10 +10,10 @@
         10	Pyrgeometer oben Temperatur max	EB1.PYG.T.TOP.001.MAX	T
         11	Pyrgeometer oben Temperatur min	EB1.PYG.T.TOP.001.MIN	T
         12	Pyrgeometer oben Temperatur sigma	EB1.PYG.T.TOP.001.STD	T
-        13	Pyrgeometer oben Strahlung mittel	EB1.PYR.R.SWUR.001.AVG	R
-        14	Pyrgeometer oben Strahlung max	EB1.PYR.R.SWUR.001.MAX	R
-        15	Pyrgeometer oben Strahlung min	EB1.PYR.R.SWUR.001.MIN	R
-        16	Pyrgeometer oben Strahlung sigma	EB1.PYR.R.SWUR.001.STD	R
+        13	Pyrgeometer oben Strahlung mittel	EB1.PYG.R.LWUP.001.AVG	R
+        14	Pyrgeometer oben Strahlung max	EB1.PYG.R.LWUP.001.MAX	R
+        15	Pyrgeometer oben Strahlung min	EB1.PYG.R.LWUP.001.MIN	R
+        16	Pyrgeometer oben Strahlung sigma	EB1.PYG.R.LWUP.001.STD	R
         17	Sisomop Signal mittel	EB1.SISOMOP.E.SOIL.001.AVG	E
         18	Sisomop Signal max	EB1.SISOMOP.E.SOIL.001.MAX	E
         19	Sisomop Signal min	EB1.SISOMOP.E.SOIL.001.MIN	E
@@ -30,14 +30,14 @@
         30	Luftdruck max	EB1.SET.P.SUR.001.MAX	PA
         31	Luftdruck min	EB1.SET.P.SUR.001.MIN	PA
         32	Luftdruck sigma	EB1.SET.P.SUR.001.STD	PA
-        33	Globalstrahlung mittel	EB1.PYG.R.LWDP.001.AVG	R
-        34	Globalstrahlung max	EB1.PYG.R.LWDP.001.MAX	R
-        35	Globalstrahlung min	EB1.PYG.R.LWDP.001.MIN	R
-        36	Globalstrahlung sigma	EB1.PYG.R.LWDP.001.STD	R
-        37	Reflexstrahlung mittel	EB1.PYG.R.LWUP.001.AVG	R
-        38	Reflexstrahlung max	EB1.PYG.R.LWUP.001.MAX	R
-        39	Reflexstrahlung min	EB1.PYG.R.LWUP.001.MIN	R
-        40	Reflexstrahlung sigma	EB1.PYG.R.LWUP.001.STD	R
+        33	Globalstrahlung mittel	EB1.PYR.R.SWDR.001.AVG	R
+        34	Globalstrahlung max	EB1.PYR.R.SWDR.001.MAX	R
+        35	Globalstrahlung min	EB1.PYR.R.SWDR.001.MIN	R
+        36	Globalstrahlung sigma	EB1.PYR.R.SWDR.001.STD	R
+        37	Reflexstrahlung mittel	EB1.PYR.R.SWUR.001.AVG	R
+        38	Reflexstrahlung max	EB1.PYR.R.SWUR.001.MAX	R
+        39	Reflexstrahlung min	EB1.PYR.R.SWUR.001.MIN	R
+        40	Reflexstrahlung sigma	EB1.PYR.R.SWUR.001.STD	R
         41	heatflux1 mittel	EB1.SHF.F.SHF.001.AVG	R
         42	heatflux1 max	EB1.SHF.F.SHF.001.MAX	R
         43	heatflux1 min	EB1.SHF.F.SHF.001.MIN	R
@@ -74,10 +74,10 @@
         74	Wippe Summe (abgeleitet)	EB1.WIP.N.N.001.RATE	NF
         75	reserviert	EB1.WIP.N.N.002.RES	N
         76	reserviert	EB1.WIP.N.N.003.RES	N
-        77	Pyrgeometer unten Strahlung mittel	EB1.PYR.R.SWDR.001.AVG	R
-        78	Pyrgeometer unten Strahlung max	EB1.PYR.R.SWDR.001.MAX	R
-        79	Pyrgeometer unten Strahlung min	EB1.PYR.R.SWDR.001.MIN	R
-        80	Pyrgeometer unten Strahlung sigma	EB1.PYR.R.SWDR.001.STD	R
+        77	Pyrgeometer unten Strahlung mittel	EB1.PYG.R.LWDP.001.AVG	R
+        78	Pyrgeometer unten Strahlung max	EB1.PYG.R.LWDP.001.MAX	R
+        79	Pyrgeometer unten Strahlung min	EB1.PYG.R.LWDP.001.MIN	R
+        80	Pyrgeometer unten Strahlung sigma	EB1.PYG.R.LWDP.001.STD	R
         81	Pyrgeometer unten Temperatur mittel	EB1.PYG.T.BOT.001.AVG	T
         82	Pyrgeometer unten Temperatur max	EB1.PYG.T.BOT.001.MAX	T
         83	Pyrgeometer unten Temperatur min	EB1.PYG.T.BOT.001.MIN	T
