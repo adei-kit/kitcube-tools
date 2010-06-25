@@ -108,7 +108,8 @@ void DAQBinaryDevice::writeData(){
 	std::string filename;
 	
 	
-	if (debug > 1) printf("_____DAQBinaryDevice::writeData()_____\n");
+	if (debug >= 1)
+		printf("_____DAQBinaryDevice::writeData()_____\n");
 	
 	if (sensorGroup == "nc"){
 		// Analyse time stamp, if new day a new file needs to copied
@@ -116,7 +117,8 @@ void DAQBinaryDevice::writeData(){
 			openNewFile();
 		}
 	} else {
-		if (fd_data <= 0) return;
+		if (fd_data <= 0)
+			return;
 		
 		// Read header to get the reference time of this file !!!
 		//
@@ -126,8 +128,8 @@ void DAQBinaryDevice::writeData(){
 		//
 		
 		// Allocate memory for one data set
-		len = this->lenDataSet;    // (4 + nSensors * sizeof(float) + 8);
-		lenHeader = this->lenHeader; // 0x10000; // Length of the header data
+		len = this->lenDataSet;
+		lenHeader = this->lenHeader;
 		buf = new unsigned char  [len];
 		
 		// Open template file 
@@ -141,14 +143,15 @@ void DAQBinaryDevice::writeData(){
 			nTemplate = 0; // Reset template counter and try again
 			lseek(fd_templ, lenHeader + len * nTemplate, SEEK_SET); // Go to the required data set
 			n = read(fd_templ, buf, len);
-			if (n< len) {
+			if (n < len) {
 				printf("Error: No data set found in template\n");
 			}
 		}
 		close(fd_templ);
 		
 		// Compile the data set for writing to the data file
-		if (debug > 1) printf("Received %4d bytes\n", n);
+		if (debug >= 1)
+			printf("Received %4d bytes\n", n);
 		
 		// Replace time stamp
 		updateDataSet(buf);

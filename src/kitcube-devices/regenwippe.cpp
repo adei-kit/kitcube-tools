@@ -155,7 +155,8 @@ void regenwippe::copyRemoteData(){
 	std::string output, data_files_wildcard;
 	
 	
-	if (debug > 2) printf("_____regenwippe::copyRemoteData()_____\n");
+	if (debug > 2)
+		printf("_____regenwippe::copyRemoteData()_____\n");
 	
 	createDirectories((archiveDir + getDataDir()).c_str());
 	
@@ -178,10 +179,10 @@ void regenwippe::copyRemoteData(){
 	data_files_wildcard.replace(pos, 7, "*");
 	
 	sprintf(line, "rsync -avz %s --include='*/' --include='%s' --exclude='*' %s%s  %s%s %s",
-			rsyncArgs.c_str(), data_files_wildcard.c_str(),
-			remoteDir.c_str(), getDataDir(),
-			archiveDir.c_str(), getDataDir(), output.c_str());
-	if (debug > 2) printf("%s\n", line);
+		rsyncArgs.c_str(), data_files_wildcard.c_str(), remoteDir.c_str(), getDataDir(),
+		archiveDir.c_str(), getDataDir(), output.c_str());
+	if (debug > 2)
+		printf("%s\n", line);
 	
 	gettimeofday(&t0, &tz);
 	err = system(line);
@@ -192,7 +193,8 @@ void regenwippe::copyRemoteData(){
 		//throw std::invalid_argument("Synchronisation error (rsync)");
 	}
 	
-	if (debug > 2) printf("Rsync duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+	if (debug > 2)
+		printf("Rsync duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 }
 
 
