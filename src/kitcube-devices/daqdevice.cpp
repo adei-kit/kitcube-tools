@@ -810,15 +810,15 @@ void DAQDevice::openDatabase(){
 		std::string cmd = "CREATE TABLE `";
 		cmd += dataTableName;
 		cmd += "` ( `id` int(12) auto_increment, ";
-		cmd += "    `sec` int(12)  default '0', ";
-		cmd += "    `usec` int(10)  default '0', ";
+		//cmd += "    `sec` int(12)  default '0', ";
+		cmd += "    `usec` bigint default '0', ";
 		for (i = 0; i < nSensors; i++)
 			if (sensor[i].type == "profile") {
 				cmd += "`" + sensor[i].name + "` TEXT, ";
 			} else {
 				cmd += "`" + sensor[i].name + "` float(10), ";
 			}
-		cmd += "PRIMARY KEY (`id`), INDEX(`sec`) ) TYPE=MyISAM";
+		cmd += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=MyISAM";
 		
 		//printf("SQL: %s\n", cmd.c_str());
 		
@@ -1002,14 +1002,14 @@ void DAQDevice::storeSensorData(){
 		//printf("Write record to database\n");
 		
 		sql = "INSERT INTO `";
-		sql += dataTableName + "` (`sec`,`usec`";
+		sql += dataTableName + "` (`usec`";
 		for (i=0; i<nSensors; i++){
 			sql += ",`";
 			sql += sensor[i].name;
 			sql += "`";
 		}
 		sql +=") VALUES (";
-		sprintf(sData, "%ld, %ld", tData.tv_sec, tData.tv_usec);
+		sprintf(sData, "%ld", tData.tv_sec * 1000000 + tData.tv_usec);
 		sql += sData;
 		for (i = 0; i < nSensors; i++) {
 			

@@ -639,14 +639,14 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			//printf("Write record to database\n");
 			for (int i = 0; i < no_vals; i++) {
 				sql = "INSERT INTO `";
-				sql += dataTableName + "` (`sec`,`usec`";
+				sql += dataTableName + "` (`usec`";
 				for (int j = 0; j < nSensors; j++) {
 					sql += ",`";
 					sql += sensor[j].name;
 					sql += "`";
 				}
 				sql += ") VALUES (";
-				sprintf(sData, "%ld, %ld", time_stamp_data[i].tv_sec, time_stamp_data[i].tv_usec);
+				sprintf(sData, "%ld", time_stamp_data[i].tv_sec * 1000000 + time_stamp_data[i].tv_usec);
 				sql += sData;
 				for (int j = 0; j < (nSensors - 1); j++) {
 					sprintf(sData, "%f", sensor_values[j][i]);

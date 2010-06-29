@@ -527,7 +527,7 @@ void Norbert::readData(const char *dir, const char *filename){
 				//printf("Write record to database\n");
 
 				sql = "INSERT INTO `";
-				sql += dataTableName + "` (`sec`,`usec`";
+				sql += dataTableName + "` (`usec`";
 				for (i = 0; i < nSensors; i++) {
 					if (local_sensorValue[i] != noData) {
 						sql += ",`";
@@ -536,7 +536,7 @@ void Norbert::readData(const char *dir, const char *filename){
 					}
 				}
 				sql +=") VALUES (";
-				sprintf(sData, "%ld, %ld", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
+				sprintf(sData, "%ld", l_timestamp_data.tv_sec * 1000000 + l_timestamp_data.tv_usec);
 				sql += sData;
 				for (i = 0; i < nSensors; i++) {
 					if (local_sensorValue[i] != noData) {
