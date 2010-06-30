@@ -11,7 +11,7 @@
 
 
 regenwippe::regenwippe(){
-	
+	sensor_value_old = 0;
 }
 
 
@@ -30,7 +30,7 @@ void regenwippe::readHeader(const char *filename){
 	profile_length = 0;	// no profile, scalar data
 	
 	// List of sensors
-	nSensors = 2;
+	nSensors = 1;
 	sensor = new struct sensorType [nSensors];
 	
 	// set default value for height
@@ -38,11 +38,8 @@ void regenwippe::readHeader(const char *filename){
 		sensor[i].height = 0;
 	}
 	
-	sensor[0].comment = "Counts";
+	sensor[0].comment = "Rain amount";
 	sensor[0].data_format = "<scalar>";
-	
-	sensor[1].comment = "Rain intensity";
-	sensor[1].data_format = "<scalar>";
 	
 	if (debug >= 1) {
 		for (int i = 0; i < nSensors; i++) {
@@ -65,6 +62,7 @@ void regenwippe::setConfigDefaults(){
 void regenwippe::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 	struct tm timestamp;
 	char* puffer;
+	int sensor_value_new;
 	
 	
 	// TODO/FIXME: are data timestamps in UTC or local time?
@@ -77,10 +75,17 @@ void regenwippe::parseData(char *line, struct timeval *l_tData, float *sensorVal
 	}
 	
 	// read sensor values
-	sscanf(puffer, "%f", &sensorValue[0]);
+	sscanf(puffer, "%d", &sensor_value_new);
+	if (sensor_value_new < sensor_value_old) {	// overflow
+		sensorValue[0] = 999999;
+	} else {
+		sensorValue[0] = (float)(sensor_value_new - sensor_value_old) * 0.2;
+	}
 	
 	// get seconds since the Epoch
 	l_tData->tv_sec = timegm(&timestamp);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
+	
+	sensor_value_old = sensor_value_new;
 }
 
 

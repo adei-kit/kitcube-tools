@@ -39,7 +39,7 @@ public:
 	unsigned int getSensorGroup();
 
 private:
-
+	int sensor_value_old;
 
 };
 
