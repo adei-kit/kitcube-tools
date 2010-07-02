@@ -240,12 +240,12 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 		
 	// convert all timestamps into timeval structure
 	struct timeval* time_stamp_data;
-	time_stamp_data = new struct timeval[no_vals];
+/*	time_stamp_data = new struct timeval[no_vals];
 	for (int i = 0; i < no_vals; i++) {
 		time_stamp_data[i].tv_sec = (int)time_stamps[i];
 		time_stamp_data[i].tv_usec = (int)((time_stamps[i] - (double)time_stamp_data[i].tv_sec) * 1000000.);	// TODO: maybe use floor() here
 	}
-	
+*/	
 	
 	// write data to DB
 #ifdef USE_MYSQL
@@ -261,19 +261,19 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 			sql += "`";
 		}
 		sql += ") VALUES (";
-		sprintf(sData, "%ld", time_stamp_data[i].tv_sec * 1000000 + time_stamp_data[i].tv_usec);
+//		sprintf(sData, "%ld", time_stamp_data[i].tv_sec * 1000000 + time_stamp_data[i].tv_usec);
 		sql += sData;
 		for (int j = 0; j < (nSensors - 1); j++) {
-			sprintf(sData, "%f", sensor_values[j][i]);
+//			sprintf(sData, "%f", sensor_values[j][i]);
 			sql += ",";
 			sql += sData;
 		}
 		sql += ",'";
 		// create profile data here
-		for (int k = 0; k < dimensions[1]; k++) {
+/*		for (int k = 0; k < dimensions[1]; k++) {
 			sprintf(sData, "%f, ", values_2d[(i * dimensions[1]) + k]);
 			sql += sData;
-		}
+		}*/
 		sql += "')";
 		
 		//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
@@ -287,7 +287,7 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 			// If this operation fails do not proceed in the file?!
 			printf("Error: Unable to write data to database\n");
 			throw std::invalid_argument("Writing data failed");
-			break;
+//			break;
 		}
 		
 		gettimeofday(&t1, &tz);

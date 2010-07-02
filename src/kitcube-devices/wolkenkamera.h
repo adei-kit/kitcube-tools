@@ -47,8 +47,6 @@ public:
 	
 	void readData(const char *dir, const char *filename);
 	
-	void parseData(char *line, struct timeval *l_tData, float * sensorValue);
-	
 	/** Replace time stamp in the data set by the current time */
 	void updateDataSet(unsigned char *buf);
 	
