@@ -32,7 +32,7 @@ dbPassword = cube
 rsyncArgs = --append
  
 [Axis]
-axis = DA DC DN E FC FH FM FV GI H KD KH KM KMS LA MA MR MS N NF NO PA QR R T TA V VD X XR Z
+axis = DA DC DN E FC FH FM FV GI H KD KH KM KMS LA MA MR MS N NE NF NO PA QR R T TA V VD X XR Z
 DA_name = Density_(Air)
 DA_unit = kg/m^3
 DC_name = Density_(CO2)
@@ -71,6 +71,8 @@ MS_name = Specific_humidity
 MS_unit = g/kg
 N_name = Percipitation
 N_unit = mm
+NE_name = Percipitation_rate
+NE_unit = mm/s
 NF_name = Percipitation_rate
 NF_unit = mm/h
 NO_name = No_Unit
@@ -114,60 +116,110 @@ Z_unit = dB
 ;
 
 
-[Mast01]
-moduleType = Mast
-moduleNumber = 1
-datafileTemplate = M12_01.DAR.template
+; Energie Bilanz Mast 1
 
-
-[Mast01-mean]
-moduleType = Mast
-moduleNumber = 11
-moduleName = T01
-moduleComment = Turbulence_station_1
-datafileTemplate = M12_01.DAR.template
-sensorList = M01_01.DAR.sensors
-
-
-
-[Mast11-mean]
-moduleType = Mast
-moduleNumber = 11
+; Sampling rate 20Hz
+[Mast11-das]
 moduleName = EB1
+moduleNumber = 11
+moduleType = Mast
 moduleComment = Energy_balance_station_1
-datafileTemplate = M12_01.DAR.template
-sensorList = M01_01.DAR.sensors
+sensorGroup = DAS
+datafileMask = M11_<index>.DAS
+sensorList = EB1.DAS.sensors
+datafileTemplate = M11_01.DAS.template
+samplingTime = 0.05 sec
+remoteDir = pc-eb1:/cygdrive/d
 
-
-; Sampling rate 20Hz 
-[Mast12-fast]
-moduleType = Mast
 ; Sampling rate 1Hz
-[Mast12-slow]
+[Mast11-dal]
+moduleName = EB1
+moduleNumber = 11
 moduleType = Mast
-
+moduleComment = Energy_balance_station_1
+sensorGroup = DAL
+datafileMask = M11_<index>.DAL
+sensorList = EB1.DAL.sensors
+datafileTemplate = M11_01.DAL.template
+samplingTime = 1 sec
+remoteDir = pc-eb1:/cygdrive/d
 
 ; Mean data of 10min intervals
-[Mast12-mean] ; --> moduleName !!!
+[Mast11-dar]
+moduleName = EB1
+moduleNumber = 11
 moduleType = Mast
-moduleNumber = 12
-moduleName = EB2
-moduleComment = Energy_balance_station_2
+moduleComment = Energy_balance_station_1
 sensorGroup = DAR
-sensorList = M01_01.DAR.sensors
-datafileTemplate = M12_01.DAR.template 
-;datafileTemplate = Mast-Output
-
+datafileMask = M11_<index>.DAR
+sensorList = EB1.DAR.sensors
+datafileTemplate = M11_01.DAR.template
+samplingTime = 10 min
+remoteDir = pc-eb1:/cygdrive/d
 
 ; Caclulated values also in a 10 min interval
-[Mast12-calc]
+[Mast11-dax]
+moduleName = EB1
+moduleNumber = 11
 moduleType = Mast
-moduleNumber = 12
+moduleComment = Energy_balance_station_1
+sensorGroup = DAX
+datafileMask = M11_<index>.DAX
+sensorList = EB1.DAX.sensors
+datafileTemplate = M11_01.DAX.template
+samplingTime = 10 min
+remoteDir = pc-eb1:/cygdrive/d/
+
+
+; Energie Bilanz Mast 2
+
+; Sampling rate 20Hz
+[Mast12-das]
 moduleName = EB2
+moduleNumber = 12
+moduleType = Mast
+moduleComment = Energy_balance_station_2
+sensorGroup = DAS
+datafileMask = M12_<index>.DAS
+sensorList = EB2.DAS.sensors
+datafileTemplate = M12_01.DAS.template
+samplingTime = 0.05 sec
+
+; Sampling rate 1Hz
+[Mast12-dal]
+moduleName = EB2
+moduleNumber = 12
+moduleType = Mast
+moduleComment = Energy_balance_station_2
+sensorGroup = DAL
+datafileMask = M12_<index>.DAL
+sensorList = EB2.DAL.sensors
+datafileTemplate = M12_01.DAL.template
+samplingTime = 1 sec
+
+; Mean data of 10min intervals
+[Mast12-dar]
+moduleName = EB2
+moduleNumber = 12
+moduleType = Mast
+moduleComment = Energy_balance_station_2
+sensorGroup = DAR
+datafileMask = M12_<index>.DAR
+sensorList = EB2.DAR.sensors
+datafileTemplate = M12_01.DAR.template
+samplingTime = 10 min
+
+; Caclulated values also in a 10 min interval
+[Mast12-dax]
+moduleName = EB2
+moduleNumber = 12
+moduleType = Mast
 moduleComment = Energy_balance_station_2
 sensorGroup = DAX
-sensorList = M01_01.DAX.sensors
+datafileMask = M12_<index>.DAX
+sensorList = EB2.DAX.sensors
 datafileTemplate = M12_01.DAX.template
+samplingTime = 10 min
 
 
 [Ceilometer]
@@ -188,8 +240,8 @@ moduleName = Ceilometer
 moduleComment = Ceilometer
 sensorGroup = nc
 sensorList = ceilometer.nc.sensors
-;datafileTemplate = 20090625.chm.template
-datafileMask = <index>_FZK_Messwiese_16.nc
+datafileTemplate = 20090625_FZK_Messwiese_16.nc
+datafileMask = 20<index>_FZK_Messwiese_16.nc
 samplingTime = 1 min
 
 [Ceilometer-dat]
@@ -235,7 +287,7 @@ moduleComment = Distrometer
 sensorGroup = rd
 sensorList = jwd.rd.sensors
 datafileTemplate = rd090826.template
-datafileMask = rd<index>
+datafileMask = rd<index>s
 samplingTime = 1 min
 
 [Parsivel]
@@ -269,4 +321,26 @@ sensorGroup = dat
 sensorList = mrr.dat.sensors
 datafileTemplate = p090826.dat.template
 datafileMask = p<index>.dat
+samplingTime = 1 min
+
+[Regenwippe]
+moduleName = Regenwippe
+moduleNumber = 40
+moduleType = Regenwippe
+moduleComment = Regenwippe_comment
+sensorGroup = dat
+sensorList = regenwippe.dat.sensors
+datafileTemplate = w20090826.dat.template
+datafileMask = w20<index>.dat
+samplingTime = 1 min
+
+[Wolkenkamera]
+moduleName = Wolkenkamera
+moduleNumber = 45
+moduleType = Wolkenkamera
+moduleComment = Wolkenkamera_comment
+sensorGroup = jpg
+sensorList = wolkenkamera.jpg.sensors
+datafileTemplate = 200908261200.jpg.template
+datafileMask = 20<index>.jpg
 samplingTime = 1 min
