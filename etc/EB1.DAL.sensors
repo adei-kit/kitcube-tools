@@ -1,20 +1,18 @@
-         1	Pyrgeometer oben Temperatur	
-         2	Pyrgeometer oben Strahlung	
-         3	Sisomop Signal	
-         4	Tropfer	
-         5	Sisomop Steuer	
-         6	Luftdruck	
-         7	Globalstrahlung	
-         8	Reflexstrahlung	
-         9	heatflux1	
-        10	heatflux2	
-        11	heatflux3	
-        12	Oberfl-Temp	
-        13	Temp-hmp	
-        14	Feuchte-hmp	
-        15	Inklins	
-        16	Inkliow	
-        17	Wippe	
-        18	Pyrgeometer unten Strahlung	
-        19	Pyrgeometer unten Temperatur	
-        20	Innentemperatur	
+         1	Strahlung	EB1.PYG.R.LWDP.001.MOM	R
+         2	Strahlung	EB1.PYG.R.LWUP.001.MOM	R
+         3	Druck	EB1.SET.P.SUR.001.MOM	PA
+         4	Temperatur	EB1.PYG.T.TOP.001.MOM	T
+         5	Temperatur	EB1.PYG.T.BOT.001.MOM	T
+         6	Tropf	EB1.OMB.N.N.001.MOM	N
+         7	Strahlung	EB1.PYR.R.SWDR.001.MOM	R
+         8	Temperatur	EB1.HMP.T.AIR.001.MOM	T
+         9	Neigung	EB1.INK.G.INKS.001.MOM	GI
+        10	Strahlung	EB1.SHF.F.SHF.001.MOM	R
+        11	Strahlung	EB1.PYR.R.SWUR.001.MOM	R
+        12	Feuchte?	EB1.HMP.M.RH.001.MOM	MR
+        13	Neigung	EB1.INK.G.INKW.001.MOM	GI
+        14	Strahlung	EB1.SHF.F.SHF.002.MOM	R
+        15	Temperatur	EB1.KT.T.SUR.001.MOM	T
+        16	Strahlung	EB1.SHF.F.SHF.003.MOM	R
+        17	Wippe	EB1.OMB.N.N.002.MOM	N
+        18	Innentemperatur	EB1.PT.T.BOX.001.MOM	T

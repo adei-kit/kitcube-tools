@@ -2,103 +2,95 @@
          2	Licor H2O max	EB2.LICOR.M.AH.001.MAX	MA
          3	Licor H2O min	EB2.LICOR.M.AH.001.MIN	MA
          4	Licor H2O sigma	EB2.LICOR.M.AH.001.STD	MA
-         5	Licor CO2 mittel	EB2.LICOR.D.CD.001.AVG	DC
-         6	Licor CO2 max	EB2.LICOR.D.CD.001.MAX	DC
-         7	Licor CO2 min	EB2.LICOR.D.CD.001.MIN	DC
-         8	Licor CO2 sigma	EB2.LICOR.D.CD.001.STD	DC
-         9	Pyrgeometer oben Temperatur mittel	EB2.PYG.T.TOP.001.AVG	T
-        10	Pyrgeometer oben Temperatur max	EB2.PYG.T.TOP.001.MAX	T
-        11	Pyrgeometer oben Temperatur min	EB2.PYG.T.TOP.001.MIN	T
-        12	Pyrgeometer oben Temperatur sigma	EB2.PYG.T.TOP.001.STD	T
-        13	Pyrgeometer oben Strahlung mittel	EB2.PYG.R.LWUP.001.AVG	R
-        14	Pyrgeometer oben Strahlung max	EB2.PYG.R.LWUP.001.MAX	R
-        15	Pyrgeometer oben Strahlung min	EB2.PYG.R.LWUP.001.MIN	R
-        16	Pyrgeometer oben Strahlung sigma	EB2.PYG.R.LWUP.001.STD	R
-        17	Sisomop Signal mittel	EB2.SISOMOP.E.SOIL.001.AVG	E
-        18	Sisomop Signal max	EB2.SISOMOP.E.SOIL.001.MAX	E
-        19	Sisomop Signal min	EB2.SISOMOP.E.SOIL.001.MIN	E
-        20	Sisomop Signal sigma	EB2.SISOMOP.E.SOIL.001.STD	E
-        21	Tropfer Summe pro MI	EB2.OMB.N.N.001.SUM	N
-        22	Tropfer Summe (abgeleitet)	EB2.OMB.N.N.001.RATE	NF
-        23	reserviert	EB2.OMB.N.N.002.RES	N
-        24	reserviert	EB2.OMB.N.N.003.RES	N
-        25	Sisomop Steuer mittel	EB2.SISOMOP.E.SOIL.002.AVG	E
-        26	Sisomop Steuer max	EB2.SISOMOP.E.SOIL.002.MAX	E
-        27	Sisomop Steuer min	EB2.SISOMOP.E.SOIL.002.MIN	E
-        28	Sisomop Steuer sigma	EB2.SISOMOP.E.SOIL.002.STD	E
-        29	Luftdruck mittel	EB2.SET.P.SUR.001.AVG	PA
-        30	Luftdruck max	EB2.SET.P.SUR.001.MAX	PA
-        31	Luftdruck min	EB2.SET.P.SUR.001.MIN	PA
-        32	Luftdruck sigma	EB2.SET.P.SUR.001.STD	PA
+         5	Pyrgeometer unten Strahlung mittel	EB2.PYG.R.LWDP.001.AVG	R
+         6	Pyrgeometer unten Strahlung max	EB2.PYG.R.LWDP.001.MAX	R
+         7	Pyrgeometer unten Strahlung min	EB2.PYG.R.LWDP.001.MIN	R
+         8	Pyrgeometer unten Strahlung sigma	EB2.PYG.R.LWDP.001.STD	R
+         9	Pyrgeometer oben Strahlung mittel	EB2.PYG.R.LWUP.001.AVG	R
+        10	Pyrgeometer oben Strahlung max	EB2.PYG.R.LWUP.001.MAX	R
+        11	Pyrgeometer oben Strahlung min	EB2.PYG.R.LWUP.001.MIN	R
+        12	Pyrgeometer oben Strahlung sigma	EB2.PYG.R.LWUP.001.STD	R
+        13	Luftdruck mittel	EB2.SET.P.SUR.001.AVG	PA
+        14	Luftdruck max	EB2.SET.P.SUR.001.MAX	PA
+        15	Luftdruck min	EB2.SET.P.SUR.001.MIN	PA
+        16	Luftdruck sigma	EB2.SET.P.SUR.001.STD	PA
+        17	Licor CO2 mittel	EB2.LICOR.D.CD.001.AVG	DC
+        18	Licor CO2 max	EB2.LICOR.D.CD.001.MAX	DC
+        19	Licor CO2 min	EB2.LICOR.D.CD.001.MIN	DC
+        20	Licor CO2 sigma	EB2.LICOR.D.CD.001.STD	DC
+        21	Pyrgeometer oben Temperatur mittel	EB2.PYG.T.TOP.001.AVG	T
+        22	Pyrgeometer oben Temperatur max	EB2.PYG.T.TOP.001.MAX	T
+        23	Pyrgeometer oben Temperatur min	EB2.PYG.T.TOP.001.MIN	T
+        24	Pyrgeometer oben Temperatur sigma	EB2.PYG.T.TOP.001.STD	T
+        25	Pyrgeometer unten Temperatur mittel	EB2.PYG.T.BOT.001.AVG	T
+        26	Pyrgeometer unten Temperatur max	EB2.PYG.T.BOT.001.MAX	T
+        27	Pyrgeometer unten Temperatur min	EB2.PYG.T.BOT.001.MIN	T
+        28	Pyrgeometer unten Temperatur sigma	EB2.PYG.T.BOT.001.STD	T
+        29	Tropfer Summe pro MI	EB2.OMB.N.N.001.SUM	N
+        30	Tropfer Summe (abgeleitet)	EB2.OMB.N.N.001.RATE	NF
+        31	reserviert	EB2.OMB.N.N.001.RES	N
+        32	reserviert	EB2.OMB.N.N.002.RES	N
         33	Globalstrahlung mittel	EB2.PYR.R.SWDR.001.AVG	R
         34	Globalstrahlung max	EB2.PYR.R.SWDR.001.MAX	R
         35	Globalstrahlung min	EB2.PYR.R.SWDR.001.MIN	R
         36	Globalstrahlung sigma	EB2.PYR.R.SWDR.001.STD	R
-        37	Reflexstrahlung mittel	EB2.PYR.R.SWUR.001.AVG	R
-        38	Reflexstrahlung max	EB2.PYR.R.SWUR.001.MAX	R
-        39	Reflexstrahlung min	EB2.PYR.R.SWUR.001.MIN	R
-        40	Reflexstrahlung sigma	EB2.PYR.R.SWUR.001.STD	R
-        41	heatflux1 mittel	EB2.SHF.F.SHF.001.AVG	R
-        42	heatflux1 max	EB2.SHF.F.SHF.001.MAX	R
-        43	heatflux1 min	EB2.SHF.F.SHF.001.MIN	R
-        44	heatflux1 sigma	EB2.SHF.F.SHF.001.STD	R
-        45	heatflux2 mittel	EB2.SHF.F.SHF.002.AVG	R
-        46	heatflux2 max	EB2.SHF.F.SHF.002.MAX	R
-        47	heatflux2 min	EB2.SHF.F.SHF.002.MIN	R
-        48	heatflux2 sigma	EB2.SHF.F.SHF.002.STD	R
-        49	heatflux3 mittel	EB2.SHF.F.SHF.003.AVG	R
-        50	heatflux3 max	EB2.SHF.F.SHF.003.MAX	R
-        51	heatflux3 min	EB2.SHF.F.SHF.003.MIN	R
-        52	heatflux3 sigma	EB2.SHF.F.SHF.003.STD	R
-        53	Oberfl-Temp mittel	EB2.KT.T.SUR.001.AVG	T
-        54	Oberfl-Temp max	EB2.KT.T.SUR.001.MAX	T
-        55	Oberfl-Temp min	EB2.KT.T.SUR.001.MIN	T
-        56	Oberfl-Temp sigma	EB2.KT.T.SUR.001.STD	T
-        57	Temp-hmp mittel	EB2.HMP.T.AIR.001.AVG	T
-        58	Temp-hmp max	EB2.HMP.T.AIR.001.MAX	T
-        59	Temp-hmp min	EB2.HMP.T.AIR.001.MIN	T
-        60	Temp-hmp sigma	EB2.HMP.T.AIR.001.STD	T
-        61	Feuchte-hmp mittel	EB2.HMP.M.RH.001.AVG	MR
-        62	Feuchte-hmp max	EB2.HMP.M.RH.001.MAX	MR
-        63	Feuchte-hmp min	EB2.HMP.M.RH.001.MIN	MR
-        64	Feuchte-hmp sigma	EB2.HMP.M.RH.001.STD	MR
-        65	Inklins mittel	EB2.INK.G.INKS.001.AVG	GI
-        66	Inklins max	EB2.INK.G.INKS.001.MAX	GI
-        67	Inklins min	EB2.INK.G.INKS.001.MIN	GI
-        68	Inklins sigma	EB2.INK.G.INKS.001.STD	GI
-        69	Inkliow mittel	EB2.INK.G.INKW.001.AVG	GI
-        70	Inkliow max	EB2.INK.G.INKW.001.MAX	GI
-        71	Inkliow min	EB2.INK.G.INKW.001.MIN	GI
-        72	Inkliow sigma	EB2.INK.G.INKW.001.STD	GI
-        73	Wippe Summe pro MI	EB2.WIP.N.N.001.SUM	N
-        74	Wippe Summe (abgeleitet)	EB2.WIP.N.N.001.RATE	NF
-        75	reserviert	EB2.WIP.N.N.002.RES	N
-        76	reserviert	EB2.WIP.N.N.003.RES	N
-        77	Pyrgeometer unten Strahlung mittel	EB2.PYG.R.LWDP.001.AVG	R
-        78	Pyrgeometer unten Strahlung max	EB2.PYG.R.LWDP.001.MAX	R
-        79	Pyrgeometer unten Strahlung min	EB2.PYG.R.LWDP.001.MIN	R
-        80	Pyrgeometer unten Strahlung sigma	EB2.PYG.R.LWDP.001.STD	R
-        81	Pyrgeometer unten Temperatur mittel	EB2.PYG.T.BOT.001.AVG	T
-        82	Pyrgeometer unten Temperatur max	EB2.PYG.T.BOT.001.MAX	T
-        83	Pyrgeometer unten Temperatur min	EB2.PYG.T.BOT.001.MIN	T
-        84	Pyrgeometer unten Temperatur sigma	EB2.PYG.T.BOT.001.STD	T
-        85	U-Wind mittel	EB2.SONIC.V.U.001.AVG	V
-        86	U-Wind max	EB2.SONIC.V.U.001.MAX	V
-        87	U-Wind min	EB2.SONIC.V.U.001.MIN	V
-        88	U-Wind sigma	EB2.SONIC.V.U.001.STD	V
-        89	V-Wind mittel	EB2.SONIC.V.V.001.AVG	V
-        90	V-Wind max	EB2.SONIC.V.V.001.MAX	V
-        91	V-Wind min	EB2.SONIC.V.V.001.MIN	V
-        92	V-Wind sigma	EB2.SONIC.V.V.001.STD	V
-        93	W-Wind mittel	EB2.SONIC.V.W.001.AVG	V
-        94	W-Wind max	EB2.SONIC.V.W.001.MAX	V
-        95	W-Wind min	EB2.SONIC.V.W.001.MIN	V
-        96	W-Wind sigma	EB2.SONIC.V.W.001.STD	V
-        97	T-Sonic mittel	EB2.SONIC.T.AIR.001.AVG	TA
-        98	T-Sonic max	EB2.SONIC.T.AIR.001.MAX	TA
-        99	T-Sonic min	EB2.SONIC.T.AIR.001.MIN	TA
-       100	T-Sonic sigma	EB2.SONIC.T.AIR.001.STD	TA
-       101	Innentemperatur mittel	EB2.PT.T.BOX.001.AVG	T
-       102	Innentemperatur max	EB2.PT.T.BOX.001.MAX	T
-       103	Innentemperatur min	EB2.PT.T.BOX.001.MIN	T
-       104	Innentemperatur sigma	EB2.PT.T.BOX.001.STD	T
+        37	Temp-hmp mittel	EB2.HMP.T.AIR.001.AVG	T
+        38	Temp-hmp max	EB2.HMP.T.AIR.001.MAX	T
+        39	Temp-hmp min	EB2.HMP.T.AIR.001.MIN	T
+        40	Temp-hmp sigma	EB2.HMP.T.AIR.001.STD	T
+        41	Inklins mittel	EB2.INK.G.INKS.001.AVG	GI
+        42	Inklins max	EB2.INK.G.INKS.001.MAX	GI
+        43	Inklins min	EB2.INK.G.INKS.001.MIN	GI
+        44	Inklins sigma	EB2.INK.G.INKS.001.STD	GI
+        45	heatflux1 mittel	EB2.SHF.F.SHF.001.AVG	R
+        46	heatflux1 max	EB2.SHF.F.SHF.001.MAX	R
+        47	heatflux1 min	EB2.SHF.F.SHF.001.MIN	R
+        48	heatflux1 sigma	EB2.SHF.F.SHF.001.STD	R
+        49	Reflexstrahlung mittel	EB2.PYR.R.SWUR.001.AVG	R
+        50	Reflexstrahlung max	EB2.PYR.R.SWUR.001.MAX	R
+        51	Reflexstrahlung min	EB2.PYR.R.SWUR.001.MIN	R
+        52	Reflexstrahlung sigma	EB2.PYR.R.SWUR.001.STD	R
+        53	Feuchte-hmp mittel	EB2.HMP.M.RH.001.AVG	MR
+        54	Feuchte-hmp max	EB2.HMP.M.RH.001.MAX	MR
+        55	Feuchte-hmp min	EB2.HMP.M.RH.001.MIN	MR
+        56	Feuchte-hmp sigma	EB2.HMP.M.RH.001.STD	MR
+        57	Inkliow mittel	EB2.INK.G.INKW.001.AVG	GI
+        58	Inkliow max	EB2.INK.G.INKW.001.MAX	GI
+        59	Inkliow min	EB2.INK.G.INKW.001.MIN	GI
+        60	Inkliow sigma	EB2.INK.G.INKW.001.STD	GI
+        61	heatflux2 mittel	EB2.SHF.F.SHF.002.AVG	R
+        62	heatflux2 max	EB2.SHF.F.SHF.002.MAX	R
+        63	heatflux2 min	EB2.SHF.F.SHF.002.MIN	R
+        64	heatflux2 sigma	EB2.SHF.F.SHF.002.STD	R
+        65	Oberfl-Temp mittel	EB2.KT.T.SUR.001.AVG	T
+        66	Oberfl-Temp max	EB2.KT.T.SUR.001.MAX	T
+        67	Oberfl-Temp min	EB2.KT.T.SUR.001.MIN	T
+        68	Oberfl-Temp sigma	EB2.KT.T.SUR.001.STD	T
+        69	heatflux3 mittel	EB2.SHF.F.SHF.003.AVG	R
+        70	heatflux3 max	EB2.SHF.F.SHF.003.MAX	R
+        71	heatflux3 min	EB2.SHF.F.SHF.003.MIN	R
+        72	heatflux3 sigma	EB2.SHF.F.SHF.003.STD	R
+        73	Wippe Summe pro MI	EB2.OMB.N.N.002.SUM	N
+        74	Wippe Summe (abgeleitet)	EB2.OMB.N.N.002.RATE	NF
+        75	reserviert	EB2.OMB.N.N.003.RES	N
+        76	reserviert	EB2.OMB.N.N.004.RES	N
+        77	U-Wind mittel	EB2.SONIC.V.U.001.AVG	V
+        78	U-Wind max	EB2.SONIC.V.U.001.MAX	V
+        79	U-Wind min	EB2.SONIC.V.U.001.MIN	V
+        80	U-Wind sigma	EB2.SONIC.V.U.001.STD	V
+        81	V-Wind mittel	EB2.SONIC.V.V.001.AVG	V
+        82	V-Wind max	EB2.SONIC.V.V.001.MAX	V
+        83	V-Wind min	EB2.SONIC.V.V.001.MIN	V
+        84	V-Wind sigma	EB2.SONIC.V.V.001.STD	V
+        85	W-Wind mittel	EB2.SONIC.V.W.001.AVG	V
+        86	W-Wind max	EB2.SONIC.V.W.001.MAX	V
+        87	W-Wind min	EB2.SONIC.V.W.001.MIN	V
+        88	W-Wind sigma	EB2.SONIC.V.W.001.STD	V
+        89	T-Sonic mittel	EB2.SONIC.T.AIR.001.AVG	TA
+        99	T-Sonic max	EB2.SONIC.T.AIR.001.MAX	TA
+        91	T-Sonic min	EB2.SONIC.T.AIR.001.MIN	TA
+        92	T-Sonic sigma	EB2.SONIC.T.AIR.001.STD	TA
+        93	Innentemperatur mittel	EB2.PT.T.BOX.001.AVG	T
+        94	Innentemperatur max	EB2.PT.T.BOX.001.MAX	T
+        95	Innentemperatur min	EB2.PT.T.BOX.001.MIN	T
+        96	Innentemperatur sigma	EB2.PT.T.BOX.001.STD	T
