@@ -1,6 +1,6 @@
-         1	EB2_LICOR_M_AH_001	EB2.LICOR.M.AH.001.MOM	MA
-         2	EB2_LICOR_D_CD_001	EB2.LICOR.D.CD.001.MOM	DC
-         3	ANEMO_WIND	EB2.SONIC.V.U.001.MOM	V
-         4	ANEMO_WIND	EB2.SONIC.V.V.001.MOM	V
-         5	ANEMO_WIND	EB2.SONIC.V.W.001.MOM	V
-         6	ANEMO_TEMP	EB2.SONIC.T.AIR.001.MOM	TA
+         1	absolute humidity	EB2.LICOR.M.AH.001.INST	MA
+         2	carbon dioxide concentration	EB2.LICOR.D.CD.001.INST	DC
+         3	wind speed east	EB2.SONIC.V.U.001.INST	V
+         4	wind speed north	EB2.SONIC.V.V.001.INST	V
+         5	windspeed vertical	EB2.SONIC.V.W.001.INST	V
+         6	virtual temperature	EB2.SONIC.T.VIR.001.INST	TA
