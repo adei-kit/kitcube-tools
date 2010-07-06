@@ -1,24 +1,18 @@
-         1	Windgeschwindigkeit	EB1.SONIC.V.WD.001.AVG	V
-         2	Windrichtung	EB1.SONIC.V.VHOR.001.AVG	VD
-         3	Kovarianz-uw	EB1.SONIC.F.CUW.001.AVG	FV
-         4	Kovarianz-vw	EB1.SONIC.F.CVW.001.AVG	FV
-         5	kinWaermestrom	EB1.SONIC.F.CWT.001.AVG	FH
-         6	Bodenwärmestrom	EB1.SHF.F.SHF.001.AVG	R
-         7	kinFeuchtestrom	EB1.LICOR.F.NEE.001.MAX	FM
-         8	EinstrahlungBerechnet	EB1.XXX.R.SWDR.001.AVG	R
-         9	AusstrahlungBerechnet	EB1.XXX.R.SWUR.001.AVG	R
-        10	Dampfdruck(HMP)	EB1.HMP.M.E.001.AVG	PA
-        11	spez.Feuchte(HMP)	EB1.HMP.M.SH.001.AVG	MS
-        12	Tvirt(HMP)	EB1.HMP.T.VIR.001.AVG	T
-        13	Luftdichte	EB1.HMP.D.AIR.001.AVG	DA
-        14	absoluteFeuchte(HMP)	EB1.HMP.M.AH.001.AVG	MA
-        15	fühlbarerWärmestrom	EB1.SONIC.F.HSUR.001.AVG	R
-        16	latenderWärmestrom	EB1.SONIC.F.LSUR.001.AVG	R
-        17	Taupunkt	EB1.DEW.T.D.001.AVG	T
-        18	Strahlungsbilanz	EB1.XXX.R.QSUR.001.AVG	R
-        19	Dampfdruck(Tau)	EB1.DEW.M.E.001.AVG	PA
-        20	absoluteFeuchte(Tau)	EB1.DEW.M.AH.001.AVG	MA
-        21	CO2 Fluss	EB1.LICOR.F.CDST.001.AVG	FC
-        22	PyrObenStrBerechnet	EB1.PYG.R.LWUR.001.AVG	R
-        23	PyrUntenStrBerechnet	EB1.PYG.R.LWDR.001.AVG	R
-        24	StrahlungsbilanzPyr	EB1.PYR.R.QSUR.001.AVG	R
+         1	wind speed	EB1.SONIC.V.VHOR.001.AVG	V
+         2	wind direction	EB1.SONIC.V.WD.001.AVG	VD
+         3	covariance east and vertical	EB1.SONIC.F.CUW.001.AVG	FV
+         4	covariance south and vertical	EB1.SONIC.F.CVW.001.AVG	FV
+         5	kinematic heat flux	EB1.SONIC.F.CWT.001.AVG	FH
+         6	total soil heat flux	EB1.SHF.F.SHF.000.AVG	R
+         7	kinematic moisture flux	EB1.LICOR.F.CWAH.001.AVG	FM
+         8	water vapour pressure	EB1.HMP.M.E.001.AVG	PA
+         9	specific humidity	EB1.HMP.M.SH.001.AVG	MS
+        10	virtual temperature	EB1.HMP.T.VIR.001.AVG	TA
+        11	air density	EB1.HMP.D.AIR.001.AVG	DA
+        12	absolute humidity	EB1.HMP.M.AH.001.AVG	MA
+        13	sensible heat flux	EB1.SONIC.F.HSUR.001.AVG	R
+        14	latent heat flux	EB1.SONIC.F.LSUR.001.AVG	R
+        15	carbon dioxide flux	EB1.LICOR.F.CD.001.AVG	FC
+        16	longwave incoming radiation flux	EB1.PYG.R.LWDR.001.AVG	R
+        17	longwave outgoing radiation flux	EB1.PYG.R.LWUR.001.AVG	R
+        18	net radiation	EB1.PYG.R.QSUR.001.AVG	R
