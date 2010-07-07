@@ -291,6 +291,8 @@ protected:
 	/** Argument for the rsync call to copy data from the modules to the archive */
 	std::string rsyncArgs;
 	
+	/** Flag to idenitfy the first run */
+	int initDone;
 	
 #ifdef USE_MYSQL	
 	MYSQL *db;

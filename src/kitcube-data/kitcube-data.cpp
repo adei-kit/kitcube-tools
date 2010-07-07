@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
 	namePtr = strrchr(argv[0],'/');
 	if (namePtr > 0) applicationName = namePtr+1;
 	else applicationName = argv[0];
-	applicationName = namePtr+1;
+
 	//printf("Running application %s\n", applicationName.c_str()); 
 	if (strcmp(applicationName.c_str(),"kitcube-data") != 0) {
 	  isLinkedApp = true;

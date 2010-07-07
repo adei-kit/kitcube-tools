@@ -59,6 +59,7 @@ Reader::Reader(): SimpleServer(READER_PORT){
 
 	rx = 0;
 	tx = 0;
+	diskspace = 0;
 	
 }
 
@@ -182,7 +183,7 @@ void Reader::runReadout(){
 	//tWait.tv_sec = 0;
 	//tWait.tv_usec = 250000;
 	tWait.tv_sec = tSampleFromInifile / 1000;
-	tWait.tv_usec = (tSampleFromInifile % 1000) * 1000;
+	tWait.tv_usec = (tSampleFromInifile % 1000) * 1000; 
 	
 	// Initialize the QD simulation
 	// Set sampling time
@@ -217,12 +218,15 @@ void Reader::runReadout(){
 	if (debug > 2) printf("______Starting system logging _______________________________\n"); 
 	log = new SysLog();
 	
-	log->setNData(5);
-	log->setConfig(0,"Reader cycle time");
-	log->setConfig(1,"Free disk space");
-	log->setConfig(2,"Percentage of free disk space");
-	log->setConfig(3,"Network received data");
-	log->setConfig(4,"Network send data");
+	log->setNData(8);
+	log->setConfig(0,"T scheduler");
+	log->setConfig(1,"T data transfer");
+	log->setConfig(2,"T data storage");
+	log->setConfig(3,"Free disk space (GB)");
+	log->setConfig(4,"Free disk space (%)");
+	log->setConfig(5,"Datarate stored");
+	log->setConfig(6,"Datarate received");
+	log->setConfig(7,"Datarate send");
 	log->setDebugLevel(debug);
 
 	log->readInifile(this->inifile.c_str(), "SysLog");	
@@ -233,14 +237,14 @@ void Reader::runReadout(){
 	if (debug) {
 		printf("\n");
 		printf("______Starting service for  %d  module(s)_______________________________\n", nModules);
-		printf("Sampling time     : %d ms\n", tSampleFromInifile);
+		printf("Sampling time      : %d ms\n", tSampleFromInifile);
 		
 		
 		for (i=0;i<nModules;i++){
-			printf("Module %2d         : %s,  type  %s\n", 
+			printf("Module %2d          : %s,  type  %s\n", 
 				   i+1, moduleName[i].c_str(), moduleType[i].c_str()); 
 		}
-		printf("Module %2d         : Performance module, type SysLog, %d items\n", 
+		printf("Module %2d          : Performance module, type SysLog, %d items\n", 
 			   nModules+1, log->getNSensors());
 	}
 	
@@ -267,7 +271,7 @@ void Reader::runReadout(){
     setPort(READER_PORT+dev[0]->getModuleNumber()*10+dev[0]->getSensorGroup());	
 	
 	if (debug){ 
-		printf("Server port       : %d (for remote monitoring)\n", 
+		printf("Server port        : %d (for remote monitoring)\n", 
 			   READER_PORT+dev[0]->getModuleNumber());
 		printf("\n");
 	}	
@@ -315,12 +319,21 @@ int Reader::handle_timeout(){
 	//procDuration t;  
 	//int iSample;
 	//struct timeval tWait;
-	struct timeval t0, t1;
+	struct timeval t0, t1, t2, t3, t4;
 	struct timezone tz;
     unsigned int nData;
 	unsigned int tCycle;
+	unsigned int tTransfer;
+	unsigned int tStorage;
+	long int tScheduler; 
 	
 	// TODO: Check timing
+	
+	//
+	// TODO: Check the timing -- at ipepdvadei there are sometimes to calls for the 
+	//       same sample time !!!
+	//
+	
 	// The goal is to read data in periodic intervals 
 	// The reference time is given by the run start time
 	//t.setStart();
@@ -329,7 +342,8 @@ int Reader::handle_timeout(){
   	
 	
 	// Analyse the timeing quality of the readout process
-	//analyseTiming(&t);
+	tScheduler = analyseTiming(&t0);
+	log->updateData(0, (float) tScheduler / 1000.); // ms
     
 	
 	// TODO: Read data / Simulate data
@@ -340,10 +354,15 @@ int Reader::handle_timeout(){
 	}
 	
 	nData = 0;
+	tTransfer = 0;
+	tStorage = 0;
 	try {	
 		
 		for (i=0;i<nModules;i++){
+			
+			gettimeofday(&t1, &tz);			
 			dev[i]->copyRemoteData();	
+			gettimeofday(&t2, &tz);
 			fflush(stderr);	
 
 			// List all new files?!
@@ -351,15 +370,25 @@ int Reader::handle_timeout(){
 			nData += dev[i]->getProcessedData();
 			
 			if (debug > 3) printf("Processed data %d Bytes\n", dev[i]->getProcessedData());
+			gettimeofday(&t3, &tz);
+
+			tTransfer += (t2.tv_sec - t1.tv_sec)*1000000 + (t2.tv_usec-t1.tv_usec);
+			tStorage += (t3.tv_sec - t2.tv_sec)*1000000 + (t3.tv_usec-t2.tv_usec);
 		}
-		
-		
-		gettimeofday(&t1, &tz);
-		tCycle = (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec);
+				
+		// Complete cycle time
+		gettimeofday(&t4, &tz);
+		tCycle = (t4.tv_sec - t0.tv_sec)*1000000 + (t4.tv_usec-t0.tv_usec);
 		if (debug > 1) {
-			printf("Processed data = %d Bytes, cycle duration %dus\n", nData, tCycle);
+			printf("______Performance______________________________________________\n");
+			printf("Processed data     : %4d Bytes                Cycle duration     : %6d us\n", 
+				   nData, tCycle);
+			printf("Scheduler          : %4ld us                   Data Trans./Stor.  : %6d / %6d us\n", 
+				   tScheduler, tTransfer, tStorage);
 		}
-		log->updateData(0, ((float) t1.tv_sec - t0.tv_sec) + ((float) t1.tv_usec-t0.tv_usec) / 1000000.); // Time
+		//log->updateData(0, (float) tCycle / 1000000.); // Sensor 0: Cycle time
+		log->updateData(1, (float) tTransfer / 1000.); //ms
+		log->updateData(2, (float) tStorage / 1000.); // ms
 		
 		
 		// Get free disk space
@@ -566,16 +595,16 @@ void Reader::executeCmd(int client, short cmd, unsigned int *arg, short n){
 
 // ========= periodically sampling Unit ============
 
-void Reader::analyseTiming(struct timeval *t){
+long int Reader::analyseTiming(struct timeval *t){
 
-  unsigned long long tPlan;
-  unsigned long long tNow;
-  unsigned long long tDiff;
+  unsigned long tPlan;
+  unsigned long tNow;
+  long tDiff;
  
 
-  tPlan = ((unsigned long long) tRef.tv_sec + lastIndex * tSample.tv_sec) * 1000000
-         + (unsigned long long) tRef.tv_usec + lastIndex * tSample.tv_usec;
-  tNow = (unsigned long long) t->tv_sec * 1000000 + (unsigned long long) t->tv_usec;
+  tPlan = ((unsigned long) tRef.tv_sec + lastIndex * tSample.tv_sec) * 1000000
+         + (unsigned long) tRef.tv_usec + lastIndex * tSample.tv_usec;
+  tNow = (unsigned long) t->tv_sec * 1000000 + (unsigned long) t->tv_usec;
   tDiff = tNow - tPlan;
   
   if (timingN == 0){
@@ -593,13 +622,13 @@ void Reader::analyseTiming(struct timeval *t){
 
 
   if (fout > 0){
-    unsigned long long buf; 
+    unsigned long buf; 
   
     buf = tRef.tv_sec;
-    if (fout) fprintf(fout, "%6d  | %ld.%06d \n", index, t->tv_sec, t->tv_usec);
+    if (debug >2) printf("%6d  | %ld.%06d \n", index, t->tv_sec, t->tv_usec);
   }
 
-
+  return(tDiff);
 }
 
 
@@ -609,11 +638,11 @@ void Reader::displayStatus(FILE *fout){
 
 
   fprintf(fout, "\n");
-  fprintf(fout,   "Server start     : %lds %dus\n", tRef.tv_sec, tRef.tv_usec);
+  fprintf(fout,   "Server start       : %ld s %d us\n", tRef.tv_sec, tRef.tv_usec);
   if (useTimeout){
-    fprintf(fout, "Sampling time    : %lds %dus\n", tSample.tv_sec, tSample.tv_usec);
-	fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
-	fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
+    fprintf(fout, "Sampling time      : %ld s %d us\n", tSample.tv_sec, tSample.tv_usec);
+	fprintf(fout, "Samples            : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
+	fprintf(fout, "Skipped            : %d last samples in a sequel\n", nSamplesSkipped );
 	
 	if (timingN > 0){
 	  double var;
@@ -644,11 +673,14 @@ void Reader::analyseDiskSpace(const char *dir){
 	// TODO:  How to handle the 64bit data types??? 
 	//        Change to 64bit version to be compatible...
 	struct statfs fs;
+	uint64_t diff_diskspace;
 	uint64_t diff_rx;
 	uint64_t diff_tx;
 
 	float rDiskFree;
+	float tSampleSec;
 	
+	tSampleSec = (float) tSample.tv_sec + (float) tSample.tv_usec / 1000000.;
 	
 	statfs(dir, &fs);
 	
@@ -663,13 +695,19 @@ void Reader::analyseDiskSpace(const char *dir){
 		printf("Free blocks   %12Ld %12.3f MByte %6.2f %s\n", fs.f_bfree, 
 			   (float) fs.f_bfree / 1024 / 1024 * fs.f_bsize,
 			   (float) fs.f_bfree / fs.f_blocks * 100, "%");
+		printf("Sampling time %f  / Disk space %lld +- %lld\n", tSampleSec,
+			   diskspace, diskspace - fs.f_bfree * fs.f_bsize);
 	}
 	
 	// Write data to the syslog structure	
-	rDiskFree = (float) fs.f_bfree / fs.f_blocks * 100;
+	diff_diskspace = diskspace - fs.f_bfree * fs.f_bsize;
+	diskspace = fs.f_bfree * fs.f_bsize;
 	
-	log->updateData(1, fs.f_bfree * fs.f_bsize);        // Bytes
-	log->updateData(2, (float) fs.f_bfree / fs.f_blocks * 100); // %
+	rDiskFree = (float) fs.f_bfree / fs.f_blocks * 100;	
+	
+	log->updateData(3, (float) diskspace / 1024 / 1024 / 1024 ); // GB
+	log->updateData(4, (float) rDiskFree ); // %
+	log->updateData(5, (float) diff_diskspace / tSampleSec / 1024 /1024 ); // MByte/sec
 	
 	
 #ifndef linux // DARWIN 	
@@ -784,11 +822,14 @@ void Reader::analyseDiskSpace(const char *dir){
 #endif	
 	
 	// Output
-	if ((nSamples > 1) &&(debug > 1)) printf("network rx = %Ld, tx = %Ld Bytes, free = %f %s\n", diff_rx,diff_tx, rDiskFree, "%");
+	if ((nSamples > 1) &&(debug > 1)) {
+		printf("Network rx / tx    : %6Ld / %6Ld Bytes     Free disk space    : %02.2f %s\n", 
+			   diff_rx,diff_tx, rDiskFree, "%");
+	}
 	
 	// Write data to the syslog structure
-	log->updateData(3, diff_rx);        // Bytes
-	log->updateData(4, diff_tx); // Bytes
+	log->updateData(6, (float) diff_rx / tSampleSec / 1024 / 1024); // MByte/sec
+	log->updateData(7, (float) diff_tx / tSampleSec / 1024 / 1024); // MByte/sec
 	
 }
 

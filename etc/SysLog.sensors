@@ -1,5 +1,8 @@
-         1	TSync	DAQ.SYSLOG.K.Sync.MOM		KD
-         2	Free disk space	DAQ.SYSLOG.Z.DiskFree.MOM	Z
-         3	Percentage of free disk space	DAQ.SYSLOG.ZR.DiskFree.MOM	ZR
-         4	Network received data	DAQ.SYSLOG.Z.NetReceived.MOM	Z
-         5	Network send data	DAQ.SYSLOG.Z.NetSend.MOM	Z
+         1	T scheduler	DAQ.Reader.K.TSCHED.001.AVG	KD
+         2	T data transfer	DAQ.Reader.K.TTRANS.001.AVG	KD
+         3	T data storage	DAQ.Reader.K.TSTORE.001.AVG	KD
+         4	Free disk space (GB)	DAQ.Reader.Z.DISKFREE.001.AVG	ZG
+         5	Free disk space (%)	DAQ.Reader.ZP.DISKFREE.001.AVG	ZP
+         6	Datarate stored	DAQ.Reader.ZR.STORE.001.AVG	ZR		
+         7	Datarate received	DAQ.Reader.ZR.RECV.001.AVG	ZR
+         8	Datarate send	DAQ.Reader.ZR.SEND.001.AVG	ZR

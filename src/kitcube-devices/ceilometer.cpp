@@ -500,14 +500,14 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	}
 #endif
 	
-	if (debug > 0) printf("_____Reading data_____________________\n");	
+	if (debug > 2) printf("_____Ceilometer::Reading data_____________________\n");	
 	
 	// Allocate memory for one data set
 	len = 237;
 	buf = new unsigned char [len];
 	sensorValue = new float [nSensors];
 		
-	if (debug > 1) printf("Open data file %s\n", filenameData.c_str());
+	if (debug > 2) printf("Open data file %s\n", filenameData.c_str());
 	fd = open(filenameData.c_str(), O_RDONLY);
 	
 	
@@ -518,7 +518,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
 	filenameMarker =line;
-	if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
+	if (debug > 2) printf("Get marker from %s\n", filenameMarker.c_str());
     fmark = fopen(filenameMarker.c_str(), "r");
     if (fmark > 0) {
 		fscanf(fmark, "%ld %ld %d %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
@@ -528,7 +528,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	if (lastPos == 0) lastPos = 0; // Move the the first data
 	
 	// Find the beginning of the new data
-	if (debug > 1) printf("LastPos: %ld\n", lastPos);
+	if (debug > 2) printf("LastPos: %ld\n", lastPos);
 	lseek(fd, lastPos, SEEK_SET);
 	
 	
@@ -575,17 +575,17 @@ void Ceilometer::readData(const char *dir, const char *filename){
 			
 			// Read data values
 			//printf("%s\n", buf);
-			if (debug > 1) printf("Sensors:");
+			if (debug > 3) printf("Sensors:");
 			for (j=0;j<nSensors; j++){
 			   sensorString = (char *) (buf + sensorPtr[j]);
 			   //buf[sensorPtr[1]-1] = 0;
 			   sensorValue[j] = noData;
 			   err = sscanf(sensorString, "%f", &sensorValue[j]);
 				
-			   if (debug > 1) printf("%5.0f ", sensorValue[j]);	
+			   if (debug > 3) printf("%5.0f ", sensorValue[j]);	
 			}
-			if (debug > 1) printf("\n");
-			//if (debug > 1) printf("Sensor %s = %.0f  (err=%d)\n",sensorString, sensorValue[0], err);
+			if (debug > 3) printf("\n");
+			//if (debug > 3) printf("Sensor %s = %.0f  (err=%d)\n",sensorString, sensorValue[0], err);
 	
 			
 #ifdef USE_MYSQL	
@@ -647,7 +647,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	else { fd_eof = false; }
 
 	if (debug > 1) printf("\n");
-	if (debug > 1) printf("Position of file %ld\n", lastPos);
+	if (debug > 2) printf("Position of file %ld\n", lastPos);
 	
 	
 	// Write the last valid time stamp / file position
@@ -682,6 +682,7 @@ void Ceilometer::updateDataSet(unsigned char *buf){
 	}
 	
 	// Compile the data set for writing to the data file
+	if (debug > 2) printf("______Ceilometer::updateDataSet()______________________\n");
 	if (debug > 2) printf("Line: %s", buf);
 	sprintf((char *) buf+12,"%02d.%02d.%02d;%02d:%02d", 
 			time->tm_mday, time->tm_mon+1, time->tm_year-100,
@@ -691,7 +692,7 @@ void Ceilometer::updateDataSet(unsigned char *buf){
 	buf[235]=';';
 	if (debug > 2) printf("Line: %s", buf);
 	
-	if (debug > 1) printf("%02d.%02d.%02d  %02d:%02d:%02d\n", 
+	if (debug > 2) printf("%02d.%02d.%02d  %02d:%02d:%02d\n", 
 						  time->tm_mday, time->tm_mon+1, time->tm_year-100,
 						  time->tm_hour, time->tm_min, time->tm_sec);
 	

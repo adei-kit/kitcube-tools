@@ -50,6 +50,8 @@ DAQDevice::DAQDevice(){
     sensorValue = 0;
 	processedData = 0; 
 	
+	initDone = 0;
+	
 #ifdef USE_MYSQL	
 	db = 0;
 #endif
@@ -58,19 +60,6 @@ DAQDevice::DAQDevice(){
 
 
 DAQDevice::~DAQDevice(){
-	FILE *fmark;
-	
-	// Save current position
-	if (fileIndex != 0) {
-		if (debug>2) printf("Closing data file, save file position in %s\n", filenameMarker.c_str());
-		fmark = fopen(filenameMarker.c_str(), "w");
-		if (fmark > 0) {
-			fprintf(fmark, "%ld\t%d\n", fileIndex, nLine);
-			fclose(fmark);
-		} else {
-			printf("Error writing marker file %s\n", filenameMarker.c_str());
-		}
-	}	
 	
 	if (axis > 0) {
 		delete [] axis;
@@ -285,7 +274,7 @@ void DAQDevice::readAxis(const char *inifile){
 	std::string item;
 
 	
-	if (debug > 3) printf("______DAQDevice::readAxis()______________________\n");
+	if (debug > 2) printf("______DAQDevice::readAxis()______________________\n");
 	
 	//ini = new akInifile(inifile, stdout);
 	ini = new akInifile(inifile);
@@ -302,7 +291,7 @@ void DAQDevice::readAxis(const char *inifile){
 				ini->GetNextString(0, &error);	
 				nAxis++;
 			}
-			if (debug > 3) printf("Number of axis: %d\n", nAxis);
+			if (debug > 2) printf("Number of axis: %d\n", nAxis);
 			
 			// Allocate axis definition
 			if (axis > 0) delete [] axis;
@@ -348,10 +337,10 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	if (axis == 0) readAxis(this->inifile.c_str());
 
 	
-	if (debug > 3) printf("______DAQDevice::getSensorNames()______________________\n");
+	if (debug > 2) printf("______DAQDevice::getSensorNames()______________________\n");
 	
 	sprintf(line, "%s%s", configDir.c_str(), sensorListfile);	
-	if (debug > 3) printf("Read sensor names from list %s\n", line);
+	if (debug > 2) printf("Read sensor names from list %s\n", line);
 	
 	// Open list file
 	flist = fopen(line, "r");
@@ -380,7 +369,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 		// Read names, compare with the names in the data base?!
 		n = fgets(line, 255, flist);
 	    if (n > 0) {
-			if (debug > 4) printf("%d: %s", i+1, line);
+			if (debug > 3) printf("%d: %s", i+1, line);
 			// Parse the line <TAB> splits the fields
 			// Fields: Number <TAB> Description <TAB> KITCube Sensor name <TAB> Axis name
 			namePtr = strchr(line, '\t'); // Field 2
@@ -411,7 +400,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 				throw std::invalid_argument("Axis type is not defined in the inifile");
 			}
 			
-			if (debug > 2) printf("%d %s %s\n", i+1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str());
+			if (debug > 3) printf("%d %s %s\n", i+1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str());
 			i++;
 		}
 	}
@@ -584,10 +573,25 @@ void DAQDevice::openNewFile(){
 
 
 void DAQDevice::closeFile(){
+	FILE *fmark;		
+	
 	if (fdata > 0) {
 		fclose(fdata);
 		fdata = 0;
 	}	
+	
+	// Save current position
+	if (fileIndex != 0) {
+		if (debug>2) printf("Closing data file, save file position in %s\n", filenameMarker.c_str());
+		fmark = fopen(filenameMarker.c_str(), "w");
+		if (fmark > 0) {
+			fprintf(fmark, "%ld\t%d\n", fileIndex, nLine);
+			fclose(fmark);
+		} else {
+			printf("Error writing marker file %s\n", filenameMarker.c_str());
+		}
+	}	
+	
 	
 }
 
@@ -655,10 +659,10 @@ const char *DAQDevice::getDataFilename(){
 		printf("Error: There is no tag <index> in datafileMask=%s specified in inifile %s\n", 
 			   datafileMask.c_str(), inifile.c_str());
 	}
-	if (debug > 3) printf("Position of <index> in %s is  %d\n", datafileMask.c_str(), posIndex);
+	if (debug > 2) printf("Position of <index> in %s is  %d\n", datafileMask.c_str(), posIndex);
 	filePrefix = datafileMask.substr(0, posIndex);
 	fileSuffix = datafileMask.substr(posIndex+7,datafileMask.length()-posIndex-7);
-	if (debug > 3) printf("Prefix is %s, suffix %s\n", filePrefix.c_str(), fileSuffix.c_str());
+	if (debug > 2) printf("Prefix is %s, suffix %s\n", filePrefix.c_str(), fileSuffix.c_str());
 	
 	sprintf(line, "%s%ld%s", filePrefix.c_str(), fileIndex, fileSuffix.c_str());
 	
@@ -829,7 +833,7 @@ void DAQDevice::openDatabase(){
 			if (axis[i].name == row[1]){
 				axis[i].isNew = false;
 				axis[i].id = atoi(row[0]);
-				if (debug > 2) printf("The axis %s is already defined in the axis list (id=%d)\n", 
+				if (debug > 3) printf("The axis %s is already defined in the axis list (id=%d)\n", 
 									  axis[i].name.c_str(), axis[i].id);
 				break;
 			}
@@ -1055,6 +1059,7 @@ void DAQDevice::storeSensorData(){
 		
 	// Display sensor data
 	if (debug > 1) {
+		printf("%25s ---  ", ""); 
 		printf(" %ld  %d  ---- ", tData.tv_sec, tData.tv_usec);
 		for (j=0;j<nSensors; j++){				
 			printf("%5.3f ", sensorValue[j]);	
@@ -1101,7 +1106,7 @@ void DAQDevice::storeSensorData(){
 		}	
 		
 		gettimeofday(&t1, &tz);
-		printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+		if (debug > 3) printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 		
 	} else {
 		printf("Error: No database availabe\n");
@@ -1186,14 +1191,14 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		}
 #endif
 		
-		if (debug > 3) printf("______Reading data___%s_____________________\n", moduleName.c_str());	
+		if (debug > 2) printf("______Reading data___%s_____________________\n", moduleName.c_str());	
 		
 		// Allocate memory for one data set
 		len = 0;
 		//buf = new unsigned char [len];
 		sensorValue = new float [nSensors];
 		
-		if (debug > 3) printf("Open data file %s\n", filenameData.c_str());
+		if (debug > 2) printf("Open data file %s\n", filenameData.c_str());
 		//fd = open(filenameData.c_str(), O_RDONLY);
 		fdata = fopen(filenameData.c_str(), "r");
 		if (fdata <= 0) {
@@ -1209,7 +1214,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 		
 		sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
 		filenameMarker =line;
-		if (debug > 3) printf("Get marker from %s\n", filenameMarker.c_str());
+		if (debug > 2) printf("Get marker from %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {
 			fscanf(fmark, "%ld %ld %d %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
@@ -1219,17 +1224,18 @@ void DAQDevice::readData(const char *dir, const char *filename){
 			tData.tv_sec = lastTime.tv_sec;
 			tData.tv_usec = lastTime.tv_usec;
 			
-			if (debug > 4) printf("Last time stamp was %ld\n", lastTime.tv_sec);
+			if (debug > 3) printf("Last time stamp was %ld\n", lastTime.tv_sec);
 		}
 		
 		if (lastPos == 0) lastPos = 0; // Move the the first data ???
 		
 		// Find the beginning of the new data
-		if (debug > 4) printf("LastPos: %ld\n", lastPos);
+		if (debug > 3) printf("LastPos: %ld\n", lastPos);
 		fseek(fdata, lastPos, SEEK_SET);
 		
 		//n = len;
 		int iLoop = 0;
+		lPtr = (char *) "";
 		while ((lPtr > 0) && (iLoop< 100)) {
 			lPtr = fgets(line, 255, fdata);
 			
@@ -1293,7 +1299,7 @@ void DAQDevice::readData(const char *dir, const char *filename){
 					}	
 					
 					gettimeofday(&t1, &tz);
-					printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+					if (debug > 3) printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 					
 				} else {
 					printf("Error: No database availabe\n");
@@ -1496,7 +1502,7 @@ void DAQDevice::getNewFiles(){
 	dataDir = archiveDir + getDataDir();
 	
 	
-	if (debug > 3) printf("______DAQDevice::getNewFiles()______________________\n");
+	if (debug > 2) printf("______DAQDevice::getNewFiles()______________________\n");
 	if (debug) printf("Reading from %s\n", dataDir.c_str());
 	
 	// Get all alphabetical following files
@@ -1535,7 +1541,7 @@ void DAQDevice::getNewFiles(){
 				// Get the number of the file that can be used to order the files
 				// Which one to read first
 				index = getFileNumber(file->d_name);
-				if (debug > 5) printf("Index: %d\n", index);
+				if (debug > 4) printf("Index: %d\n", index);
 				
 				// Insert in the list.
 				
@@ -1621,6 +1627,10 @@ void DAQDevice::getNewFiles(){
 			//printf("Reading %d  %d  %s %d\n", next, listIndex[next], listName[next].c_str(), lastIndex);
 			
 			if (listIndex[next] == lastIndex){
+				if ((debug == 0) && (initDone == 0)) {
+					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
+					initDone = 1;
+				}
 				if (debug) printf("Reading file %d, index %d ___ %s (continued)\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
 			}	
@@ -1636,7 +1646,10 @@ void DAQDevice::getNewFiles(){
 				}			
 				
 
-				if (debug == 0) printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
+				if (debug == 0){ 
+					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
+					initDone = 1;
+				}
 				if (debug) printf("Reading file %d, index %d ___ %s\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
 			}	

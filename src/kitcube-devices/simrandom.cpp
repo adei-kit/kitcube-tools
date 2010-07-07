@@ -42,7 +42,7 @@ SimRandom::SimRandom(){
 	sensor[1].comment = "Simus 100s";
 	sensor[2].comment = "Random 0..10";
 	
-	if (debug){
+	if (debug > 3){
 		int i;
 		for (i=0;i<nSensors;i++){
 			printf("Sensor %3d: %s\n", i+1, sensor[i].comment.c_str());
@@ -78,20 +78,6 @@ void SimRandom::setConfigDefaults(){
 }
 
 
-/*
-const char *SimRandom::getDataFilename(){
-	char line[256];
-	
-	if (debug > 3) printf("fileIndex = %ld, nLine = %d\n", fileIndex, nLine);
-	
-	// TODO: Create a single source for the filename convention...
-	sprintf(line, "sim_%ld.%s", fileIndex, sensorGroup.c_str());
-	buffer = line;
-	
-	//printf("Lara: Get Datafilename = %s\n", line);
-	return(buffer.c_str());
-}
-*/
 
 
 const char *SimRandom::getDataDir(){
