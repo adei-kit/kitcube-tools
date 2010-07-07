@@ -34,10 +34,10 @@
         34	global radiation	EB1.PYR.R.SWDR.001.MAX	R
         35	global radiation	EB1.PYR.R.SWDR.001.MIN	R
         36	global radiation	EB1.PYR.R.SWDR.001.STD	R
-        37	air temparture	EB1.HMP.T.AIR.001.AVG	T
-        38	air temparture	EB1.HMP.T.AIR.001.MAX	T
-        39	air temparture	EB1.HMP.T.AIR.001.MIN	T
-        40	air temparture	EB1.HMP.T.AIR.001.STD	T
+        37	air temperature	EB1.HMP.T.AIR.001.AVG	T
+        38	air temperature	EB1.HMP.T.AIR.001.MAX	T
+        39	air temperature	EB1.HMP.T.AIR.001.MIN	T
+        40	air temperature	EB1.HMP.T.AIR.001.STD	T
         41	inklination north south	EB1.INK.G.INKS.001.AVG	GI
         42	inklination north south	EB1.INK.G.INKS.001.MAX	GI
         43	inklination north south	EB1.INK.G.INKS.001.MIN	GI
@@ -71,7 +71,7 @@
         71	soil heat flux	EB1.SHF.F.SHF.003.MIN	R
         72	soil heat flux	EB1.SHF.F.SHF.003.STD	R
         73	precipitation sum	EB1.OMB.N.N.002.SUM	N
-        74	precipitation instensity	EB1.OMB.N.NI.002.RATE	NF
+        74	precipitation instensity	EB1.OMB.N.NI.002.AVG	NF
         75	reserviert	EB1.OMB.N.N.003.RES	N
         76	reserviert	EB1.OMB.N.N.004.RES	N
         77	wind speed east	EB1.SONIC.V.U.001.AVG	V
@@ -82,15 +82,15 @@
         82	wind speed north	EB1.SONIC.V.V.001.MAX	V
         83	wind speed north	EB1.SONIC.V.V.001.MIN	V
         84	wind speed north	EB1.SONIC.V.V.001.STD	V
-        85	windspeed vertical	EB1.SONIC.V.W.001.AVG	V
-        86	windspeed vertical	EB1.SONIC.V.W.001.MAX	V
-        87	windspeed vertical	EB1.SONIC.V.W.001.MIN	V
-        88	windspeed vertical	EB1.SONIC.V.W.001.STD	V
+        85	wind speed vertical	EB1.SONIC.V.W.001.AVG	V
+        86	wind speed vertical	EB1.SONIC.V.W.001.MAX	V
+        87	wind speed vertical	EB1.SONIC.V.W.001.MIN	V
+        88	wind speed vertical	EB1.SONIC.V.W.001.STD	V
         89	virtual temperature	EB1.SONIC.T.VIR.001.AVG	TA
         99	virtual temperature	EB1.SONIC.T.VIR.001.MAX	TA
         91	virtual temperature	EB1.SONIC.T.VIR.001.MIN	TA
         92	virtual temperature	EB1.SONIC.T.VIR.001.STD	TA
-        93	housing temparature	EB1.PT.T.H.001.AVG	T
-        94	housing temparature	EB1.PT.T.H.001.MAX	T
-        95	housing temparature	EB1.PT.T.H.001.MIN	T
-        96	housing temparature	EB1.PT.T.H.001.STD	T
+        93	housing temperature	EB1.PT.T.H.001.AVG	T
+        94	housing temperature	EB1.PT.T.H.001.MAX	T
+        95	housing temperature	EB1.PT.T.H.001.MIN	T
+        96	housing temperature	EB1.PT.T.H.001.STD	T
