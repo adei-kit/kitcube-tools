@@ -33,6 +33,8 @@ Mast::Mast(): DAQBinaryDevice(){
 	this->lenDataSet = 0; // Depends on the number of sensors - updated in readHeader
 	
 	headerRaw = 0;
+	
+	noData = -9999;
 }
 
 
