@@ -494,7 +494,7 @@ void::DAQDevice::createDirectories(const char *path){
 		pos1 = pathname.find("/", pos0);
 		if (pos1 != std::string::npos) {
 			dir = pathname.substr(0, pos1);
-			if (debug > 2)
+			if (debug >= 4)
 				printf("Create directory %s (%ld, %ld)\n", dir.c_str(), pos0, pos1);
 			if (dir.length() > 0)	// FIXME: do we really need this check?
 				mkdir(dir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
@@ -571,8 +571,8 @@ void DAQDevice::copyRemoteData(){
 		//throw std::invalid_argument("Synchronisation error (rsync)");
 	}
 	
-	if (debug >= 2)
-		printf("Rsync duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+	if (debug >= 4)
+		printf("Rsync duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
 }
 
 
@@ -1155,7 +1155,7 @@ int DAQDevice::getFileNumber(char* filename){
 	filename_suffix = datafileMask.substr(pos_index + 7);
 	length_suffix = filename_suffix.length();
 	
-	if (debug >= 2)
+	if (debug >= 4)
 		printf("Position of <index> in %s is: %ld -- Prefix is: %s, suffix is: %s\n",
 		       datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
 	
@@ -1327,7 +1327,7 @@ void DAQDevice::getNewFiles(){
 	closedir(din);
 	
 	
-	if (debug > 3){
+	if (debug >= 2){
 		printf("\nList of data files in %s:\n", dataDir.c_str());
 		printf(" %6s  %12s %6s %s\n", "No", "Index", "Next", "Filename");
 		for (i = 0; i < nList; i++) {

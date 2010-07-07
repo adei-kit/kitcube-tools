@@ -212,11 +212,11 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	
 	lPtr = (char *) 1;
 	int iLoop = 0;
-	while ((lPtr > 0) && (iLoop < 100)) {
+	while ((lPtr > 0) && (iLoop < 1000000)) {
 		lPtr = fgets(buf, len, fd_data_file);
 		
 		if (lPtr > 0){
-			if (debug >= 1)
+			if (debug >= 3)
 				printf("%4d: Received %4d bytes ---- ", iLoop, (int) strlen(buf));
 			
 			// Module specific implementation
@@ -224,7 +224,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 			parseData(buf, &timestamp_data, local_sensorValue);
 			
 			// print sensor values
-			if (debug >= 1) {
+			if (debug >= 3) {
 				printf("%lds %6ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
@@ -292,7 +292,8 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 				}	
 				
 				gettimeofday(&t1, &tz);
-				printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
+				if (debug >= 4)
+					printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
 			} else {
 				printf("Error: No database availabe\n");
 				throw std::invalid_argument("No database");

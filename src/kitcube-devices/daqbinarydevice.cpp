@@ -290,11 +290,11 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	
 	n = len;
 	int iLoop = 0;
-	while ((n == len) && (iLoop < 100)) {
+	while ((n == len) && (iLoop < 1000000)) {
 		n = read(fd_data_file, buf, len);
 		
 		if (n == len){
-			if (debug >= 1)
+			if (debug >= 3)
 				printf("%4d: Received %4d bytes ---- ", iLoop, n);
 			
 			// Module specific implementation
@@ -302,7 +302,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 			parseData((char *)buf, &timestamp_data, local_sensorValue);
 			
 			// print sensor values
-			if (debug >= 1) {
+			if (debug >= 3) {
 				printf("%lds %6ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
@@ -370,7 +370,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 				}
 				
 				gettimeofday(&t1, &tz);
-				if (debug >= 10)
+				if (debug >= 4)
 					printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
 			} else {
 				printf("Error: No database availabe\n");
