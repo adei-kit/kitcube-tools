@@ -2,5 +2,5 @@
          2	carbon dioxide concentration	EB1.LICOR.D.CD.001.INST	DC
          3	wind speed east	EB1.SONIC.V.U.001.INST	V
          4	wind speed north	EB1.SONIC.V.V.001.INST	V
-         5	windspeed vertical	EB1.SONIC.V.W.001.INST	V
+         5	wind speed vertical	EB1.SONIC.V.W.001.INST	V
          6	virtual temperature	EB1.SONIC.T.VIR.001.INST	TA
