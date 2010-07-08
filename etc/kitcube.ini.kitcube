@@ -21,7 +21,7 @@ samplingTime = 5 sec
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.5/etc
+configDir = /home/cube/kitcube-tools-0.6/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/archive
