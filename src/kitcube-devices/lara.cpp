@@ -119,7 +119,7 @@ int Lara::getFileNumber(char *filename){
 	err = sscanf(numString.c_str(), "%d", &time.tm_year);
 	time.tm_year = time.tm_year + 100;
 
-	if (debug > 5) {
+	if (debug > 4) {
 		printf("### Year: %s %d (err = %d) %s\n", 
 			   numString.c_str(), time.tm_year, err, filename);
 	}
@@ -229,7 +229,7 @@ void Lara::readHeader(char *filename){
 	
 	errno = 0;
 	
-	if (debug > 0) printf("______Reading header_____________________\n");	
+	if (debug > 2) printf("______Lara::Reading header_____________________\n");	
 	
 	//
 	// There is no header for this format
@@ -408,7 +408,7 @@ void Lara::readData(const char *dir, char *filename){
 		// Get the last time stamp + file pointer from 		
 		sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
 		filenameMarker =line;
-		if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
+		if (debug > 2) printf("Get marker from %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {
 			fscanf(fmark, "%ld %ld %ld %d", &lastIndex, &lastTime.tv_sec, &lastTime.tv_usec, &handled);

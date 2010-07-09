@@ -33,7 +33,7 @@ SimRandom::SimRandom(){
 	sensor[1].comment = "Simus 100s";
 	sensor[2].comment = "Random 0..10";
 	
-	if (debug){
+	if (debug > 3){
 		int i;
 		for (i=0;i<nSensors;i++){
 			printf("Sensor %3d: %s\n", i+1, sensor[i].comment.c_str());

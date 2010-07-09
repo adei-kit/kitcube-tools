@@ -14,6 +14,6 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube \
 	p090813.dat.template \
 	int01_090824.dat.template \
 	p090826.dat.template \
-	SysLog.sensors \
-	katrin.ini \
+	SimRandom.txt.sensors SysLog.sensors \
+	katrin.ini SysLog.katrin.sensors \
 	Lara.run.sensors Lara.stab.sensors Lara.stab.template

@@ -36,6 +36,8 @@ DAQDevice::DAQDevice(){
 	sensorValue = 0;
 	processedData = 0;
 	
+	initDone = 0;
+	
 #ifdef USE_MYSQL
 	db = 0;
 #endif
@@ -987,6 +989,7 @@ void DAQDevice::storeSensorData(){
 		
 	// Display sensor data
 	if (debug > 1) {
+		printf("%25s ---  ", "");
 		printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
 		for (j=0;j<nSensors; j++){
 			printf("%5.3f ", sensorValue[j]);
@@ -1033,7 +1036,7 @@ void DAQDevice::storeSensorData(){
 		}	
 		
 		gettimeofday(&t1, &tz);
-		printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+		if (debug > 3) printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 		
 	} else {
 		printf("Error: No database availabe\n");
@@ -1369,6 +1372,10 @@ void DAQDevice::getNewFiles(){
 			//printf("Reading %d  %d  %s %d\n", next, listIndex[next], listName[next].c_str(), lastIndex);
 			
 			if (listIndex[next] == lastIndex){
+				if ((debug == 0) && (initDone == 0)) {
+					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
+					initDone = 1;
+				}
 				if (debug) printf("Reading file %d, index %d ___ %s (continued)\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
 			}
@@ -1384,7 +1391,10 @@ void DAQDevice::getNewFiles(){
 				}
 				
 
-				if (debug == 0) printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
+				if (debug == 0){ 
+					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
+					initDone = 1;
+				}
 				if (debug) printf("Reading file %d, index %d ___ %s\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
 			}

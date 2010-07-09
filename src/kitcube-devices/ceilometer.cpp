@@ -723,6 +723,7 @@ void Ceilometer::updateDataSet(unsigned char *buf){
 	}
 	
 	// Compile the data set for writing to the data file
+	if (debug > 2) printf("______Ceilometer::updateDataSet()______________________\n");
 	if (debug > 2) printf("Line: %s", buf);
 	sprintf((char *) buf+12,"%02d.%02d.%02d;%02d:%02d",
 			time->tm_mday, time->tm_mon+1, time->tm_year-100,
@@ -732,7 +733,7 @@ void Ceilometer::updateDataSet(unsigned char *buf){
 	buf[235]=';';
 	if (debug > 2) printf("Line: %s", buf);
 	
-	if (debug > 1) printf("%02d.%02d.%02d  %02d:%02d:%02d\n",
+	if (debug > 2) printf("%02d.%02d.%02d  %02d:%02d:%02d\n", 
 						  time->tm_mday, time->tm_mon+1, time->tm_year-100,
 						  time->tm_hour, time->tm_min, time->tm_sec);
 }

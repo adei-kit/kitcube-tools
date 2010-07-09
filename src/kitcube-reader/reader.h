@@ -39,19 +39,17 @@ class DAQDevice;
 class SysLog;
 
 
-/** Recorder process for background data.
-  * The background data is collected at the
-  * telescopes and transfered to the central
-  * data collection point (this class).
-  *
-  * The background data is collected using a client server concept. At every
-  * connected telescope a readout process is started that afterwards autonomuosly
-  * sends the data to the server running at the eyePC writing the data to the file.
-
-  * The background data is stored in text format. The data of every parameter
-  * introduced by a header line containing certain parmeters necessary to
-  * interprete the data. There is a master header for a complete set of background
-  * data.
+/** The reader funtion periodically transfers data from the 
+  * connected DAQ systems and writes any newly recorded data 
+  * to the database. At the same time also some indicators 
+  * for the system performance are stored in a separate 
+  * table. The performance data contains:
+  *  - Amount of free data
+  *  - Rate of stored data
+  *  - Rate of transfered data (send/receive)
+  *  - Durations for data transfer an database access
+  *  - Timing acurancy of the scheduler
+  * 
   *
   * The following box shows a sample call of the background recorder.
 @verbatim
@@ -78,40 +76,6 @@ class SysLog;
   delete bgrec;
 @endverbatim
   *
-  *
-  *
-  *
-  * @todo Streamer methoden einfhren, es erscheint
-      unsauber, die Methoden mit zu kopieren !!!
-    @todo Wie kann man eine verlorene Verbindung
-      erkennen? Wie kann der Server-Verbindungen
-      len?
-    - Bleiben immer so viele Verbindungen liegen?
-      Tw. wird eine weiterer Aufruf hierdurch sogar
-      blockiert?!
-    - Zeitnahmedaten mit in die Daten aufnehmen!!!
-      verarbeiten der display-Funktionen.
-    - Definition des Befehlssatzen in einer Struktur,
-      die von beiden Seiten verwendet wird!
-    - Verwenden von ROOT-Trees zum Abspeichern der Daten
-    - Integration in Pbusdaemon / oder
-      ein separates Programm, das vom Pbusdaemon aufgerufen
-      wird?!
-    - Display-Programm, das sich ebenfalls an den Server
-      ankoppelt.
-
-    - Test mit echter Hardware: Werden die Daten korrekt bertragen
-    - Test mit mehreren Teleskopen
-    - Test mit automatischem Start ber Pbusdaemon
-    - Erweiterung des TsBackground-Formates fr die neuen Variablen
-    - Dokumentation der Background-Loop (Konzept / Start / Konfiguration / ...)
-    - Speichern im Root-Format, Aufteilung in Branches
-    - Beispielhaftes Display-Modul (ncurses) entwerfen
-    - Histogramming-Modul / Stern-Monitor ankoppeln
-
-  * @todo The recorder does not work with a connection started via
-      ssh tunnel. The readout process at the mirrorpc's seem to have problems
-      to connect to the proper recorder server?!
   *
   */
 
@@ -153,7 +117,7 @@ public:
 	void runReadout();
 
 	/** Analyse timing */
-	void analyseTiming(struct timeval *t);
+	long int analyseTiming(struct timeval *t);
 	
 	/** Display status of readout process */
 	void displayStatus(FILE *fout);
@@ -393,6 +357,7 @@ private:
 	
 	uint64_t rx;
 	uint64_t tx;
+	uint64_t diskspace;
 };
 
 #endif
