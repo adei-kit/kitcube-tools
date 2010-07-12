@@ -13,7 +13,7 @@ module = Mast12-calc
 ; Reading data and filling in the database
 [Reader]
 ;module = Mast12-calc
-module = Mast11-das Mast11-dal Mast11-dar
+module = Mast6-das Mast6-dal Mast6-dar Mast6-dax
 ;samplingTime = 1 min
 samplingTime = 5 sec
 
@@ -30,9 +30,9 @@ dbName = kitcube_actual
 dbUser = cube
 dbPassword = cube
 rsyncArgs = --append
- 
+
 [Axis]
-axis = DA DC DN E FC FH FM FV GI H KD KH KM KMS LA MA MR MS N NE NF NO PA QR R T TA V VD X XR Z
+axis = DA DC DN E FC FH FM FV GI H KD KH KM KMS LA MA MR MS N NE NF NO PA QR R T TA V VD X XG XP XR Z
 DA_name = Density_(Air)
 DA_unit = kg/m^3
 DC_name = Density_(CO2)
@@ -95,8 +95,12 @@ VD_name = Wind_direction
 VD_unit = grad
 X_name = Data
 X_unit = Byte
-XR_name = Data
-XR_unit = %
+XG_name = Data
+XG_unit = GByte
+XP_name = Data
+XP_unit = %
+XR_name = Data_rate
+XR_unit = MB/s
 Z_name = Reflectivity
 Z_unit = dB
 
@@ -114,6 +118,61 @@ Z_unit = dB
 ;
 ; Definition of modules that can be used by the module parameter of the applications
 ;
+
+
+; Turbulence Mast 6
+
+; Sampling rate 20Hz
+[Mast6-das]
+moduleName = T06
+moduleNumber = 6
+moduleType = Mast
+moduleComment = Turbulence_mast_6
+sensorGroup = DAS
+datafileMask = messwiese<index>.DAS
+sensorList = T06.DAS.sensors
+datafileTemplate = M11_01.DAS.template
+samplingTime = 0.05 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Sampling rate 1Hz
+[Mast6-dal]
+moduleName = T06
+moduleNumber = 6
+moduleType = Mast
+moduleComment = Turbulence_mast_6
+sensorGroup = DAL
+datafileMask = messwiese<index>.DAL
+sensorList = T06.DAL.sensors
+datafileTemplate = M11_01.DAL.template
+samplingTime = 1 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Mean data of 10min intervals
+[Mast6-dar]
+moduleName = T06
+moduleNumber = 6
+moduleType = Mast
+moduleComment = Turbulence_mast_6
+sensorGroup = DAR
+datafileMask = messwiese<index>.DAR
+sensorList = T06.DAR.sensors
+datafileTemplate = M11_01.DAR.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+; Caclulated values also in a 10 min interval
+[Mast6-dax]
+moduleName = T06
+moduleNumber = 6
+moduleType = Mast
+moduleComment = Turbulence_mast_6
+sensorGroup = DAX
+datafileMask = messwiese<index>.DAX
+sensorList = T06.DAX.sensors
+datafileTemplate = M11_01.DAX.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
 
 
 ; Energie Bilanz Mast 1
@@ -287,7 +346,7 @@ moduleComment = Distrometer
 sensorGroup = rd
 sensorList = jwd.rd.sensors
 datafileTemplate = rd090826.template
-datafileMask = rd<index>s
+datafileMask = rd<index>
 samplingTime = 1 min
 
 [Parsivel]
