@@ -1,0 +1,8 @@
+         1	air temperature	T07.HMP.T.AIR.001.INST	T
+         2	air temperature	T07.HMP.T.AIR.002.INST	T
+         3	air temperature	T07.HMP.T.AIR.003.INST	T
+         4	relative humidity	T07.HMP.M.RH.001.AVG	MR
+         5	relative humidity	T07.HMP.M.RH.002.AVG	MR
+         6	relative humidity	T07.HMP.M.RH.003.AVG	MR
+         7	air pressure at surface	T07.BARO.P.SUR.001.INST	PA
+         8	housing temperature	T07.PT.T.H.001.INST	T

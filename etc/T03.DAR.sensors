@@ -1,0 +1,56 @@
+         1	air temperature	T03.HMP.T.AIR.001.AVG	T
+         2	air temperature	T03.HMP.T.AIR.001.MAX	T
+         3	air temperature	T03.HMP.T.AIR.001.MIN	T
+         4	air temperature	T03.HMP.T.AIR.001.STD	T
+         5	air temperature	T03.HMP.T.AIR.002.AVG	T
+         6	air temperature	T03.HMP.T.AIR.002.MAX	T
+         7	air temperature	T03.HMP.T.AIR.002.MIN	T
+         8	air temperature	T03.HMP.T.AIR.002.STD	T
+         9	air temperature	T03.HMP.T.AIR.003.AVG	T
+        10	air temperature	T03.HMP.T.AIR.003.MAX	T
+        11	air temperature	T03.HMP.T.AIR.003.MIN	T
+        12	air temperature	T03.HMP.T.AIR.003.STD	T
+        13	auxiliary quantity, dew point	T03.DEW.T.REF.001.AVG	NO
+        14	auxiliary quantity, dew point	T03.DEW.T.REF.001.MAX	NO
+        15	auxiliary quantity, dew point	T03.DEW.T.REF.001.MIN	NO
+        16	auxiliary quantity, dew point	T03.DEW.T.REF.001.STD	NO
+        17	relative humidity	T03.HMP.M.RH.001.AVG	MR
+        18	relative humidity	T03.HMP.M.RH.001.MAX	MR
+        19	relative humidity	T03.HMP.M.RH.001.MIN	MR
+        20	relative humidity	T03.HMP.M.RH.001.STD	MR
+        21	relative humidity	T03.HMP.M.RH.002.AVG	MR
+        22	relative humidity	T03.HMP.M.RH.002.MAX	MR
+        23	relative humidity	T03.HMP.M.RH.002.MIN	MR
+        24	relative humidity	T03.HMP.M.RH.002.STD	MR
+        25	relative humidity	T03.HMP.M.RH.003.AVG	MR
+        26	relative humidity	T03.HMP.M.RH.003.MAX	MR
+        27	relative humidity	T03.HMP.M.RH.003.MIN	MR
+        28	relative humidity	T03.HMP.M.RH.003.STD	MR
+        29	auxiliary quantity, dew point	T03.DEW.T.DIF.001.AVG	NO
+        30	auxiliary quantity, dew point	T03.DEW.T.DIF.001.MAX	NO
+        31	auxiliary quantity, dew point	T03.DEW.T.DIF.001.MIN	NO
+        32	auxiliary quantity, dew point	T03.DEW.T.DIF.001.STD	NO
+        33	air pressure at surface	T03.BARO.P.SUR.001.AVG	PA
+        34	air pressure at surface	T03.BARO.P.SUR.001.MAX	PA
+        35	air pressure at surface	T03.BARO.P.SUR.001.MIN	PA
+        36	air pressure at surface	T03.BARO.P.SUR.001.STD	PA
+        37	housing temperature	T03.PT.T.H.001.AVG	T
+        38	housing temperature	T03.PT.T.H.001.MAX	T
+        39	housing temperature	T03.PT.T.H.001.MIN	T
+        40	housing temperature	T03.PT.T.H.001.STD	T
+        41	wind speed east	T03.SONIC.V.U.001.AVG	V
+        42	wind speed east	T03.SONIC.V.U.001.MAX	V
+        43	wind speed east	T03.SONIC.V.U.001.MIN	V
+        44	wind speed east	T03.SONIC.V.U.001.STD	V
+        45	wind speed north	T03.SONIC.V.V.001.AVG	V
+        46	wind speed north	T03.SONIC.V.V.001.MAX	V
+        47	wind speed north	T03.SONIC.V.V.001.MIN	V
+        48	wind speed north	T03.SONIC.V.V.001.STD	V
+        49	wind speed vertical	T03.SONIC.V.W.001.AVG	V
+        50	wind speed vertical	T03.SONIC.V.W.001.MAX	V
+        51	wind speed vertical	T03.SONIC.V.W.001.MIN	V
+        52	wind speed vertical	T03.SONIC.V.W.001.STD	V
+        53	virtual temperature	T03.SONIC.T.VIR.001.AVG	TA
+        54	virtual temperature	T03.SONIC.T.VIR.001.MAX	TA
+        55	virtual temperature	T03.SONIC.T.VIR.001.MIN	TA
+        56	virtual temperature	T03.SONIC.T.VIR.001.STD	TA

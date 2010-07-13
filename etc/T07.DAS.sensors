@@ -1,0 +1,6 @@
+         1	auxiliary quantity, dew point	T07.DEW.T.REF.001.INST	NO
+         2	auxiliary quantity, dew point	T07.DEW.T.DIF.001.INST	NO
+         3	wind speed east	T07.SONIC.V.U.001.INST	V
+         4	wind speed north	T07.SONIC.V.V.001.INST	V
+         5	wind speed vertical	T07.SONIC.V.W.001.INST	V
+         6	virtual temperature	T07.SONIC.T.VIR.001.INST	TA
