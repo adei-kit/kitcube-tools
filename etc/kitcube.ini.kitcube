@@ -13,7 +13,15 @@ module = Mast12-calc
 ; Reading data and filling in the database
 [Reader]
 ;module = Mast12-calc
-module = Mast6-das Mast6-dal Mast6-dar Mast6-dax
+module = Mast1-das Mast1-dal Mast1-dar Mast1-dax \
+         Mast2-das Mast2-dal Mast2-dar Mast2-dax \
+         Mast3-das Mast3-dal Mast3-dar Mast3-dax \
+         Mast4-das Mast4-dal Mast4-dar Mast4-dax \
+         Mast5-das Mast5-dal Mast5-dar Mast5-dax \
+         Mast6-das Mast6-dal Mast6-dar Mast6-dax \
+         Mast7-das Mast7-dal Mast7-dar Mast7-dax \
+         Mast11-das Mast11-dal Mast11-dar Mast11-dax \
+         Mast12-das Mast12-dal Mast12-dar Mast12-dax
 ;samplingTime = 1 min
 samplingTime = 5 sec
 
@@ -120,6 +128,281 @@ Z_unit = dB
 ;
 
 
+; Turbulence Mast 1
+
+; Sampling rate 20Hz
+[Mast1-das]
+moduleName = T01
+moduleNumber = 1
+moduleType = Mast
+moduleComment = Turbulence_mast_1
+sensorGroup = DAS
+datafileMask = messwiese<index>.DAS
+sensorList = T01.DAS.sensors
+datafileTemplate = M11_01.DAS.template
+samplingTime = 0.05 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Sampling rate 1Hz
+[Mast1-dal]
+moduleName = T01
+moduleNumber = 1
+moduleType = Mast
+moduleComment = Turbulence_mast_1
+sensorGroup = DAL
+datafileMask = messwiese<index>.DAL
+sensorList = T01.DAL.sensors
+datafileTemplate = M11_01.DAL.template
+samplingTime = 1 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Mean data of 10min intervals
+[Mast1-dar]
+moduleName = T01
+moduleNumber = 1
+moduleType = Mast
+moduleComment = Turbulence_mast_1
+sensorGroup = DAR
+datafileMask = messwiese<index>.DAR
+sensorList = T01.DAR.sensors
+datafileTemplate = M11_01.DAR.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+; Caclulated values also in a 10 min interval
+[Mast1-dax]
+moduleName = T01
+moduleNumber = 1
+moduleType = Mast
+moduleComment = Turbulence_mast_1
+sensorGroup = DAX
+datafileMask = messwiese<index>.DAX
+sensorList = T01.DAX.sensors
+datafileTemplate = M11_01.DAX.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+
+; Turbulence Mast 2
+
+; Sampling rate 20Hz
+[Mast2-das]
+moduleName = T02
+moduleNumber = 2
+moduleType = Mast
+moduleComment = Turbulence_mast_2
+sensorGroup = DAS
+datafileMask = messwiese<index>.DAS
+sensorList = T02.DAS.sensors
+datafileTemplate = M11_01.DAS.template
+samplingTime = 0.05 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Sampling rate 1Hz
+[Mast2-dal]
+moduleName = T02
+moduleNumber = 2
+moduleType = Mast
+moduleComment = Turbulence_mast_2
+sensorGroup = DAL
+datafileMask = messwiese<index>.DAL
+sensorList = T02.DAL.sensors
+datafileTemplate = M11_01.DAL.template
+samplingTime = 1 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Mean data of 10min intervals
+[Mast2-dar]
+moduleName = T02
+moduleNumber = 2
+moduleType = Mast
+moduleComment = Turbulence_mast_2
+sensorGroup = DAR
+datafileMask = messwiese<index>.DAR
+sensorList = T02.DAR.sensors
+datafileTemplate = M11_01.DAR.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+; Caclulated values also in a 10 min interval
+[Mast2-dax]
+moduleName = T02
+moduleNumber = 2
+moduleType = Mast
+moduleComment = Turbulence_mast_2
+sensorGroup = DAX
+datafileMask = messwiese<index>.DAX
+sensorList = T02.DAX.sensors
+datafileTemplate = M11_01.DAX.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+
+; Turbulence Mast 3
+
+; Sampling rate 20Hz
+[Mast3-das]
+moduleName = T03
+moduleNumber = 3
+moduleType = Mast
+moduleComment = Turbulence_mast_3
+sensorGroup = DAS
+datafileMask = messwiese<index>.DAS
+sensorList = T03.DAS.sensors
+datafileTemplate = M11_01.DAS.template
+samplingTime = 0.05 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Sampling rate 1Hz
+[Mast3-dal]
+moduleName = T03
+moduleNumber = 3
+moduleType = Mast
+moduleComment = Turbulence_mast_3
+sensorGroup = DAL
+datafileMask = messwiese<index>.DAL
+sensorList = T03.DAL.sensors
+datafileTemplate = M11_01.DAL.template
+samplingTime = 1 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Mean data of 10min intervals
+[Mast3-dar]
+moduleName = T03
+moduleNumber = 3
+moduleType = Mast
+moduleComment = Turbulence_mast_3
+sensorGroup = DAR
+datafileMask = messwiese<index>.DAR
+sensorList = T03.DAR.sensors
+datafileTemplate = M11_01.DAR.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+; Caclulated values also in a 10 min interval
+[Mast3-dax]
+moduleName = T03
+moduleNumber = 3
+moduleType = Mast
+moduleComment = Turbulence_mast_3
+sensorGroup = DAX
+datafileMask = messwiese<index>.DAX
+sensorList = T03.DAX.sensors
+datafileTemplate = M11_01.DAX.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+
+; Turbulence Mast 4
+
+; Sampling rate 20Hz
+[Mast4-das]
+moduleName = T04
+moduleNumber = 4
+moduleType = Mast
+moduleComment = Turbulence_mast_4
+sensorGroup = DAS
+datafileMask = messwiese<index>.DAS
+sensorList = T04.DAS.sensors
+datafileTemplate = M11_01.DAS.template
+samplingTime = 0.05 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Sampling rate 1Hz
+[Mast4-dal]
+moduleName = T04
+moduleNumber = 4
+moduleType = Mast
+moduleComment = Turbulence_mast_4
+sensorGroup = DAL
+datafileMask = messwiese<index>.DAL
+sensorList = T04.DAL.sensors
+datafileTemplate = M11_01.DAL.template
+samplingTime = 1 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Mean data of 10min intervals
+[Mast4-dar]
+moduleName = T04
+moduleNumber = 4
+moduleType = Mast
+moduleComment = Turbulence_mast_4
+sensorGroup = DAR
+datafileMask = messwiese<index>.DAR
+sensorList = T04.DAR.sensors
+datafileTemplate = M11_01.DAR.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+; Caclulated values also in a 10 min interval
+[Mast4-dax]
+moduleName = T04
+moduleNumber = 4
+moduleType = Mast
+moduleComment = Turbulence_mast_4
+sensorGroup = DAX
+datafileMask = messwiese<index>.DAX
+sensorList = T04.DAX.sensors
+datafileTemplate = M11_01.DAX.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+
+; Turbulence Mast 5
+
+; Sampling rate 20Hz
+[Mast5-das]
+moduleName = T05
+moduleNumber = 5
+moduleType = Mast
+moduleComment = Turbulence_mast_5
+sensorGroup = DAS
+datafileMask = messwiese<index>.DAS
+sensorList = T05.DAS.sensors
+datafileTemplate = M11_01.DAS.template
+samplingTime = 0.05 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Sampling rate 1Hz
+[Mast5-dal]
+moduleName = T05
+moduleNumber = 5
+moduleType = Mast
+moduleComment = Turbulence_mast_5
+sensorGroup = DAL
+datafileMask = messwiese<index>.DAL
+sensorList = T05.DAL.sensors
+datafileTemplate = M11_01.DAL.template
+samplingTime = 1 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Mean data of 10min intervals
+[Mast5-dar]
+moduleName = T05
+moduleNumber = 5
+moduleType = Mast
+moduleComment = Turbulence_mast_5
+sensorGroup = DAR
+datafileMask = messwiese<index>.DAR
+sensorList = T05.DAR.sensors
+datafileTemplate = M11_01.DAR.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+; Caclulated values also in a 10 min interval
+[Mast5-dax]
+moduleName = T05
+moduleNumber = 5
+moduleType = Mast
+moduleComment = Turbulence_mast_5
+sensorGroup = DAX
+datafileMask = messwiese<index>.DAX
+sensorList = T05.DAX.sensors
+datafileTemplate = M11_01.DAX.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+
 ; Turbulence Mast 6
 
 ; Sampling rate 20Hz
@@ -170,6 +453,61 @@ moduleComment = Turbulence_mast_6
 sensorGroup = DAX
 datafileMask = messwiese<index>.DAX
 sensorList = T06.DAX.sensors
+datafileTemplate = M11_01.DAX.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+
+; Turbulence Mast 7
+
+; Sampling rate 20Hz
+[Mast7-das]
+moduleName = T07
+moduleNumber = 7
+moduleType = Mast
+moduleComment = Turbulence_mast_7
+sensorGroup = DAS
+datafileMask = messwiese<index>.DAS
+sensorList = T07.DAS.sensors
+datafileTemplate = M11_01.DAS.template
+samplingTime = 0.05 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Sampling rate 1Hz
+[Mast7-dal]
+moduleName = T07
+moduleNumber = 7
+moduleType = Mast
+moduleComment = Turbulence_mast_7
+sensorGroup = DAL
+datafileMask = messwiese<index>.DAL
+sensorList = T07.DAL.sensors
+datafileTemplate = M11_01.DAL.template
+samplingTime = 1 sec
+remoteDir = pc-t06:/cygdrive/d
+
+; Mean data of 10min intervals
+[Mast7-dar]
+moduleName = T07
+moduleNumber = 7
+moduleType = Mast
+moduleComment = Turbulence_mast_7
+sensorGroup = DAR
+datafileMask = messwiese<index>.DAR
+sensorList = T07.DAR.sensors
+datafileTemplate = M11_01.DAR.template
+samplingTime = 10 min
+remoteDir = pc-t06:/cygdrive/d
+
+; Caclulated values also in a 10 min interval
+[Mast7-dax]
+moduleName = T07
+moduleNumber = 7
+moduleType = Mast
+moduleComment = Turbulence_mast_7
+sensorGroup = DAX
+datafileMask = messwiese<index>.DAX
+sensorList = T07.DAX.sensors
 datafileTemplate = M11_01.DAX.template
 samplingTime = 10 min
 remoteDir = pc-t06:/cygdrive/d
@@ -239,10 +577,11 @@ moduleNumber = 12
 moduleType = Mast
 moduleComment = Energy_balance_station_2
 sensorGroup = DAS
-datafileMask = M12_<index>.DAS
+datafileMask = messwiese<index>.DAS
 sensorList = EB2.DAS.sensors
 datafileTemplate = M12_01.DAS.template
 samplingTime = 0.05 sec
+remoteDir = pc-eb1:/cygdrive/d/
 
 ; Sampling rate 1Hz
 [Mast12-dal]
@@ -251,10 +590,11 @@ moduleNumber = 12
 moduleType = Mast
 moduleComment = Energy_balance_station_2
 sensorGroup = DAL
-datafileMask = M12_<index>.DAL
+datafileMask = messwiese<index>.DAL
 sensorList = EB2.DAL.sensors
 datafileTemplate = M12_01.DAL.template
 samplingTime = 1 sec
+remoteDir = pc-eb1:/cygdrive/d/
 
 ; Mean data of 10min intervals
 [Mast12-dar]
@@ -263,10 +603,11 @@ moduleNumber = 12
 moduleType = Mast
 moduleComment = Energy_balance_station_2
 sensorGroup = DAR
-datafileMask = M12_<index>.DAR
+datafileMask = messwiese<index>.DAR
 sensorList = EB2.DAR.sensors
 datafileTemplate = M12_01.DAR.template
 samplingTime = 10 min
+remoteDir = pc-eb1:/cygdrive/d/
 
 ; Caclulated values also in a 10 min interval
 [Mast12-dax]
@@ -275,10 +616,11 @@ moduleNumber = 12
 moduleType = Mast
 moduleComment = Energy_balance_station_2
 sensorGroup = DAX
-datafileMask = M12_<index>.DAX
+datafileMask = messwiese<index>.DAX
 sensorList = EB2.DAX.sensors
 datafileTemplate = M12_01.DAX.template
 samplingTime = 10 min
+remoteDir = pc-eb1:/cygdrive/d/
 
 
 [Ceilometer]
