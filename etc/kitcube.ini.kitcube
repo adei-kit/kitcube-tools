@@ -77,11 +77,11 @@ MR_name = Relative_Humidity
 MR_unit = %
 MS_name = Specific_humidity
 MS_unit = g/kg
-N_name = Percipitation
+N_name = Precipitation
 N_unit = mm
-NE_name = Percipitation_rate
+NE_name = Precipitation_rate
 NE_unit = mm/s
-NF_name = Percipitation_rate
+NF_name = Precipitation_rate
 NF_unit = mm/h
 NO_name = No_Unit
 NO_unit = 
@@ -735,13 +735,14 @@ datafileTemplate = w20090826.dat.template
 datafileMask = w20<index>.dat
 samplingTime = 1 min
 
-[Wolkenkamera]
-moduleName = Wolkenkamera
+[Wolkenkamera2]
+moduleName = Wolkenkamera2
 moduleNumber = 45
 moduleType = Wolkenkamera
 moduleComment = Wolkenkamera_comment
 sensorGroup = jpg
 sensorList = wolkenkamera.jpg.sensors
 datafileTemplate = 200908261200.jpg.template
-datafileMask = 20<index>.jpg
-samplingTime = 1 min
+datafileMask =  kitcube_cc2_<index>.jpg
+samplingTime = 2 min
+remoteDir = imk-wk1:/home/cube
