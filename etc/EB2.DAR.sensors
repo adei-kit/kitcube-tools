@@ -27,7 +27,7 @@
         27	temperature pyrgeometer bottom	EB2.PYG.T.BOT.001.MIN	T
         28	temperature pyrgeometer bottom	EB2.PYG.T.BOT.001.STD	T
         29	precipitation sum	EB2.OMB.N.N.001.SUM	N
-        30	precipitation intensity	EB2.OMB.N.NI.001.AVG	NF
+        30	precipitation intensity	EB2.OMB.N.NI.001.AVG	NE
         31	reserviert	EB2.OMB.N.N.001.RES	N
         32	reserviert	EB2.OMB.N.N.002.RES	N
         33	global radiation	EB2.PYR.R.SWDR.001.AVG	R
@@ -71,7 +71,7 @@
         71	soil heat flux	EB2.SHF.F.SHF.003.MIN	R
         72	soil heat flux	EB2.SHF.F.SHF.003.STD	R
         73	precipitation sum	EB2.OMB.N.N.002.SUM	N
-        74	precipitation instensity	EB2.OMB.N.NI.002.AVG	NF
+        74	precipitation instensity	EB2.OMB.N.NI.002.AVG	NE
         75	reserviert	EB2.OMB.N.N.003.RES	N
         76	reserviert	EB2.OMB.N.N.004.RES	N
         77	wind speed east	EB2.SONIC.V.U.001.AVG	V
