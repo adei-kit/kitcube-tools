@@ -50,6 +50,7 @@ public:
 	/** Replace time stamp in the data set by the current time */
 	void updateDataSet(unsigned char *buf);
 	
+	int getFileNumber(char* filename);
 	
 private:
 	unsigned char *headerRaw;

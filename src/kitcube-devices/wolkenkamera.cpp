@@ -31,7 +31,7 @@ const char *wolkenkamera::getDataDir(){
 	char line[256];
 	
 	// TODO: evtl. an zu definierende Verzeichnisstruktur anpassen
-	sprintf(line, "wolkenkamera/Daten/");
+	sprintf(line, "CC2-pics/");
 	buffer = line;
 	
 	return(buffer.c_str());
@@ -53,105 +53,25 @@ unsigned int wolkenkamera::getSensorGroup(){
 
 
 void wolkenkamera::readHeader(const char *filename){
-	int fd;
-	const char *headerReadPtr;
-	char line[256];
-	int n;
 	int i;
-	int heightOffset;
-	char heightUnit[5];
-	int len;
 	
 	
-	if (sensorGroup == "nc"){	// read NetCDF file header here
-		// Number of sensors
-		nSensors = 14;
-		printf("Number of sensors: %d\n", nSensors);
-		
-		// TODO: maybe better really read header of NetCDF file here,
-		//       at least because of sensor height,
-		//       but comments must be set manually here, due to mixed format of NetCDF file in this case!
-		
-		// List of sensors
-		if (sensor > 0 ) delete [] sensor;
-		sensor = new struct sensorType [nSensors];
-		
-		sensor[0].comment = "number of laser pulses";
-		sensor[0].data_format = "<scalar>";
-		
-		sensor[1].comment = "average time per record";
-		sensor[1].data_format = "<scalar>";
-		
-		sensor[2].comment = "31 Bit ServiceCode";
-		sensor[2].data_format = "<scalar>";
-		
-		sensor[3].comment = "transmission of optics";
-		sensor[3].data_format = "<scalar>";
-		
-		sensor[4].comment = "internal temperature in K*10";
-		sensor[4].data_format = "<scalar>";
-		
-		sensor[5].comment = "external temperature in K*10";
-		sensor[5].data_format = "<scalar>";
-		
-		sensor[6].comment = "detector temperature in K*10";
-		sensor[6].data_format = "<scalar>";
-		
-		sensor[7].comment = "Laser fife time";
-		sensor[7].data_format = "<scalar>";
-		
-		sensor[8].comment = "laser quality index - 255 max";
-		sensor[8].data_format = "<scalar>";
-		
-		sensor[9].comment = "quality of detector signal - 255 max";
-		sensor[9].data_format = "<scalar>";
-		
-		sensor[10].comment = "Daylight correction factor";
-		sensor[10].data_format = "<scalar>";
-		
-		sensor[11].comment = "NN1";
-		sensor[11].data_format = "<scalar>";
-		
-		sensor[12].comment = "Standard Deviation raw signal";
-		sensor[12].data_format = "<scalar>";
-		
-		sensor[13].comment = "Profil";
-		sensor[13].type = "profile";
-		sensor[13].data_format = "<profile size=\"1024\"> <height unit=\"m\">";
-		for (i = 1; i < 1024; i++) {	// TODO: read length from file?
-			sprintf(line, "%i ", (i * 15));	// TODO: read values from data file!
-			sensor[13].data_format += line;
-		}
-		sensor[13].data_format += "15360</height> </profile>";
-		
-		for (i = 0; i < nSensors; i++) {
-			sensor[i].height = 110;	// TODO: read sensor height from data file!
-		}
-	} else {
-		
-		profile_length = 0;	// TODO/FIXME: do we need this here? this is done in daqdevice constructor, too
-		
-		// Number of sensors
-		nSensors = 8;
-		printf("Number of sensors %d\n", nSensors);
-		
-		// List of sensors
-		if (sensor > 0 ) delete [] sensor;
-		sensor = new struct sensorType [nSensors];
-		
-		sensor[0].comment = "Cloud level 1";
-		sensor[1].comment = "Cloud level 2";
-		sensor[2].comment = "Cloud level 3";
-		sensor[3].comment = "Penetration depth 1";
-		sensor[4].comment = "Penetration depth 2";
-		sensor[5].comment = "Penetration depth 3";
-		sensor[6].comment = "Vertical visibility";
-		sensor[7].comment = "Detection range";
-		
-		for (i = 0; i < nSensors; i++) {
-			sensor[i].height = heightOffset;
-			printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
-		}
+	// Number of sensors
+	nSensors = 1;
+	
+	// List of sensors
+	if (sensor > 0 ) delete [] sensor;
+	sensor = new struct sensorType [nSensors];
+	
+	sensor[0].comment = "sky picture";
+	sensor[0].data_format = "<binary>";
+	sensor[0].type = "profile";
+	
+	profile_length = 0;	// TODO/FIXME: do we need this here? this is done in daqdevice constructor, too
+	
+	for (i = 0; i < nSensors; i++) {
+		sensor[i].height = 4;
+		printf("Sensor %3d: %s, %.1f\n", i+1, sensor[i].comment.c_str(), sensor[i].height);
 	}
 }
 
@@ -344,4 +264,76 @@ void wolkenkamera::updateDataSet(unsigned char *buf){
 	if (debug > 1) printf("%02d.%02d.%02d  %02d:%02d:%02d\n",
 						  time->tm_mday, time->tm_mon+1, time->tm_year-100,
 						  time->tm_hour, time->tm_min, time->tm_sec);
+}
+
+
+int wolkenkamera::getFileNumber(char* filename){
+	std::string filename_prefix;
+	std::string filename_suffix;
+	std::string filename_string;
+	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, filename_length;
+	int index;
+	
+	
+	if (debug >= 1)
+		printf("\n_____wolkenkamera::getFileNumber(char* filename)_____\n");
+	if (debug >= 2)
+		printf("From file %s\n", filename);
+	
+	// Write the index of the file to a list
+	// Process in this list with the next index
+	// The read pointer of the last file will be kept
+	
+	// Find <index> in data template
+	pos_index = datafileMask.find("<index>");
+	// FIXME: this is done in DAQDevice::readInifile already. Why repeat it here? What to do in case of error?
+	if (pos_index == std::string::npos) {
+		printf("Error: There is no tag <index> in datafileMask '%s' specified in inifile %s\n",
+			datafileMask.c_str(), inifile.c_str());
+	}
+	
+	filename_prefix = datafileMask.substr(0, pos_index);
+	length_prefix = filename_prefix.length();
+	filename_suffix = datafileMask.substr(pos_index + 7);
+	length_suffix = filename_suffix.length();
+	
+	if (debug >= 4)
+		printf("Position of <index> in %s is: %ld -- Prefix is: %s, suffix is: %s\n",
+		       datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
+	
+	filename_string = filename;
+	
+	// if there is a prefix, check for prefix at beginning of file name and delete it
+	if (filename_prefix.size() != 0) {
+		pos_prefix = filename_string.find(filename_prefix);
+		if (pos_prefix == 0) {
+			filename_string.erase(pos_prefix, length_prefix);
+		} else {
+			throw std::invalid_argument("Prefix not found or not at the beginning of file name");
+		}
+	}
+	
+	// if there is a suffix, check for suffix at end of filename and delete it
+	if (filename_suffix.size() != 0) {
+		pos_suffix = filename_string.find(filename_suffix);
+		filename_length = filename_string.length();
+		if ((pos_suffix != std::string::npos) && ((pos_suffix + length_suffix) == filename_length)) {
+			filename_string.erase(pos_suffix, length_suffix);
+		} else {
+			throw std::invalid_argument("Suffix not found or not at end of file name");
+		}
+	}
+	
+	while (filename_string.find("-", 0) != std::string::npos) {
+		//filename_string.erase(, 1);
+	}
+	
+	// we assume, that after the removal of prefix and suffix, there are only numbers left
+	// FIXME/TODO: check, if this is really only a number
+	index = atoi(filename_string.c_str());
+	
+	if (debug >= 2)
+		printf("Index is: %d\n", index);
+	
+	return index;
 }
