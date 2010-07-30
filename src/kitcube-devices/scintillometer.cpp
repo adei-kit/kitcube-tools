@@ -120,21 +120,41 @@ void sci::setConfigDefaults(){
 
 void sci::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 	struct tm timestamp;
-	char* puffer;
-	float dummy;
+	char *puffer;
 	
-	// dummy read data set number
-	sscanf(line, "%f", &dummy);
 	
 	// read date and time
 	puffer = strptime(line + 5,"%Y-%m-%d %T", &timestamp);
-	if (puffer == NULL) {
-		printf("Szintillometer: Error reading date and time string!\n");
-		return;
-	}
 	
-	// get seconds since the Epoch
-	l_tData->tv_sec = timegm(&timestamp);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
+	if (puffer == NULL) {
+		// if "strptime" fails, for SCI it does not automatically mean that there is an error
+		// SCI uses an invalid time stamp format at midnight:
+		// e.g. 2010-07-26 24:00:00 means 2010-07-27 00:00:00
+		// we fix this:
+		
+		// search for "24:00:00"
+		puffer = strstr(line, "24:00:00");
+		
+		if (puffer == NULL) {
+			printf("Szintillometer: Error reading date and time string!\n");
+			return;
+		} else {
+			if (debug >= 3)
+				printf("Warning: wrong time stamp format in SCI data! Fixing...\n");
+			
+			// replace 24:00:00 by 23:59:59
+			strncpy(puffer, "23:59:59", 8);
+			
+			// read date and time
+			puffer = strptime(line + 5,"%Y-%m-%d %T", &timestamp);
+			
+			// get seconds since the Epoch and add the one missing second
+			l_tData->tv_sec = timegm(&timestamp) + 1;	// FIXME: this function is a non-standard GNU extension, try to avoid it!
+		}
+	} else {
+		// get seconds since the Epoch
+		l_tData->tv_sec = timegm(&timestamp);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
+	}
 	
 	// read sensor values
 	sscanf(puffer, "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f",
