@@ -19,7 +19,7 @@
 #include "mrr.h"
 #include "regenwippe.h"
 #include "wolkenkamera.h"
-#include "szintillometer.h"
+#include "scintillometer.h"
 
 
 extern "C" void *createDevice(const char *devType) {
@@ -35,7 +35,7 @@ extern "C" void *createDevice(const char *devType) {
 	if (strcasestr(devType, "MRR") > 0) return( new (mrr));
 	if (strcasestr(devType, "Regenwippe") > 0) return( new (regenwippe));
 	if (strcasestr(devType, "Wolkenkamera") > 0) return( new (wolkenkamera));
-	if (strcasestr(devType, "Szintillometer") > 0) return( new (szi));
+	if (strcasestr(devType, "Scintillometer") > 0) return( new (sci));
 	
 	if (strcasestr(devType, "Lara") > 0) return( new (Lara));
 	

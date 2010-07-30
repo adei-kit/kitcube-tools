@@ -7,22 +7,22 @@
 *
 ********************************************************************/
 
-#ifndef SZI_H
-#define SZI_H
+#ifndef SCI_H
+#define SCI_H
 
 #include "daqasciidevice.h"
 
 
-/** Implementation for the szintillometer
+/** Implementation for the scintillometer
   * 
   */
 
-class szi: public DAQAsciiDevice {
+class sci: public DAQAsciiDevice {
 public:
 	/**  */
-	szi();
+	sci();
 	/**  */
-	~szi();
+	~sci();
 	
 	void setConfigDefaults();
 	

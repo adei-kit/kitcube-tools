@@ -8,10 +8,10 @@
 ********************************************************************/
 
 
-#include "szintillometer.h"
+#include "scintillometer.h"
 
 
-szi::szi(){
+sci::sci(){
 	
 	moduleType = "JWD";
 	moduleNumber = 0;
@@ -21,11 +21,11 @@ szi::szi(){
 }
 
 
-szi::~szi(){
+sci::~sci(){
 }
 
 
-void szi::readHeader(const char *filename){
+void sci::readHeader(const char *filename){
 	
 	noData = 999999;
 	
@@ -109,7 +109,7 @@ void szi::readHeader(const char *filename){
 }
 
 
-void szi::setConfigDefaults(){
+void sci::setConfigDefaults(){
 	
 	// Note:
 	// The paramters are dependant of the module number that is not known at the creation
@@ -118,7 +118,7 @@ void szi::setConfigDefaults(){
 }
 
 
-void szi::parseData(char *line, struct timeval *l_tData, float *sensorValue){
+void sci::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 	struct tm timestamp;
 	char* puffer;
 	float dummy;
@@ -146,7 +146,7 @@ void szi::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 }
 
 
-void szi::copyRemoteData(){
+void sci::copyRemoteData(){
 	struct timeval t0, t1;
 	struct timezone tz;
 	int err, pos;
@@ -155,7 +155,7 @@ void szi::copyRemoteData(){
 	
 	
 	if (debug > 2)
-		printf("_____szi::copyRemoteData()_____\n");
+		printf("_____sci::copyRemoteData()_____\n");
 	
 	createDirectories((archiveDir + getDataDir()).c_str());
 	
@@ -197,7 +197,7 @@ void szi::copyRemoteData(){
 }
 
 
-unsigned int szi::getSensorGroup(){
+unsigned int sci::getSensorGroup(){
 	unsigned int number;
 	
 	number = 0;
