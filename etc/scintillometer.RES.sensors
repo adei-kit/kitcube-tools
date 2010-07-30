@@ -1,0 +1,19 @@
+         1	air pressure	SCI.BARO.P.SUR.001.AVG	PA
+         2	air temperature	SCI.PT.T.AIR.001.AVG	T
+         3	temperature difference	SCI.PT.T.TDIF.001.AVG	T
+         4	path length	SCI.SLS40.H.PATH.001.KON	L
+         5	instrument height	SCI.SLS40.H.AGL.001.KON	H
+         6	logarithm of the amplitude in ch 1	SCI.SLS40.S.LOGX.001.STD	NO
+         7	logarithm of the amplitude in ch 2	SCI.SLS40.S.LOGY.001.STD	NO
+         8	correlation of the logs of the amps in ch 1 and 2	SCI.SLS40.S.COR.001.AVG	NO
+         9	error free data periods	SCI.SLS40.S.STAT.001.AVG	QR
+        10	structure function constant of refractive index fluctuations	SCI.SLS40.F.CN.001.AVG	A
+        11	inner scale of refractive fluctuations	SCI.SLS40.F.LO.001.AVG	C
+        12	structure function constant of temperature fluctuations	SCI.SLS40.F.RC.001.AVG	B
+        13	kinetic energy dissipation	SCI.SLS40.F.DISS.001.RATE	KED
+        14	sensible heat flux, unstable density stratifiction	SCI.SLS40.F.HSURU.001.AVG	R
+        15	sensible heat flux, stable density stratification	SCI.SLS40.F.HSURS.001.AVG	R
+        16	momentum flux, unstable density stratification	SCI.SLS40.F.MOMU.001.AVG	MF
+        17	momentum flux, stable density stratification	SCI.SLS40.F.MOMS.001.AVG	MF
+        18	Monin Obukhov length, unstable density stratification	SCI.SLS40.F.MOLU.001.AVG	L
+        19	Monin Obukhov length, stable density stratification	SCI.SLS40.F.MOLS.001.AVG	L
