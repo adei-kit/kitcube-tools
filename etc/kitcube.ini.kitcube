@@ -23,13 +23,13 @@ module = Mast1-das Mast1-dal Mast1-dar Mast1-dax \
          Mast11-das Mast11-dal Mast11-dar Mast11-dax \
          Mast12-das Mast12-dal Mast12-dar Mast12-dax
 ;samplingTime = 1 min
-samplingTime = 5 sec
+samplingTime = 55 sec
 
 
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.6/etc
+configDir = /home/cube/kitcube-tools-0.7/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/archive
@@ -40,7 +40,13 @@ dbPassword = cube
 rsyncArgs = --append
 
 [Axis]
-axis = DA DC DN E FC FH FM FV GI H KD KH KM KMS LA MA MR MS N NE NF NO PA QR R T TA V VD X XG XP XR Z
+axis = A B C DA DC DN E FC FH FM FV GI H KD KED KH KM KMS L LA MA MF MR MS N NE NF NO PA QR R T TA V VD X XG XP XR Z
+A_name = sfcorif
+A_unit = 10^(-12)/m^(2/3)
+B_name = sfcotf
+B_unit = K^2/m^(2/3)
+C_name = isorif
+C_unit = mm
 DA_name = Density_(Air)
 DA_unit = kg/m^3
 DC_name = Density_(CO2)
@@ -63,16 +69,22 @@ H_name = Heigth
 H_unit = m
 KD_name = Duration
 KD_unit = s
+KED_name = Kinetic_Energy_Dissipation
+KED_unit = m^2/s^3
 KH_name = Duration
 KH_unit = h
 KM_name = Duration
 KM_unit = min
 KMS_name = Duration
 KMS_unit = ms
+L_name = Lenght
+L_unit = m
 LA_name = Lambda
 LA_unit = 1/mm
 MA_name = Absolute_Humidity
 MA_unit = g/m^3
+MF_name = Momentum_Flux
+MF_unit = N/m^2
 MR_name = Relative_Humidity
 MR_unit = %
 MS_name = Specific_humidity
@@ -735,14 +747,26 @@ datafileTemplate = w20090826.dat.template
 datafileMask = w20<index>.dat
 samplingTime = 1 min
 
-[Wolkenkamera2]
-moduleName = Wolkenkamera2
+[Wolkenkamera]
+moduleName = Wolkenkamera
 moduleNumber = 45
 moduleType = Wolkenkamera
 moduleComment = Wolkenkamera_comment
 sensorGroup = jpg
 sensorList = wolkenkamera.jpg.sensors
 datafileTemplate = 200908261200.jpg.template
-datafileMask =  kitcube_cc2_<index>.jpg
+datafileMask = kitcube_cc2_<index>.jpg
 samplingTime = 2 min
 remoteDir = imk-wk1:/home/cube
+
+[SCI]
+moduleName = SCI
+moduleNumber = 50
+moduleType = Scintillometer
+moduleComment = SCI_comment
+sensorGroup = RES
+sensorList = scintillometer.RES.sensors
+datafileTemplate = 100727.RES.template
+datafileMask = <index>.RES
+samplingTime = 1 min
+remoteDir = pc-szint:/cygdrive/c/
