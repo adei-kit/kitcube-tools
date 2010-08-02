@@ -15,7 +15,7 @@ libkitcube_devices_a_SOURCES = daqdevice.h daqdevice.cpp createdevice.h createde
 	simrandom.h simrandom.cpp mast.h mast.cpp ceilometer.h ceilometer.cpp \
 	norbert.h norbert.cpp jwd.h jwd.cpp parsivel.h parsivel.cpp \
 	mrr.h mrr.cpp regenwippe.h regenwippe.cpp wolkenkamera.h wolkenkamera.cpp \
-	scintillometer.cpp scintillometer.h \
+	scintillometer.cpp scintillometer.h 3m.cpp 3m.h \
 	syslog.h syslog.cpp lara.h lara.cpp
 
 libkitcube_devices_a_CXXFLAGS =
