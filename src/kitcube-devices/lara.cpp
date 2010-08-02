@@ -356,13 +356,13 @@ void Lara::readHeader(char *filename){
 }
 
 
-void Lara::parseData(char *line, struct timeval *l_tData, float *sensorValue){
+void Lara::parseData(char *line, struct timeval *l_tData, double *sensorValue){
     unsigned long tNew;
 	unsigned long nShift;
 	
 	// read nSensor values
 	// TODO: Implement for variable number nSensor 
-	sscanf(line, "%f%f%f%f%f%f%f%f",
+	sscanf(line, "%lf%lf%lf%lf%lf%lf%lf%lf",
 		   &sensorValue[0], &sensorValue[1], &sensorValue[2], &sensorValue[3],
 		   &sensorValue[4], &sensorValue[5], &sensorValue[6], &sensorValue[7]);
 	

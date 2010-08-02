@@ -59,7 +59,7 @@ void regenwippe::setConfigDefaults(){
 }
 
 
-void regenwippe::parseData(char *line, struct timeval *l_tData, float *sensorValue){
+void regenwippe::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	struct tm timestamp;
 	char* puffer;
 	int sensor_value_new;
@@ -79,7 +79,7 @@ void regenwippe::parseData(char *line, struct timeval *l_tData, float *sensorVal
 	if (sensor_value_new < sensor_value_old) {	// overflow
 		sensorValue[0] = 999999;
 	} else {
-		sensorValue[0] = (float)(sensor_value_new - sensor_value_old) * 0.2;
+		sensorValue[0] = (double)(sensor_value_new - sensor_value_old) * 0.2;
 	}
 	
 	// get seconds since the Epoch

@@ -514,7 +514,7 @@ void Mast::writeHeader(){
 }
 
 
-void Mast::parseData(char *line, struct timeval *l_tData, float *sensorValue){
+void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	float *local_sensorValue;
 	struct SPackedTime *time;
 	struct tm tm_zeit;

@@ -147,7 +147,7 @@ void dreim::setConfigDefaults(){
 }
 
 
-void dreim::parseData(char *line, struct timeval *l_tData, float *sensorValue){
+void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	struct tm timestamp;
 	char *puffer;
 	double dummy;
@@ -160,7 +160,7 @@ void dreim::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
 		
 		// read sensor values of one line of data
-		sscanf(puffer, ",%lf,%f,%f,%f,%f,%f",
+		sscanf(puffer, ",%lf,%lf,%lf,%lf,%lf,%lf",
 		       &dummy,
 		       &sensorValue[0], &sensorValue[1], &sensorValue[2],
 		       &sensorValue[3], &sensorValue[4]);
@@ -177,7 +177,7 @@ void dreim::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 		// get ms
 		
 		// read sensor values of one line of data
-		sscanf(puffer, ",%lf,%f,%f,%f,%f",
+		sscanf(puffer, ",%lf,%lf,%lf,%lf,%lf",
 		       &dummy,
 		       &sensorValue[0], &sensorValue[1], &sensorValue[2], &sensorValue[3]);
 		

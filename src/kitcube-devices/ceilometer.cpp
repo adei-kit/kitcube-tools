@@ -359,7 +359,7 @@ void Ceilometer::writeHeader(){
 }
 
 
-void Ceilometer::parseData(char *line, struct timeval *l_tData, float *sensorValue){
+void Ceilometer::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	std::string timeString;
 	std::string dateString;
 	unsigned long timestamp;
@@ -395,7 +395,7 @@ void Ceilometer::parseData(char *line, struct timeval *l_tData, float *sensorVal
 		sensorString = (char *) (buf + sensorPtr[j]);
 		//buf[sensorPtr[1]-1] = 0;
 		sensorValue[j] = noData;
-		err = sscanf(sensorString, "%f", &sensorValue[j]);
+		err = sscanf(sensorString, "%lf", &sensorValue[j]);
 	}
 }
 

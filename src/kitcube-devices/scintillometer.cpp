@@ -118,7 +118,7 @@ void sci::setConfigDefaults(){
 }
 
 
-void sci::parseData(char *line, struct timeval *l_tData, float *sensorValue){
+void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	struct tm timestamp;
 	char *puffer;
 	
@@ -157,7 +157,7 @@ void sci::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 	}
 	
 	// read sensor values
-	sscanf(puffer, "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f",
+	sscanf(puffer, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
 	       &sensorValue[0], &sensorValue[1], &sensorValue[2], &sensorValue[3],
 	       &sensorValue[4], &sensorValue[5], &sensorValue[6], &sensorValue[7],
 	       &sensorValue[8], &sensorValue[9], &sensorValue[10], &sensorValue[11],

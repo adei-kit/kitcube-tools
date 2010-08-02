@@ -30,7 +30,7 @@ public:
 	
 	void readHeader(const char *filename);
 	
-	void parseData(char *line, struct timeval *l_tData, float *sensorValue);
+	void parseData(char *line, struct timeval *l_tData, double *sensorValue);
 	
 	void copyRemoteData();
 	

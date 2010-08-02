@@ -133,7 +133,7 @@ void jwd::setConfigDefaults(){
 }
 
 
-void jwd::parseData(char *line, struct timeval *l_tData, float *sensorValue){
+void jwd::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	int yday, mod;
 	char date[7] = {0}, time[5] = {0};
 	struct tm timestamp;
@@ -144,7 +144,7 @@ void jwd::parseData(char *line, struct timeval *l_tData, float *sensorValue){
 	
 	if (sensorGroup == "dd") {
 		// read date, time and sensor values of one line of data
-		sscanf(line, "%s %i %s %i %f %f %f %f %f %f %f %f",
+		sscanf(line, "%s %i %s %i %lf %lf %lf %lf %lf %lf %lf %lf",
 			date, &yday, time, &mod,
 			&sensorValue[0], &sensorValue[1], &sensorValue[2], &sensorValue[3],
 			&sensorValue[4], &sensorValue[5], &sensorValue[6], &sensorValue[7]);

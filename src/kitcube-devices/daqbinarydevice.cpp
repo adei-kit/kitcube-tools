@@ -175,7 +175,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	int fd_data_file;
 	int j, k;
 	//char *sensorString;
-	float* local_sensorValue;
+	double *local_sensorValue;
 	//int err;
 	//std::string timeString;
 	//std::string dateString;
@@ -242,9 +242,9 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	
 	// Allocate memory for sensor values
 	if (profile_length != 0) {
-		local_sensorValue = new float [nSensors * profile_length];
+		local_sensorValue = new double [nSensors * profile_length];
 	} else {
-		local_sensorValue = new float [nSensors];
+		local_sensorValue = new double [nSensors];
 	}
 	
 	if (debug >= 1)
@@ -312,7 +312,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 					}
 				} else {
 					for (j = 0; j < nSensors; j++) {
-						printf("%10.3f ", local_sensorValue[j]);
+						printf("%f ", local_sensorValue[j]);
 					}
 				}
 				printf("\n");
