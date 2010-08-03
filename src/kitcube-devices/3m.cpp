@@ -39,7 +39,7 @@ void dreim::readHeader(const char *filename){
 			sensor[i].height = 5;
 		}
 		
-		sensor[0].comment = "Air temparature";
+		sensor[0].comment = "air temperature";
 		sensor[0].data_format = "<scalar>";
 		
 		sensor[1].comment = "relative humidity";
@@ -110,8 +110,11 @@ void dreim::readHeader(const char *filename){
 	} else if (sensorGroup == "sonic") {
 		lenHeader = 74;
 		
-		lenDataSet = 55;
+		lenDataSet = 64;	// including some extra bytes!
 		
+		profile_length = 0;
+		
+		// list of sensors
 		nSensors = 4;
 		sensor = new struct sensorType [nSensors];
 		
@@ -123,7 +126,7 @@ void dreim::readHeader(const char *filename){
 		sensor[0].comment = "wind speed, east";
 		sensor[0].data_format = "<scalar>";
 		
-		sensor[1].comment = "wind speed north";
+		sensor[1].comment = "wind speed, north";
 		sensor[1].data_format = "<scalar>";
 		
 		sensor[2].comment = "vertical wind speed";
@@ -151,6 +154,7 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	struct tm timestamp;
 	char *puffer;
 	double dummy;
+	int msec;
 	
 	
 	// TODO/FIXME: are data timestamps in UTC or local time?
@@ -164,7 +168,6 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		       &dummy,
 		       &sensorValue[0], &sensorValue[1], &sensorValue[2],
 		       &sensorValue[3], &sensorValue[4]);
-		
 	} else if (sensorGroup == "gps") {
 		// read date and time
 		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
@@ -174,13 +177,25 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		// read date and time
 		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
 		
-		// get ms
+		// get ms part of time stamp, if there is one
+		if (*puffer == '.') {
+			// read ms part of time stamp
+			sscanf(puffer, ".%d", &msec);
+			
+			l_tData->tv_usec = msec * 1000;
+			
+			// set pointer to "begin of data" as if there was no ms part
+			puffer = strchr(puffer, ',');
+		} else if (*puffer == ',') {
+			l_tData->tv_usec = 0;
+		} else {
+			printf("Error: unknown data format!\n");
+		}
 		
 		// read sensor values of one line of data
 		sscanf(puffer, ",%lf,%lf,%lf,%lf,%lf",
 		       &dummy,
 		       &sensorValue[0], &sensorValue[1], &sensorValue[2], &sensorValue[3]);
-		
 	}
 	
 	// get seconds since the Epoch
