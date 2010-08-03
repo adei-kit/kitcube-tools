@@ -130,7 +130,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 #endif
 	
 	if (debug >= 1)
-		printf("\n_____DAQBinaryDevice::readData(const char *dir, const char *filename)_____\n");
+		printf("\n_____DAQAsciiDevice::readData(const char *dir, const char *filename)_____\n");
 	
 	// Compile file name
 	filenameData = dir;
@@ -217,7 +217,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 		
 		if (lPtr > 0){
 			if (debug >= 3)
-				printf("%4d: Received %4d bytes ---- ", iLoop, (int) strlen(buf));
+				printf("%4d: Received %4d bytes --- ", iLoop, (int) strlen(buf));
 			
 			// Module specific implementation
 			// Might be necessary to
@@ -225,7 +225,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 			
 			// print sensor values
 			if (debug >= 3) {
-				printf("%lds %6ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
+				printf("%lds %6ldus --- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
 						for (k = 0; k < profile_length; k++) {
