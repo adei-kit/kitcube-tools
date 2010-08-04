@@ -38,7 +38,7 @@ public:
 	unsigned int getSensorGroup();
 
 private:
-
+	double convert_coordinate(char *coordinate_string);
 
 };
 

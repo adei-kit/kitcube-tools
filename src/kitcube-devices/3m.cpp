@@ -62,7 +62,7 @@ void dreim::readHeader(const char *filename){
 	} else if (sensorGroup == "gps") {
 		lenHeader = 128;
 		
-		lenDataSet = 128;	// 85 plus kleiner Puffer, hier OK, da fgets nach "\n" stoppt
+		lenDataSet = 128;	// inkl. kleiner Puffer, hier OK, da fgets nach "\n" stoppt
 		
 		profile_length = 0;
 		
@@ -152,7 +152,7 @@ void dreim::setConfigDefaults(){
 
 void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	struct tm timestamp;
-	char *puffer;
+	char *puffer, *tmp, *saveptr;
 	double dummy;
 	int msec;
 	
@@ -171,6 +171,44 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	} else if (sensorGroup == "gps") {
 		// read date and time
 		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
+		
+		// get ms part of time stamp, if there is one
+		if (*puffer == '.') {
+			// read ms part of time stamp
+			sscanf(puffer, ".%d", &msec);
+			
+			l_tData->tv_usec = msec * 1000;
+			
+			// set pointer to "begin of data" as if there was no ms part
+			puffer = strchr(puffer, ',');
+		} else if (*puffer == ',') {
+			l_tData->tv_usec = 0;
+		} else {
+			printf("Error: unknown data format!\n");
+		}
+		
+		// read dummy value
+		strtok_r(puffer, ",", &saveptr);
+		
+		// read GPS latitude
+		tmp = strtok_r(NULL, ",\"", &saveptr);
+		sensorValue[0] = convert_coordinate(tmp);
+		
+		// read GPS longitude
+		tmp = strtok_r(NULL, ",\"", &saveptr);
+		sensorValue[1] = convert_coordinate(tmp);
+		
+		// read GPS altitude
+		tmp = strtok_r(NULL, ",\"", &saveptr);
+		if (strcmp(tmp, "nan") == 0) {
+			sensorValue[2] = noData;
+		} else {
+			sensorValue[2] = atof(tmp);
+		}
+		
+		// read GPS date
+		tmp = strtok_r(NULL, ",\"", &saveptr);
+		
 		
 		
 	} else if (sensorGroup == "sonic") {
@@ -276,4 +314,38 @@ unsigned int dreim::getSensorGroup(){
 	}
 	
 	return number;
+}
+
+
+double dreim::convert_coordinate(char *coordinate_string) {
+	char *tmp, *saveptr;
+	double degree, minute, coordinate;
+	
+	// get degree value
+	tmp = strtok_r(coordinate_string, " ", &saveptr);
+	degree = atof(tmp);
+	
+	// get N/S or E/W
+	tmp = strtok_r(NULL, " ", &saveptr);
+	switch (*tmp) {
+		case 'N':
+		case 'E':
+			coordinate = degree;
+			break;
+		case 'S':
+		case 'W':
+			coordinate = -degree;
+			break;
+		default:
+			printf("Error: invalid coordinates!\n");
+	}
+	
+	//get minutes value
+	tmp = strtok_r(NULL, " ", &saveptr);
+	minute = atof(tmp);
+	
+	//
+	coordinate += minute / 60.;
+	
+	return coordinate;
 }
