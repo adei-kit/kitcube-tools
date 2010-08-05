@@ -1,0 +1,8 @@
+         1	Latitude	3M.GPS.G.LAT.001.AVG	GI
+         2	Longitude	3M.GPS.G.LONG.001.AVG	GI
+         3	Altitude	3M.GPS.G.ALT.001.AVG	H
+         4	GPS timestamp	3M.GPS.Y.DAT.001.AVG	NO
+         5	time difference median	3M.GPS.Y.TIMDIFF.001.AVG	NO
+         6	time difference max	3M.GPS.Y.TIMDIFF.001.MAX	NO
+         7	time difference min	3M.GPS.Y.TIMDIFF.001.MIN	NO
+         8	Time correction	3M.GPS.Y.TIM.001.AVG	NO

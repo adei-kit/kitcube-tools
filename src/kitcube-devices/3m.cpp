@@ -67,7 +67,7 @@ void dreim::readHeader(const char *filename){
 		profile_length = 0;
 		
 		// List of sensors
-		nSensors = 9;
+		nSensors = 8;
 		sensor = new struct sensorType [nSensors];
 		
 		// set default value for height
@@ -84,23 +84,20 @@ void dreim::readHeader(const char *filename){
 		sensor[2].comment = "Altitude";
 		sensor[2].data_format = "<scalar>";
 		
-		sensor[3].comment = "GPS date";
+		sensor[3].comment = "GPS timestamp";
 		sensor[3].data_format = "<scalar>";
 		
-		sensor[4].comment = "GPS time";
+		sensor[4].comment = "time difference median";
 		sensor[4].data_format = "<scalar>";
 		
-		sensor[5].comment = "time difference median";
+		sensor[5].comment = "time difference max";
 		sensor[5].data_format = "<scalar>";
 		
-		sensor[6].comment = "time difference max";
+		sensor[6].comment = "time difference min";
 		sensor[6].data_format = "<scalar>";
 		
-		sensor[7].comment = "time difference min";
+		sensor[7].comment = "Time correction";
 		sensor[7].data_format = "<scalar>";
-		
-		sensor[8].comment = "Time correction";
-		sensor[8].data_format = "<scalar>";
 		
 		if (debug) {
 			for (int i = 0; i < nSensors; i++) {
@@ -151,8 +148,8 @@ void dreim::setConfigDefaults(){
 
 
 void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
-	struct tm timestamp;
-	char *puffer, *tmp, *saveptr;
+	struct tm timestamp, gps_timestamp;
+	char *puffer, *saveptr;
 	double dummy;
 	int msec;
 	
@@ -163,7 +160,7 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		// read date and time
 		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
 		
-		// read sensor values of one line of data
+		// read dummy value "period" and sensor values of one line of data
 		sscanf(puffer, ",%lf,%lf,%lf,%lf,%lf,%lf",
 		       &dummy,
 		       &sensorValue[0], &sensorValue[1], &sensorValue[2],
@@ -187,30 +184,32 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 			printf("Error: unknown data format!\n");
 		}
 		
-		// read dummy value
-		strtok_r(puffer, ",", &saveptr);
+		// read dummy value "period"
+		puffer = strtok_r(puffer, ",", &saveptr);
 		
 		// read GPS latitude
-		tmp = strtok_r(NULL, ",\"", &saveptr);
-		sensorValue[0] = convert_coordinate(tmp);
+		puffer = strtok_r(NULL, ",\"", &saveptr);
+		sensorValue[0] = convert_coordinate(puffer);
 		
 		// read GPS longitude
-		tmp = strtok_r(NULL, ",\"", &saveptr);
-		sensorValue[1] = convert_coordinate(tmp);
+		puffer = strtok_r(NULL, ",\"", &saveptr);
+		sensorValue[1] = convert_coordinate(puffer);
 		
 		// read GPS altitude
-		tmp = strtok_r(NULL, ",\"", &saveptr);
-		if (strcmp(tmp, "nan") == 0) {
+		puffer = strtok_r(NULL, ",", &saveptr);
+		if (strcmp(puffer, "nan") == 0) {
 			sensorValue[2] = noData;
 		} else {
-			sensorValue[2] = atof(tmp);
+			sensorValue[2] = atof(puffer);
 		}
 		
-		// read GPS date
-		tmp = strtok_r(NULL, ",\"", &saveptr);
+		// read GPS timestamp
+		puffer = strptime(saveptr, "%Y-%m-%d,%T", &gps_timestamp);
+		sensorValue[3] = timegm(&gps_timestamp);	// FIXME: function is non-standard GNU extension
 		
-		
-		
+		// read time difference median, max, min and time correction
+		sscanf(puffer, ",%lf,%lf,%lf,%lf",
+		       &sensorValue[4], &sensorValue[5], &sensorValue[6], &sensorValue[7]);
 	} else if (sensorGroup == "sonic") {
 		// read date and time
 		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
@@ -230,7 +229,7 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 			printf("Error: unknown data format!\n");
 		}
 		
-		// read sensor values of one line of data
+		// read dummy value "period" and sensor values of one line of data
 		sscanf(puffer, ",%lf,%lf,%lf,%lf,%lf",
 		       &dummy,
 		       &sensorValue[0], &sensorValue[1], &sensorValue[2], &sensorValue[3]);
