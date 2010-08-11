@@ -535,9 +535,9 @@ void DAQDevice::closeFile(){
 void DAQDevice::copyRemoteData(){
 	struct timeval t0, t1;
 	struct timezone tz;
-	int err;
+	int err, pos;
 	char line[256];
-	std::string output;
+	std::string output, data_files_wildcard;
 	
 	
 	if (debug >= 1)
@@ -558,11 +558,16 @@ void DAQDevice::copyRemoteData(){
 		output = "";
 	else
 		output = " > /dev/null";
+	
+	data_files_wildcard = datafileMask;
+	pos = data_files_wildcard.find("<index>");
+	data_files_wildcard.replace(pos, 7, "*");
+	
 	sprintf(line, "rsync -avz %s --include='*/' --include='*.%s' --exclude='*' %s%s  %s%s %s",
-			rsyncArgs.c_str(), sensorGroup.c_str(),
-			remoteDir.c_str(), getDataDir(),
-			archiveDir.c_str(), getDataDir(), output.c_str());
-	if (debug >= 2) printf("%s\n", line);
+		rsyncArgs.c_str(), data_files_wildcard.c_str(), remoteDir.c_str(),
+		getDataDir(), archiveDir.c_str(), getDataDir(), output.c_str());
+	if (debug >= 2)
+		printf("%s\n", line);
 	
 	gettimeofday(&t0, &tz);
 	err = system(line);

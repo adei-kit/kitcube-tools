@@ -32,8 +32,6 @@ public:
 	
 	void parseData(char *line, struct timeval *l_tData, double *sensorValue);
 	
-	void copyRemoteData();
-	
 	/** Define a sensor group number for all the availble sensor group files */
 	unsigned int getSensorGroup();
 

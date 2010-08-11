@@ -35,8 +35,6 @@ public:
 	
 	void writeData();
 	
-	void copyRemoteData();
-	
 	/** Define a sensor group number for all the availble sensor group files */
 	unsigned int getSensorGroup();
 
