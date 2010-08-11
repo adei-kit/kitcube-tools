@@ -770,3 +770,36 @@ datafileTemplate = 100727.RES.template
 datafileMask = <index>.RES
 samplingTime = 1 min
 remoteDir = pc-szint:/cygdrive/c/
+
+[3M-data]
+moduleName = 3M
+moduleNumber = 55
+moduleType = 3M
+moduleComment = 3M_data
+sensorGroup = data
+sensorList = 3M.data.sensors
+datafileTemplate = data.csv.template
+datafileMask = 20<index>.data.csv
+samplingTime = 5 sec
+
+[3M-gps]
+moduleName = 3M
+moduleNumber = 55
+moduleType = 3M
+moduleComment = 3M_gps
+sensorGroup = gps
+sensorList = 3M.gps.sensors
+datafileTemplate = data.csv.template
+datafileMask = <index>.gps.csv
+samplingTime = 60 min
+
+[3M-sonic]
+moduleName = 3M
+moduleNumber = 55
+moduleType = 3M
+moduleComment = 3M_sonic
+sensorGroup = sonic
+sensorList = 3M.sonic.sensors
+datafileTemplate = data.csv.template
+datafileMask = <index>.sonic.csv
+samplingTime = 0.03125 sec
