@@ -144,15 +144,6 @@ public:
 	virtual void updateDataSet(unsigned char* buf);
 	
 	virtual void writeData();
-
-	
-	/** Get index / time stamp of a folder or a filename.
-	  * The index field is defined by a starting tag directly before the numerical values.
-	  * The length of the field can be given by a final string of the length of the field or
-	  * all following digit will be taken.
-	  * In case of success the parsed numerical values will cut out of the passed filename.
-	  */
-	unsigned long getIndex(char* filename, char* firstTag, char* lastTag = 0, int len = 0, char* next = 0);
 	
 	/** Get the ranking number from a filename. The returned number can be used
 	  * to order files by their date. Smaller numbers are processed before larger ones.
