@@ -26,7 +26,7 @@ DAQDevice::DAQDevice(){
 	profile_length = 0;
 	
 	fileIndex = 0;
-	nLine = 0;	
+	nLine = 0;
 	filenameMarker = ".kitcube-data.marker";
 	
 	axis = 0;
@@ -50,7 +50,8 @@ DAQDevice::~DAQDevice(){
 	
 	// Save current position
 	if (fileIndex != 0) {
-		if (debug>2) printf("Closing data file, save file position in %s\n", filenameMarker.c_str());
+		if (debug>2)
+			printf("Closing data file, save file position in %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark > 0) {
 			fprintf(fmark, "%ld\t%d\n", fileIndex, nLine);
@@ -179,7 +180,8 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		
 		// Read global parameters
 		// The parameters should be the same for the whole system
-		if (debug > 2) printf("[Common]\n");
+		if (debug > 2)
+			printf("[Common]\n");
 		ini->SpecifyGroup("Common");
 		this->project = ini->GetFirstString("project", project.c_str(), &error);
 		this->dbHost = ini->GetFirstString("dbHost", dbHost.c_str(), &error);
@@ -209,7 +211,8 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->archiveDir += line;
 		
 		
-		if (debug > 2) printf("[%s]\n", iniGroup.c_str());
+		if (debug > 2)
+			printf("[%s]\n", iniGroup.c_str());
 		// Module specific parameters
 		ini->SpecifyGroup(iniGroup.c_str());
 		this->moduleNumber = ini->GetFirstValue("moduleNumber", (int) moduleNumber, &error);
@@ -271,7 +274,7 @@ void DAQDevice::readAxis(const char *inifile){
 	std::string item;
 	
 	
-	if (debug > 3)
+	if (debug >= 1)
 		printf("_____DAQDevice::readAxis()_____\n");
 	
 	//ini = new akInifile(inifile, stdout);
@@ -332,7 +335,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	std::string sLine;
 	
 	
-	if (debug > 3)
+	if (debug >= 1)
 		printf("_____DAQDevice::getSensorNames()_____\n");
 	
 	// Will need the axis definition for parsing the sensor names
@@ -340,7 +343,8 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	
 	
 	sprintf(line, "%s%s", configDir.c_str(), sensorListfile);
-	if (debug > 3) printf("Read sensor names from list %s\n", line);
+	if (debug > 3)
+		printf("Read sensor names from list %s\n", line);
 	
 	// Open list file
 	flist = fopen(line, "r");
@@ -370,7 +374,8 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 		// Read names, compare with the names in the data base?!
 		n = fgets(line, 256, flist);
 		if (n > 0) {
-			if (debug > 4) printf("%d: %s", i+1, line);
+			if (debug > 4)
+				printf("%d: %s", i+1, line);
 			// Parse the line <TAB> splits the fields
 			// Fields: Number <TAB> Description <TAB> KITCube Sensor name <TAB> Axis name
 			namePtr = strchr(line, '\t'); // Field 2
@@ -484,6 +489,8 @@ void::DAQDevice::createDirectories(const char *path){
 	
 	if (debug >= 1) {
 		printf("\n_____DAQDevice::createDirectories(const char *path)_____\n");
+	}
+	if (debug >= 2) {
 		printf("Creating directory: %s\n", path);
 	}
 	
@@ -770,8 +777,9 @@ void DAQDevice::openDatabase(){
 			if (axis[i].name == row[1]){
 				axis[i].isNew = false;
 				axis[i].id = atoi(row[0]);
-				if (debug > 2) printf("The axis %s is already defined in the axis list (id=%d)\n",
-									  axis[i].name.c_str(), axis[i].id);
+				if (debug > 2)
+					printf("The axis %s is already defined in the axis list (id=%d)\n",
+					       axis[i].name.c_str(), axis[i].id);
 				break;
 			}
 		}
@@ -1042,7 +1050,8 @@ void DAQDevice::storeSensorData(){
 		}	
 		
 		gettimeofday(&t1, &tz);
-		if (debug > 3) printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
+		if (debug > 3)
+			printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 		
 	} else {
 		printf("Error: No database availabe\n");
@@ -1176,7 +1185,9 @@ int DAQDevice::getFileNumber(char* filename){
 		if (pos_prefix == 0) {
 			filename_string.erase(pos_prefix, length_prefix);
 		} else {
-			throw std::invalid_argument("Prefix not found or not at the beginning of file name");
+			if (debug >= 3)
+				printf("Prefix not found or not at the beginning of file name");
+			return 0;
 		}
 	}
 	
@@ -1187,7 +1198,9 @@ int DAQDevice::getFileNumber(char* filename){
 		if ((pos_suffix != std::string::npos) && ((pos_suffix + length_suffix) == filename_length)) {
 			filename_string.erase(pos_suffix, length_suffix);
 		} else {
-			throw std::invalid_argument("Suffix not found or not at end of file name");
+			if (debug >= 3)
+				printf("Suffix not found or not at end of file name");
+			return 0;
 		}
 	}
 	
@@ -1196,13 +1209,13 @@ int DAQDevice::getFileNumber(char* filename){
 	index = atoi(filename_string.c_str());
 	
 	if (debug >= 2)
-		printf("Index is: %d\n", index);
+		printf("File number is: %d\n", index);
 	
 	return index;
 }
 
 
-void DAQDevice::getNewFiles(){
+void DAQDevice::getNewFiles() {
 	std::string dataDir;
 	std::string lastFile;
 	DIR *din;
@@ -1237,22 +1250,19 @@ void DAQDevice::getNewFiles(){
 	// Get the last file (from pseudo inifile?)
 	// Define template for the data file name or the folder name?!
 	//
-	// TODO: Get the template name from device class
-	//datafileMask = "Mast-<index>.dat";
-	//datafileMask = "M12_<index>.DAR";
-	//dataDir = "./"; // Open current dir
-	//dataDir = "./data/"; // Open current dir
 
 	if (debug >= 1) {
 		printf("\n_____DAQDevice::getNewFiles()_____\n");
-		printf("Reading from %s\n", dataDir.c_str());
 	}
-	
 	
 	processedData = 0; // Counter for the processed bytes
 	
 	dataDir = archiveDir + getDataDir();
 	
+	if (debug >= 1) {
+		printf("Reading from %s\n", dataDir.c_str());
+	}
+
 	// Get all alphabetical following files
 	din  = opendir(dataDir.c_str());
 	if (din == 0) {
@@ -1262,7 +1272,9 @@ void DAQDevice::getNewFiles(){
 	
 	// How many entries are in the dir?
 	nFiles = 0;
-	while ((file = readdir(din)) != NULL) {nFiles++;};
+	while ((file = readdir(din)) != NULL) {
+		nFiles++;
+	}
 	
 	// Initialize the file list
 	// The lists starts at 0 and ends 0 again
@@ -1284,25 +1296,16 @@ void DAQDevice::getNewFiles(){
 	rewinddir(din);
 	
 	while ((file = readdir(din)) != NULL) {
+		if (debug >= 2)
+			printf("\nFile type: %2d, file name: %s\n", file->d_type, file->d_name);
 		
-		if (debug >= 2) printf("File type: %2d, file name: %s\n", file->d_type, file->d_name);
-		
-		if (file->d_type == DT_REG){
-			try {
-				// Get the number of the file that can be used to order the files
-				// Which one to read first
-				index = getFileNumber(file->d_name);
-				
+		if (file->d_type == DT_REG) {
+			// get some number for the file to order it in time
+			// mostly the timestamp part of the filename
+			index = getFileNumber(file->d_name);
+			
+			if (index != 0) {
 				// Insert in the list.
-				
-				// TODO: Check first, if the current files should go to the end
-				// --> The following code is NOT working !!!
-				//if (index > listIndex[nList-1]){
-				//	//printf("Add to end of list\n");
-				//	i = nList-1;
-				//} else {
-				
-				
 				// Read the index of the following item in order to find the right slot for the current file
 				i = 0;
 				j = 0;
@@ -1311,36 +1314,23 @@ void DAQDevice::getNewFiles(){
 					j++;
 				}
 				
-				//}
-				
 				// Fill in the new entry in the list
 				listName[nList] = file->d_name;
 				listIndex[nList] = index;
 				listNext[nList] = listNext[i];
 				listNext[i] = nList;
 				nList++;
-				
-				//next = 0;
-				//for(i=0;i<nList;i++){
-				//	//printf(" %d  %d %d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
-				//	printf(" %d  %d  %s\n", next, listIndex[next], listName[next].c_str());
-				//	next = listNext[next];
-				//}
-				
-			} catch (std::invalid_argument &err) {
-				printf("Error in file name '%s': %s\n", file->d_name, err.what());
 			}
 		}
 	}
 	
 	closedir(din);
 	
-	
-	if (debug >= 2){
+	if (debug >= 2) {
 		printf("\nList of data files in %s:\n", dataDir.c_str());
-		printf(" %6s  %12s %6s %s\n", "No", "Index", "Next", "Filename");
+		printf("%6s %12s %6s %s\n", "No", "Index", "Next", "Filename");
 		for (i = 0; i < nList; i++) {
-			printf(" %6d  %12u %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
+			printf("%6d %12u %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
 		}
 		printf("\n");
 	}
@@ -1382,7 +1372,8 @@ void DAQDevice::getNewFiles(){
 					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
 					initDone = 1;
 				}
-				if (debug) printf("Reading file %d, index %d ___ %s (continued)\n", next, listIndex[next], listName[next].c_str());
+				if (debug)
+					printf("Reading file %d, index %d ___ %s (continued)\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
 			}
 			
@@ -1396,12 +1387,12 @@ void DAQDevice::getNewFiles(){
 					fclose(fmark);
 				}
 				
-
-				if (debug == 0){ 
+				if (debug == 0){
 					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
 					initDone = 1;
 				}
-				if (debug) printf("Reading file %d, index %d ___ %s\n", next, listIndex[next], listName[next].c_str());
+				if (debug)
+					printf("Reading file %d, index %d ___ %s\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
 			}
 			
@@ -1424,7 +1415,7 @@ void DAQDevice::getNewFiles(){
 		closeDatabase();
 	}
 	
-	// Note: 
+	// Note:
 	// The marker file is also updated in readData() with the lastest position in file pointer
 	//
 	
