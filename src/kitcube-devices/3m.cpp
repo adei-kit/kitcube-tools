@@ -20,6 +20,8 @@ dreim::~dreim(){
 
 
 void dreim::readHeader(const char *filename){
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	noData = 999999;
 	
@@ -154,6 +156,9 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	int msec;
 	
 	
+	if (debug >= 4)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	// TODO/FIXME: are data timestamps in UTC or local time?
 	
 	if (sensorGroup == "data") {
@@ -243,6 +248,10 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 unsigned int dreim::getSensorGroup(){
 	unsigned int number;
 	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	number = 0;
 	buffer = "";
 	
@@ -269,6 +278,10 @@ unsigned int dreim::getSensorGroup(){
 double dreim::convert_coordinate(char *coordinate_string) {
 	char *tmp, *saveptr;
 	double degree, minute, coordinate;
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// get degree value
 	tmp = strtok_r(coordinate_string, " ", &saveptr);

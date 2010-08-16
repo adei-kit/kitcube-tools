@@ -109,7 +109,7 @@ void DAQBinaryDevice::writeData(){
 	
 	
 	if (debug >= 1)
-		printf("_____DAQBinaryDevice::writeData()_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	if (sensorGroup == "nc"){
 		// Analyse time stamp, if new day a new file needs to copied
@@ -208,7 +208,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 #endif
 	
 	if (debug >= 1)
-		printf("\n_____DAQBinaryDevice::readData(const char *dir, const char *filename)_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// Compile file name
 	filenameData = dir;
@@ -294,15 +294,13 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		n = read(fd_data_file, buf, len);
 		
 		if (n == len){
-			if (debug >= 3)
-				printf("%4d: Received %4d bytes ---- ", iLoop, n);
-			
 			// Module specific implementation
 			// Might be necessary to
 			parseData((char *)buf, &timestamp_data, local_sensorValue);
 			
 			// print sensor values
-			if (debug >= 3) {
+			if (debug >= 4) {
+				printf("%4d: Received %4d bytes ---- ", iLoop, n);
 				printf("%lds %6ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
@@ -370,7 +368,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 				}
 				
 				gettimeofday(&t1, &tz);
-				if (debug >= 4)
+				if (debug >= 5)
 					printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
 			} else {
 				printf("Error: No database availabe\n");

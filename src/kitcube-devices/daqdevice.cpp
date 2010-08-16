@@ -108,7 +108,8 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	float tValue;
 	std::string tUnit;
 	
-	printf("_____DAQDevice::readInifile()_____\n");
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	//
 	// Get the module number
@@ -275,7 +276,7 @@ void DAQDevice::readAxis(const char *inifile){
 	
 	
 	if (debug >= 1)
-		printf("_____DAQDevice::readAxis()_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	//ini = new akInifile(inifile, stdout);
 	ini = new akInifile(inifile);
@@ -336,7 +337,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	
 	
 	if (debug >= 1)
-		printf("_____DAQDevice::getSensorNames()_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// Will need the axis definition for parsing the sensor names
 	if (axis == 0) readAxis(this->inifile.c_str());
@@ -487,12 +488,11 @@ void::DAQDevice::createDirectories(const char *path){
 	int i;
 	
 	
-	if (debug >= 1) {
-		printf("\n_____DAQDevice::createDirectories(const char *path)_____\n");
-	}
-	if (debug >= 2) {
-		printf("Creating directory: %s\n", path);
-	}
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	if (debug >= 2)
+		printf("Creating directory '%s'\n", path);
 	
 	// Check if the base directory exists
 	pathname = path;
@@ -503,7 +503,7 @@ void::DAQDevice::createDirectories(const char *path){
 		pos1 = pathname.find("/", pos0);
 		if (pos1 != std::string::npos) {
 			dir = pathname.substr(0, pos1);
-			if (debug >= 4)
+			if (debug >= 3)
 				printf("Create directory %s (%ld, %ld)\n", dir.c_str(), pos0, pos1);
 			if (dir.length() > 0)	// FIXME: do we really need this check?
 				mkdir(dir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
@@ -548,7 +548,7 @@ void DAQDevice::copyRemoteData(){
 	
 	
 	if (debug >= 1)
-		printf("\n_____DAQDevice::copyRemoteData()_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	createDirectories((archiveDir + getDataDir()).c_str());
 	
@@ -564,7 +564,7 @@ void DAQDevice::copyRemoteData(){
 	if (debug >= 2)
 		output = "";
 	else
-		output = " > /dev/null";
+		output = "> /dev/null";
 	
 	data_files_wildcard = datafileMask;
 	pos = data_files_wildcard.find("<index>");
@@ -585,7 +585,7 @@ void DAQDevice::copyRemoteData(){
 		//throw std::invalid_argument("Synchronisation error (rsync)");
 	}
 	
-	if (debug >= 4)
+	if (debug >= 5)
 		printf("Rsync duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
 }
 
@@ -1050,7 +1050,7 @@ void DAQDevice::storeSensorData(){
 		}	
 		
 		gettimeofday(&t1, &tz);
-		if (debug > 3)
+		if (debug >= 5)
 			printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
 		
 	} else {
@@ -1085,9 +1085,10 @@ int DAQDevice::getFileNumber(char* filename){
 	
 	
 	if (debug >= 1)
-		printf("\n_____DAQDevice::getFileNumber(char* filename)_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	if (debug >= 2)
-		printf("From file %s\n", filename);
+		printf("... from file %s\n", filename);
 	
 	// Write the index of the file to a list
 	// Process in this list with the next index
@@ -1119,7 +1120,7 @@ int DAQDevice::getFileNumber(char* filename){
 			filename_string.erase(pos_prefix, length_prefix);
 		} else {
 			if (debug >= 3)
-				printf("Prefix not found or not at the beginning of file name");
+				printf("Prefix not found or not at the beginning of file name!\n");
 			return 0;
 		}
 	}
@@ -1132,7 +1133,7 @@ int DAQDevice::getFileNumber(char* filename){
 			filename_string.erase(pos_suffix, length_suffix);
 		} else {
 			if (debug >= 3)
-				printf("Suffix not found or not at end of file name");
+				printf("Suffix not found or not at end of file name!\n");
 			return 0;
 		}
 	}
@@ -1184,22 +1185,20 @@ void DAQDevice::getNewFiles() {
 	// Define template for the data file name or the folder name?!
 	//
 
-	if (debug >= 1) {
-		printf("\n_____DAQDevice::getNewFiles()_____\n");
-	}
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	processedData = 0; // Counter for the processed bytes
 	
 	dataDir = archiveDir + getDataDir();
 	
-	if (debug >= 1) {
-		printf("Reading from %s\n", dataDir.c_str());
-	}
+	if (debug >= 2)
+		printf("Reading from directory '%s'\n", dataDir.c_str());
 
 	// Get all alphabetical following files
 	din  = opendir(dataDir.c_str());
 	if (din == 0) {
-		printf("Directory %s is not available - waiting for data to arrive\n", dataDir.c_str());
+		printf("Directory '%s' is not available - waiting for data to arrive\n", dataDir.c_str());
 		return;
 	}
 	
@@ -1230,7 +1229,7 @@ void DAQDevice::getNewFiles() {
 	
 	while ((file = readdir(din)) != NULL) {
 		if (debug >= 2)
-			printf("\nFile type: %2d, file name: %s\n", file->d_type, file->d_name);
+			printf("File type: %2d, file name: %s\n", file->d_type, file->d_name);
 		
 		if (file->d_type == DT_REG) {
 			// get some number for the file to order it in time
@@ -1259,7 +1258,7 @@ void DAQDevice::getNewFiles() {
 	
 	closedir(din);
 	
-	if (debug >= 2) {
+	if (debug >= 1) {
 		printf("\nList of data files in %s:\n", dataDir.c_str());
 		printf("%6s %12s %6s %s\n", "No", "Index", "Next", "Filename");
 		for (i = 0; i < nList; i++) {

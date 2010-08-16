@@ -130,7 +130,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 #endif
 	
 	if (debug >= 1)
-		printf("\n_____DAQAsciiDevice::readData(const char *dir, const char *filename)_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// Compile file name
 	filenameData = dir;
@@ -216,15 +216,13 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 		lPtr = fgets(buf, len, fd_data_file);
 		
 		if (lPtr > 0){
-			if (debug >= 3)
-				printf("%4d: Received %4d bytes --- ", iLoop, (int) strlen(buf));
-			
 			// Module specific implementation
 			// Might be necessary to
 			parseData(buf, &timestamp_data, local_sensorValue);
 			
 			// print sensor values
-			if (debug >= 3) {
+			if (debug >= 4) {
+				printf("%4d: Received %4d bytes --- ", iLoop, (int) strlen(buf));
 				printf("%lds %6ldus --- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
@@ -292,7 +290,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 				}	
 				
 				gettimeofday(&t1, &tz);
-				if (debug >= 4)
+				if (debug >= 5)
 					printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
 			} else {
 				printf("Error: No database availabe\n");

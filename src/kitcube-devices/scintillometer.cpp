@@ -26,6 +26,8 @@ sci::~sci(){
 
 
 void sci::readHeader(const char *filename){
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	noData = 999999;
 	
@@ -123,6 +125,9 @@ void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	char *puffer;
 	
 	
+	if (debug >= 4)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	// read date and time
 	puffer = strptime(line + 5,"%Y-%m-%d %T", &timestamp);
 	
@@ -168,6 +173,10 @@ void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 
 unsigned int sci::getSensorGroup(){
 	unsigned int number;
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	number = 0;
 	buffer = "";
