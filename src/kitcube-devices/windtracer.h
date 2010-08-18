@@ -1,0 +1,88 @@
+/********************************************************************
+* Description:
+* Author: Norbert Flatinger, IPE
+* Created at: Mon Aug 16 16:17:30 CEST 2010
+*    
+* Copyright (c) 2010 Norbert Flatinger, IPE  All rights reserved.
+*
+********************************************************************/
+
+
+#ifndef WINDTRACER_H
+#define WINDTRACER_H
+
+
+#include "daqbinarydevice.h"
+
+#include <errno.h>
+
+
+#define RAW_RECORD_ID					0x0400
+
+#define PRODUCT_VELOCITY_RECORD_ID			0x0420
+#define PRODUCT_FILTERED_VELOCITY_RECORD_ID		0x0421
+#define PRODUCT_NOISE_COMP_RECORD_ID			0x0422
+
+#define PRODUCT_VAD_RECORD_ID				0x0430
+
+#define STATUS_RECORD_ID 				0x0440
+
+#define REPORTER_RECORD_ID				0x0442
+
+#define CONFIG_RECORD_ID				0x0460
+
+#define CLUTTER_MAP_RECORD_ID				0x0462
+#define TELNET_RECORD_ID				0x0463
+#define SUSPEND_RECORD_ID				0x0464
+#define RESUME_RECORD_ID				0x0465
+
+#define CONFIG_DATA_BLOCK_ID				0x04F0
+
+class windtracer: public DAQBinaryDevice  {
+public:
+	/**  */
+	windtracer();
+	/**  */
+	~windtracer();
+	
+	void setConfigDefaults();
+	
+	/** Read parameter from inifile */
+	//void readInifile(const char *inifile, const char *group = 0);
+	
+	/** Implements the data filename convention of the DAQ module. */
+	const char *getDataFilename();
+	
+	void replaceItem(const char **header, const char *itemTag, const char *newValue);
+	
+	const char * getStringItem(const char **header, const char *itemTag);
+	
+	int getNumericItem(const char **header, const char *itemTag);
+	
+	unsigned int getSensorGroup();
+	
+	const char *getSensorName(const char *longname, unsigned long *aggregation = 0);
+	
+//	const char *getSensorType(const char *unit);
+	
+	/** Get time until next sample and it's id */
+	void readHeader(const char *header);
+	
+	void writeHeader();
+	
+	void parseData(char *line, struct timeval *l_tData, double *sensorValue);
+	
+	/** Replace the time stamp of the data set by the current time */
+	void updateDataSet(unsigned char *buf);
+	
+private:
+	unsigned char *headerRaw;
+	
+	std::string experimentName;
+	
+	unsigned int tSample;
+	
+	struct timeval tRef;
+	
+};
+#endif

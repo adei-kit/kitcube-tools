@@ -21,6 +21,7 @@
 #include "wolkenkamera.h"
 #include "scintillometer.h"
 #include "3m.h"
+#include "windtracer.h"
 
 
 extern "C" void *createDevice(const char *devType) {
@@ -38,6 +39,7 @@ extern "C" void *createDevice(const char *devType) {
 	if (strcasestr(devType, "Wolkenkamera") > 0) return( new (wolkenkamera));
 	if (strcasestr(devType, "Scintillometer") > 0) return( new (sci));
 	if (strcasestr(devType, "3M") > 0) return( new (dreim));
+	if (strcasestr(devType, "windtracer") > 0) return( new (windtracer));
 	
 	if (strcasestr(devType, "Lara") > 0) return( new (Lara));
 	
