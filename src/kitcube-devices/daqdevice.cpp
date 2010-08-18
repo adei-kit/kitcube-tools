@@ -570,7 +570,7 @@ void DAQDevice::copyRemoteData(){
 	pos = data_files_wildcard.find("<index>");
 	data_files_wildcard.replace(pos, 7, "*");
 	
-	sprintf(line, "rsync -avz %s --include='*/' --include='*.%s' --exclude='*' %s%s  %s%s %s",
+	sprintf(line, "rsync -avz %s --include='*/' --include='%s' --exclude='*' %s%s  %s%s %s",
 		rsyncArgs.c_str(), data_files_wildcard.c_str(), remoteDir.c_str(),
 		getDataDir(), archiveDir.c_str(), getDataDir(), output.c_str());
 	if (debug >= 2)
