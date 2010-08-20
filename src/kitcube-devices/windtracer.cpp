@@ -51,6 +51,46 @@ struct ConfigurationRecord {
 };
 
 
+// Scan Info Block provides information about the scanner, it appears before each Raw Data Record and before a Product Data Record
+struct ScanInfo {
+	struct BlockDescriptor block_desc;
+	float fScanAzimuth_deg;
+	float fScanElevation_deg;
+	float fAzimuthRate_dps;
+	float fElevationRate_dps;
+	float fTargetAzimuth_deg;
+	float fTargetElevation_deg;
+	int32_t nScanEnabled;
+	int32_t nCurrentIndex;
+	int32_t nAcqScanState;
+	int32_t nDriverScanState;
+	int32_t nAcqDwellState;
+	int32_t nScanPatternType;
+	u_int32_t nValidPos;
+	int32_t nSSDoneState;
+	u_int32_t nErrorFlags;
+};
+
+
+// ProductPulseInfo appears before Product Data Blocks and contains information about the pulse used for that products
+struct ProductPulseInfo {
+	struct BlockDescriptor block_desc;
+	float fAzimuthMin_deg;
+	float fAzimuthMean_deg;
+	float fAzimuthMax_deg;
+	float fElevationMin_deg;
+	float fElevationMean_deg;
+	float fElevationMax_deg;
+	float fMonitorCount;
+	float fMonitorFrequency_hz;
+	float fMonitorTime;
+	float fMonitorPeak;
+	float fOverLevel;
+	float fUnderLevel;
+};
+
+
+
 windtracer::windtracer(): DAQBinaryDevice(){
 	
 	headerRaw = 0;
@@ -244,7 +284,7 @@ void windtracer:: readHeader(const char *filename){
 	struct ConfigurationRecord config_record;
 	u_int32_t config_text_block_length;
 	char *ptr;
-	int range_gates, raw_data_sample_count, samples_per_gate, gates_to_merge;
+	int raw_data_sample_count, samples_per_gate, gates_to_merge;
 	int samples_between_gate_centers;
 	double sample_frequency, raw_data_offset_meters, range_per_sample, range_between_gate_centers;
 	double range_per_gate, first_range, corrected_first_range;
@@ -265,6 +305,11 @@ void windtracer:: readHeader(const char *filename){
 		throw std::invalid_argument(line);
 	}
 	
+	
+	//----------------------------------------------------------------------
+	// read the configuration record
+	//----------------------------------------------------------------------
+	
 	// read record header, always 24 bytes long
 	n = read(fd, &record_header, 24);	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
 	if (n == -1) {
@@ -282,11 +327,13 @@ void windtracer:: readHeader(const char *filename){
 			}
 		} else {
 			printf("Error: wrong record ID at beginning of file!\n");
+			// TODO: error handling
 		}
 	} else {
 		// TODO: file not completly transfered, try again
 	}
 	
+	// store header length
 	lenHeader = record_header.nRecordLength;
 	
 	// read the configuration record block descriptor, always 8 bytes long
@@ -326,7 +373,9 @@ void windtracer:: readHeader(const char *filename){
 	close(fd);
 
 	
+	//----------------------------------------------------------------------
 	// get some variables from the config text block
+	//----------------------------------------------------------------------
 	ptr = strstr(config_record.chConfiguration, "P_RANGE_GATES");
 	range_gates = atoi(ptr + sizeof("P_RANGE_GATES"));
 	
@@ -354,18 +403,25 @@ void windtracer:: readHeader(const char *filename){
 		printf("Gates to merge: %d\n", gates_to_merge);
 	}
 	
-	// get memory for range gates
-	range_gate_start = new double [range_gates];
-	range_gate_center = new double [range_gates];
-	range_gate_end = new double [range_gates];
 	
+	//----------------------------------------------------------------------
 	// calculate range gates
+	//----------------------------------------------------------------------
+	
+	// calculate intermediate variables/values
 	range_per_sample = 150000000. / sample_frequency;
 	samples_between_gate_centers = (raw_data_sample_count - samples_per_gate) / (range_gates - 1);
 	range_between_gate_centers = samples_between_gate_centers * range_per_sample;
 	range_per_gate = samples_per_gate * range_per_sample;
 	first_range = raw_data_offset_meters + (samples_per_gate / 2) * range_per_sample;
 	corrected_first_range = first_range + ((gates_to_merge - 1) / 2) * range_per_gate;
+	
+	// get memory for range gates
+	range_gate_start = new double [range_gates];
+	range_gate_center = new double [range_gates];
+	range_gate_end = new double [range_gates];
+	
+	// calculate range gates
 	for (int i = 0; i < range_gates; i++) {
 		range_gate_center[i] = corrected_first_range + range_between_gate_centers * i;
 		
@@ -380,9 +436,7 @@ void windtracer:: readHeader(const char *filename){
 		}
 	}
 	
-	
 	printf("Hello world\n");
-	
 }
 
 
@@ -507,5 +561,180 @@ void windtracer::updateDataSet(unsigned char *buf){
 		       *tickcount,  local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3]);
 		strftime(puffer, 20, "%d.%m.%Y %T", tm_zeit);
 		printf("%s,%d\n", puffer, time->nHundertstel);
+	}
+}
+
+
+void windtracer::readData(const char *dir, const char *filename)
+{
+	std::string full_data_filename;
+	int fd_data_file;
+	unsigned long last_position;
+	struct timeval last_data_timestamp;
+	char line[256];
+	FILE *fmark;
+	unsigned long lastIndex;
+	unsigned long current_position;
+	int n;
+	struct RecordHeader record_header;
+	struct ScanInfo scan_info;
+	struct ProductPulseInfo pulse_info;
+	float *velocity, *snr, *spectral_width, *backscatter;
+	struct BlockDescriptor block_desc;
+
+	
+	if(debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	// Compile file name
+	full_data_filename = dir;
+	full_data_filename += filename;
+
+
+	// If number of sensors is unknown read the header first
+	if (nSensors == 0)
+		readHeader(full_data_filename.c_str());
+//	if (sensor[0].name.length() == 0)
+//		getSensorNames(sensorListfile.c_str());
+
+#ifdef USE_MYSQL
+	if (db == 0) {
+		openDatabase();
+	} else {
+		// Automatic reconnect
+		if (mysql_ping(db) != 0){
+			printf("Error: Lost connection to database - automatic reconnect failed\n");
+			throw std::invalid_argument("Database unavailable\n");
+		}
+	}
+#endif
+	
+	if (debug >= 1)
+		printf("Open data file: %s\n", full_data_filename.c_str());
+	fd_data_file = open(full_data_filename.c_str(), O_RDONLY);
+	if (fd_data_file <= 0) {
+		printf("Error opening data file %s\n", full_data_filename.c_str());
+		return;
+	}
+	
+	// Get the last time stamp + file pointer from
+	last_position = 0;
+	last_data_timestamp.tv_sec = 0;
+	last_data_timestamp.tv_usec = 0;
+	
+	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
+	filenameMarker = line;
+	if (debug >= 1)
+		printf("Get marker from %s\n", filenameMarker.c_str());
+	fmark = fopen(filenameMarker.c_str(), "r");
+	if (fmark > 0) {
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &last_data_timestamp.tv_sec, &last_data_timestamp.tv_usec, &last_position);
+		fclose(fmark);
+		
+		if (debug >= 1)
+			printf("Last time stamp was %ld\n", last_data_timestamp.tv_sec);
+	}
+	
+	// Find the beginning of the new data
+	if (last_position == 0)	// if new file, jump to the first dataset
+		last_position = lenHeader;
+	if (debug >= 1)
+		printf("Last position in file: %ld\n", last_position);
+	lseek(fd_data_file, last_position, SEEK_SET);
+	
+	current_position = last_position;
+	
+	
+	//----------------------------------------------------------------------
+	// read data
+	//----------------------------------------------------------------------
+	
+	// read record header, always 24 bytes long
+	n = read(fd_data_file, &record_header, 24);	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
+	if (n < 24) {
+		// TODO: file not completly transfered, try again
+	}
+	current_position += 24;
+	
+	switch (record_header.block_desc.nId) {
+		case PRODUCT_VELOCITY_RECORD_ID:
+			// read scan info data block
+			n = read(fd_data_file, &scan_info, sizeof(scan_info));
+			if (n < sizeof(scan_info)) {
+				// TODO: file not completly transfered, try again
+			}
+			current_position += sizeof(scan_info);
+			
+			// read product pulse info
+			n = read(fd_data_file, &pulse_info, sizeof(pulse_info));
+			if (n < sizeof(pulse_info)) {
+				// TODO: file not completly transfered, try again
+			}
+			current_position += sizeof(pulse_info);
+			
+			// read data, solange man nicht ausserhalb der record length ist
+			while (current_position < last_position + record_header.nRecordLength) {
+				n = read(fd_data_file, &block_desc, sizeof(block_desc));
+				if (n < sizeof(block_desc)) {
+					// TODO: file not completly transfered, try again
+				}
+				
+				switch (block_desc.nId) {
+					case PRODUCT_VELOCITY_DATA_BLOCK_ID:
+						velocity = new float [range_gates];
+						n = read(fd_data_file, velocity, range_gates * sizeof(float));
+						if (n < range_gates * sizeof(float)) {
+							// TODO: file not completly transfered, try again
+						}
+						
+						break;
+					case PRODUCT_SNR_DATA_BLOCK_ID:
+						snr = new float [range_gates];
+						n = read(fd_data_file, snr, range_gates * sizeof(float));
+						if (n < range_gates * sizeof(float)) {
+							// TODO: file not completly transfered, try again
+						}
+						
+						break;
+					case PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID:
+						spectral_width = new float [range_gates];
+						n = read(fd_data_file, spectral_width, range_gates * sizeof(float));
+						if (n < range_gates * sizeof(float)) {
+							// TODO: file not completly transfered, try again
+						}
+						
+						break;
+					case PRODUCT_BACKSCATTER_DATA_BLOCK_ID:
+						backscatter = new float [range_gates];
+						n = read(fd_data_file, backscatter, range_gates * sizeof(float));
+						if (n < range_gates * sizeof(float)) {
+							// TODO: file not completly transfered, try again
+						}
+						
+						break;
+					default:
+						lseek(fd_data_file, block_desc.nBlockLength - sizeof(block_desc), SEEK_CUR);
+						
+						break;
+				}
+				
+				current_position += block_desc.nBlockLength;
+			}
+			
+			break;
+		case PRODUCT_FILTERED_VELOCITY_RECORD_ID:
+			// read scan info data block
+			n = read(fd_data_file, &scan_info, sizeof(scan_info));
+			
+			// read product pulse info
+			n = read(fd_data_file, &pulse_info, sizeof(pulse_info));
+			
+			// read data
+			
+			
+			break;
+		default:
+			printf("No PRODUCT_VELOCITY_RECORD_ID or PRODUCT_FILTERED_VELOCITY_RECORD_ID found -> ignoring\n");
+			break;
 	}
 }

@@ -36,6 +36,11 @@
 #define SUSPEND_RECORD_ID				0x0464
 #define RESUME_RECORD_ID				0x0465
 
+#define PRODUCT_VELOCITY_DATA_BLOCK_ID			0x04A1
+#define PRODUCT_SNR_DATA_BLOCK_ID			0x04A2
+#define PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID		0x04A5
+#define PRODUCT_BACKSCATTER_DATA_BLOCK_ID		0x04A8
+
 #define CONFIG_DATA_BLOCK_ID				0x04F0
 
 class windtracer: public DAQBinaryDevice  {
@@ -75,6 +80,8 @@ public:
 	/** Replace the time stamp of the data set by the current time */
 	void updateDataSet(unsigned char *buf);
 	
+	void readData(const char *dir, const char *filename);
+	
 private:
 	unsigned char *headerRaw;
 	
@@ -83,6 +90,8 @@ private:
 	unsigned int tSample;
 	
 	struct timeval tRef;
+	
+	int range_gates;
 	
 };
 #endif
