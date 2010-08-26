@@ -1299,7 +1299,7 @@ void DAQDevice::getNewFiles() {
 			//printf(" %d  %d %d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
 			//printf("Reading %d  %d  %s %d\n", next, listIndex[next], listName[next].c_str(), lastIndex);
 			
-			if (listIndex[next] == lastIndex){
+			if (listIndex[next] == lastIndex) {
 				if ((debug == 0) && (initDone == 0)) {
 					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
 					initDone = 1;
@@ -1309,7 +1309,7 @@ void DAQDevice::getNewFiles() {
 				readData(dataDir.c_str(), listName[next].c_str());
 			}
 			
-			if (listIndex[next] > lastIndex){
+			if (listIndex[next] > lastIndex) {
 				// Remove the pointers of the last file
 				fmark = fopen(filenameMarker.c_str(), "w");
 				if (fmark > 0) {
@@ -1319,7 +1319,7 @@ void DAQDevice::getNewFiles() {
 					fclose(fmark);
 				}
 				
-				if (debug == 0){
+				if (debug == 0) {
 					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
 					initDone = 1;
 				}
@@ -1329,8 +1329,8 @@ void DAQDevice::getNewFiles() {
 			}
 			
 			// Check if file has been completely read
-			if (listIndex[next] >= lastIndex){
-				if (!reachedEOF()){
+			if (listIndex[next] >= lastIndex) {
+				if (!reachedEOF()) {
 					if (debug) {
 						printf("EOF not reached - continue with %s, position %d in next call\n",
 							listName[next].c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)

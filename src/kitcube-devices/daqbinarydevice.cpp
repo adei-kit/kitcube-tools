@@ -293,7 +293,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	while ((n == len) && (iLoop < 1000000)) {
 		n = read(fd_data_file, buf, len);
 		
-		if (n == len){
+		if (n == len) {
 			// Module specific implementation
 			// Might be necessary to
 			parseData((char *)buf, &timestamp_data, local_sensorValue);
