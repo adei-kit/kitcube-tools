@@ -276,7 +276,7 @@ const char *windtracer::getSensorName(const char *longName, unsigned long *aggre
 }
 
 
-void windtracer:: readHeader(const char *filename){
+void windtracer::readHeader(const char *filename){
 	int fd;
 	char line[256];
 	int n;
@@ -341,6 +341,16 @@ void windtracer:: readHeader(const char *filename){
 	if (n == -1) {
 		printf("Error in read function!!!\n");
 		// TODO: error handling
+	} else if (n == 8) {
+		if (config_record.block_desc.nId == CONFIG_DATA_BLOCK_ID) {
+			if (debug >= 3) {
+				printf("Block ID: %#X\n", config_record.block_desc.nId);
+				printf("Block length: %d\n", config_record.block_desc.nBlockLength);
+			}
+		} else {
+			printf("Error: wrong data block ID at beginning of file!\n");
+			// TODO: error handling
+		}
 	} else if (n < 8) {
 		// TODO: file not completly transfered, try again
 	}
@@ -357,15 +367,8 @@ void windtracer:: readHeader(const char *filename){
 		printf("Error in read function!!!\n");
 		// TODO: error handling
 	} else if (n == config_text_block_length) {
-		if (config_record.block_desc.nId == CONFIG_DATA_BLOCK_ID) {
-			if (debug >= 3) {
-				printf("Block ID: %#X\n", config_record.block_desc.nId);
-				printf("Block length: %d\n", config_record.block_desc.nBlockLength);
-				printf("Content: %s", config_record.chConfiguration);
-			}
-		} else {
-			printf("Error: wrong record ID at beginning of file!\n");
-		}
+		if (debug >= 3)
+			printf("Content:\n%s", config_record.chConfiguration);
 	} else {
 		// TODO: file not completly transfered, try again
 	}
@@ -394,6 +397,9 @@ void windtracer:: readHeader(const char *filename){
 	ptr = strstr(config_record.chConfiguration, "P_GATES_TO_MERGE");
 	gates_to_merge = atoi(ptr + sizeof("P_GATES_TO_MERGE"));
 	
+	ptr = strstr(config_record.chConfiguration, "P_MONITOR_FFT_SIZE");
+	monitor_fft_size = atoi(ptr + sizeof("P_MONITOR_FFT_SIZE"));
+	
 	if (debug >= 3) {
 		printf("Range gates: %d\n", range_gates);
 		printf("Sample frequency: %f\n", sample_frequency);
@@ -401,6 +407,7 @@ void windtracer:: readHeader(const char *filename){
 		printf("Raw data sample count: %d\n", raw_data_sample_count);
 		printf("Samples per gate: %d\n", samples_per_gate);
 		printf("Gates to merge: %d\n", gates_to_merge);
+		printf("Monitor FFT size: %d\n", monitor_fft_size);
 	}
 	
 	
@@ -435,6 +442,8 @@ void windtracer:: readHeader(const char *filename){
 			       i, range_gate_start[i], range_gate_center[i], range_gate_end[i]);
 		}
 	}
+	
+	nSensors = 1;
 	
 	printf("Hello world\n");
 }
@@ -581,7 +590,7 @@ void windtracer::readData(const char *dir, const char *filename)
 	struct RecordHeader record_header;
 	struct ScanInfo scan_info;
 	struct ProductPulseInfo pulse_info;
-	float *velocity = 0, *snr = 0, *spectral_width = 0, *backscatter = 0;
+	float *velocity = 0, *snr = 0, *spectral_width = 0, *backscatter = 0, *spectral_data = 0;
 	struct BlockDescriptor block_desc;
 	
 	
@@ -646,20 +655,28 @@ void windtracer::readData(const char *dir, const char *filename)
 	
 	current_position = last_position;
 	
+	// get memory for the data; TODO: check for success!!!
+	velocity = new float [range_gates];
+	snr = new float [range_gates];
+	spectral_width = new float [range_gates];
+	backscatter = new float [range_gates];
+	spectral_data = new float [monitor_fft_size/2];
 	
 	//----------------------------------------------------------------------
 	// read data
 	//----------------------------------------------------------------------
 	fd_eof = false;
 	while (loop_counter < 100) {
+		//
 		header_position = current_position;
+		
 		// read record header, always 24 bytes long
 		n = read(fd_data_file, &record_header, 24);	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
 		if (n < 24) {
 			// file not completely transfered, try again next time
 			fd_eof = true;
-			close(fd_data_file);
-			return;
+			
+			break;	// leave out while loop over records
 		}
 		current_position += 24;
 		
@@ -671,8 +688,8 @@ void windtracer::readData(const char *dir, const char *filename)
 				if (n < sizeof(scan_info)) {
 					// file not completley transfered, try again next time
 					fd_eof = true;
-					close(fd_data_file);
-					return;
+					
+					break;	// leave switch for record ID
 				}
 				current_position += sizeof(scan_info);
 				
@@ -681,8 +698,8 @@ void windtracer::readData(const char *dir, const char *filename)
 				if (n < sizeof(pulse_info)) {
 					// file not completely transfered, try again next time
 					fd_eof = true;
-					close(fd_data_file);
-					return;
+					
+					break;	// leave switch for record ID
 				}
 				current_position += sizeof(pulse_info);
 				
@@ -693,49 +710,49 @@ void windtracer::readData(const char *dir, const char *filename)
 					if (n < sizeof(block_desc)) {
 						// file not completely transfered, try again next time
 						fd_eof = true;
-						close(fd_data_file);
-						return;
+						
+						break;	// leave inner while loop over data blocks
 					}
 					
 					// check data block ID
 					switch (block_desc.nId) {
 						case PRODUCT_VELOCITY_DATA_BLOCK_ID:
-							velocity = new float [range_gates];
 							n = read(fd_data_file, velocity, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float)) {
+							if (n < range_gates * sizeof(float))
 								// file not completely transfered, try again
 								fd_eof = true;
-							}
 							
 							break;
 							
 						case PRODUCT_SNR_DATA_BLOCK_ID:
-							snr = new float [range_gates];
 							n = read(fd_data_file, snr, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float)) {
+							if (n < range_gates * sizeof(float))
 								// file not completly transfered, try again
 								fd_eof = true;
-							}
 							
 							break;
 							
 						case PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID:
-							spectral_width = new float [range_gates];
 							n = read(fd_data_file, spectral_width, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float)) {
+							if (n < range_gates * sizeof(float))
 								// file not completly transfered, try again
 								fd_eof = true;
-							}
 							
 							break;
 							
 						case PRODUCT_BACKSCATTER_DATA_BLOCK_ID:
-							backscatter = new float [range_gates];
 							n = read(fd_data_file, backscatter, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float)) {
+							if (n < range_gates * sizeof(float))
 								// file not completly transfered, try again
 								fd_eof = true;
-							}
+							
+							break;
+							
+						case PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID:
+							n = read(fd_data_file, spectral_data, monitor_fft_size / 2 * sizeof(float));
+							if (n < monitor_fft_size / 2 * sizeof(float))
+								// file not completly transfered, try again
+								fd_eof = true;
 							
 							break;
 							
@@ -745,28 +762,8 @@ void windtracer::readData(const char *dir, const char *filename)
 							break;
 					}
 					
-					if (fd_eof == true) {
-						if (velocity > 0) {
-							delete [] velocity;
-							velocity = 0;
-						}
-						if (snr > 0) {
-							delete [] snr;
-							snr = 0;
-						}
-						if (spectral_width > 0) {
-							delete [] spectral_width;
-							spectral_width = 0;
-						}
-						if (backscatter > 0) {
-							delete [] backscatter;
-							backscatter = 0;
-						}
-						
-						close(fd_data_file);
-						
-						return;
-					}
+					if (fd_eof == true)
+						break;	// leave inner while loop over data blocks
 					
 					current_position += block_desc.nBlockLength;
 				}
@@ -779,8 +776,8 @@ void windtracer::readData(const char *dir, const char *filename)
 				if (n < sizeof(scan_info)) {
 					// file not completley transfered, try again next time
 					fd_eof = true;
-					close(fd_data_file);
-					return;
+					
+					break;	// leave switch for record ID
 				}
 				current_position += sizeof(scan_info);
 				
@@ -789,8 +786,8 @@ void windtracer::readData(const char *dir, const char *filename)
 				if (n < sizeof(pulse_info)) {
 					// file not completely transfered, try again next time
 					fd_eof = true;
-					close(fd_data_file);
-					return;
+					
+					break;	// leave switch for record ID
 				}
 				current_position += sizeof(pulse_info);
 				
@@ -801,51 +798,48 @@ void windtracer::readData(const char *dir, const char *filename)
 					if (n < sizeof(block_desc)) {
 						// file not completely transfered, try again next time
 						fd_eof = true;
-						close(fd_data_file);
-						return;
+						
+						break;	// leave inner while loop over data blocks
 					}
 					
 					// check data block ID
 					switch (block_desc.nId) {
 						case PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID:
-							velocity = new float [range_gates];
 							n = read(fd_data_file, velocity, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float)) {
+							if (n < range_gates * sizeof(float))
 								// file not completely transfered, try again
 								fd_eof = true;
-							}
 							
 							break;
 							
 						case PRODUCT_FILTERED_SNR_DATA_BLOCK_ID:
-							snr = new float [range_gates];
 							n = read(fd_data_file, snr, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float)) {
+							if (n < range_gates * sizeof(float))
 								// file not completly transfered, try again
 								fd_eof = true;
-							}
 							
 							break;
 							
 						case PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID:
-							spectral_width = new float [range_gates];
 							n = read(fd_data_file, spectral_width, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float)) {
+							if (n < range_gates * sizeof(float))
 								// file not completly transfered, try again
 								fd_eof = true;
-							}
 							
 							break;
 							
 						case PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID:
-							backscatter = new float [range_gates];
 							n = read(fd_data_file, backscatter, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float)) {
+							if (n < range_gates * sizeof(float))
 								// file not completly transfered, try again
 								fd_eof = true;
-							}
 							
 							break;
+							
+						case PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID:
+							printf("PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID found at %d B\n", current_position);
+							
+							//break;
 							
 						default:
 							lseek(fd_data_file, block_desc.nBlockLength - sizeof(block_desc), SEEK_CUR);
@@ -853,28 +847,8 @@ void windtracer::readData(const char *dir, const char *filename)
 							break;
 					}
 					
-					if (fd_eof == true) {
-						if (velocity > 0) {
-							delete [] velocity;
-							velocity = 0;
-						}
-						if (snr > 0) {
-							delete [] snr;
-							snr = 0;
-						}
-						if (spectral_width > 0) {
-							delete [] spectral_width;
-							spectral_width = 0;
-						}
-						if (backscatter > 0) {
-							delete [] backscatter;
-							backscatter = 0;
-						}
-						
-						close(fd_data_file);
-						
-						return;
-					}
+					if (fd_eof == true)
+						break;	// leave inner while loop over data blocks
 					
 					current_position += block_desc.nBlockLength;
 				}
@@ -889,29 +863,19 @@ void windtracer::readData(const char *dir, const char *filename)
 				break;
 		}
 		
+		if (fd_eof == true)
+			break;	// leave outer while loop over records
+		
+
 		if (debug >= 1)
 			printf("Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%d\n",
 				record_header.nDayOfMonth, record_header.nMonth, record_header.nYear,
 				record_header.nHour, record_header.nMinute, record_header.nSecond, record_header.nNanosecond);
 		
-		if (velocity > 0) {
-			delete [] velocity;
-			velocity = 0;
-		}
-		if (snr > 0) {
-			delete [] snr;
-			snr = 0;
-		}
-		if (spectral_width > 0) {
-			delete [] spectral_width;
-			spectral_width = 0;
-		}
-		if (backscatter > 0) {
-			delete [] backscatter;
-			backscatter = 0;
-		}
-						
-		// TODO: save position in file
+		// TODO: store to DB
+		
+		
+		// save position in file
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark > 0) {
 			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, last_data_timestamp.tv_sec, last_data_timestamp.tv_usec, current_position);
@@ -920,6 +884,18 @@ void windtracer::readData(const char *dir, const char *filename)
 		
 		loop_counter++;
 	}
+	
+	delete [] velocity;
+	velocity = 0;
+	
+	delete [] snr;
+	snr = 0;
+	
+	delete [] spectral_width;
+	spectral_width = 0;
+	
+	delete [] backscatter;
+	backscatter = 0;
 	
 	close(fd_data_file);
 }

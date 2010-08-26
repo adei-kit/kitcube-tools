@@ -39,6 +39,8 @@
 #define PRODUCT_VELOCITY_DATA_BLOCK_ID			0x04A1
 #define PRODUCT_SNR_DATA_BLOCK_ID			0x04A2
 #define PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID		0x04A5
+#define PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID		0x04A6
+
 #define PRODUCT_BACKSCATTER_DATA_BLOCK_ID		0x04A8
 
 #define PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID		0x04B0
@@ -97,6 +99,8 @@ private:
 	struct timeval tRef;
 	
 	int range_gates;
+	
+	int monitor_fft_size;
 	
 };
 #endif
