@@ -596,193 +596,193 @@ void windtracer::readData(const char *dir, const char *filename)
 		
 		// check record ID
 		switch (record_header.block_desc.nId) {
-			case PRODUCT_VELOCITY_RECORD_ID:
-				// read scan info data block
-				n = read(fd_data_file, &scan_info, sizeof(scan_info));
-				if (n < sizeof(scan_info)) {
-					// file not completley transfered, try again next time
-					fd_eof = true;
-					
-					break;	// leave switch for record ID
-				}
-				current_position += sizeof(scan_info);
+		case PRODUCT_VELOCITY_RECORD_ID:
+			// read scan info data block
+			n = read(fd_data_file, &scan_info, sizeof(scan_info));
+			if (n < sizeof(scan_info)) {
+				// file not completley transfered, try again next time
+				fd_eof = true;
 				
-				// read product pulse info
-				n = read(fd_data_file, &pulse_info, sizeof(pulse_info));
-				if (n < sizeof(pulse_info)) {
+				break;	// leave switch for record ID
+			}
+			current_position += sizeof(scan_info);
+			
+			// read product pulse info
+			n = read(fd_data_file, &pulse_info, sizeof(pulse_info));
+			if (n < sizeof(pulse_info)) {
+				// file not completely transfered, try again next time
+				fd_eof = true;
+				
+				break;	// leave switch for record ID
+			}
+			current_position += sizeof(pulse_info);
+			
+			// read data, solange man nicht ausserhalb der record length ist
+			while (current_position < record_header_position + record_header.nRecordLength) {
+				//--------------------------------------
+				// loop over data blocks
+				//--------------------------------------
+				
+				// read block descriptor
+				n = read(fd_data_file, &block_desc, sizeof(block_desc));
+				if (n < sizeof(block_desc)) {
 					// file not completely transfered, try again next time
 					fd_eof = true;
 					
-					break;	// leave switch for record ID
+					break;	// leave inner while loop over data blocks
 				}
-				current_position += sizeof(pulse_info);
 				
-				// read data, solange man nicht ausserhalb der record length ist
-				while (current_position < record_header_position + record_header.nRecordLength) {
-					//--------------------------------------
-					// loop over data blocks
-					//--------------------------------------
-					
-					// read block descriptor
-					n = read(fd_data_file, &block_desc, sizeof(block_desc));
-					if (n < sizeof(block_desc)) {
-						// file not completely transfered, try again next time
+				// check data block ID
+				switch (block_desc.nId) {
+				case PRODUCT_VELOCITY_DATA_BLOCK_ID:
+					n = read(fd_data_file, velocity, range_gates * sizeof(float));
+					if (n < range_gates * sizeof(float))
+						// file not completely transfered, try again
 						fd_eof = true;
-						
-						break;	// leave inner while loop over data blocks
-					}
 					
-					// check data block ID
-					switch (block_desc.nId) {
-						case PRODUCT_VELOCITY_DATA_BLOCK_ID:
-							n = read(fd_data_file, velocity, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float))
-								// file not completely transfered, try again
-								fd_eof = true;
-							
-							break;
-							
-						case PRODUCT_SNR_DATA_BLOCK_ID:
-							n = read(fd_data_file, snr, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float))
-								// file not completly transfered, try again
-								fd_eof = true;
-							
-							break;
-							
-						case PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID:
-							n = read(fd_data_file, spectral_width, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float))
-								// file not completly transfered, try again
-								fd_eof = true;
-							
-							break;
-							
-						case PRODUCT_BACKSCATTER_DATA_BLOCK_ID:
-							n = read(fd_data_file, backscatter, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float))
-								// file not completly transfered, try again
-								fd_eof = true;
-							
-							break;
-							
-						case PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID:
-							n = read(fd_data_file, spectral_data, monitor_fft_size / 2 * sizeof(float));
-							if (n < monitor_fft_size / 2 * sizeof(float))
-								// file not completly transfered, try again
-								fd_eof = true;
-							
-							break;
-							
-						default:
-							lseek(fd_data_file, block_desc.nBlockLength - sizeof(block_desc), SEEK_CUR);
-							
-							break;
-					}
+					break;
 					
-					if (fd_eof == true)
-						break;	// leave inner while loop over data blocks
+				case PRODUCT_SNR_DATA_BLOCK_ID:
+					n = read(fd_data_file, snr, range_gates * sizeof(float));
+					if (n < range_gates * sizeof(float))
+						// file not completly transfered, try again
+						fd_eof = true;
 					
-					current_position += block_desc.nBlockLength;
+					break;
+					
+				case PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID:
+					n = read(fd_data_file, spectral_width, range_gates * sizeof(float));
+					if (n < range_gates * sizeof(float))
+						// file not completly transfered, try again
+						fd_eof = true;
+					
+					break;
+					
+				case PRODUCT_BACKSCATTER_DATA_BLOCK_ID:
+					n = read(fd_data_file, backscatter, range_gates * sizeof(float));
+					if (n < range_gates * sizeof(float))
+						// file not completly transfered, try again
+						fd_eof = true;
+					
+					break;
+					
+				case PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID:
+					n = read(fd_data_file, spectral_data, monitor_fft_size / 2 * sizeof(float));
+					if (n < monitor_fft_size / 2 * sizeof(float))
+						// file not completly transfered, try again
+						fd_eof = true;
+					
+					break;
+					
+				default:
+					lseek(fd_data_file, block_desc.nBlockLength - sizeof(block_desc), SEEK_CUR);
+					
+					break;
 				}
 				
-				break;
+				if (fd_eof == true)
+					break;	// leave inner while loop over data blocks
 				
-			case PRODUCT_FILTERED_VELOCITY_RECORD_ID:
-				// read scan info data block
-				n = read(fd_data_file, &scan_info, sizeof(scan_info));
-				if (n < sizeof(scan_info)) {
-					// file not completley transfered, try again next time
-					fd_eof = true;
-					
-					break;	// leave switch for record ID
-				}
-				current_position += sizeof(scan_info);
+				current_position += block_desc.nBlockLength;
+			}
+			
+			break;
+			
+		case PRODUCT_FILTERED_VELOCITY_RECORD_ID:
+			// read scan info data block
+			n = read(fd_data_file, &scan_info, sizeof(scan_info));
+			if (n < sizeof(scan_info)) {
+				// file not completley transfered, try again next time
+				fd_eof = true;
 				
-				// read product pulse info
-				n = read(fd_data_file, &pulse_info, sizeof(pulse_info));
-				if (n < sizeof(pulse_info)) {
+				break;	// leave switch for record ID
+			}
+			current_position += sizeof(scan_info);
+			
+			// read product pulse info
+			n = read(fd_data_file, &pulse_info, sizeof(pulse_info));
+			if (n < sizeof(pulse_info)) {
+				// file not completely transfered, try again next time
+				fd_eof = true;
+				
+				break;	// leave switch for record ID
+			}
+			current_position += sizeof(pulse_info);
+			
+			// read data
+			while (current_position < record_header_position + record_header.nRecordLength) {
+				//--------------------------------------
+				// loop over data blocks
+				//--------------------------------------
+				
+				// read block descriptor
+				n = read(fd_data_file, &block_desc, sizeof(block_desc));
+				if (n < sizeof(block_desc)) {
 					// file not completely transfered, try again next time
 					fd_eof = true;
 					
-					break;	// leave switch for record ID
+					break;	// leave inner while loop over data blocks
 				}
-				current_position += sizeof(pulse_info);
 				
-				// read data
-				while (current_position < record_header_position + record_header.nRecordLength) {
-					//--------------------------------------
-					// loop over data blocks
-					//--------------------------------------
-					
-					// read block descriptor
-					n = read(fd_data_file, &block_desc, sizeof(block_desc));
-					if (n < sizeof(block_desc)) {
-						// file not completely transfered, try again next time
+				// check data block ID
+				switch (block_desc.nId) {
+				case PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID:
+					n = read(fd_data_file, velocity, range_gates * sizeof(float));
+					if (n < range_gates * sizeof(float))
+						// file not completely transfered, try again
 						fd_eof = true;
-						
-						break;	// leave inner while loop over data blocks
-					}
 					
-					// check data block ID
-					switch (block_desc.nId) {
-						case PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID:
-							n = read(fd_data_file, velocity, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float))
-								// file not completely transfered, try again
-								fd_eof = true;
-							
-							break;
-							
-						case PRODUCT_FILTERED_SNR_DATA_BLOCK_ID:
-							n = read(fd_data_file, snr, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float))
-								// file not completly transfered, try again
-								fd_eof = true;
-							
-							break;
-							
-						case PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID:
-							n = read(fd_data_file, spectral_width, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float))
-								// file not completly transfered, try again
-								fd_eof = true;
-							
-							break;
-							
-						case PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID:
-							n = read(fd_data_file, backscatter, range_gates * sizeof(float));
-							if (n < range_gates * sizeof(float))
-								// file not completly transfered, try again
-								fd_eof = true;
-							
-							break;
-							
-						case PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID:
-							printf("PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID found at %ld B\n", current_position);
-							
-							//break;
-							
-						default:
-							lseek(fd_data_file, block_desc.nBlockLength - sizeof(block_desc), SEEK_CUR);
-							
-							break;
-					}
+					break;
 					
-					if (fd_eof == true)
-						break;	// leave inner while loop over data blocks
+				case PRODUCT_FILTERED_SNR_DATA_BLOCK_ID:
+					n = read(fd_data_file, snr, range_gates * sizeof(float));
+					if (n < range_gates * sizeof(float))
+						// file not completly transfered, try again
+						fd_eof = true;
 					
-					current_position += block_desc.nBlockLength;
+					break;
+					
+				case PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID:
+					n = read(fd_data_file, spectral_width, range_gates * sizeof(float));
+					if (n < range_gates * sizeof(float))
+						// file not completly transfered, try again
+						fd_eof = true;
+					
+					break;
+					
+				case PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID:
+					n = read(fd_data_file, backscatter, range_gates * sizeof(float));
+					if (n < range_gates * sizeof(float))
+						// file not completly transfered, try again
+						fd_eof = true;
+					
+					break;
+					
+				case PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID:
+					printf("PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID found at %ld B\n", current_position);
+					
+					//break;
+					
+				default:
+					lseek(fd_data_file, block_desc.nBlockLength - sizeof(block_desc), SEEK_CUR);
+					
+					break;
 				}
 				
-				break;
+				if (fd_eof == true)
+					break;	// leave inner while loop over data blocks
 				
-			default:
-				printf("No PRODUCT_VELOCITY_RECORD_ID or PRODUCT_FILTERED_VELOCITY_RECORD_ID found -> ignoring\n");
-				lseek(fd_data_file, record_header.nRecordLength - record_header.block_desc.nBlockLength, SEEK_CUR);
-				current_position += record_header.nRecordLength - record_header.block_desc.nBlockLength;
-				
-				break;
+				current_position += block_desc.nBlockLength;
+			}
+			
+			break;
+			
+		default:
+			printf("No PRODUCT_VELOCITY_RECORD_ID or PRODUCT_FILTERED_VELOCITY_RECORD_ID found -> ignoring\n");
+			lseek(fd_data_file, record_header.nRecordLength - record_header.block_desc.nBlockLength, SEEK_CUR);
+			current_position += record_header.nRecordLength - record_header.block_desc.nBlockLength;
+			
+			break;
 		}
 		
 		if (fd_eof == true)
