@@ -82,11 +82,6 @@ public:
 	
 	void writeHeader();
 	
-	void parseData(char *line, struct timeval *l_tData, double *sensorValue);
-	
-	/** Replace the time stamp of the data set by the current time */
-	void updateDataSet(unsigned char *buf);
-	
 	void readData(const char *dir, const char *filename);
 	
 private:

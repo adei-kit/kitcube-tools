@@ -11,17 +11,6 @@
 #include "windtracer.h"
 
 
-struct SPackedTime{
-	unsigned char nTag;
-	unsigned char nMonat;
-	unsigned short nJahr;
-	unsigned char nStunde;
-	unsigned char nMinute;
-	unsigned char nSekunde;
-	unsigned char nHundertstel;
-};
-
-
 struct BlockDescriptor {
 	u_int16_t nId;
 	u_int16_t nVersion;
@@ -307,7 +296,7 @@ void windtracer::readHeader(const char *filename){
 	
 	
 	//----------------------------------------------------------------------
-	// read the configuration record
+	// read the configuration record, each file starts with this!
 	//----------------------------------------------------------------------
 	
 	// read record header, always 24 bytes long
@@ -495,85 +484,6 @@ void windtracer::writeHeader(){
 }
 
 
-void windtracer::parseData(char *line, struct timeval *l_tData, double *sensorValue){
-	float *local_sensorValue;
-	struct SPackedTime *time;
-	struct tm tm_zeit;
-
-	
-	if (sizeof(float) != 4) {
-		printf("Size of 'float' is not 4! So not reading any data!\n");
-		return;
-	}
-	
-	// Data format:
-	// long Tickcount : Hundertstel seit Messbeginn (wird nicht benutzt)
-	// float Sensorwerte: Messdaten, Anzahl steht im Header
-	// struct SPackedTime: Zeitstempel-Struktur
-	
-	local_sensorValue =  (float *)(line + 4);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
-	time = (struct SPackedTime *)(line + 4 + 4 * nSensors);	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
-	
-	
-	// read data
-	for (int i = 0; i < nSensors; i++) {
-		sensorValue[i] = local_sensorValue[i];
-	}
-	
-	
-	// read timestamp
-	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
-	tm_zeit.tm_mday = time->nTag;
-	tm_zeit.tm_mon = time->nMonat - 1;
-	tm_zeit.tm_year = time->nJahr - 1900;
-	tm_zeit.tm_hour = time->nStunde;
-	tm_zeit.tm_min = time->nMinute;
-	tm_zeit.tm_sec = time->nSekunde;
-	
-	// Calculate the time stamp
-	l_tData->tv_sec = timegm(&tm_zeit);
-	l_tData->tv_usec = time->nHundertstel * 10000;
-}
-
-
-void windtracer::updateDataSet(unsigned char *buf){
-	struct timeval tv;
-	struct timezone tz;
-	struct SPackedTime *time;
-	float *local_sensorValue;
-	struct tm *tm_zeit;
-	int32_t *tickcount;
-	char puffer[32];
-	
-	
-	tickcount = (int32_t *) buf;
-	local_sensorValue = (float *) (buf + 4);
-	time = (struct SPackedTime *) (buf + 4 + 4 * nSensors);
-	
-	
-	gettimeofday(&tv, &tz);
-	
-	tm_zeit = gmtime(&tv.tv_sec);
-	
-	time->nTag = tm_zeit->tm_mday;
-	time->nMonat = tm_zeit->tm_mon + 1;
-	time->nJahr = tm_zeit->tm_year + 1900;
-	time->nStunde = tm_zeit->tm_hour;
-	time->nMinute = tm_zeit->tm_min;
-	time->nSekunde = tm_zeit->tm_sec;
-	
-	time->nHundertstel = tv.tv_usec / 10000;
-	
-	
-	if (debug > 1) {
-		printf("Tickcount: %12d Sensors: %f %f %f %f ",
-		       *tickcount,  local_sensorValue[0], local_sensorValue[1], local_sensorValue[2], local_sensorValue[3]);
-		strftime(puffer, 20, "%d.%m.%Y %T", tm_zeit);
-		printf("%s,%d\n", puffer, time->nHundertstel);
-	}
-}
-
-
 void windtracer::readData(const char *dir, const char *filename)
 {
 	std::string full_data_filename;
@@ -585,8 +495,8 @@ void windtracer::readData(const char *dir, const char *filename)
 	unsigned long lastIndex;
 	unsigned long current_position;
 	int loop_counter = 0;
-	unsigned long header_position;
-	int n;
+	unsigned long record_header_position;
+	ssize_t n;
 	struct RecordHeader record_header;
 	struct ScanInfo scan_info;
 	struct ProductPulseInfo pulse_info;
@@ -623,7 +533,7 @@ void windtracer::readData(const char *dir, const char *filename)
 	if (debug >= 1)
 		printf("Open data file: %s\n", full_data_filename.c_str());
 	fd_data_file = open(full_data_filename.c_str(), O_RDONLY);
-	if (fd_data_file <= 0) {
+	if (fd_data_file == -1) {
 		printf("Error opening data file %s\n", full_data_filename.c_str());
 		return;
 	}
@@ -655,7 +565,8 @@ void windtracer::readData(const char *dir, const char *filename)
 	
 	current_position = last_position;
 	
-	// get memory for the data; TODO: check for success!!!
+	// get memory for the data
+	// TODO: check for success!!!
 	velocity = new float [range_gates];
 	snr = new float [range_gates];
 	spectral_width = new float [range_gates];
@@ -667,18 +578,21 @@ void windtracer::readData(const char *dir, const char *filename)
 	//----------------------------------------------------------------------
 	fd_eof = false;
 	while (loop_counter < 100) {
-		//
-		header_position = current_position;
+		//--------------------------------------------------------------
+		// loop over data records
+		//--------------------------------------------------------------
 		
-		// read record header, always 24 bytes long
-		n = read(fd_data_file, &record_header, 24);	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
-		if (n < 24) {
+		record_header_position = current_position;
+		
+		// read record header
+		n = read(fd_data_file, &record_header, sizeof(record_header));	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
+		if (n < sizeof(record_header)) {
 			// file not completely transfered, try again next time
 			fd_eof = true;
 			
-			break;	// leave out while loop over records
+			break;	// leave outer while loop over data records
 		}
-		current_position += 24;
+		current_position += sizeof(record_header);
 		
 		// check record ID
 		switch (record_header.block_desc.nId) {
@@ -704,7 +618,11 @@ void windtracer::readData(const char *dir, const char *filename)
 				current_position += sizeof(pulse_info);
 				
 				// read data, solange man nicht ausserhalb der record length ist
-				while (current_position < header_position + record_header.nRecordLength) {
+				while (current_position < record_header_position + record_header.nRecordLength) {
+					//--------------------------------------
+					// loop over data blocks
+					//--------------------------------------
+					
 					// read block descriptor
 					n = read(fd_data_file, &block_desc, sizeof(block_desc));
 					if (n < sizeof(block_desc)) {
@@ -792,7 +710,11 @@ void windtracer::readData(const char *dir, const char *filename)
 				current_position += sizeof(pulse_info);
 				
 				// read data
-				while (current_position < header_position + record_header.nRecordLength) {
+				while (current_position < record_header_position + record_header.nRecordLength) {
+					//--------------------------------------
+					// loop over data blocks
+					//--------------------------------------
+					
 					// read block descriptor
 					n = read(fd_data_file, &block_desc, sizeof(block_desc));
 					if (n < sizeof(block_desc)) {
@@ -837,7 +759,7 @@ void windtracer::readData(const char *dir, const char *filename)
 							break;
 							
 						case PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID:
-							printf("PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID found at %d B\n", current_position);
+							printf("PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID found at %ld B\n", current_position);
 							
 							//break;
 							
@@ -864,21 +786,23 @@ void windtracer::readData(const char *dir, const char *filename)
 		}
 		
 		if (fd_eof == true)
-			break;	// leave outer while loop over records
+			break;	// leave outer while loop over data records
 		
 
 		if (debug >= 1)
-			printf("Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%d\n",
+			printf("Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%09d\n",
 				record_header.nDayOfMonth, record_header.nMonth, record_header.nYear,
 				record_header.nHour, record_header.nMinute, record_header.nSecond, record_header.nNanosecond);
 		
+		//--------------------------------------------------------------
 		// TODO: store to DB
-		
+		//--------------------------------------------------------------
 		
 		// save position in file
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark > 0) {
-			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, last_data_timestamp.tv_sec, last_data_timestamp.tv_usec, current_position);
+			fprintf(fmark, "%ld %ld %ld %ld\n",
+				lastIndex, last_data_timestamp.tv_sec, last_data_timestamp.tv_usec, current_position);
 			fclose(fmark);
 		}
 		
@@ -896,6 +820,9 @@ void windtracer::readData(const char *dir, const char *filename)
 	
 	delete [] backscatter;
 	backscatter = 0;
+	
+	delete [] spectral_data;
+	spectral_data = 0;
 	
 	close(fd_data_file);
 }
