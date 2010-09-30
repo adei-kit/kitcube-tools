@@ -162,29 +162,29 @@ unsigned int Mast::getSensorGroup(){
 	unsigned int number;
 
 	switch (sensorGroup.at(2)){
-		case 'L': 
-		case 'l': // slow / 1Hz data
-			number = 1;
-			buffer = "slow sensors (1Hz)";
-			break;
-		case 'S': 
-		case 's': // fast / 20Hz data
-			number = 2;
-			buffer = "fast sensors (20Hz)";
-			break;
-		case 'R':
-		case 'r': // 10min mean data (contains groups l + s)
-			number = 3;
-			buffer = "10min mean values";
-			break;
-		case 'X': 
-		case 'x': // 10min mean calculated data (based on r data)
-			number = 4;
-			buffer = "10min calculates values";
-			break;
-			
-		default:
-			number = 0;
+	case 'L': 
+	case 'l': // slow / 1Hz data
+		number = 1;
+		buffer = "slow sensors (1Hz)";
+		break;
+	case 'S': 
+	case 's': // fast / 20Hz data
+		number = 2;
+		buffer = "fast sensors (20Hz)";
+		break;
+	case 'R':
+	case 'r': // 10min mean data (contains groups l + s)
+		number = 3;
+		buffer = "10min mean values";
+		break;
+	case 'X': 
+	case 'x': // 10min mean calculated data (based on r data)
+		number = 4;
+		buffer = "10min calculates values";
+		break;
+		
+	default:
+		number = 0;
 	}
 	
 	return( number);

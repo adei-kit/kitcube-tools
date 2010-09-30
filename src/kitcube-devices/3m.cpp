@@ -290,16 +290,16 @@ double dreim::convert_coordinate(char *coordinate_string) {
 	// determine sign by evaluating get N/E or S/W
 	tmp = strtok_r(NULL, " ", &saveptr);
 	switch (*tmp) {
-		case 'N':
-		case 'E':
-			coordinate = degree;
-			break;
-		case 'S':
-		case 'W':
-			coordinate = -degree;
-			break;
-		default:
-			printf("Error: invalid coordinates!\n");
+	case 'N':
+	case 'E':
+		coordinate = degree;
+		break;
+	case 'S':
+	case 'W':
+		coordinate = -degree;
+		break;
+	default:
+		printf("Error: invalid coordinates!\n");
 	}
 	
 	// get minutes value

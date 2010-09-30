@@ -64,29 +64,29 @@ int main(int argc, char *argv[]){
 		//if ((err > 0) && (optarg > 0)) printf("Option Argument: %s\n",optarg);
 		
 		switch (err) {
-			case 'd': // run as daemon
-				printf("Run as daemon\n");
-				runDaemon = true;
-				debug = 0;
-				break;
-			case 'h': // help
-				printf("\t-d\t\tRun as daemon without input from keyboard\n");
-				printf("\t-i <inifile>\tSelect the inifile\n");
-				if (!isLinkedApp) printf("\t-m <iniGroup>\tSelect the iniGroup name as used in the inifile\n");
-				printf("\t-v <level>\tSet level of verbosity\n");	
-				exit(0);
-				break;
-			case 'i': // inifile
-				if (optarg > 0) inifile = optarg;
-				break;				
-			case 'm': // run in console
-				if (!isLinkedApp){
-				   if (optarg > 0) iniGroup = optarg;
-				}
-				break;
-			case 'v': // set debug level (verbosity)
-				if (optarg > 0) debug = atoi(optarg);
-				break;
+		case 'd': // run as daemon
+			printf("Run as daemon\n");
+			runDaemon = true;
+			debug = 0;
+			break;
+		case 'h': // help
+			printf("\t-d\t\tRun as daemon without input from keyboard\n");
+			printf("\t-i <inifile>\tSelect the inifile\n");
+			if (!isLinkedApp) printf("\t-m <iniGroup>\tSelect the iniGroup name as used in the inifile\n");
+			printf("\t-v <level>\tSet level of verbosity\n");	
+			exit(0);
+			break;
+		case 'i': // inifile
+			if (optarg > 0) inifile = optarg;
+			break;				
+		case 'm': // run in console
+			if (!isLinkedApp){
+				if (optarg > 0) iniGroup = optarg;
+			}
+			break;
+		case 'v': // set debug level (verbosity)
+			if (optarg > 0) debug = atoi(optarg);
+			break;
 		}
 	}
 	

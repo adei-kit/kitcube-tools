@@ -423,58 +423,58 @@ int Reader::read_from_keyboard(){
 		
 		// Command interpreter for stdin
 		switch (buf[0]){
-			case 'd': // Enable / display debug
-				//if (fout == stdout) fout = 0;
-				//else fout = stdout;
-				
-				this->debug++;
-				if (this->debug > 5) this->debug = 0;
-				for (i=0;i<nModules;i++) dev[i]->setDebugLevel(debug);
-				printf("Switched debug level to %d\n", this->debug);
-				printf("\n");
-				break;
-				
-			case 'h': // Help pages
-				printf("Data server -  commands:\n");
-				printf("   d    Enable/disable debug output\n");
-				printf("   q    Quit\n");
-				printf("   s    Display status\n");
-				printf("   z    Test database connection\n");
-				printf(" SPACE  Add sleep command - load simulation\n");
-				printf("\n");
-				break;
-				
-			case 'q': // Shutdown server
-			case 'Q':
-				shutdown = true;
-				break;
-				
-			case ' ': // Simulate high load?!
-				SLEEP(600); //ms
-				break;
-				
-			case 's':
-			case 'S':
-				displayStatus(stdout);
-				//displayActiveSockets(stdout);
-				break;
-				
-			// Create new Experiment - means completely new database
-			// Create all database tables
-			case 'e': // new experiment
-				//createExperiment();
-				break;
-				
-			// Start RUN
-			case 'r': // Start run
-				//createRun();
-				break;
-				
-			// Stop RUN
-			case 'p': // Stop run
-				//stopRun();
-				break;
-				
+		case 'd': // Enable / display debug
+			//if (fout == stdout) fout = 0;
+			//else fout = stdout;
+			
+			this->debug++;
+			if (this->debug > 5) this->debug = 0;
+			for (i=0;i<nModules;i++) dev[i]->setDebugLevel(debug);
+			printf("Switched debug level to %d\n", this->debug);
+			printf("\n");
+			break;
+			
+		case 'h': // Help pages
+			printf("Data server -  commands:\n");
+			printf("   d    Enable/disable debug output\n");
+			printf("   q    Quit\n");
+			printf("   s    Display status\n");
+			printf("   z    Test database connection\n");
+			printf(" SPACE  Add sleep command - load simulation\n");
+			printf("\n");
+			break;
+			
+		case 'q': // Shutdown server
+		case 'Q':
+			shutdown = true;
+			break;
+			
+		case ' ': // Simulate high load?!
+			SLEEP(600); //ms
+			break;
+			
+		case 's':
+		case 'S':
+			displayStatus(stdout);
+			//displayActiveSockets(stdout);
+			break;
+			
+		// Create new Experiment - means completely new database
+		// Create all database tables
+		case 'e': // new experiment
+			//createExperiment();
+			break;
+			
+		// Start RUN
+		case 'r': // Start run
+			//createRun();
+			break;
+			
+		// Stop RUN
+		case 'p': // Stop run
+			//stopRun();
+			break;
+			
 		}
 		
 	}

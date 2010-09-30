@@ -40,23 +40,23 @@ int main(int argc, char *argv[]){
 		//if ((err > 0) && (optarg > 0)) printf("Option Argument: %s\n",optarg);
 		
 		switch (err) {
-			case 'd': // run as daemon
-				runDaemon = true;
-				debug = 0;
-				break;
-			case 'h': // help
-				printHelp = true;
-				break;
-			case 'i': // inifile
-				if (optarg > 0) inifile = optarg;
-				break;
-			case 'm': // run in console
-				if (optarg > 0) iniGroup = optarg;
-				break;
-			case 'v': // set debug level (verbosity)
-				if (optarg > 0) debug = atoi(optarg);
-				//printf("Set verbosity to %d\n", debug);
-				break;
+		case 'd': // run as daemon
+			runDaemon = true;
+			debug = 0;
+			break;
+		case 'h': // help
+			printHelp = true;
+			break;
+		case 'i': // inifile
+			if (optarg > 0) inifile = optarg;
+			break;
+		case 'm': // run in console
+			if (optarg > 0) iniGroup = optarg;
+			break;
+		case 'v': // set debug level (verbosity)
+			if (optarg > 0) debug = atoi(optarg);
+			//printf("Set verbosity to %d\n", debug);
+			break;
 		}
 	}
 	
