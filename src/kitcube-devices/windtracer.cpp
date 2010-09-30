@@ -299,12 +299,12 @@ void windtracer::readHeader(const char *filename){
 	// read the configuration record, each file starts with this!
 	//----------------------------------------------------------------------
 	
-	// read record header, always 24 bytes long
-	n = read(fd, &record_header, 24);	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
+	// read record header
+	n = read(fd, &record_header, sizeof(record_header));	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
 	if (n == -1) {
 		printf("Error in read function!!!\n");
 		// TODO: error handling
-	} else if (n == 24) {
+	} else if (n == sizeof(record_header)) {
 		if (record_header.block_desc.nId == CONFIG_RECORD_ID) {
 			if (debug >= 3) {
 				printf("Record ID: %#X\n", record_header.block_desc.nId);
@@ -324,13 +324,13 @@ void windtracer::readHeader(const char *filename){
 	
 	// store header length
 	lenHeader = record_header.nRecordLength;
-	
-	// read the configuration record block descriptor, always 8 bytes long
-	n = read (fd, &config_record.block_desc, 8);	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
+
+	// read the configuration record block descriptor
+	n = read(fd, &config_record.block_desc, sizeof(struct BlockDescriptor));	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
 	if (n == -1) {
 		printf("Error in read function!!!\n");
 		// TODO: error handling
-	} else if (n == 8) {
+	} else if (n == sizeof(struct BlockDescriptor)) {
 		if (config_record.block_desc.nId == CONFIG_DATA_BLOCK_ID) {
 			if (debug >= 3) {
 				printf("Block ID: %#X\n", config_record.block_desc.nId);
@@ -340,12 +340,12 @@ void windtracer::readHeader(const char *filename){
 			printf("Error: wrong data block ID at beginning of file!\n");
 			// TODO: error handling
 		}
-	} else if (n < 8) {
+	} else {
 		// TODO: file not completly transfered, try again
 	}
 	
 	// get memory for config text block
-	config_text_block_length = config_record.block_desc.nBlockLength - 8;
+	config_text_block_length = config_record.block_desc.nBlockLength - sizeof(struct BlockDescriptor);
 	if (debug >= 3)
 		printf("Config text block length: %d\n", config_text_block_length);
 	config_record.chConfiguration = new char [config_text_block_length];
