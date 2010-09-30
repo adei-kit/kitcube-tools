@@ -319,12 +319,10 @@ void windtracer::readHeader(const char *filename){
 			// TODO: error handling
 		}
 	} else {
-		// TODO: file not completly transfered, try again
+		// file not completly transfered, try again
+		return;
 	}
 	
-	// store header length
-	lenHeader = record_header.nRecordLength;
-
 	// read the configuration record block descriptor
 	n = read(fd, &config_record.block_desc, sizeof(struct BlockDescriptor));	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
 	if (n == -1) {
@@ -341,7 +339,8 @@ void windtracer::readHeader(const char *filename){
 			// TODO: error handling
 		}
 	} else {
-		// TODO: file not completly transfered, try again
+		// file not completly transfered, try again
+		return;
 	}
 	
 	// get memory for config text block
@@ -359,11 +358,16 @@ void windtracer::readHeader(const char *filename){
 		if (debug >= 3)
 			printf("Content:\n%s", config_record.chConfiguration);
 	} else {
-		// TODO: file not completly transfered, try again
+		// file not completly transfered, try again
+		return;
 	}
 	
 	close(fd);
 
+	// store header length
+	// do NOT do this earlier to indicate the complete header could be read sucessfully
+	lenHeader = record_header.nRecordLength;
+	
 	
 	//----------------------------------------------------------------------
 	// get some variables from the config text block
@@ -515,6 +519,13 @@ void windtracer::readData(const char *dir, const char *filename)
 	// If number of sensors is unknown read the header first
 	if (nSensors == 0)
 		readHeader(full_data_filename.c_str());
+	
+	// if header could not be read, leave function here
+	if (lenHeader == 0) {
+		fd_eof = true;
+		return;
+	}
+	
 //	if (sensor[0].name.length() == 0)
 //		getSensorNames(sensorListfile.c_str());
 
