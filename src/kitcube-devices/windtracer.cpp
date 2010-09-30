@@ -588,7 +588,7 @@ void windtracer::readData(const char *dir, const char *filename)
 	// read data
 	//----------------------------------------------------------------------
 	fd_eof = false;
-	while (loop_counter < 100) {
+	while (loop_counter < 10000) {
 		//--------------------------------------------------------------
 		// loop over data records
 		//--------------------------------------------------------------
@@ -789,7 +789,10 @@ void windtracer::readData(const char *dir, const char *filename)
 			break;
 			
 		default:
-			printf("No PRODUCT_VELOCITY_RECORD_ID or PRODUCT_FILTERED_VELOCITY_RECORD_ID found -> ignoring\n");
+			if (debug >= 3)
+				printf("No PRODUCT_VELOCITY_RECORD_ID or PRODUCT_FILTERED_VELOCITY_RECORD_ID found -> ignoring\n");
+			
+			// advance read pointer
 			lseek(fd_data_file, record_header.nRecordLength - record_header.block_desc.nBlockLength, SEEK_CUR);
 			current_position += record_header.nRecordLength - record_header.block_desc.nBlockLength;
 			
@@ -800,10 +803,17 @@ void windtracer::readData(const char *dir, const char *filename)
 			break;	// leave outer while loop over data records
 		
 
-		if (debug >= 1)
-			printf("Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%09d\n",
-				record_header.nDayOfMonth, record_header.nMonth, record_header.nYear,
+		if (debug >= 4) {
+			printf("%4d: Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%09d\n",
+				loop_counter, record_header.nDayOfMonth, record_header.nMonth, record_header.nYear,
 				record_header.nHour, record_header.nMinute, record_header.nSecond, record_header.nNanosecond);
+			printf("Azimuth rate: %f\n", scan_info.fAzimuthRate_dps);
+			printf("Elevation rate: %f\n", scan_info.fElevationRate_dps);
+			printf("Azimuth target: %f\n", scan_info.fTargetAzimuth_deg);
+			printf("Elevation target: %f\n", scan_info.fTargetElevation_deg);
+			printf("Azimuth mean: %f\n", pulse_info.fAzimuthMean_deg);
+			printf("Elevation mean: %f\n", pulse_info.fElevationMean_deg);
+		}
 		
 		//--------------------------------------------------------------
 		// TODO: store to DB
