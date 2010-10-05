@@ -97,5 +97,7 @@ private:
 	
 	int monitor_fft_size;
 	
+	int fft_size;
+	
 };
 #endif

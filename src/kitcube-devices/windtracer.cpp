@@ -207,12 +207,17 @@ unsigned int windtracer::getSensorGroup(){
 	number = 0;
 	buffer = "";
 	
-	if (sensorGroup == "data") {
+	if (sensorGroup == "base") {
 		number = 1;
 		buffer = "base data";
 	}
 	
-	return( number);
+	if (sensorGroup == "spectral") {
+		number = 2;
+		buffer = "spectral data";
+	}
+	
+	return number;
 }
 
 
@@ -390,8 +395,11 @@ void windtracer::readHeader(const char *filename){
 	ptr = strstr(config_record.chConfiguration, "P_GATES_TO_MERGE");
 	gates_to_merge = atoi(ptr + sizeof("P_GATES_TO_MERGE"));
 	
-	ptr = strstr(config_record.chConfiguration, "P_MONITOR_FFT_SIZE");
+	ptr = strstr(config_record.chConfiguration, "P_0");
 	monitor_fft_size = atoi(ptr + sizeof("P_MONITOR_FFT_SIZE"));
+	
+	ptr = strstr(config_record.chConfiguration, "P_FFT_SIZE");
+	fft_size = atoi(ptr + sizeof("P_FFT_SIZE"));
 	
 	if (debug >= 3) {
 		printf("Range gates: %d\n", range_gates);
