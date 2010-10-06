@@ -395,7 +395,7 @@ void windtracer::readHeader(const char *filename){
 	ptr = strstr(config_record.chConfiguration, "P_GATES_TO_MERGE");
 	gates_to_merge = atoi(ptr + sizeof("P_GATES_TO_MERGE"));
 	
-	ptr = strstr(config_record.chConfiguration, "P_0");
+	ptr = strstr(config_record.chConfiguration, "P_MONITOR_FFT_SIZE");
 	monitor_fft_size = atoi(ptr + sizeof("P_MONITOR_FFT_SIZE"));
 	
 	ptr = strstr(config_record.chConfiguration, "P_FFT_SIZE");
@@ -510,10 +510,11 @@ void windtracer::readData(const char *dir, const char *filename)
 	unsigned long record_header_position;
 	ssize_t n;
 	struct RecordHeader record_header;
-	struct ScanInfo scan_info;
-	struct ProductPulseInfo pulse_info;
+	unsigned char *buffer = 0, *pointer;
+	struct ScanInfo *scan_info;
+	struct ProductPulseInfo *pulse_info;
 	float *velocity = 0, *snr = 0, *spectral_width = 0, *backscatter = 0, *spectral_data = 0;
-	struct BlockDescriptor block_desc;
+	struct BlockDescriptor *block_desc;
 	
 	
 	if(debug >= 1)
@@ -584,14 +585,6 @@ void windtracer::readData(const char *dir, const char *filename)
 	
 	current_position = last_position;
 	
-	// get memory for the data
-	// TODO: check for success!!!
-	velocity = new float [range_gates];
-	snr = new float [range_gates];
-	spectral_width = new float [range_gates];
-	backscatter = new float [range_gates];
-	spectral_data = new float [monitor_fft_size/2];
-	
 	//----------------------------------------------------------------------
 	// read data
 	//----------------------------------------------------------------------
@@ -610,116 +603,71 @@ void windtracer::readData(const char *dir, const char *filename)
 			fd_eof = true;
 			break;	// leave outer while loop over data records
 		}
-		current_position += sizeof(record_header);
 		
 		// check record ID
 		if ((record_header.block_desc.nId == PRODUCT_VELOCITY_RECORD_ID) ||
 		    (record_header.block_desc.nId == PRODUCT_FILTERED_VELOCITY_RECORD_ID)) {
-			// read scan info data block
-			n = read(fd_data_file, &scan_info, sizeof(scan_info));
-			if (n < sizeof(scan_info)) {
-				// file not completley transfered, try again next time
-				fd_eof = true;
-				break;	// leave outer while loop over data records
-			}
-			current_position += sizeof(scan_info);
+			// get memory to store rest of record
+			buffer = new unsigned char [record_header.nRecordLength - record_header.block_desc.nBlockLength];
+			// TODO/FIXME: check for success!!!
 			
-			// read product pulse info
-			n = read(fd_data_file, &pulse_info, sizeof(pulse_info));
-			if (n < sizeof(pulse_info)) {
+			// read rest of record_header
+			n = read(fd_data_file, buffer, record_header.nRecordLength - record_header.block_desc.nBlockLength);
+			if (n < (record_header.nRecordLength - record_header.block_desc.nBlockLength)) {
 				// file not completely transfered, try again next time
 				fd_eof = true;
-				break;	// leave outer while loop over data records
+				break;
 			}
-			current_position += sizeof(pulse_info);
+			
+			pointer = buffer;
+			
+			// get scan info data block
+			scan_info = (struct ScanInfo *) pointer;
+			pointer += scan_info->block_desc.nBlockLength;
+			
+			// get product pulse info
+			pulse_info = (struct ProductPulseInfo *) pointer;
+			pointer += pulse_info->block_desc.nBlockLength;
 			
 			// read data, solange man nicht ausserhalb der record length ist
-			while (current_position < record_header_position + record_header.nRecordLength) {
+			while (pointer < (buffer + record_header.nRecordLength - record_header.block_desc.nBlockLength)) {
 				//--------------------------------------
 				// loop over data blocks
 				//--------------------------------------
 				
-				// read block descriptor
-				n = read(fd_data_file, &block_desc, sizeof(block_desc));
-				if (n < sizeof(block_desc)) {
-					// file not completely transfered, try again next time
-					fd_eof = true;
-					break;	// leave inner while loop over data blocks
-				}
+				// get block descriptor
+				block_desc = (struct BlockDescriptor *) pointer;
+				pointer += sizeof(struct BlockDescriptor);
 				
 				if (record_header.block_desc.nId == PRODUCT_VELOCITY_RECORD_ID) {
 					// check data block ID
-					if (block_desc.nId == PRODUCT_VELOCITY_DATA_BLOCK_ID) {
-						n = read(fd_data_file, velocity, range_gates * sizeof(float));
-						if (n < range_gates * sizeof(float))
-							// file not completely transfered, try again
-							fd_eof = true;
-					} else if (block_desc.nId == PRODUCT_SNR_DATA_BLOCK_ID) {
-						n = read(fd_data_file, snr, range_gates * sizeof(float));
-						if (n < range_gates * sizeof(float))
-							// file not completly transfered, try again
-							fd_eof = true;
-					} else if (block_desc.nId == PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
-						n = read(fd_data_file, spectral_width, range_gates * sizeof(float));
-						if (n < range_gates * sizeof(float))
-							// file not completly transfered, try again
-							fd_eof = true;
-					} else if (block_desc.nId == PRODUCT_BACKSCATTER_DATA_BLOCK_ID) {
-						n = read(fd_data_file, backscatter, range_gates * sizeof(float));
-						if (n < range_gates * sizeof(float))
-							// file not completly transfered, try again
-							fd_eof = true;
-					} else if (block_desc.nId == PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID) {
-						n = read(fd_data_file, spectral_data, monitor_fft_size / 2 * sizeof(float));
-						if (n < monitor_fft_size / 2 * sizeof(float))
-							// file not completly transfered, try again
-							fd_eof = true;
-					} else {
-						// advance read pointer
-						lseek(fd_data_file, block_desc.nBlockLength - sizeof(block_desc), SEEK_CUR);
+					if (block_desc->nId == PRODUCT_VELOCITY_DATA_BLOCK_ID) {
+						velocity = (float *) pointer;
+					} else if (block_desc->nId == PRODUCT_SNR_DATA_BLOCK_ID) {
+						snr = (float *) pointer;
+					} else if (block_desc->nId == PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
+						spectral_width = (float *) pointer;
+					} else if (block_desc->nId == PRODUCT_BACKSCATTER_DATA_BLOCK_ID) {
+						backscatter = (float *) pointer;
+					} else if (block_desc->nId == PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID) {
+						spectral_data = (float *) pointer;
 					}
-				
-					if (fd_eof == true)
-						break;	// leave inner while loop over data blocks
-					
-					current_position += block_desc.nBlockLength;
-					
 				} else if (record_header.block_desc.nId == PRODUCT_FILTERED_VELOCITY_RECORD_ID) {
 					// check data block ID
-					if (block_desc.nId == PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID) {
-						n = read(fd_data_file, velocity, range_gates * sizeof(float));
-						if (n < range_gates * sizeof(float))
-							// file not completely transfered, try again
-							fd_eof = true;
-					} else if (block_desc.nId == PRODUCT_FILTERED_SNR_DATA_BLOCK_ID) {
-						n = read(fd_data_file, snr, range_gates * sizeof(float));
-						if (n < range_gates * sizeof(float))
-							// file not completly transfered, try again
-							fd_eof = true;
-					} else if (block_desc.nId == PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
-						n = read(fd_data_file, spectral_width, range_gates * sizeof(float));
-						if (n < range_gates * sizeof(float))
-							// file not completly transfered, try again
-							fd_eof = true;
-					} else if (block_desc.nId == PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID) {
-						n = read(fd_data_file, backscatter, range_gates * sizeof(float));
-						if (n < range_gates * sizeof(float))
-							// file not completly transfered, try again
-							fd_eof = true;
-					} else {
-						// advance read pointer
-						lseek(fd_data_file, block_desc.nBlockLength - sizeof(block_desc), SEEK_CUR);
+					if (block_desc->nId == PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID) {
+						velocity = (float *) pointer;
+					} else if (block_desc->nId == PRODUCT_FILTERED_SNR_DATA_BLOCK_ID) {
+						snr = (float *) pointer;
+					} else if (block_desc->nId == PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
+						spectral_width = (float *) pointer;
+					} else if (block_desc->nId == PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID) {
+						backscatter = (float *) pointer;
 					}
-					
-					if (fd_eof == true)
-						break;	// leave inner while loop over data blocks
-					
-					current_position += block_desc.nBlockLength;
 				}
+				
+				// advance read pointer
+				pointer += (block_desc->nBlockLength - sizeof(struct BlockDescriptor));
 			}
-			
-			if (fd_eof == true)
-				break;	// leave outer while loop over data records
 			
 			if (debug >= 4) {
 				printf("%4d: Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%09d\n",
@@ -733,25 +681,17 @@ void windtracer::readData(const char *dir, const char *filename)
 					printf("PRODUCT_FILTERED_VELOCITY_RECORD_ID\n");
 					break;
 				}
-				/*printf("Azimuth rate: %f\n", scan_info.fAzimuthRate_dps);
-				printf("Elevation rate: %f\n", scan_info.fElevationRate_dps);
-				printf("Azimuth target: %f\n", scan_info.fTargetAzimuth_deg);
-				printf("Elevation target: %f\n", scan_info.fTargetElevation_deg);
-				printf("Azimuth mean: %f\n", pulse_info.fAzimuthMean_deg);
-				printf("Elevation mean: %f\n", pulse_info.fElevationMean_deg);*/
+				printf("Azimuth rate: %f\n", scan_info->fAzimuthRate_dps);
+				printf("Elevation rate: %f\n", scan_info->fElevationRate_dps);
+				printf("Azimuth target: %f\n", scan_info->fTargetAzimuth_deg);
+				printf("Elevation target: %f\n", scan_info->fTargetElevation_deg);
+				printf("Azimuth mean: %f\n", pulse_info->fAzimuthMean_deg);
+				printf("Elevation mean: %f\n", pulse_info->fElevationMean_deg);
 			}
 			
 			//--------------------------------------------------------------
 			// TODO: store to DB
 			//--------------------------------------------------------------
-			
-			// save position in file
-			fmark = fopen(filenameMarker.c_str(), "w");
-			if (fmark > 0) {
-				fprintf(fmark, "%ld %ld %ld %ld\n",
-					lastIndex, last_data_timestamp.tv_sec, last_data_timestamp.tv_usec, current_position);
-				fclose(fmark);
-			}
 			
 		} else {
 			if (debug >= 3)
@@ -759,26 +699,20 @@ void windtracer::readData(const char *dir, const char *filename)
 			
 			// advance read pointer
 			lseek(fd_data_file, record_header.nRecordLength - record_header.block_desc.nBlockLength, SEEK_CUR);
-			current_position += record_header.nRecordLength - record_header.block_desc.nBlockLength;
+		}
+		
+		current_position += record_header.nRecordLength;
+		
+		// save position in file
+		fmark = fopen(filenameMarker.c_str(), "w");
+		if (fmark > 0) {
+			fprintf(fmark, "%ld %ld %ld %ld\n",
+				lastIndex, last_data_timestamp.tv_sec, last_data_timestamp.tv_usec, current_position);
+			fclose(fmark);
 		}
 		
 		loop_counter++;
 	}
-	
-	delete [] velocity;
-	velocity = 0;
-	
-	delete [] snr;
-	snr = 0;
-	
-	delete [] spectral_width;
-	spectral_width = 0;
-	
-	delete [] backscatter;
-	backscatter = 0;
-	
-	delete [] spectral_data;
-	spectral_data = 0;
 	
 	close(fd_data_file);
 }
