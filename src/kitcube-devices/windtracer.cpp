@@ -600,59 +600,80 @@ void windtracer::readData(const char *dir, const char *filename)
 			break;	// leave outer while loop over data records
 		}
 		
-		// check record ID
-		if ((record_header.block_desc.nId == PRODUCT_VELOCITY_RECORD_ID) ||
-		    (record_header.block_desc.nId == PRODUCT_FILTERED_VELOCITY_RECORD_ID)) {
-			// get memory to store rest of record
-			buffer = new unsigned char [record_header.nRecordLength - record_header.block_desc.nBlockLength];
-			// TODO/FIXME: check for success!!!
-			
-			// read rest of record
-			n = read(fd_data_file, buffer, record_header.nRecordLength - record_header.block_desc.nBlockLength);
-			if (n < (record_header.nRecordLength - record_header.block_desc.nBlockLength)) {
-				// file not completely transfered, try again next time
-				fd_eof = true;
+		if (sensorGroup == "base") {
+			// check record ID
+			if ((record_header.block_desc.nId != PRODUCT_VELOCITY_RECORD_ID) &&
+			    (record_header.block_desc.nId != PRODUCT_FILTERED_VELOCITY_RECORD_ID)){
+				if (debug >= 3)
+					printf("No PRODUCT_VELOCITY_RECORD_ID or PRODUCT_FILTERED_VELOCITY_RECORD_ID found -> ignoring\n");
+				
+				// advance read pointer
+				lseek(fd_data_file, record_header.nRecordLength - record_header.block_desc.nBlockLength, SEEK_CUR);
+				
+				// update position in file variable
+				current_position += record_header.nRecordLength;
+				
+				continue;
+			}
+		} else if (sensorGroup == "spectral") {
+			// check record ID
+			if (record_header.block_desc.nId != PRODUCT_VELOCITY_RECORD_ID) {
+				if (debug >= 3)
+					printf("No PRODUCT_VELOCITY_RECORD_ID found -> ignoring\n");
+				
+				// advance read pointer
+				lseek(fd_data_file, record_header.nRecordLength - record_header.block_desc.nBlockLength, SEEK_CUR);
+				
+				// update position in file variable
+				current_position += record_header.nRecordLength;
+				
+				continue;
+			}
+		}
+		
+		// get memory to store rest of record
+		buffer = new unsigned char [record_header.nRecordLength - record_header.block_desc.nBlockLength];
+		// TODO/FIXME: check for success!!!
+		
+		// read rest of record
+		n = read(fd_data_file, buffer, record_header.nRecordLength - record_header.block_desc.nBlockLength);
+		if (n < (record_header.nRecordLength - record_header.block_desc.nBlockLength)) {
+			// file not completely transfered, try again next time
+			fd_eof = true;
+			break;
+		}
+		
+		//------------------------------------------------------
+		// parse record body for data
+		//------------------------------------------------------
+		parseData(buffer, &record_header, &scan_info, &pulse_info,
+				&velocity, &snr, &spectral_width, &backscatter, &spectral_data);
+		
+		// print data
+		if (debug >= 4) {
+			printf("%4d: Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%09d\n",
+				loop_counter, record_header.nDayOfMonth, record_header.nMonth, record_header.nYear,
+				record_header.nHour, record_header.nMinute, record_header.nSecond, record_header.nNanosecond);
+			switch (record_header.block_desc.nId) {
+			case PRODUCT_VELOCITY_RECORD_ID:
+				printf("PRODUCT_VELOCITY_RECORD_ID\n");
+				break;
+			case PRODUCT_FILTERED_VELOCITY_RECORD_ID:
+				printf("PRODUCT_FILTERED_VELOCITY_RECORD_ID\n");
 				break;
 			}
-			
-			//------------------------------------------------------
-			// parse record body for data
-			//------------------------------------------------------
-			parseData(buffer, &record_header, &scan_info, &pulse_info,
-				  &velocity, &snr, &spectral_width, &backscatter, &spectral_data);
-			
-			// print data
-			if (debug >= 4) {
-				printf("%4d: Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%09d\n",
-					loop_counter, record_header.nDayOfMonth, record_header.nMonth, record_header.nYear,
-					record_header.nHour, record_header.nMinute, record_header.nSecond, record_header.nNanosecond);
-				switch (record_header.block_desc.nId) {
-				case PRODUCT_VELOCITY_RECORD_ID:
-					printf("PRODUCT_VELOCITY_RECORD_ID\n");
-					break;
-				case PRODUCT_FILTERED_VELOCITY_RECORD_ID:
-					printf("PRODUCT_FILTERED_VELOCITY_RECORD_ID\n");
-					break;
-				}
-				printf("Azimuth rate: %f\n", scan_info->fAzimuthRate_dps);
-				printf("Elevation rate: %f\n", scan_info->fElevationRate_dps);
-				printf("Azimuth target: %f\n", scan_info->fTargetAzimuth_deg);
-				printf("Elevation target: %f\n", scan_info->fTargetElevation_deg);
-				printf("Azimuth mean: %f\n", pulse_info->fAzimuthMean_deg);
-				printf("Elevation mean: %f\n", pulse_info->fElevationMean_deg);
-			}
-			
-			//--------------------------------------------------------------
-			// TODO: store data to DB
-			//--------------------------------------------------------------
-			
-		} else {
-			if (debug >= 3)
-				printf("No PRODUCT_VELOCITY_RECORD_ID or PRODUCT_FILTERED_VELOCITY_RECORD_ID found -> ignoring\n");
-			
-			// advance read pointer
-			lseek(fd_data_file, record_header.nRecordLength - record_header.block_desc.nBlockLength, SEEK_CUR);
+			printf("Azimuth rate: %f\n", scan_info->fAzimuthRate_dps);
+			printf("Elevation rate: %f\n", scan_info->fElevationRate_dps);
+			printf("Azimuth target: %f\n", scan_info->fTargetAzimuth_deg);
+			printf("Elevation target: %f\n", scan_info->fTargetElevation_deg);
+			printf("Azimuth mean: %f\n", pulse_info->fAzimuthMean_deg);
+			printf("Elevation mean: %f\n", pulse_info->fElevationMean_deg);
 		}
+		
+		//--------------------------------------------------------------
+		// TODO: store data to DB
+		//--------------------------------------------------------------
+		
 		
 		// update position in file variable after read and write of data was successfull
 		current_position += record_header.nRecordLength;
@@ -715,32 +736,40 @@ void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
 		block_desc = (struct BlockDescriptor *) pointer;
 		pointer += sizeof(struct BlockDescriptor);
 		
-		// check record ID
-		if (record_header->block_desc.nId == PRODUCT_VELOCITY_RECORD_ID) {
+		if (sensorGroup == "base") {
+			// check record ID
+			if (record_header->block_desc.nId == PRODUCT_VELOCITY_RECORD_ID) {
+				// check data block ID
+				if (block_desc->nId == PRODUCT_VELOCITY_DATA_BLOCK_ID) {
+					*velocity = (float *) pointer;
+				} else if (block_desc->nId == PRODUCT_SNR_DATA_BLOCK_ID) {
+					*snr = (float *) pointer;
+				} else if (block_desc->nId == PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
+					*spectral_width = (float *) pointer;
+				} else if (block_desc->nId == PRODUCT_BACKSCATTER_DATA_BLOCK_ID) {
+					*backscatter = (float *) pointer;
+				} else if (block_desc->nId == PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID) {
+					*spectral_data = (float *) pointer;
+				}
+			} else if (record_header->block_desc.nId == PRODUCT_FILTERED_VELOCITY_RECORD_ID) {
+				// check data block ID
+				if (block_desc->nId == PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID) {
+					*velocity = (float *) pointer;
+				} else if (block_desc->nId == PRODUCT_FILTERED_SNR_DATA_BLOCK_ID) {
+					*snr = (float *) pointer;
+				} else if (block_desc->nId == PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
+					*spectral_width = (float *) pointer;
+				} else if (block_desc->nId == PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID) {
+					*backscatter = (float *) pointer;
+				}
+			}
+		} else if (sensorGroup == "spectral") {
 			// check data block ID
-			if (block_desc->nId == PRODUCT_VELOCITY_DATA_BLOCK_ID) {
-				*velocity = (float *) pointer;
-			} else if (block_desc->nId == PRODUCT_SNR_DATA_BLOCK_ID) {
-				*snr = (float *) pointer;
-			} else if (block_desc->nId == PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
-				*spectral_width = (float *) pointer;
-			} else if (block_desc->nId == PRODUCT_BACKSCATTER_DATA_BLOCK_ID) {
-				*backscatter = (float *) pointer;
-			} else if (block_desc->nId == PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID) {
+			if (block_desc->nId == PRODUCT_SPECTRAL_ESTIMATE_DATA_BLOCK_ID) {
 				*spectral_data = (float *) pointer;
 			}
-		} else if (record_header->block_desc.nId == PRODUCT_FILTERED_VELOCITY_RECORD_ID) {
-			// check data block ID
-			if (block_desc->nId == PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID) {
-				*velocity = (float *) pointer;
-			} else if (block_desc->nId == PRODUCT_FILTERED_SNR_DATA_BLOCK_ID) {
-				*snr = (float *) pointer;
-			} else if (block_desc->nId == PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
-				*spectral_width = (float *) pointer;
-			} else if (block_desc->nId == PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID) {
-				*backscatter = (float *) pointer;
-			}
 		}
+			
 		
 		// advance read pointer
 		pointer += (block_desc->nBlockLength - sizeof(struct BlockDescriptor));
