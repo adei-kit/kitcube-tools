@@ -507,14 +507,12 @@ void windtracer::readData(const char *dir, const char *filename)
 	unsigned long lastIndex;
 	unsigned long current_position;
 	int loop_counter = 0;
-	unsigned long record_header_position;
 	ssize_t n;
 	struct RecordHeader record_header;
-	unsigned char *buffer = 0, *pointer;
+	u_char *buffer = 0;
 	struct ScanInfo *scan_info;
 	struct ProductPulseInfo *pulse_info;
 	float *velocity = 0, *snr = 0, *spectral_width = 0, *backscatter = 0, *spectral_data = 0;
-	struct BlockDescriptor *block_desc;
 	
 	
 	if(debug >= 1)
@@ -594,8 +592,6 @@ void windtracer::readData(const char *dir, const char *filename)
 		// loop over data records
 		//--------------------------------------------------------------
 		
-		record_header_position = current_position;
-		
 		// read record header
 		n = read(fd_data_file, &record_header, sizeof(record_header));	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
 		if (n < sizeof(record_header)) {
@@ -611,7 +607,7 @@ void windtracer::readData(const char *dir, const char *filename)
 			buffer = new unsigned char [record_header.nRecordLength - record_header.block_desc.nBlockLength];
 			// TODO/FIXME: check for success!!!
 			
-			// read rest of record_header
+			// read rest of record
 			n = read(fd_data_file, buffer, record_header.nRecordLength - record_header.block_desc.nBlockLength);
 			if (n < (record_header.nRecordLength - record_header.block_desc.nBlockLength)) {
 				// file not completely transfered, try again next time
@@ -619,56 +615,13 @@ void windtracer::readData(const char *dir, const char *filename)
 				break;
 			}
 			
-			pointer = buffer;
+			//------------------------------------------------------
+			// parse record body for data
+			//------------------------------------------------------
+			parseData(buffer, &record_header, &scan_info, &pulse_info,
+				  &velocity, &snr, &spectral_width, &backscatter, &spectral_data);
 			
-			// get scan info data block
-			scan_info = (struct ScanInfo *) pointer;
-			pointer += scan_info->block_desc.nBlockLength;
-			
-			// get product pulse info
-			pulse_info = (struct ProductPulseInfo *) pointer;
-			pointer += pulse_info->block_desc.nBlockLength;
-			
-			// read data, solange man nicht ausserhalb der record length ist
-			while (pointer < (buffer + record_header.nRecordLength - record_header.block_desc.nBlockLength)) {
-				//--------------------------------------
-				// loop over data blocks
-				//--------------------------------------
-				
-				// get block descriptor
-				block_desc = (struct BlockDescriptor *) pointer;
-				pointer += sizeof(struct BlockDescriptor);
-				
-				if (record_header.block_desc.nId == PRODUCT_VELOCITY_RECORD_ID) {
-					// check data block ID
-					if (block_desc->nId == PRODUCT_VELOCITY_DATA_BLOCK_ID) {
-						velocity = (float *) pointer;
-					} else if (block_desc->nId == PRODUCT_SNR_DATA_BLOCK_ID) {
-						snr = (float *) pointer;
-					} else if (block_desc->nId == PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
-						spectral_width = (float *) pointer;
-					} else if (block_desc->nId == PRODUCT_BACKSCATTER_DATA_BLOCK_ID) {
-						backscatter = (float *) pointer;
-					} else if (block_desc->nId == PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID) {
-						spectral_data = (float *) pointer;
-					}
-				} else if (record_header.block_desc.nId == PRODUCT_FILTERED_VELOCITY_RECORD_ID) {
-					// check data block ID
-					if (block_desc->nId == PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID) {
-						velocity = (float *) pointer;
-					} else if (block_desc->nId == PRODUCT_FILTERED_SNR_DATA_BLOCK_ID) {
-						snr = (float *) pointer;
-					} else if (block_desc->nId == PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
-						spectral_width = (float *) pointer;
-					} else if (block_desc->nId == PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID) {
-						backscatter = (float *) pointer;
-					}
-				}
-				
-				// advance read pointer
-				pointer += (block_desc->nBlockLength - sizeof(struct BlockDescriptor));
-			}
-			
+			// print data
 			if (debug >= 4) {
 				printf("%4d: Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%09d\n",
 					loop_counter, record_header.nDayOfMonth, record_header.nMonth, record_header.nYear,
@@ -690,7 +643,7 @@ void windtracer::readData(const char *dir, const char *filename)
 			}
 			
 			//--------------------------------------------------------------
-			// TODO: store to DB
+			// TODO: store data to DB
 			//--------------------------------------------------------------
 			
 		} else {
@@ -701,18 +654,95 @@ void windtracer::readData(const char *dir, const char *filename)
 			lseek(fd_data_file, record_header.nRecordLength - record_header.block_desc.nBlockLength, SEEK_CUR);
 		}
 		
+		// update position in file variable after read and write of data was successfull
 		current_position += record_header.nRecordLength;
 		
-		// save position in file
-		fmark = fopen(filenameMarker.c_str(), "w");
-		if (fmark > 0) {
-			fprintf(fmark, "%ld %ld %ld %ld\n",
-				lastIndex, last_data_timestamp.tv_sec, last_data_timestamp.tv_usec, current_position);
-			fclose(fmark);
+		// clean up
+		velocity = 0;
+		snr = 0;
+		spectral_width = 0;
+		backscatter = 0;
+		spectral_data = 0;
+		if (buffer != 0) {
+			delete [] buffer;
+			buffer = 0;
 		}
 		
 		loop_counter++;
 	}
 	
+	// save position in file
+	fmark = fopen(filenameMarker.c_str(), "w");
+	if (fmark > 0) {
+		fprintf(fmark, "%ld %ld %ld %ld\n",
+			lastIndex, last_data_timestamp.tv_sec, last_data_timestamp.tv_usec, current_position);
+		fclose(fmark);
+	}
+	
 	close(fd_data_file);
+}
+
+
+void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
+			   struct ScanInfo **scan_info, struct ProductPulseInfo **pulse_info,
+			   float **velocity, float **snr, float **spectral_width,
+			   float **backscatter, float **spectral_data)
+{
+	u_char *pointer;
+	struct BlockDescriptor *block_desc;
+	
+	
+	if(debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	pointer = buffer;
+	
+	// get scan info data block
+	*scan_info = (struct ScanInfo *) pointer;
+	pointer += (**scan_info).block_desc.nBlockLength;
+	
+	// get product pulse info
+	*pulse_info = (struct ProductPulseInfo *) pointer;
+	pointer += (*pulse_info)->block_desc.nBlockLength;
+	
+	// read data, loop as long you are not outside the record length
+	while (pointer < (buffer + record_header->nRecordLength - record_header->block_desc.nBlockLength)) {
+		//--------------------------------------
+		// loop over data blocks
+		//--------------------------------------
+		
+		// get block descriptor
+		block_desc = (struct BlockDescriptor *) pointer;
+		pointer += sizeof(struct BlockDescriptor);
+		
+		// check record ID
+		if (record_header->block_desc.nId == PRODUCT_VELOCITY_RECORD_ID) {
+			// check data block ID
+			if (block_desc->nId == PRODUCT_VELOCITY_DATA_BLOCK_ID) {
+				*velocity = (float *) pointer;
+			} else if (block_desc->nId == PRODUCT_SNR_DATA_BLOCK_ID) {
+				*snr = (float *) pointer;
+			} else if (block_desc->nId == PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
+				*spectral_width = (float *) pointer;
+			} else if (block_desc->nId == PRODUCT_BACKSCATTER_DATA_BLOCK_ID) {
+				*backscatter = (float *) pointer;
+			} else if (block_desc->nId == PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID) {
+				*spectral_data = (float *) pointer;
+			}
+		} else if (record_header->block_desc.nId == PRODUCT_FILTERED_VELOCITY_RECORD_ID) {
+			// check data block ID
+			if (block_desc->nId == PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID) {
+				*velocity = (float *) pointer;
+			} else if (block_desc->nId == PRODUCT_FILTERED_SNR_DATA_BLOCK_ID) {
+				*snr = (float *) pointer;
+			} else if (block_desc->nId == PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
+				*spectral_width = (float *) pointer;
+			} else if (block_desc->nId == PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID) {
+				*backscatter = (float *) pointer;
+			}
+		}
+		
+		// advance read pointer
+		pointer += (block_desc->nBlockLength - sizeof(struct BlockDescriptor));
+	}
 }

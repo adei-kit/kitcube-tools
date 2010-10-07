@@ -50,6 +50,7 @@
 
 #define CONFIG_DATA_BLOCK_ID				0x04F0
 
+
 class windtracer: public DAQBinaryDevice  {
 public:
 	/**  */
@@ -83,6 +84,11 @@ public:
 	void writeHeader();
 	
 	void readData(const char *dir, const char *filename);
+	
+	void parseData(u_char *buffer, struct RecordHeader *record_header,
+		       struct ScanInfo **scan_info, struct ProductPulseInfo **pulse_info,
+		       float **velocity, float **snr, float **spectral_width,
+		       float **backscatter, float **spectral_data);
 	
 private:
 	unsigned char *headerRaw;
