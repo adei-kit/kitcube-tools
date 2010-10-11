@@ -168,7 +168,7 @@ void parsivel::readData(const char *dir, const char *filename){
 	struct timeval lastTime;
 	char line[4150];
 	FILE *fmark;
-	unsigned long lastIndex;
+	long lastIndex;
 	struct timeval timestamp_data;
 	int iLoop;
 	char *lPtr, *date_time;

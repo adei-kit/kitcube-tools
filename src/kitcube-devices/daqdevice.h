@@ -16,6 +16,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <sys/time.h>
+#include <climits>
 
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
@@ -152,7 +153,7 @@ public:
 	  * std::invalid_argument has to be thrown.
 	  *
 	  */
-	virtual int getFileNumber(char* filename);
+	virtual long getFileNumber(char* filename);
 	
 	/** Get list of new files */
 	void getNewFiles();

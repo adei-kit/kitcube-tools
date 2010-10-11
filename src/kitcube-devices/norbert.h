@@ -49,7 +49,7 @@ public:
 	/** Re-implement the calculation of the file numbering scheme. 
 	  * The ceilometer uses date and times in the filename 
 	  */
-	int getFileNumber(char *filename);
+	long getFileNumber(char *filename);
 	
 	/** Get time until next sample and it's id */
 	void readHeader(const char *header);

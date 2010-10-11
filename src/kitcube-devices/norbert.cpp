@@ -69,10 +69,10 @@ const char *Norbert::getDataDir(){
 }
 
 
-int Norbert::getFileNumber(char *filename){
+long Norbert::getFileNumber(char *filename){
 	std::string name;
 	size_t posIndex;
-	int index;
+	long index;
 	std::string filePrefix;
 	std::string fileSuffix;
 	std::string numString;
@@ -391,7 +391,7 @@ void Norbert::readData(const char *dir, const char *filename){
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
-	unsigned long lastIndex;
+	long lastIndex;
 	struct timeval l_timestamp_data;
 	//struct timeval tWrite;
 	char line[256];

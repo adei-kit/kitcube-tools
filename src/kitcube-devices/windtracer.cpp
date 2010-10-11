@@ -504,7 +504,7 @@ void windtracer::readData(const char *dir, const char *filename)
 	struct timeval last_data_timestamp;
 	char line[256];
 	FILE *fmark;
-	unsigned long lastIndex;
+	long lastIndex;
 	unsigned long current_position;
 	int loop_counter = 0;
 	ssize_t n;

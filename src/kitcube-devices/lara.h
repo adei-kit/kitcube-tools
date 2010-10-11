@@ -39,7 +39,7 @@ public:
 	/** Re-implement the calculation of the file numbering scheme. 
 	 * Lara uses date and times in the filename 
 	 */
-	int getFileNumber(char *filename);
+	long getFileNumber(char *filename);
 
 	/** Define a sensor group number for all the availble sensor group files */
 	unsigned int getSensorGroup();

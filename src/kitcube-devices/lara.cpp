@@ -96,10 +96,10 @@ const char *Lara::getDataFilename(){
 }
 
 
-int Lara::getFileNumber(char *filename){
+long Lara::getFileNumber(char *filename){
 	std::string name;
 	int posIndex;
-	int index;
+	long index;
 	std::string filePrefix;
 	std::string fileSuffix;
 	std::string numString;
@@ -149,7 +149,7 @@ int Lara::getFileNumber(char *filename){
 		
 	// Convert to unix time stamp
     index = timegm(&time);
-	if (debug>3) printf("Using the reference time as index. Index %d   Time %s", 
+	if (debug>3) printf("Using the reference time as index. Index %ld   Time %s", 
 						index, asctime(&time));
 	
     return (index);		
@@ -396,7 +396,7 @@ void Lara::readData(const char *dir, char *filename){
 		char line[256];
 		std::string filenameMarker;
 		FILE *fmark;
-		unsigned long lastIndex;
+		long lastIndex;
 		struct timeval lastTime;
 		int handled;
 		

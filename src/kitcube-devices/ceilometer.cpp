@@ -412,7 +412,7 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
-	unsigned long lastIndex;
+	long lastIndex;
 	//struct timeval tWrite;
 	char line[256];
 	

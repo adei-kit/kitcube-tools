@@ -1076,12 +1076,12 @@ void DAQDevice::writeData(){
 }
 
 
-int DAQDevice::getFileNumber(char* filename){
+long DAQDevice::getFileNumber(char* filename){
 	std::string filename_prefix;
 	std::string filename_suffix;
 	std::string filename_string;
 	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, filename_length;
-	int index;
+	long index;
 	
 	
 	if (debug >= 1)
@@ -1140,10 +1140,10 @@ int DAQDevice::getFileNumber(char* filename){
 	
 	// we assume, that after the removal of prefix and suffix, there are only numbers left
 	// FIXME/TODO: check, if this is really only a number
-	index = atoi(filename_string.c_str());
+	index = atol(filename_string.c_str());
 	
 	if (debug >= 2)
-		printf("File number is: %d\n", index);
+		printf("File number is: %ld\n", index);
 	
 	return index;
 }
@@ -1156,11 +1156,11 @@ void DAQDevice::getNewFiles() {
 	struct dirent *file;
 	int nFiles;
 	char line[256];
-	unsigned int index;
+	long index;
 	
 	// Linked list of directory entries
 	std::string *listName;
-	unsigned int *listIndex;
+	long *listIndex;
 	unsigned int *listNext;
 	int nList;
 	int i, j;
@@ -1172,7 +1172,7 @@ void DAQDevice::getNewFiles() {
 	std::string filenameMarker;
 	struct timeval lastTime;
 	unsigned int lastPos;
-	unsigned int lastIndex;
+	long lastIndex;
 	
 	
 	// Go through the list and find the next entry
@@ -1211,7 +1211,7 @@ void DAQDevice::getNewFiles() {
 	// Initialize the file list
 	// The lists starts at 0 and ends 0 again
 	listName = new std::string [nFiles + 1];
-	listIndex = new unsigned int[nFiles + 1];
+	listIndex = new long[nFiles + 1];
 	listNext = new unsigned int [nFiles + 1];
 	
 	listName[0] = "START";
@@ -1219,7 +1219,7 @@ void DAQDevice::getNewFiles() {
 	listNext[0]= 1;
 	
 	listName[1] = "END";
-	listIndex[1] = 0xffffffff;
+	listIndex[1] = LONG_MAX;
 	listNext[1] = 0;
 	
 	nList = 2;
@@ -1262,7 +1262,7 @@ void DAQDevice::getNewFiles() {
 		printf("\nList of data files in %s:\n", dataDir.c_str());
 		printf("%6s %12s %6s %s\n", "No", "Index", "Next", "Filename");
 		for (i = 0; i < nList; i++) {
-			printf("%6d %12u %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
+			printf("%6d %14ld %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
 		}
 		printf("\n");
 	}
@@ -1275,14 +1275,14 @@ void DAQDevice::getNewFiles() {
 	filenameMarker = line;
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
-		err = fscanf(fmark, "%d %ld %ld %d", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		err = fscanf(fmark, "%ld %ld %ld %d", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	} else {
 		// Create new marker file
 		printf("No marker file found -- try to create a new one  %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark > 0) {
-			fprintf(fmark, "%d %d %d %d\n", lastIndex, 0, 0, 0);
+			fprintf(fmark, "%ld %d %d %d\n", lastIndex, 0, 0, 0);
 			fclose(fmark);
 		}	
 		
@@ -1305,7 +1305,7 @@ void DAQDevice::getNewFiles() {
 					initDone = 1;
 				}
 				if (debug)
-					printf("Reading file %d, index %d ___ %s (continued)\n", next, listIndex[next], listName[next].c_str());
+					printf("Reading file %d, index %ld ___ %s (continued)\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
 			}
 			
@@ -1315,7 +1315,7 @@ void DAQDevice::getNewFiles() {
 				if (fmark > 0) {
 					//fprintf(fmark, "%d %d %d %d\n", listIndex[next], 0, 0, 0);
 					// Preserve the time stamp
-					fprintf(fmark, "%d %ld %ld %d\n", listIndex[next], lastTime.tv_sec, lastTime.tv_usec, 0);
+					fprintf(fmark, "%ld %ld %ld %d\n", listIndex[next], lastTime.tv_sec, lastTime.tv_usec, 0);
 					fclose(fmark);
 				}
 				
@@ -1324,7 +1324,7 @@ void DAQDevice::getNewFiles() {
 					initDone = 1;
 				}
 				if (debug)
-					printf("Reading file %d, index %d ___ %s\n", next, listIndex[next], listName[next].c_str());
+					printf("Reading file %d, index %ld ___ %s\n", next, listIndex[next], listName[next].c_str());
 				readData(dataDir.c_str(), listName[next].c_str());
 			}
 			
