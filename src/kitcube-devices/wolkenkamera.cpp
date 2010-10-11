@@ -31,7 +31,7 @@ const char *wolkenkamera::getDataDir(){
 	char line[256];
 	
 	// TODO: evtl. an zu definierende Verzeichnisstruktur anpassen
-	sprintf(line, "CC2-pics/");
+	sprintf(line, "CC2-pics/small/");
 	buffer = line;
 	
 	return(buffer.c_str());
@@ -91,9 +91,10 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
-	unsigned long lastIndex;
+	long lastIndex;
 	//struct timeval tWrite;
 	char line[256];
+	struct tm time_stamp_data;
 	
 #ifdef USE_MYSQL
 	struct timeval t0, t1;
@@ -109,7 +110,7 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 #endif
 	
 	if (debug >= 1)
-		printf("_____wolkenkamera::readData(const char *dir, const char *filename)_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// Compile file name
 	filenameData = dir;
@@ -120,8 +121,8 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 	// If number of sensors is unknown read the header first
 	if (nSensors == 0)
 		readHeader(filenameData.c_str());
-	if (sensor[0].name.length() == 0)
-		getSensorNames(sensorListfile.c_str());
+	//if (sensor[0].name.length() == 0)
+	//	getSensorNames(sensorListfile.c_str());
 	
 #ifdef USE_MYSQL
 	if (db == 0) {
@@ -142,7 +143,8 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 	
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
 	filenameMarker = line;
-	if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
+	if (debug >= 3)
+		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
 		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
@@ -158,14 +160,12 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 	}
 		
 		
-	// convert all timestamps into timeval structure
-	struct timeval* time_stamp_data;
-/*	time_stamp_data = new struct timeval[no_vals];
-	for (int i = 0; i < no_vals; i++) {
-		time_stamp_data[i].tv_sec = (int)time_stamps[i];
-		time_stamp_data[i].tv_usec = (int)((time_stamps[i] - (double)time_stamp_data[i].tv_sec) * 1000000.);	// TODO: maybe use floor() here
+	// extract timestamp from filename
+	strptime(filename, "kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg", &time_stamp_data);
+	
+	if (debug >= 4) {
+		printf("%lds\n", timegm(&time_stamp_data));
 	}
-*/	
 	
 	// write data to DB
 #ifdef USE_MYSQL
@@ -220,12 +220,10 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 	}
 #endif // of USE_MYSQL
 	
-	
-	printf("fertig\n");
-	lastPos = 1;	// file read
+	// file read
 	fd_eof = true;
+	lastPos = 1;
 	
-
 	// Write the last valid time stamp / file position
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
@@ -267,16 +265,18 @@ void wolkenkamera::updateDataSet(unsigned char *buf){
 }
 
 
-int wolkenkamera::getFileNumber(char* filename){
+long wolkenkamera::getFileNumber(char* filename){
 	std::string filename_prefix;
 	std::string filename_suffix;
 	std::string filename_string;
 	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, filename_length;
-	int index;
+	size_t find_position;
+	long index;
 	
 	
 	if (debug >= 1)
-		printf("\n_____wolkenkamera::getFileNumber(char* filename)_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	if (debug >= 2)
 		printf("From file %s\n", filename);
 	
@@ -309,7 +309,9 @@ int wolkenkamera::getFileNumber(char* filename){
 		if (pos_prefix == 0) {
 			filename_string.erase(pos_prefix, length_prefix);
 		} else {
-			throw std::invalid_argument("Prefix not found or not at the beginning of file name");
+			if (debug >= 3)
+				printf("Prefix not found or not at the beginning of file name!\n");
+			return 0;
 		}
 	}
 	
@@ -320,20 +322,25 @@ int wolkenkamera::getFileNumber(char* filename){
 		if ((pos_suffix != std::string::npos) && ((pos_suffix + length_suffix) == filename_length)) {
 			filename_string.erase(pos_suffix, length_suffix);
 		} else {
-			throw std::invalid_argument("Suffix not found or not at end of file name");
+			if (debug >= 3)
+				printf("Suffix not found or not at end of file name!\n");
+			return 0;
 		}
 	}
 	
-	while (filename_string.find("-", 0) != std::string::npos) {
-		//filename_string.erase(, 1);
+	// remove "-" from date and time string in filename
+	find_position = filename_string.find("-", 0);
+	while (find_position != std::string::npos) {
+		filename_string.erase(find_position, 1);
+		find_position = filename_string.find("-", 0);
 	}
 	
 	// we assume, that after the removal of prefix and suffix, there are only numbers left
 	// FIXME/TODO: check, if this is really only a number
-	index = atoi(filename_string.c_str());
+	index = atol(filename_string.c_str());
 	
 	if (debug >= 2)
-		printf("Index is: %d\n", index);
+		printf("Index is: %ld\n", index);
 	
 	return index;
 }
