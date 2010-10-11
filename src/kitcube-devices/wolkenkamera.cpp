@@ -121,8 +121,8 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 	// If number of sensors is unknown read the header first
 	if (nSensors == 0)
 		readHeader(filenameData.c_str());
-	//if (sensor[0].name.length() == 0)
-	//	getSensorNames(sensorListfile.c_str());
+	if (sensor[0].name.length() == 0)
+		getSensorNames(sensorListfile.c_str());
 	
 #ifdef USE_MYSQL
 	if (db == 0) {
@@ -163,9 +163,8 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 	// extract timestamp from filename
 	strptime(filename, "kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg", &time_stamp_data);
 	
-	if (debug >= 4) {
+	if (debug >= 4)
 		printf("%lds\n", timegm(&time_stamp_data));
-	}
 	
 	// write data to DB
 #ifdef USE_MYSQL
@@ -181,20 +180,14 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 			sql += "`";
 		}
 		sql += ") VALUES (";
-//		sprintf(sData, "%ld", time_stamp_data[i].tv_sec * 1000000 + time_stamp_data[i].tv_usec);
+		sprintf(sData, "%ld", timegm(&time_stamp_data) * 1000000);
 		sql += sData;
-		for (int j = 0; j < (nSensors - 1); j++) {
-//			sprintf(sData, "%f", sensor_values[j][i]);
+		for (int j = 0; j < nSensors; j++) {
 			sql += ",";
+			sprintf(sData, "'%s'", filename);
 			sql += sData;
 		}
-		sql += ",'";
-		// create profile data here
-/*		for (int k = 0; k < dimensions[1]; k++) {
-			sprintf(sData, "%f, ", values_2d[(i * dimensions[1]) + k]);
-			sql += sData;
-		}*/
-		sql += "')";
+		sql += ")";
 		
 		//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
 		
@@ -212,7 +205,7 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 		
 		gettimeofday(&t1, &tz);
 		
-		if (debug >= 1)
+		if (debug >= 5)
 			printf("DB insert duration: %ld.%ldus\n", t1.tv_sec - t0.tv_sec, t1.tv_usec - t0.tv_usec);
 	} else {
 		printf("Error: No database availabe\n");
@@ -310,7 +303,7 @@ long wolkenkamera::getFileNumber(char* filename){
 			filename_string.erase(pos_prefix, length_prefix);
 		} else {
 			if (debug >= 3)
-				printf("Prefix not found or not at the beginning of file name!\n");
+				printf("\033[35mPrefix not found or not at the beginning of file name!\033[0m\n");
 			return 0;
 		}
 	}
@@ -323,7 +316,7 @@ long wolkenkamera::getFileNumber(char* filename){
 			filename_string.erase(pos_suffix, length_suffix);
 		} else {
 			if (debug >= 3)
-				printf("Suffix not found or not at end of file name!\n");
+				printf("\033[35mSuffix not found or not at end of file name!\033[0m\n");
 			return 0;
 		}
 	}
