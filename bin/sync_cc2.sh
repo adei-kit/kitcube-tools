@@ -32,7 +32,6 @@ Version="0.1"
 # DEBUG=yes|no
 DEBUG=yes
 
-
 if [ $DEBUG = yes ] ; then
 	echo "This is $0 version $Version"
 fi
@@ -76,6 +75,22 @@ FILES_TO_SYNC="kitcube_cc2_*.jpg"
 
 
 ################################################################################
+# check if destination directory exists and create it if not
+################################################################################
+# (do this only now here and not right after check of arguments, so semaphore
+# file is written before)
+if [ ! -d $DEST ] ; then
+	$MKDIRPROG -p $DEST
+	RETURN_VALUE=$?
+	if [ $RETURN_VALUE != 0 ] ; then
+		echo -e "\nError: could not create destination directory $DEST."
+		echo -e "Aborting execution ...\n"
+		exit 1
+	fi
+fi
+
+
+################################################################################
 # Now we check for an already running instance or previous session
 # which ended with errors - in that case the semaphore file exists.
 ################################################################################
@@ -92,22 +107,6 @@ if [ -e $DEST/$SEMFILE ] ; then
 else
 	TIMESTAMP=`date -u +%Y-%m-%d-%H-%M-%S`
 	echo "$0: last start at $TIMESTAMP" > "$DEST/$SEMFILE"
-fi
-
-
-################################################################################
-# check if destination directory exists and create it if not
-################################################################################
-# (do this only now here and not right after check of arguments, so semaphore
-# file is written before)
-if [ ! -d $DEST ] ; then
-	$MKDIRPROG -p $DEST
-	RETURN_VALUE=$?
-	if [ $RETURN_VALUE != 0 ] ; then
-		echo -e "\nError: could not create destination directory $DEST."
-		echo -e "Aborting execution ...\n"
-		exit 1
-	fi
 fi
 
 
