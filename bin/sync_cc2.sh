@@ -28,20 +28,33 @@ Version="0.1"
 #
 ################################################################################
 #
+Version="0.2"
+#
+# 2010-10-18  Norbert Flatinger, IPE
+#
+# - put some more commands into variables and check if they exist
+# - added script "Usage" output
+# - give SRC, DEST and FILES_TO_SYNC as arguments to the script
+# - check for DEST directory before writing semaphore file
+# - updated rsync command line
+# - quote all variables which might contain white space
+#
+################################################################################
+#
 
 # DEBUG=yes|no
 DEBUG=yes
-
-if [ $DEBUG = yes ] ; then
-	echo "This is $0 version $Version"
-fi
 
 
 ################################################################################
 # define used commands
 ################################################################################
+#define basename command
+BASENAMEPROG="/usr/bin/basename"
 # define mkdir command
 MKDIRPROG="/bin/mkdir"
+# define date command
+DATEPROG="/bin/date"
 # define rsync command
 RSYNCPROG="/usr/bin/rsync"
 #RSYNCPROG="$HOME/bin/rsync.sh"
@@ -51,75 +64,117 @@ FINDPROG="/usr/bin/find"
 SORTPROG="/usr/bin/sort"
 # define convert command
 CONVERTPROG="/usr/bin/convert"
+#define dirname command
+DIRNAMEPROG="/usr/bin/dirname"
 # define rm command
 RMPROG="/bin/rm"
 
 
+if [ -x $BASENAMEPROG ] ; then
+	if [ $DEBUG = yes ] ; then
+		echo -e "This is $($BASENAMEPROG "$0") version $Version\n"
+	fi
+else
+	echo -e "\nError: cannot find or execute $BASENAMEPROG."
+	echo -e "Aborting execution...\n"
+	exit 1
+fi
+
 ################################################################################
-# Synopsis
+# Usage
 ################################################################################
-# TODO: synopsis
-
-# TODO: check of arguments
-
-# TODO: give SRC, DEST and FILES_TO_SYNC as arguments to script
-
-# source directory
-SRC=imk-wk1:/home/cube/CC2-pics/
-
-# destination directory
-DEST=/home/cube/archive/045/CC2-pics
-
-# files to sync
-FILES_TO_SYNC="kitcube_cc2_*.jpg"
+if [ $# != 3 ] ; then
+	echo -e "Usage:"
+	echo -e "	$($BASENAMEPROG "$0") SRC DEST FILE"
+	echo -e " "
+	echo -e "	SRC	- source"
+	echo -e "	DEST	- destination"
+	echo -e "	FILE	- filename, may contain wildcards"
+	echo -e " "
+	exit 1
+fi
 
 
 ################################################################################
 # check if destination directory exists and create it if not
 ################################################################################
-# (do this only now here and not right after check of arguments, so semaphore
-# file is written before)
-if [ ! -d $DEST ] ; then
-	$MKDIRPROG -p $DEST
-	RETURN_VALUE=$?
-	if [ $RETURN_VALUE != 0 ] ; then
-		echo -e "\nError: could not create destination directory $DEST."
-		echo -e "Aborting execution ...\n"
-		exit 1
+if [ -x $MKDIRPROG ] ; then
+	if [ ! -d "$2" ] ; then
+		if [ $DEBUG = yes ] ; then
+			echo -e "Destination directory $2 does not exist."
+			echo -e "Creating it ..."
+		fi
+		$MKDIRPROG -p "$2"
+		RETURN_VALUE=$?
+		if [ $RETURN_VALUE != 0 ] ; then
+			echo -e "\nError: could not create destination directory $2."
+			echo -e "Aborting execution ...\n"
+			exit 1
+		fi
 	fi
-fi
-
-
-################################################################################
-# Now we check for an already running instance or previous session
-# which ended with errors - in that case the semaphore file exists.
-################################################################################
-# define semaphore
-#SEMFILE="$0".semaphore
-SEMFILE=sync.semaphore
-
-# check if semaphore file exists
-if [ -e $DEST/$SEMFILE ] ; then
-	echo -e "Semaphore file exists. Either due to errors of previous instance"
-	echo -e "or because there is another session running in parallel."
-	echo -e "Aborting execution...\n "
-	exit 1
 else
-	TIMESTAMP=`date -u +%Y-%m-%d-%H-%M-%S`
-	echo "$0: last start at $TIMESTAMP" > "$DEST/$SEMFILE"
+	echo -e "\nError: cannot find or execute $MKDIRPROG."
+	echo -e "Aborting execution...\n"
+	exit 1
+fi
+
+# TODO: check of other arguments?
+
+# source directory
+#SRC=imk-wk1:/home/cube/CC2-pics/
+SRC="$1"
+
+# destination directory
+#DEST=/home/cube/archive/045/CC2-pics
+DEST="$2"
+
+# files to sync
+#FILES_TO_SYNC="kitcube_cc2_*.jpg"
+FILES_TO_SYNC="$3"
+
+
+################################################################################
+# check for an already running instance or previous session which ended with
+# errors - in that case the semaphore file exists.
+################################################################################
+if [ -x $DATEPROG ] ; then
+	# define semaphore
+	#SEMFILE="$0".semaphore
+	SEMFILE="sync.semaphore"
+
+	# check if semaphore file exists
+	if [ -e "$DEST/$SEMFILE" ] ; then
+		echo -e "\nSemaphore file exists. Either due to errors of previous instance"
+		echo -e "or because there is another session running in parallel."
+		echo -e "Aborting execution...\n "
+		exit 1
+	else
+		TIMESTAMP=`$DATEPROG -u +%Y-%m-%d-%H-%M-%S`
+		echo "$($BASENAMEPROG $0): last start at $TIMESTAMP" > "$DEST/$SEMFILE"
+	fi
+else
+	echo -e "\nError: cannot find or execute $DATEPROG."
+	echo -e "Aborting execution...\n"
+	exit 1
 fi
 
 
 ################################################################################
-# do synchronization
+# do synchronization with "rsync"
+# interesting options are:
+# -v		increase verbosity
+# -c		skip based on checksum, not mod-time & size
+# -a		archive mode; equals -rlptgoD (no -H,-A,-X)
+# -r		recurse into directories
+# -u		skip files that are newer on the receiver
+# -x		don't cross filesystem boundaries
+# -z		compress file data during the transfer
+# --append	append data onto shorter files
 ################################################################################
 if [ -x $RSYNCPROG ] ; then
-	# sync cloud camera 2 from imk-wk1
-	$RSYNCPROG -avz --append \
-		--include='*/' \
-		--include=$FILES_TO_SYNC \
-		--exclude='*' \
-		$SRC $DEST
+	# sync data
+	$RSYNCPROG -avz --include='*/' --include="$FILES_TO_SYNC" --exclude='*' \
+		"$SRC" "$DEST"
 else
 	echo -e "\nError: cannot find or execute $RSYNCPROG."
 	echo -e "Aborting execution...\n"
@@ -131,8 +186,12 @@ fi
 # resize images to 25%
 ################################################################################
 # check if destination directory for small images exists and create it if not
-if [ ! -d $DEST/small ] ; then
-	mkdir $DEST/small
+if [ ! -d "$DEST/small" ] ; then
+	if [ $DEBUG = yes ] ; then
+		echo -e "Destination directory $DEST/small for small images does not exist."
+		echo -e "Creating it ..."
+	fi
+	$MKDIRPROG -p "$DEST/small"
 	RETURN_VALUE=$?
 	if [ $RETURN_VALUE != 0 ] ; then
 		echo -e "\nError: could not create destination directory for small images $DEST/small."
@@ -142,11 +201,11 @@ if [ ! -d $DEST/small ] ; then
 fi
 
 # define file holding name of most recently resized image
-MARKER_FILE=$DEST/convert.marker
+MARKER_FILE="$DEST/convert.marker"
 
 # read name of most recently resized image file
-if [ -e $MARKER_FILE ] ; then
-	source $MARKER_FILE
+if [ -e "$MARKER_FILE" ] ; then
+	source "$MARKER_FILE"
 	if [ $DEBUG = yes ] ; then
 		echo -e "Last converted file: $LAST_CONVERTED_FILE"
 	fi
@@ -157,27 +216,27 @@ else
 fi
 
 # resize new images
-if [ -x $FINDPROG -a -x $SORTPROG -a -x $CONVERTPROG ] ; then
+if [ -x $FINDPROG -a -x $SORTPROG -a -x $CONVERTPROG -a -x $DIRNAMEPROG ] ; then
 	if [ $DEBUG = yes ] ; then
 		echo -e "Searching file list for new and unconverted files ..."
 	fi
-	for i in `$FINDPROG $DEST -maxdepth 1 -name "kitcube_cc2_*.jpg" | $SORTPROG` ; do
-		if [ $i \> $LAST_CONVERTED_FILE ] ; then
+	for i in `$FINDPROG "$DEST" -maxdepth 1 -name "$FILES_TO_SYNC" | $SORTPROG` ; do
+		if [ "$i" \> "$LAST_CONVERTED_FILE" ] ; then
 			if [ $DEBUG = yes ] ; then
 				echo -e "Converting $i ..."
 			fi
-			$CONVERTPROG $i -resize 25% $(dirname $i)/small/$(basename $i)
+			$CONVERTPROG "$i" -resize 25% "$($DIRNAMEPROG "$i")/small/$($BASENAMEPROG "$i")"
 			RETURN_VALUE=$?
 			if [ $RETURN_VALUE != 0 ] ; then
 				echo -e "Error: converting $i"
 			fi
 			
 			# write name of last converted image to marker file
-			echo -e "LAST_CONVERTED_FILE=$i" > $MARKER_FILE
+			echo -e "LAST_CONVERTED_FILE=$i" > "$MARKER_FILE"
 		fi
 	done
 else
-	echo -e "\nError: cannot find or execute $FINDPROG or $SORTPROG or $CONVERTPROG."
+	echo -e "\nError: cannot find or execute $FINDPROG or $SORTPROG or $CONVERTPROG or $DIRNAMEPROG."
 	echo -e "Aborting execution...\n"
 	exit 1
 fi
@@ -188,7 +247,7 @@ fi
 ################################################################################
 # delete semaphore file
 if [ -x $RMPROG ] ; then
-	$RMPROG $DEST/$SEMFILE
+	$RMPROG "$DEST/$SEMFILE"
 else
 	echo -e "\nError: cannot find or execute $RMPROG."
 	echo -e "Aborting execution...\n"
@@ -197,5 +256,5 @@ fi
 
 # finish script
 if [ $DEBUG = yes ] ; then
-	echo "$0: successfully finished."
+	echo "$($BASENAMEPROG "$0"): successfully finished."
 fi
