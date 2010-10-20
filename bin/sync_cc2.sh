@@ -150,7 +150,7 @@ if [ -x $DATEPROG ] ; then
 		exit 1
 	else
 		TIMESTAMP=`$DATEPROG -u +%Y-%m-%d-%H-%M-%S`
-		echo "$($BASENAMEPROG $0): last start at $TIMESTAMP" > "$DEST/$SEMFILE"
+		echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/$SEMFILE"
 	fi
 else
 	echo -e "\nError: cannot find or execute $DATEPROG."
