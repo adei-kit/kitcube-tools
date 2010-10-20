@@ -803,3 +803,25 @@ sensorList = 3M.sonic.sensors
 datafileTemplate = data.csv.template
 datafileMask = <index>.sonic.csv
 samplingTime = 0.03125 sec
+
+[WT20-base]
+moduleName = WT20
+moduleNumber = 60
+moduleType = windtracer
+moduleComment = Windtracer20_base
+sensorGroup = base
+datafileMask = 20<index>_134446_base.prd
+sensorList = WT20.sensors
+datafileTemplate = 20090729_134446_base.prd.template
+samplingTime = 10 min
+
+[WT20-spectral]
+moduleName = WT20
+moduleNumber = 60
+moduleType = windtracer
+moduleComment = Windtracer20_spectral
+sensorGroup = spectral
+datafileMask = 20<index>_134446_spectral.prd
+sensorList = WT20.sensors
+datafileTemplate = 20090729_134446_base.prd.template
+samplingTime = 10 min
