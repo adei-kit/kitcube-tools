@@ -352,7 +352,7 @@ int Reader::handle_timeout(){
 		for (i=0;i<nModules;i++){
 			
 			gettimeofday(&t1, &tz);			
-			dev[i]->copyRemoteData();	
+			//dev[i]->copyRemoteData();	
 			gettimeofday(&t2, &tz);
 			fflush(stderr);	
 
