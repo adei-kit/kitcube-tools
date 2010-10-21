@@ -175,6 +175,12 @@ if [ -x $RSYNCPROG ] ; then
 	# sync data
 	$RSYNCPROG -avz --include='*/' --include="$FILES_TO_SYNC" --exclude='*' \
 		"$SRC" "$DEST"
+	RETURN_VALUE=$?
+	if [ $RETURN_VALUE != 0 ] ; then
+		echo -e "\nError: rsync failed with error code $RETURN_VALUE"
+		echo -e "Aborting execution ...\n"
+		exit 1
+	fi
 else
 	echo -e "\nError: cannot find or execute $RSYNCPROG."
 	echo -e "Aborting execution...\n"
