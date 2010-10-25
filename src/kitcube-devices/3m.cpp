@@ -239,7 +239,6 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 				sensorValue[i] = noData;
 			} else {
 				sscanf(puffer, "%lf", &sensorValue[i]);
-				printf("Wert: %lf\n", sensorValue[i]);
 			}
 		}
 	} else if (sensorGroup == "sonic") {
