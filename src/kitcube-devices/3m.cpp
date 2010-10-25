@@ -194,11 +194,19 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		
 		// read GPS latitude
 		puffer = strtok_r(NULL, ",\"", &saveptr);
-		sensorValue[0] = convert_coordinate(puffer);
+		if (strcmp(puffer, "nan") == 0) {
+			sensorValue[0] = noData;
+		} else {
+			sensorValue[0] = convert_coordinate(puffer);
+		}
 		
 		// read GPS longitude
 		puffer = strtok_r(NULL, ",\"", &saveptr);
-		sensorValue[1] = convert_coordinate(puffer);
+		if (strcmp(puffer, "nan") == 0) {
+			sensorValue[1] = noData;
+		} else {
+			sensorValue[1] = convert_coordinate(puffer);
+		}
 		
 		// read GPS altitude
 		puffer = strtok_r(NULL, ",", &saveptr);
@@ -209,12 +217,31 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		}
 		
 		// read GPS timestamp
-		puffer = strptime(saveptr, "%Y-%m-%d,%T", &gps_timestamp);
-		sensorValue[3] = timegm(&gps_timestamp);	// FIXME: function is non-standard GNU extension
+		puffer = strtok_r(NULL, ",", &saveptr);
+		if (strcmp(puffer, "nan") == 0) {
+			sensorValue[3] = noData;
+			puffer = strtok_r(NULL, ",", &saveptr);
+		} else {
+			puffer = strptime(puffer, "%Y-%m-%d", &gps_timestamp);
+			puffer = strtok_r(NULL, ",", &saveptr);
+			if (strcmp(puffer, "nan") == 0) {
+				sensorValue[3] = noData;
+			} else {
+				puffer = strptime(puffer, "%T", &gps_timestamp);
+				sensorValue[3] = timegm(&gps_timestamp);	// FIXME: function is non-standard GNU extension
+			}
+		}
 		
 		// read time difference median, max, min and time correction
-		sscanf(puffer, ",%lf,%lf,%lf,%lf",
-		       &sensorValue[4], &sensorValue[5], &sensorValue[6], &sensorValue[7]);
+		for (int i = 4; i < 8; i++) {
+			puffer = strtok_r(NULL, ",", &saveptr);
+			if (strcmp(puffer, "nan") == 0) {
+				sensorValue[i] = noData;
+			} else {
+				sscanf(puffer, "%lf", &sensorValue[i]);
+				printf("Wert: %lf\n", sensorValue[i]);
+			}
+		}
 	} else if (sensorGroup == "sonic") {
 		// read date and time
 		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
