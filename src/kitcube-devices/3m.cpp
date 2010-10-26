@@ -161,16 +161,31 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	
 	// TODO/FIXME: are data timestamps in UTC or local time?
 	
+	// read date and time
+	puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
+	
+	// get ms part of time stamp, if there is one
+	if (*puffer == '.') {
+		// read ms part of time stamp
+		sscanf(puffer, ".%d", &msec);
+		
+		l_tData->tv_usec = msec * 1000;
+		
+		// set pointer to "begin of data" as if there was no ms part
+		puffer = strchr(puffer, ',');
+	} else if (*puffer == ',') {
+		l_tData->tv_usec = 0;
+	} else {
+		printf("Error: unknown data format!\n");
+	}
+	
+	// read dummy value "period"
+	puffer = strtok_r(puffer, ",", &saveptr);
+	
 	if (sensorGroup == "data") {
-		// read date and time
-		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
-		
-		// read dummy value "period"
-		puffer = strtok(puffer, ",");
-		
 		// read the 5 sensor values
 		for (int i = 0; i < 5; i++) {
-			puffer = strtok(NULL, ",\r\n");
+			puffer = strtok_r(NULL, ",\r\n", &saveptr);
 			if (strcmp(puffer, "nan") == 0) {
 				sensorValue[i] = noData;
 			} else {
@@ -178,41 +193,14 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 			}
 		}
 	} else if (sensorGroup == "gps") {
-		// read date and time
-		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
-		
-		// get ms part of time stamp, if there is one
-		if (*puffer == '.') {
-			// read ms part of time stamp
-			sscanf(puffer, ".%d", &msec);
-			
-			l_tData->tv_usec = msec * 1000;
-			
-			// set pointer to "begin of data" as if there was no ms part
-			puffer = strchr(puffer, ',');
-		} else if (*puffer == ',') {
-			l_tData->tv_usec = 0;
-		} else {
-			printf("Error: unknown data format!\n");
-		}
-		
-		// read dummy value "period"
-		puffer = strtok_r(puffer, ",", &saveptr);
-		
-		// read GPS latitude
-		puffer = strtok_r(NULL, ",\"", &saveptr);
-		if (strcmp(puffer, "nan") == 0) {
-			sensorValue[0] = noData;
-		} else {
-			sensorValue[0] = convert_coordinate(puffer);
-		}
-		
-		// read GPS longitude
-		puffer = strtok_r(NULL, ",\"", &saveptr);
-		if (strcmp(puffer, "nan") == 0) {
-			sensorValue[1] = noData;
-		} else {
-			sensorValue[1] = convert_coordinate(puffer);
+		// read GPS latitude and longitude
+		for (int i = 0; i < 2; i++) {
+			puffer = strtok_r(NULL, ",\"", &saveptr);
+			if (strcmp(puffer, "nan") == 0) {
+				sensorValue[i] = noData;
+			} else {
+				sensorValue[i] = convert_coordinate(puffer);
+			}
 		}
 		
 		// read GPS altitude
@@ -249,30 +237,9 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 			}
 		}
 	} else if (sensorGroup == "sonic") {
-		// read date and time
-		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
-		
-		// get ms part of time stamp, if there is one
-		if (*puffer == '.') {
-			// read ms part of time stamp
-			sscanf(puffer, ".%d", &msec);
-			
-			l_tData->tv_usec = msec * 1000;
-			
-			// set pointer to "begin of data" as if there was no ms part
-			puffer = strchr(puffer, ',');
-		} else if (*puffer == ',') {
-			l_tData->tv_usec = 0;
-		} else {
-			printf("Error: unknown data format!\n");
-		}
-		
-		// read dummy value "period"
-		puffer = strtok(puffer, ",");
-		
 		// read the 4 sensor values
 		for (int i = 0; i < 4; i++) {
-			puffer = strtok(NULL, ",\r\n");
+			puffer = strtok_r(NULL, ",\r\n", &saveptr);
 			if (strcmp(puffer, "nan") == 0) {
 				sensorValue[i] = noData;
 			} else {
