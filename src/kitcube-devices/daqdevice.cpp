@@ -831,7 +831,7 @@ void DAQDevice::openDatabase(){
 			if (sensor[i].type == "profile") {
 				cmd += "`" + sensor[i].name + "` TEXT, ";
 			} else {
-				cmd += "`" + sensor[i].name + "` float(10), ";
+				cmd += "`" + sensor[i].name + "` double, ";
 			}
 		cmd += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=MyISAM";
 		
