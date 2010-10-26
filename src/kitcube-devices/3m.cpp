@@ -267,10 +267,18 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 			printf("Error: unknown data format!\n");
 		}
 		
-		// read dummy value "period" and sensor values of one line of data
-		sscanf(puffer, ",%lf,%lf,%lf,%lf,%lf",
-		       &dummy,
-		       &sensorValue[0], &sensorValue[1], &sensorValue[2], &sensorValue[3]);
+		// read dummy value "period"
+		puffer = strtok(puffer, ",");
+		
+		// read the 4 sensor values
+		for (int i = 0; i < 4; i++) {
+			puffer = strtok(NULL, ",\r\n");
+			if (strcmp(puffer, "nan") == 0) {
+				sensorValue[i] = noData;
+			} else {
+				sscanf(puffer, "%lf", &sensorValue[i]);
+			}
+		}
 	}
 	
 	// get seconds since the Epoch
