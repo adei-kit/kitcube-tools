@@ -241,7 +241,7 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		
 		// read time difference median, max, min and time correction
 		for (int i = 4; i < 8; i++) {
-			puffer = strtok_r(NULL, ",", &saveptr);
+			puffer = strtok_r(NULL, ",\r\n", &saveptr);
 			if (strcmp(puffer, "nan") == 0) {
 				sensorValue[i] = noData;
 			} else {
