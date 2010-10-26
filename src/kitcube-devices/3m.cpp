@@ -165,11 +165,18 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		// read date and time
 		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
 		
-		// read dummy value "period" and sensor values of one line of data
-		sscanf(puffer, ",%lf,%lf,%lf,%lf,%lf,%lf",
-		       &dummy,
-		       &sensorValue[0], &sensorValue[1], &sensorValue[2],
-		       &sensorValue[3], &sensorValue[4]);
+		// read dummy value "period"
+		puffer = strtok(puffer, ",");
+		
+		// read the 5 sensor values
+		for (int i = 0; i < 5; i++) {
+			puffer = strtok(NULL, ",\r\n");
+			if (strcmp(puffer, "nan") == 0) {
+				sensorValue[i] = noData;
+			} else {
+				sscanf(puffer, "%lf", &sensorValue[i]);
+			}
+		}
 	} else if (sensorGroup == "gps") {
 		// read date and time
 		puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
