@@ -60,7 +60,8 @@ void wolkenkamera::readHeader(const char *filename){
 	nSensors = 1;
 	
 	// List of sensors
-	if (sensor > 0 ) delete [] sensor;
+	if (sensor > 0 )
+		delete [] sensor;
 	sensor = new struct sensorType [nSensors];
 	
 	sensor[0].comment = "sky picture";
