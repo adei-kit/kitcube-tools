@@ -824,7 +824,7 @@ void DAQDevice::openDatabase(){
 		printf("Creating data table\n");
 		std::string cmd = "CREATE TABLE `";
 		cmd += dataTableName;
-		cmd += "` ( `id` int(12) auto_increment, ";
+		cmd += "` ( `id` bigint auto_increment, ";
 		//cmd += "    `sec` int(12)  default '0', ";
 		cmd += "    `usec` bigint default '0', ";
 		for (i = 0; i < nSensors; i++)
