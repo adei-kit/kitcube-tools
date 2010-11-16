@@ -447,8 +447,10 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		
 		
 		// If number of sensors is unknown read the header first
-		if (nSensors == 0) readHeader(filenameData.c_str());
-		if (sensor[0].name.length() == 0) getSensorNames(sensorListfile.c_str());
+		if (nSensors == 0)
+			readHeader(filenameData.c_str());
+		if (sensor[0].name.length() == 0)
+			getSensorNames(sensorListfile.c_str());
 	
 #ifdef USE_MYSQL
 		if (db == 0) {
