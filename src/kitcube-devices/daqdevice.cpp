@@ -324,14 +324,12 @@ void DAQDevice::readAxis(const char *inifile){
 }
 
 
-void DAQDevice::getSensorNames(const char *sensorListfile){
-	FILE *flist;
+void DAQDevice::getSensorNames(const char *sensor_list_file_name){
+	FILE *sensor_list_file;
 	int i, j;
 	char line[256];
 	char *n;
-	char *namePtr;
-	char name[50];
-	//unsigned int pos;
+	char *tmp;
 	std::string axisName;
 	std::string sLine;
 	
@@ -340,85 +338,87 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// Will need the axis definition for parsing the sensor names
-	if (axis == 0) readAxis(this->inifile.c_str());
+	if (axis == 0)
+		readAxis(this->inifile.c_str());
 	
 	
-	sprintf(line, "%s%s", configDir.c_str(), sensorListfile);
-	if (debug > 3)
-		printf("Read sensor names from list %s\n", line);
+	sprintf(line, "%s%s", configDir.c_str(), sensor_list_file_name);
+	if (debug >= 4)
+		printf("Read sensor names from list file: %s\n", line);
 	
-	// Open list file
-	flist = fopen(line, "r");
-	if (flist == 0){
-		printf("Configuration file with sensor list is missing\n");
-		printf("Creating template - fill in the sensor names in %s\n", line);
+	// open sensor list file
+	sensor_list_file = fopen(line, "r");
+	
+	// if there is no sensor list file, create a template file
+	if (sensor_list_file == NULL) {
+		printf("\033[31mError: Configuration file with sensor list is missing\033[0m\n");
+		printf("Creating template file: %s\n", line);
 		
-		flist = fopen(line, "w");
-		if (flist < 0){
+		sensor_list_file = fopen(line, "w");
+		if (sensor_list_file == NULL) {
 			throw std::invalid_argument("Error creating template file");
 		}
-		for (i = 0; i < nSensors; i++) {
-			if (sensor[i].longComment.length() == 0){
-				fprintf(flist,"%10d\t%s\t\n", i+1, sensor[i].comment.c_str());
-			} else {
-				fprintf(flist,"%10d\t%s\t\n", i+1, sensor[i].longComment.c_str());
-			}
-		}
-		fclose(flist);
+		
+		fprintf(sensor_list_file,"<sensor number>\t<comment>\t<sensor name>\t<axis>\n");
+		
+		fclose(sensor_list_file);
 		
 		throw std::invalid_argument("Fill in sensor names in template file");
 	}
 	
-	n = line;
 	i = 0;
-	while ((n > 0) && (i < nSensors)) {
-		// Read names, compare with the names in the data base?!
-		n = fgets(line, 256, flist);
-		if (n > 0) {
-			if (debug > 4)
-				printf("%d: %s", i+1, line);
-			// Parse the line <TAB> splits the fields
-			// Fields: Number <TAB> Description <TAB> KITCube Sensor name <TAB> Axis name
-			namePtr = strchr(line, '\t'); // Field 2
-			// Read the description back from file
-			// This feature can be used to overwrite the standard name from the header files
-			// e.g. replace german names or unsystematic ones?!
-			sLine = namePtr + 1;
-			sensor[i].comment = sLine.substr(0, sLine.find('\t'));
-			if (namePtr > 0)
-				namePtr = strchr(namePtr+1, '\t'); // Field 3
-			if (namePtr == 0)
-				throw std::invalid_argument("No sensor name found in the *.sensors file");
-			sscanf(namePtr, "%s", name);
-			sensor[i].name = name;
-			
-			if (namePtr > 0)
-				namePtr = strchr(namePtr+1, '\t'); // Field 3
-			if (namePtr == 0)
-				throw std::invalid_argument("No axis found in the *.sensors file");
-			sscanf(namePtr, "%s", name);
-			axisName = name;
-			
-			// Find the name of the axis in the axis list
-			sensor[i].axis = -1;
-			for (j = 0; j < nAxis; j++){
-				if (axis[j].name == axisName)
-					sensor[i].axis = j;
-			}
-			if (sensor[i].axis == -1){
-				printf("Analysing sensor %s, axis type %s \n", sensor[i].name.c_str(), axisName.c_str());
-				throw std::invalid_argument("Axis type is not defined in the inifile");
-			}
-			
-			if (debug > 2)
-				printf("%d %s %s\n", i+1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str());
-			i++;
+	
+	// read one line from sensors file
+	n = fgets(line, 256, sensor_list_file);
+	
+	while (n != NULL) {
+		if (debug >= 4)
+			printf("%d: %s", i + 1, line);
+		
+		// Parse the line <TAB> splits the fields
+		// Fields: Number <TAB> Description <TAB> KITCube Sensor name <TAB> Axis name
+		
+		// TODO: check for missing entries in sensor list file!
+		
+		// get number
+		tmp = strtok(line, "\t");
+		
+		// get comment
+		tmp = strtok(NULL, "\t");
+		sensor[i].comment = tmp;
+		
+		// get sensor name
+		tmp = strtok(NULL, "\t");
+		sensor[i].name = tmp;
+		
+		// get axis
+		tmp = strtok(NULL, "\n");
+		axisName = tmp;
+		
+		// Find the name of the axis in the axis list
+		sensor[i].axis = -1;
+		for (j = 0; j < nAxis; j++){
+			if (axis[j].name == axisName)
+				sensor[i].axis = j;
 		}
+		
+		if (sensor[i].axis == -1){
+			printf("Analysing sensor %s, axis type %s \n", sensor[i].name.c_str(), axisName.c_str());
+			throw std::invalid_argument("Axis type is not defined in the inifile");
+		}
+		
+		if (debug > 2)
+			printf("%d %s %s\n", i+1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str());
+		
+		i++;
+		n = fgets(line, 256, sensor_list_file);
 	}
-	if (i < nSensors - 1) {
+	
+	nSensors = i;
+/*	if (i < nSensors - 1) {
 		printf("Found %d sensor names\n", i+1);
 		throw std::invalid_argument("Missing definitions in the sensor list");
-	}
+	}*/
 	
 	// TODO: Check if the name are according to the naming conventions
 	// E.g. check aggregation type?!
@@ -449,7 +449,7 @@ void DAQDevice::getSensorNames(const char *sensorListfile){
 	
 	
 	// Close list file
-	fclose(flist);
+	fclose(sensor_list_file);
 	
 	if (debug > 3) {
 		for (i = 0; i < nSensors; i++) {

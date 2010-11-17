@@ -92,7 +92,7 @@ public:
 	  *   general configuration file (default: kitcube.ini, fillin).
 	  *
 	  */
-	void getSensorNames(const char *sensorListfile);
+	void getSensorNames(const char *sensor_list_file_name);
 	
 	
 	/** Return the samping time of the device */
