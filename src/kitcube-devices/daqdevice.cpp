@@ -1164,7 +1164,7 @@ void DAQDevice::getNewFiles() {
 	unsigned int *listNext;
 	int nList;
 	int i, j;
-	int next;
+	int current_no;
 	int err;
 	
 	// Handler for marker file
@@ -1258,11 +1258,12 @@ void DAQDevice::getNewFiles() {
 	
 	closedir(din);
 	
+	// print list of data files found
 	if (debug >= 1) {
 		printf("\nList of data files in %s:\n", dataDir.c_str());
-		printf("%6s %12s %6s %s\n", "No", "Index", "Next", "Filename");
+		printf("Number          List-Index   Next Filename\n");
 		for (i = 0; i < nList; i++) {
-			printf("%6d %14ld %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
+			printf("%6d %19ld %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
 		}
 		printf("\n");
 	}
@@ -1294,52 +1295,52 @@ void DAQDevice::getNewFiles() {
 	
 	// Read the data from the files
 	try {
-		next = 0;
+		current_no = 0;
 		for (i = 0; i < nList - 1; i++) {
-			//printf(" %d  %d %d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
-			//printf("Reading %d  %d  %s %d\n", next, listIndex[next], listName[next].c_str(), lastIndex);
+			if (debug >= 5)
+				printf("Current no.: %d; List-Index: %ld; last Index: %ld; next no.: %d\n",
+				       current_no, listIndex[current_no], lastIndex, listNext[current_no]);
 			
-			if (listIndex[next] == lastIndex) {
-				if ((debug == 0) && (initDone == 0)) {
-					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
-					initDone = 1;
-				}
-				if (debug)
-					printf("Reading file %d, index %ld ___ %s (continued)\n", next, listIndex[next], listName[next].c_str());
-				readData(dataDir.c_str(), listName[next].c_str());
+			if (listIndex[current_no] == lastIndex) {
+				// continue reading file from last call
+				if (debug >= 2)
+					printf("Continue reading file no. %d, index %ld, name %s:\n",
+					       current_no, listIndex[current_no], listName[current_no].c_str());
+				
+				readData(dataDir.c_str(), listName[current_no].c_str());
 			}
 			
-			if (listIndex[next] > lastIndex) {
+			if (listIndex[current_no] > lastIndex) {
+				// read new file from the beginning
+				
 				// Remove the pointers of the last file
 				fmark = fopen(filenameMarker.c_str(), "w");
 				if (fmark > 0) {
-					//fprintf(fmark, "%d %d %d %d\n", listIndex[next], 0, 0, 0);
 					// Preserve the time stamp
-					fprintf(fmark, "%ld %ld %ld %d\n", listIndex[next], lastTime.tv_sec, lastTime.tv_usec, 0);
+					fprintf(fmark, "%ld %ld %ld %d\n",
+						listIndex[current_no], lastTime.tv_sec, lastTime.tv_usec, 0);
 					fclose(fmark);
 				}
 				
-				if (debug == 0) {
-					printf("%s%s\n",  dataDir.c_str(), listName[next].c_str());
-					initDone = 1;
-				}
-				if (debug)
-					printf("Reading file %d, index %ld ___ %s\n", next, listIndex[next], listName[next].c_str());
-				readData(dataDir.c_str(), listName[next].c_str());
+				if (debug >= 2)
+					printf("Begin reading file no. %d, index %ld, name %s:\n",
+					       current_no, listIndex[current_no], listName[current_no].c_str());
+				
+				readData(dataDir.c_str(), listName[current_no].c_str());
 			}
 			
 			// Check if file has been completely read
-			if (listIndex[next] >= lastIndex) {
+			if (listIndex[current_no] >= lastIndex) {
 				if (!reachedEOF()) {
-					if (debug) {
+					if (debug >= 2) {
 						printf("EOF not reached - continue with %s, position %d in next call\n",
-							listName[next].c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)
+							listName[current_no].c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)
 					}
 					break;
 				}
 			}
 			
-			next = listNext[next];
+			current_no = listNext[current_no];
 		}
 	} catch (std::invalid_argument &err){
 		printf("Error: %s\n", err.what());
