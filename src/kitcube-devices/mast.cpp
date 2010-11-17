@@ -312,7 +312,7 @@ void Mast::readHeader(const char *filename){
 	// --> use parser function in reader...
 	
 	if(debug >= 1)
-		printf("_____void Mast::readHeader(const char *filename)_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	fd = open(filename, O_RDONLY);
 	if (fd < 0) {
@@ -525,10 +525,13 @@ void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		return;
 	}
 	
+	//----------------------------------------------------------------------
 	// Data format:
-	// long Tickcount : Hundertstel seit Messbeginn (wird nicht benutzt)
+	// ============
+	// long Tickcount: Hundertstel seit Messbeginn (wird nicht benutzt)
 	// float Sensorwerte: Messdaten, Anzahl steht im Header
 	// struct SPackedTime: Zeitstempel-Struktur
+	//----------------------------------------------------------------------
 	
 	local_sensorValue =  (float *)(line + 4);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
 	time = (struct SPackedTime *)(line + 4 + 4 * nSensors);	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
