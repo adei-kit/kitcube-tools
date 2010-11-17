@@ -241,9 +241,7 @@ void Reader::runReadout(){
 	}
 	
 	this->dev = new  DAQDevice * [nModules];
-	for (i=0;i<nModules;i++){
-
-		
+	for (i = 0; i < nModules; i++) {
 		dev[i] = (DAQDevice *) createDevice(moduleType[i].c_str());
 		if (!dev[i]) {
 			printf("Error: Module definition of type %s is unkown\n", moduleType[i].c_str());
@@ -268,8 +266,10 @@ void Reader::runReadout(){
 		printf("\n");
 	}
 	
-	if (debug > 2) init();
-	else init(0); // No server messages
+	if (debug > 2)
+		init();
+	else
+		init(0); // No server messages
 	
 	
 	// Set reference time and sampling time of the server loop
@@ -294,7 +294,7 @@ void Reader::runReadout(){
 
 	//tRef.setEnd();
 
-	for (i=0;i<nModules;i++){
+	for (i = 0; i < nModules; i++) {
 		dev[i]->closeDatabase();
 		delete dev[i];
 	}
