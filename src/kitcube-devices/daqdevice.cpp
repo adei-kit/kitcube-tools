@@ -359,6 +359,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 			throw std::invalid_argument("Error creating template file");
 		}
 		
+		fprintf(sensor_list_file, "Number of sensors: <n>\n");
 		fprintf(sensor_list_file, "<sensor number>\t<comment>\t<sensor name>\t<axis>\n");
 		
 		fclose(sensor_list_file);
@@ -366,19 +367,27 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 		throw std::invalid_argument("Fill in sensor names in template file");
 	}
 	
+	// read number of sensors from sensor list file
+	n = fgets(line, 256, sensor_list_file);
+	sscanf(line, "Number of sensors: %d\n", &nSensors);
+	// TODO: error checking
+	
+	// create sensor list
+	sensor = new struct sensorType [nSensors];
+	
+	//----------------------------------------------------------------------
+	// read sensor descriptions, parse the lines and fill sensor list
+	// format: number <TAB> comment <TAB> KITCube sensor name <TAB> axis name
+	//----------------------------------------------------------------------
 	i = 0;
 	
-	// read one line from sensors file
 	n = fgets(line, 256, sensor_list_file);
 	
 	while (n != NULL) {
 		if (debug >= 4)
-			printf("line no. %d: %s", i + 1, line);
+			printf("line no. %3d: %s", i + 1, line);
 		
-		// Parse the line <TAB> splits the fields
-		// Fields: Number <TAB> Description <TAB> KITCube Sensor name <TAB> Axis name
-		
-		// TODO: check for missing entries in sensor list file!
+		// TODO: check for missing entries in line
 		
 		// get number
 		tmp = strtok(line, "\t");
@@ -407,22 +416,18 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 			throw std::invalid_argument("Axis type is not defined in the inifile");
 		}
 		
-		if (debug > 2)
-			printf("%d %s %s\n", i+1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str());
-		
 		i++;
 		n = fgets(line, 256, sensor_list_file);
 	}
 	
 	nSensors = i;
 	
-	// Close list file
 	fclose(sensor_list_file);
 	
-	if (debug > 3) {
+	if (debug >= 3) {
 		for (i = 0; i < nSensors; i++) {
-			printf("Sensor %4d: %s %s (%s)\n", i+1, sensor[i].name.c_str(),
-				sensor[i].comment.c_str(), axis[sensor[i].axis].unit.c_str());
+			printf("Sensor %3d: %s\t%s (%s)\t%s\n",
+			       i + 1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str(), axis[sensor[i].axis].unit.c_str(), sensor[i].comment.c_str());
 		}
 	}
 }

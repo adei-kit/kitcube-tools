@@ -177,6 +177,8 @@ public:
 	/** Get the number of processed data in the last cycle */
 	unsigned int getProcessedData();
 	
+	std::string sensorListfile;
+	
 protected:
 	/** Length of the header block in the data file */
 	int lenHeader;
@@ -256,8 +258,6 @@ protected:
 	std::string sensorGroup;
 	
 	unsigned int sensorGroupNumber;
-	
-	std::string sensorListfile;
 	
 	/** Folder where all the configurations are stored */
 	std::string configDir; 
