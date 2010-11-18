@@ -324,7 +324,7 @@ void DAQDevice::readAxis(const char *inifile){
 }
 
 
-void DAQDevice::getSensorNames(const char *sensor_list_file_name){
+void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	FILE *sensor_list_file;
 	int i, j;
 	char line[256];
@@ -359,7 +359,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name){
 			throw std::invalid_argument("Error creating template file");
 		}
 		
-		fprintf(sensor_list_file,"<sensor number>\t<comment>\t<sensor name>\t<axis>\n");
+		fprintf(sensor_list_file, "<sensor number>\t<comment>\t<sensor name>\t<axis>\n");
 		
 		fclose(sensor_list_file);
 		
@@ -373,7 +373,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name){
 	
 	while (n != NULL) {
 		if (debug >= 4)
-			printf("%d: %s", i + 1, line);
+			printf("line no. %d: %s", i + 1, line);
 		
 		// Parse the line <TAB> splits the fields
 		// Fields: Number <TAB> Description <TAB> KITCube Sensor name <TAB> Axis name
@@ -415,38 +415,6 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name){
 	}
 	
 	nSensors = i;
-/*	if (i < nSensors - 1) {
-		printf("Found %d sensor names\n", i+1);
-		throw std::invalid_argument("Missing definitions in the sensor list");
-	}*/
-	
-	// TODO: Check if the name are according to the naming conventions
-	// E.g. check aggregation type?!
-/*	
-	for (i = 0; i < nSensors; i++) {
-		pos = 0;
-		for (j = 0; j < 5; j++) {
-			pos = sensor[i].name.find('.', pos);
-			if (pos == std::string::npos){
-				sprintf(line, "Sensor name #%d doesn't match naming convention: %s\n", i+1, sensor[i].name.c_str());
-				throw std::invalid_argument(line);
-			}
-		}
-	}
-*/	
-
-/*	
-	// Replace the module name
-	// This obviously only works if the first part of the name contains the module?!
-	// Not really necessary as the name can also be given in the sensors files...
-	for (i = 0; i < nSensors; i++) {
-		sensor[i].name.replace(0,sensor[i].name.find('.'), moduleName);
-		//printf("%d %s\n", i+1, sensor[i].name.c_str());
-	}
-*/
-	
-	// TODO: Check for double names
-	
 	
 	// Close list file
 	fclose(sensor_list_file);
