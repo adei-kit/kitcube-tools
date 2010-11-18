@@ -232,9 +232,9 @@ void Reader::runReadout(){
 		printf("Sampling time      : %d ms\n", tSampleFromInifile);
 		
 		
-		for (i=0;i<nModules;i++){
+		for (i = 0; i < nModules; i++) {
 			printf("Module %2d          : %s,  type  %s\n",
-			       i+1, iniGroup[i].c_str(), moduleType[i].c_str());
+			       i + 1, iniGroup[i].c_str(), moduleType[i].c_str());
 		}
 		printf("Module %2d          : Performance module, type SysLog, %d items\n",
 		       nModules+1, log->getNSensors());
@@ -312,7 +312,7 @@ int Reader::handle_timeout(){
 	//struct timeval tWait;
 	struct timeval t0, t1, t2, t3, t4;
 	struct timezone tz;
-    unsigned int nData;
+	unsigned int nData;
 	unsigned int tCycle;
 	unsigned int tTransfer;
 	unsigned int tStorage;
@@ -349,12 +349,12 @@ int Reader::handle_timeout(){
 	tStorage = 0;
 	try {	
 		
-		for (i=0;i<nModules;i++){
+		for (i = 0; i < nModules; i++) {
 			
-			gettimeofday(&t1, &tz);			
-			//dev[i]->copyRemoteData();	
+			gettimeofday(&t1, &tz);
+			//dev[i]->copyRemoteData();
 			gettimeofday(&t2, &tz);
-			fflush(stderr);	
+			fflush(stderr);
 
 			// List all new files?!
 			dev[i]->getNewFiles();
@@ -362,20 +362,20 @@ int Reader::handle_timeout(){
 			
 			if (debug > 3) printf("Processed data %d Bytes\n", dev[i]->getProcessedData());
 			gettimeofday(&t3, &tz);
-
+			
 			tTransfer += (t2.tv_sec - t1.tv_sec)*1000000 + (t2.tv_usec-t1.tv_usec);
 			tStorage += (t3.tv_sec - t2.tv_sec)*1000000 + (t3.tv_usec-t2.tv_usec);
 		}
-				
+		
 		// Complete cycle time
 		gettimeofday(&t4, &tz);
 		tCycle = (t4.tv_sec - t0.tv_sec)*1000000 + (t4.tv_usec-t0.tv_usec);
 		if (debug > 1) {
 			printf("______Performance______________________________________________\n");
-			printf("Processed data     : %4d Bytes                Cycle duration     : %6d us\n", 
-				   nData, tCycle);
-			printf("Scheduler          : %4ld us                   Data Trans./Stor.  : %6d / %6d us\n", 
-				   tScheduler, tTransfer, tStorage);
+			printf("Processed data     : %4d Bytes                Cycle duration     : %6d us\n",
+			       nData, tCycle);
+			printf("Scheduler          : %4ld us                   Data Trans./Stor.  : %6d / %6d us\n",
+			       tScheduler, tTransfer, tStorage);
 		}
 		//log->updateData(0, (float) tCycle / 1000000.); // Sensor 0: Cycle time
 		log->updateData(1, (float) tTransfer / 1000.); //ms
@@ -384,7 +384,7 @@ int Reader::handle_timeout(){
 		
 		// Get free disk space
 		// Read the disk space from all devices. Report every device only once?!
-		analyseDiskSpace(dev[0]->getArchiveDir());	
+		analyseDiskSpace(dev[0]->getArchiveDir());
 		if (nSamples > 1) log->storeSensorData();
 		
 		
