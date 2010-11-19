@@ -1,3 +1,4 @@
+Number of sensors: 14
          1	number of laser pulses	CM.CM.Laser.Pulses.1.AVG	NO
          2	average time per record	CM.CM.Average.Time.1.AVG	KMS
          3	31 Bit ServiceCode	CM.CM.Error.Ext.1.MOM	NO

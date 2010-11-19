@@ -1,3 +1,4 @@
+Number of sensors: 8
          1	T scheduler	DAQ.Reader.K.TSCHED.001.AVG	KMS
          2	T data transfer	DAQ.Reader.K.TTRANS.001.AVG	KMS
          3	T data storage	DAQ.Reader.K.TSTORE.001.AVG	KMS

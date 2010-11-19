@@ -1,3 +1,4 @@
+Number of sensors: 6
          1	auxiliary quantity, dew point	T06.DEW.T.REF.001.INST	NO
          2	auxiliary quantity, dew point	T06.DEW.T.DIF.001.INST	NO
          3	wind speed east	T06.SONIC.V.U.001.INST	V

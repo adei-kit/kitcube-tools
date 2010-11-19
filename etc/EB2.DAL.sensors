@@ -1,3 +1,4 @@
+Number of sensors: 18
          1	longwave incoming radiation flux	EB2.PYG.R.LWDP.001.INST	R
          2	longwave outgoing radiation flux	EB2.PYG.R.LWUP.001.INST	R
          3	air pressure	EB2.BARO.P.SUR.001.INST	PA

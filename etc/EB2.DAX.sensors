@@ -1,3 +1,4 @@
+Number of sensors: 18
          1	wind speed	EB2.SONIC.V.VHOR.001.AVG	V
          2	wind direction	EB2.SONIC.V.WD.001.AVG	VD
          3	covariance east and vertical	EB2.SONIC.F.CUW.001.AVG	FV

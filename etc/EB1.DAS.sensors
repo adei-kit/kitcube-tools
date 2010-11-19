@@ -1,3 +1,4 @@
+Number of sensors: 6
          1	absolute humidity	EB1.LICOR.M.AH.001.INST	MA
          2	carbon dioxide concentration	EB1.LICOR.D.CD.001.INST	DC
          3	wind speed east	EB1.SONIC.V.U.001.INST	V

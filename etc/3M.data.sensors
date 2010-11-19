@@ -1,3 +1,4 @@
+Number of sensors: 5
          1	air temperature	3M.PT.T.AIR.001.AVG	T
          2	relative humidity	3M.HMP.M.RH.001.AVG	MR
          3	air pressure at surface	3M.BARO.P.SUR.001.AVG	PA

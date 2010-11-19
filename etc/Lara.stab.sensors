@@ -1,3 +1,4 @@
+Number of sensors: 8
          1	Time offset	Time_offset	K
          2	Photo diode signal	Photo_diode_signal	E
          3	Laser power	Laser_power	JE

@@ -1,3 +1,4 @@
+Number of sensors: 8
          1	Latitude	3M.GPS.G.LAT.001.AVG	GI
          2	Longitude	3M.GPS.G.LONG.001.AVG	GI
          3	Altitude	3M.GPS.G.ALT.001.AVG	H

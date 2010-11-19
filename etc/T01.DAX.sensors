@@ -1,3 +1,4 @@
+Number of sensors: 6
          1	wind speed	T01.SONIC.V.VHOR.001.AVG	V
          2	wind direction	T01.SONIC.V.WD.001.AVG	VD
          3	covariance east and vertical	T01.SONIC.F.CUW.001.AVG	FV

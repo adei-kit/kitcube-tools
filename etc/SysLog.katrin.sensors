@@ -1,3 +1,4 @@
+Number of sensors: 5
          1	TSync	Reader_cycle_time	KD
          2	Free disk space	Disk_space	X
          3	Percentage of free disk space	Disk_quota	QR

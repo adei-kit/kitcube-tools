@@ -1,3 +1,4 @@
+Number of sensors: 19
          1	air pressure	SCI.BARO.P.SUR.001.AVG	PA
          2	air temperature	SCI.PT.T.AIR.001.AVG	T
          3	temperature difference	SCI.PT.T.TDIF.001.AVG	T

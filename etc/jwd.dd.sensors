@@ -1,3 +1,4 @@
+Number of sensors: 8
          1	Rain intensity	JWD.JWD.N.NI.1.AVG	NF
          2	Spectral number density	JWD.JWD.D.ND1.1.AVG	DN
          3	Radar reflectivity	JWD.JWD.Z.CO.1.AVG	Z
