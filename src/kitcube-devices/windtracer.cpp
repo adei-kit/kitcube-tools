@@ -533,8 +533,6 @@ void windtracer::readData(const char *dir, const char *filename)
 		return;
 	}
 	
-//	if (sensor[0].name.length() == 0)
-//		getSensorNames(sensorListfile.c_str());
 
 #ifdef USE_MYSQL
 	if (db == 0) {
