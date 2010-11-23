@@ -955,8 +955,9 @@ void DAQDevice::storeSensorData(){
 	int i;
 #endif
 	
-	if (sensor[0].name.length() == 0)
-		getSensorNames(sensorListfile.c_str());
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 #ifdef USE_MYSQL
 	if (db == 0) {
 		openDatabase();

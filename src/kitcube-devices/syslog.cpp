@@ -31,14 +31,9 @@ SysLog::~SysLog(){
 
 
 
-void SysLog::setNData(int n){
+void SysLog::setNData(int n) {
 	
-	if (n>0) {
-		nSensors = n;
-		
-		if (sensor > 0 ) delete [] sensor;
-		sensor = new struct sensorType [nSensors];
-		
+	if (n > 0) {
 		if (sensorValue > 0 ) delete [] sensorValue;
 		sensorValue = new float[n];
 	}
@@ -47,9 +42,8 @@ void SysLog::setNData(int n){
 
 
 void SysLog::setConfig(int ch, const char *name){
-	
+	// TODO/FIXME: reduce number of arguments
 	if (ch < nSensors){
-		sensor[ch].comment = name;
 		sensor[ch].height = 0;
 	}	
 }

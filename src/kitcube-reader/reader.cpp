@@ -123,14 +123,12 @@ void Reader::readInifile(const char *filename, const char *group){
 		}
 		
 		
-		
 		// Read sampling time
 		tValue= ini->GetFirstValue("samplingTime", (float) tSampleFromInifile, &error);
 		tUnit = ini->GetNextString("ms", &error);
 		this->tSampleFromInifile = tValue; 
 		if ((tUnit == "sec") || (tUnit == "s")) this->tSampleFromInifile = tValue * 1000;
 		if (tUnit == "min") this->tSampleFromInifile = tValue * 60000;
-		
 		
 		
 		// Read type of the modules
@@ -211,6 +209,11 @@ void Reader::runReadout(){
 	log = new SysLog();
 	
 	log->setNData(8);
+	log->setDebugLevel(debug);
+
+	log->readInifile(this->inifile.c_str(), "SysLog");	
+	log->readAxis(this->inifile.c_str());
+	log->getSensorNames(log->sensorListfile.c_str());
 	log->setConfig(0,"T scheduler");
 	log->setConfig(1,"T data transfer");
 	log->setConfig(2,"T data storage");
@@ -219,12 +222,8 @@ void Reader::runReadout(){
 	log->setConfig(5,"Datarate stored");
 	log->setConfig(6,"Datarate received");
 	log->setConfig(7,"Datarate send");
-	log->setDebugLevel(debug);
-
-	log->readInifile(this->inifile.c_str(), "SysLog");	
-	log->readAxis(this->inifile.c_str());
+	// TODO/FIXME: reduce the number of calls to setConfig!
 	
-
 	// Display configuration
 	if (debug) {
 		printf("\n");

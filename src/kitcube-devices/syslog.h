@@ -23,34 +23,34 @@
 
 class SysLog: public DAQDevice  {
 public: 
-  /**  */
-  SysLog();
-  /**  */
-  ~SysLog();
-
-
-  /** Set default configuration */	
-  void setConfigDefaults();
+	/**  */
+	SysLog();
 	
-  /** Read parameter from inifile */
-  //void readInifile(const char *inifile, const char *group = 0);
-
-
-  /** Define the number arguments.
-    * This function will also alocate memory */
-  void setNData(int n);	 
+	/**  */
+	~SysLog();
 	
-  /** Initialize the data set. A channel is defined by the name and the data type. 
-    * Available data types are 0 int and 1 float */
-  void setConfig(int ch, const char *name);
 	
-  /** Update data set */	
-  void updateTimestamp(struct timeval *t);
+	/** Set default configuration */
+	void setConfigDefaults();
+	
+	/** Read parameter from inifile */
+	//void readInifile(const char *inifile, const char *group = 0);
+	
+	
+	/** Define the number arguments.
+	  * This function will also alocate memory */
+	void setNData(int n);
+	
+	/** Initialize the data set. A channel is defined by the name and the data type.
+	  * Available data types are 0 int and 1 float */
+	void setConfig(int ch, const char *name);
+	
+	/** Update data set */	
+	void updateTimestamp(struct timeval *t);
 
-  void updateData(int ch, float data);
-		
-private:		
-
+	void updateData(int ch, float data);
+	
+private:
 	
 };
 
