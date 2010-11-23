@@ -403,6 +403,7 @@ void Mast::readHeader(const char *filename){
 	//printf("Next %c%c%c \n", headerReadPtr[0], headerReadPtr[1], headerReadPtr[2]);
 	
 	// number of sensors
+	// TODO/FIXME: use local variable to read number of sensors here!
 	nSensors = getNumericItem(&headerReadPtr, "Anzahl");
 	printf("Number of sensors:\t%d\n", nSensors);
 
@@ -414,10 +415,6 @@ void Mast::readHeader(const char *filename){
 	unsigned long aggregation;
 	const char *aggregationSymbols[] = { "AVG", "AVG", "MAX", "MIN", "STD" };
 	//const char aggregationSymbols[] = { "M", "M", "H", "L", "S" }; // Very Short form
-	
-	if (sensor > 0 )
-		delete [] sensor;
-	sensor = new struct sensorType [nSensors];
 	
 	for (i = 0; i < nSensors; i++) {
 		sensor[i].longComment = getStringItem( &headerReadPtr, "Kanalbeschreibung");

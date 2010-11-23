@@ -444,8 +444,6 @@ void windtracer::readHeader(const char *filename){
 		}
 	}
 	
-	nSensors = 1;
-	
 	printf("Hello world\n");
 }
 

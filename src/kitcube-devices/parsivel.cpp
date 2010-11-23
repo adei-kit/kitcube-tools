@@ -31,12 +31,6 @@ void parsivel::readHeader(const char *filename){
 	lenHeader = 0;	// no header
 	noData = 9999999;
 	
-	// List of sensors
-	nSensors = 9;
-	if (sensor > 0 )
-		delete [] sensor;
-	sensor = new struct sensorType [nSensors];
-	
 	// set default value for height
 	for (int i = 0; i < nSensors; i++) {
 		sensor[i].height = 0;

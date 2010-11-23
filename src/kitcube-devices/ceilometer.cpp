@@ -186,17 +186,10 @@ void Ceilometer::readHeader(const char *filename){
 	
 	
 	if (sensorGroup == "nc"){	// read NetCDF file header here
-		// Number of sensors
-		nSensors = 14;
-		printf("Number of sensors: %d\n", nSensors);
 		
 		// TODO: maybe better really read header of NetCDF file here,
 		//       at least because of sensor height,
 		//       but comments must be set manually here, due to mixed format of NetCDF file in this case!
-		
-		// List of sensors
-		if (sensor > 0 ) delete [] sensor;
-		sensor = new struct sensorType [nSensors];
 		
 		sensor[0].comment = "number of laser pulses";
 		sensor[0].data_format = "<scalar>";
@@ -328,14 +321,6 @@ void Ceilometer::readHeader(const char *filename){
 		timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
 		tRef.tv_sec = timestamp;
 		tRef.tv_usec = 0;
-		
-		// Number of sensors
-		nSensors = 8;
-		printf("Number of sensors %d\n", nSensors);
-		
-		// List of sensors
-		if (sensor > 0 ) delete [] sensor;
-		sensor = new struct sensorType [nSensors];
 		
 		sensor[0].comment = "Cloud level 1";
 		sensor[1].comment = "Cloud level 2";

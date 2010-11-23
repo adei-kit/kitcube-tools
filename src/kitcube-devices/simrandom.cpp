@@ -25,10 +25,6 @@ SimRandom::SimRandom(){
 	
 	lenDataSet = 64;	// 58 plus kleiner Puffer, hier OK, da fgets nach "\n" stoppt
 	
-	// List of sensors
-	nSensors = 3;
-	sensor = new struct sensorType [nSensors];
-	
 	sensor[0].comment = "Ramp";
 	sensor[1].comment = "Simus 100s";
 	sensor[2].comment = "Random 0..10";

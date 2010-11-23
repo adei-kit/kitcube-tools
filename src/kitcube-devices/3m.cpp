@@ -32,10 +32,6 @@ void dreim::readHeader(const char *filename){
 		
 		profile_length = 0;
 		
-		// List of sensors
-		nSensors = 5;
-		sensor = new struct sensorType [nSensors];
-		
 		// set default value for height
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 5;
@@ -67,10 +63,6 @@ void dreim::readHeader(const char *filename){
 		lenDataSet = 128;	// inkl. kleiner Puffer, hier OK, da fgets nach "\n" stoppt
 		
 		profile_length = 0;
-		
-		// List of sensors
-		nSensors = 8;
-		sensor = new struct sensorType [nSensors];
 		
 		// set default value for height
 		for (int i = 0; i < nSensors; i++) {
@@ -112,10 +104,6 @@ void dreim::readHeader(const char *filename){
 		lenDataSet = 64;	// including some extra bytes!
 		
 		profile_length = 0;
-		
-		// list of sensors
-		nSensors = 4;
-		sensor = new struct sensorType [nSensors];
 		
 		// set default value for height
 		for (int i = 0; i < nSensors; i++) {

@@ -29,10 +29,6 @@ void regenwippe::readHeader(const char *filename){
 	
 	profile_length = 0;	// no profile, scalar data
 	
-	// List of sensors
-	nSensors = 1;
-	sensor = new struct sensorType [nSensors];
-	
 	// set default value for height
 	for (int i = 0; i < nSensors; i++) {
 		sensor[i].height = 0;

@@ -36,10 +36,6 @@ void jwd::readHeader(const char *filename){
 		
 		profile_length = 0;
 		
-		// List of sensors
-		nSensors = 8;
-		sensor = new struct sensorType [nSensors];
-		
 		// set default value for height
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 0;
@@ -80,11 +76,6 @@ void jwd::readHeader(const char *filename){
 		lenDataSet = 128;	// 85 plus kleiner Puffer, hier OK, da fgets nach "\n" stoppt
 		
 		profile_length = 20;
-		
-		// List of sensors
-		nSensors = 1;
-		
-		sensor = new struct sensorType [nSensors];
 		
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 0;

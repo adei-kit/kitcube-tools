@@ -313,14 +313,6 @@ void Norbert::readHeader(const char *filename){
 	tRef.tv_usec = 0;
 
 
-	// Number of sensors
-	nSensors = 1;
-	printf("Number of sensors %d\n", nSensors);
-
-	// List of sensors
-	if (sensor > 0 ) delete [] sensor;
-	sensor = new struct sensorType [nSensors];
-
 	sensor[0].comment = "Triangle Signal";
 }
 
