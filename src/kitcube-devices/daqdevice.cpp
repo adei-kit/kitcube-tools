@@ -1307,6 +1307,7 @@ void DAQDevice::getNewFiles() {
 					       current_no, listIndex[current_no], listName[current_no].c_str());
 				
 				readHeader((dataDir + listName[current_no]).c_str());
+				initDone = 1;
 				readData(dataDir.c_str(), listName[current_no].c_str());
 			}
 			
