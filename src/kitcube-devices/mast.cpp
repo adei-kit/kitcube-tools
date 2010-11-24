@@ -191,146 +191,37 @@ unsigned int Mast::getSensorGroup(){
 }
 
 
-const char *Mast::getSensorName(const char *longName, unsigned long *aggregation){
-	const char *ptr;
-	unsigned long type;
-	
-	
-	buffer = longName;
-	type = 0;
-	
-	ptr = strstr(longName, "mittel");
-	if (ptr > 0){
-		std::string result(longName, ptr - longName);
-		buffer = result;
-		type = 1;
-	}
-	
-	ptr = strstr(longName, "max");
-	if (ptr > 0){
-		std::string result(longName, ptr - longName);
-		buffer = result;
-		type = 2;
-	}
-	
-	ptr = strstr(longName, "min");
-	if (ptr > 0){
-		std::string result(longName, ptr - longName);
-		buffer = result;
-		type = 3;
-	}
-	
-	ptr = strstr(longName, "sigma");
-	if (ptr > 0){
-		std::string result(longName, ptr - longName);
-		buffer = result;
-		type = 4;
-	}
-	
-	
-	if (aggregation > 0)
-		*aggregation = type;
-	
-	// Remove with characters at the end of the name
-	if (buffer.at(buffer.length()-1) == ' ')
-		buffer.erase(buffer.length()-1, buffer.length()-1);
-	
-	//buffer.erase(buffer.end(),buffer.end());
-	return(buffer.c_str());
-}
-
-
-/*const char *Mast::getSensorType(const char *unit){
-	int res;
-	buffer = "";
-	
-	res = strcmp(unit, "W/m²"); // Radiation
-	if (res == 0)
-		buffer = "R";
-
-	res = strcmp(unit, "°C");  //  Temperature
-	if (res == 0)
-		buffer = "T";
-
-	res = strcmp(unit, "hPa");  // Pressure
-	if (res == 0)
-		buffer = "P";
-	
-	res = strcmp(unit, "V");  // Voltage
-	if (res == 0)
-		buffer = "E";
-	
-	res = strcmp(unit, "g/m³");  // Voltage
-	if (res == 0)
-		buffer = "M";
-
-	res = strcmp(unit, "mg/m³");  // Voltage
-	if (res == 0)
-		buffer = "M";
-
-	res = strcmp(unit, "mm");  // Rain Heigth
-	if (res == 0)
-		buffer = "G";
-
-	res = strcmp(unit, "mm/s");  // Rain Rate
-	if (res == 0)
-		buffer = "G";
-	
-	res = strcmp(unit, "Grad");  // Direction
-	if (res == 0)
-		buffer = "G";
-
-	res = strcmp(unit, "%");  // Relative humidity
-	if (res == 0)
-		buffer = "MR";
-	
-	res = strcmp(unit, "m/s");  // Wind speed
-	if (res == 0)
-		buffer = "V";
-
-	res = strcmp(unit, "K");  // Absolute temperature
-	if (res == 0)
-		buffer = "TA";
-	
-	
-	return (buffer.c_str());
-}*/
-
-
-void Mast::readHeader(const char *filename){
+void Mast::readHeader(const char *filename) {
 	int fd;
 	unsigned char *header;
 	const char *headerReadPtr;
+	std::string timeString;
+	std::string dateString;
 	char line[256];
 	int n;
 	int i;
-	int len;
+	int num_sensors, avg_time;
+	std::string heightString;
 	
-	// ID of the device
-	// NOT in the header
-	// Get it from the filename?!
-	// --> use parser function in reader...
 	
 	if(debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	fd = open(filename, O_RDONLY);
-	if (fd < 0) {
+	if (fd == -1) {
 		sprintf(line, "Error opening file %s", filename);
 		throw std::invalid_argument(line);
 	}
 	
 	// Read the complete header
-	len = this->lenHeader;
-	headerRaw = new unsigned char [len]; // Is stored in the class variables
-	header = new unsigned char [len + 100];
+	headerRaw = new unsigned char [lenHeader]; // Is stored in the class variables
+	header = new unsigned char [lenHeader + 100];
 	
-	n = read(fd, headerRaw, len);
-	//printf("Bytes read %d from file %s\n", n, filename);
+	n = read(fd, headerRaw, lenHeader);
 	
 	close(fd);
 	
-	if (n < len) {
+	if (n < lenHeader) {
 		throw std::invalid_argument("No header found in data file");
 	}
 	
@@ -353,93 +244,76 @@ void Mast::readHeader(const char *filename){
 
 	nIn = n;
 	in = (char *) headerRaw;
-	nOut = len + 400;
+	nOut = lenHeader + 400;
 	out = (char *) header;
 
-	    //printf("nIn = %d, nOut = %d\n", nIn, nOut);
-		r = iconv(ic, &in, &nIn, &out, &nOut);
-     	//printf("nIn = %d, nOut = %d\n", nIn, nOut);
-		
+	//printf("nIn = %d, nOut = %d\n", nIn, nOut);
+	r = iconv(ic, &in, &nIn, &out, &nOut);
+	//printf("nIn = %d, nOut = %d\n", nIn, nOut);
+	
 	if (r < 0) {
 		printf("Error during iconv (errno = %d)\n", errno);
-		if (errno == EILSEQ) 
-			printf("Character not available in output or input sream (%d %d %d)\n", in[0], in[1], in[2]);
+		if (errno == EILSEQ)
+			printf("Character not available in output or input sream (%d %d %d)\n",
+			       in[0], in[1], in[2]);
 	}
 	iconv_close(ic);
 #else
-	memcpy(header, headerRaw, len);
+	memcpy(header, headerRaw, lenHeader);
 #endif
 	
-	//
-	// Read parameters
-	//
-	printf("Module: \t\t%s, ID %03d, Group %s ID %d\n", moduleName.c_str(), moduleNumber, 
-		   sensorGroup.c_str(), sensorGroupNumber);
-	
-	
-	// Header parameters
+	//----------------------------------------------------------------------
+	// Read parameters from header
+	//----------------------------------------------------------------------
 	headerReadPtr = (const char *) header;
 	
-	// Sampling time (min)
-	tSample = getNumericItem(&headerReadPtr, "Mittelung");
-	printf("Sampling (min): \t%d\n", tSample);
+	if (debug >= 3) {
+		// averaging intervall
+		avg_time = getNumericItem(&headerReadPtr, "Mittelung");
+		
+		// reference timestamp - the ticks are relative to this time stamp (see parseData(...))
+		// reference time
+		timeString = getStringItem(&headerReadPtr, "Referenzzeit");
+		// reference date
+		dateString = getStringItem(&headerReadPtr, "Referenzdatum");
+		
+		// Experiment name
+		experimentName = getStringItem(&headerReadPtr, "Versuchskennung");
+	}
 	
-	// Reference time - the ticks are relative to this time stamp
-	// and Convert to unix time stamp
-	std::string timeString;
-	std::string dateString;
-	unsigned long timestamp;
-	timeString = getStringItem(&headerReadPtr, "Referenzzeit");
-	dateString = getStringItem(&headerReadPtr, "Referenzdatum");
-	printf("Reference time stamp:\t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
-	timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
-	tRef.tv_sec = timestamp;
-	tRef.tv_usec = 0;
-	//printf("Timestamp: %d -- %s", timestamp, asctime(gmtime((const time_t*) &timestamp)));
-	
-	// Experiment name
-	experimentName = getStringItem( &headerReadPtr, "Versuchskennung");
-	printf("Experiment name:\t[%s]\n", experimentName.c_str());
-	//printf("Next %c%c%c \n", headerReadPtr[0], headerReadPtr[1], headerReadPtr[2]);
 	
 	// number of sensors
-	// TODO/FIXME: use local variable to read number of sensors here!
-	nSensors = getNumericItem(&headerReadPtr, "Anzahl");
-	printf("Number of sensors:\t%d\n", nSensors);
-
-	// Update length of data sets
-	this->lenDataSet = 4 + nSensors * 4 + 8;
+	num_sensors = getNumericItem(&headerReadPtr, "Anzahl");
 	
-	std::string heightString;
-	//float sensorHeight;
-	unsigned long aggregation;
-	const char *aggregationSymbols[] = { "AVG", "AVG", "MAX", "MIN", "STD" };
-	//const char aggregationSymbols[] = { "M", "M", "H", "L", "S" }; // Very Short form
+	
+	if (debug >= 3) {
+		printf("Module:				%s, ID %03d, Group %s ID %d\n",
+		       moduleName.c_str(), moduleNumber, sensorGroup.c_str(), sensorGroupNumber);
+		printf("Averaging intervall (min):	%d\n", avg_time);
+		printf("Reference time stamp:		[%s] [%s]\n", dateString.c_str(), timeString.c_str());
+		printf("Experiment name:		[%s]\n", experimentName.c_str());
+		printf("Number of sensors:		%d\n", num_sensors);
+	}
+	
+	
+	if (num_sensors != nSensors) {
+		printf("\033[31mError: wrong number of sensors in data file: found %d, should be %d\033[0m\n",
+		       num_sensors, nSensors);
+	}
+	
+	// update length of data sets according to data format, see parseData
+	lenDataSet = 4 + nSensors * 4 + 8;
 	
 	for (i = 0; i < nSensors; i++) {
-		sensor[i].longComment = getStringItem( &headerReadPtr, "Kanalbeschreibung");
-		sensor[i].comment= getSensorName( sensor[i].longComment.c_str(), &aggregation);
+		// read sensor description, that's only nice to have...
+		sensor[i].longComment = getStringItem(&headerReadPtr, "Kanalbeschreibung");
 		
-		sensor[i].unit = getStringItem( &headerReadPtr, "Kanalgruppe");	// nice to have...
-		//sensor[i].type = getSensorType(sensor[i].unit.c_str());	// not needed
-		//printf("Ch %3d -- %s [%s] -- %d %s\n", i+1, sensorName.c_str(),
-		//	    sensorUnit.c_str(), aggregation, sensorType.c_str());
-
-		heightString = getStringItem( &headerReadPtr, "Montagehoehe");
+		// read sensor value unit, that's only nice to have...
+		sensor[i].unit = getStringItem(&headerReadPtr, "Kanalgruppe");
+		
+		// read sensor height
+		heightString = getStringItem(&headerReadPtr, "Montagehoehe");
 		sscanf(heightString.c_str(), "%f", &sensor[i].height);
-		
-		// Analyse the aggregation item that is stored?!
-		// Always four entries might form a group (mean, min, max, variance)
-		
-		// The three digits of the number might be split in a device number and a shorter counter?!
-		sprintf(line, "Y%02d%d%03d.%s [%s]", moduleNumber, 
-				sensorGroupNumber, i+1, aggregationSymbols[aggregation%5], sensor[i].name.c_str());
-		//printf("Column name: %s\n", line);
-		//colNames[i] = line;
-		//colComment[i] = sensorLongName;
-		
-		// TODO: Alternative - only store the mean values in the database.
-		// This is may be a good start point with a better focus on the real data/ sensors?!
 	}
 	
 	delete [] header;
@@ -465,7 +339,7 @@ void Mast::readHeader(const char *filename){
 }
 
 
-void Mast::writeHeader(){
+void Mast::writeHeader() {
 	struct timezone tz;
 	const char *headerReadPtr;
 	struct tm *tm_ptr;
@@ -511,11 +385,14 @@ void Mast::writeHeader(){
 }
 
 
-void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue){
+void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	float *local_sensorValue;
 	struct SPackedTime *time;
 	struct tm tm_zeit;
-
+	
+	
+	if(debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	if (sizeof(float) != 4) {
 		printf("Size of 'float' is not 4! So not reading any data!\n");
@@ -525,11 +402,12 @@ void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	//----------------------------------------------------------------------
 	// Data format:
 	// ============
-	// long Tickcount: Hundertstel seit Messbeginn (wird nicht benutzt)
-	// float Sensorwerte: Messdaten, Anzahl steht im Header
-	// struct SPackedTime: Zeitstempel-Struktur
+	// (u_)int32_t Tickcount: Hundertstel seit Messbeginn = Referenz-Zeitstempel,
+	//                        s. readHeader(...) (wird nicht benutzt)
+	// float Sensorwerte:     Messdaten, Anzahl steht im Header
+	// struct SPackedTime:    Zeitstempel-Struktur
 	//----------------------------------------------------------------------
-	
+	in
 	local_sensorValue =  (float *)(line + 4);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
 	time = (struct SPackedTime *)(line + 4 + 4 * nSensors);	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
 	
@@ -555,7 +433,7 @@ void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 }
 
 
-void Mast::updateDataSet(unsigned char *buf){
+void Mast::updateDataSet(unsigned char *buf) {
 	struct timeval tv;
 	struct timezone tz;
 	struct SPackedTime *time;

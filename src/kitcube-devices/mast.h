@@ -15,7 +15,7 @@
 #include <errno.h>
 
 #ifdef HAVE_ICONV_H
-//#error Compiling ICONV_OVER // ???
+#error Compiling ICONV_OVER // ???
 #include <iconv.h>
 #endif
 
@@ -56,10 +56,6 @@ public:
 	
 	unsigned int getSensorGroup();
 	
-	const char *getSensorName(const char *longname, unsigned long *aggregation = 0);
-	
-//	const char *getSensorType(const char *unit);
-	
 	/** Get time until next sample and it's id */
 	void readHeader(const char *header);
 	
@@ -74,8 +70,6 @@ private:
 	unsigned char *headerRaw;
 	
 	std::string experimentName;
-	
-	unsigned int tSample;
 	
 	struct timeval tRef;
 	
