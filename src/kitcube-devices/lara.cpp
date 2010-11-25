@@ -211,7 +211,7 @@ void Lara::closeFile(){
 */
 
 
-void Lara::readHeader(char *filename){
+int Lara::readHeader(char *filename) {
 	std::string dir; 
 	std::string fileString;
 	std::string numString;
@@ -229,11 +229,14 @@ void Lara::readHeader(char *filename){
 	
 	errno = 0;
 	
-	if (debug > 2) printf("______Lara::Reading header_____________________\n");	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	
 	//
 	// There is no header for this format
-    //
+	//
 	
 	// Read reference time
 	// Get date from filename	
@@ -353,6 +356,7 @@ void Lara::readHeader(char *filename){
 		
 	}
 	
+	return 0;
 }
 
 

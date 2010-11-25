@@ -24,8 +24,13 @@ jwd::~jwd(){
 }
 
 
-void jwd::readHeader(const char *filename){
+int jwd::readHeader(const char *filename) {
 	char line[256];
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	
 	noData = 999999;
 	
@@ -98,6 +103,8 @@ void jwd::readHeader(const char *filename){
 	} else {
 		printf("Unknown sensor group!\n");
 	}
+	
+	return 0;
 }
 
 

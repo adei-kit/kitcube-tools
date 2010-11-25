@@ -174,7 +174,7 @@ unsigned int Ceilometer::getSensorGroup(){
 }
 
 
-void Ceilometer::readHeader(const char *filename){
+int Ceilometer::readHeader(const char *filename) {
 	int fd;
 	const char *headerReadPtr;
 	char line[256];
@@ -183,6 +183,10 @@ void Ceilometer::readHeader(const char *filename){
 	int heightOffset;
 	char heightUnit[5];
 	int len;
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
 	if (sensorGroup == "nc"){	// read NetCDF file header here
@@ -250,9 +254,9 @@ void Ceilometer::readHeader(const char *filename){
 		
 		printf("_____Reading header information_____________________\n");
 		fd = open(filename, O_RDONLY);
-		if (fd < 0) {
-			sprintf(line, "Error opening file %s", filename);
-			throw std::invalid_argument(line);
+		if (fd == -1) {
+			printf("Error opening file %s", filename);
+			return -1;
 		}
 		
 		// Read the complete header
@@ -265,12 +269,12 @@ void Ceilometer::readHeader(const char *filename){
 		
 		close(fd);
 		
-		if (n<len) {
+		if (n < len) {
 			// There is no header defined in the data format. Instead the data from the
 			// First data set is read -- of course when starting with a new file there is no
 			// data set available. So it makes no sense to complain here!
 			//throw std::invalid_argument("No header found in data file");
-			return;
+			return -1;
 		}
 		
 		profile_length = 0;	// TODO/FIXME: do we need this here? this is done in daqdevice constructor, too
@@ -293,8 +297,10 @@ void Ceilometer::readHeader(const char *filename){
 		*heightUnit = 0;
 		headerReadPtr =  (const char *) headerRaw + 77;
 		strncpy(heightUnit, headerReadPtr, 2);
-		if (heightUnit[1] == ' ') heightUnit[1] = 0;
-		else heightUnit[2] = 0;
+		if (heightUnit[1] == ' ')
+			heightUnit[1] = 0;
+		else
+			heightUnit[2] = 0;
 		printf("Unit = <%s>\n", heightUnit);
 		
 		// Device ID + fabrication date
@@ -336,6 +342,8 @@ void Ceilometer::readHeader(const char *filename){
 			printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
 		}
 	}
+	
+	return 0;
 }
 
 

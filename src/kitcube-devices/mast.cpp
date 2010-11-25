@@ -191,13 +191,12 @@ unsigned int Mast::getSensorGroup(){
 }
 
 
-void Mast::readHeader(const char *filename) {
+int Mast::readHeader(const char *filename) {
 	int fd;
 	unsigned char *header;
 	const char *headerReadPtr;
 	std::string timeString;
 	std::string dateString;
-	char line[256];
 	int n;
 	int i;
 	int num_sensors, avg_time;
@@ -209,8 +208,8 @@ void Mast::readHeader(const char *filename) {
 	
 	fd = open(filename, O_RDONLY);
 	if (fd == -1) {
-		sprintf(line, "Error opening file %s", filename);
-		throw std::invalid_argument(line);
+		printf("Error opening file %s", filename);
+		return -1;
 	}
 	
 	// Read the complete header
@@ -222,7 +221,7 @@ void Mast::readHeader(const char *filename) {
 	close(fd);
 	
 	if (n < lenHeader) {
-		throw std::invalid_argument("No header found in data file");
+		return -1;
 	}
 	
 #ifdef HAVE_ICONV_H
@@ -299,6 +298,7 @@ void Mast::readHeader(const char *filename) {
 	if (num_sensors != nSensors) {
 		printf("\033[31mError: wrong number of sensors in data file: found %d, should be %d\033[0m\n",
 		       num_sensors, nSensors);
+		return -1;
 	}
 	
 	// update length of data sets according to data format, see parseData
@@ -336,6 +336,8 @@ void Mast::readHeader(const char *filename) {
 	// Data table name:  Data_<module number><daq group number>_<module name><daqgroup>
 	
 	printf("\n");
+	
+	return 0;
 }
 
 
@@ -407,7 +409,7 @@ void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	// float Sensorwerte:     Messdaten, Anzahl steht im Header
 	// struct SPackedTime:    Zeitstempel-Struktur
 	//----------------------------------------------------------------------
-	in
+	
 	local_sensorValue =  (float *)(line + 4);	// TODO/FIXME: that is dangerous, as you don't know the size of "float"
 	time = (struct SPackedTime *)(line + 4 + 4 * nSensors);	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
 	

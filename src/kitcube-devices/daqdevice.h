@@ -126,7 +126,7 @@ public:
 	virtual void closeDatabase();
 	
 	/** Get time until next sample and it's id */
-	virtual void readHeader(const char *header);
+	virtual int readHeader(const char *header);
 
 	/** Get time until next sample and it's id */
 	virtual void readHeader();

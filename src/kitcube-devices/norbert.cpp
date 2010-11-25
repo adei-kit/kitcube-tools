@@ -256,20 +256,21 @@ unsigned int Norbert::getSensorGroup(){
 }
 
 
-void Norbert::readHeader(const char *filename){
+int Norbert::readHeader(const char *filename) {
 	int fd;
 	const char *headerReadPtr;
-	char line[256];
 	int n;
 	int len;
-
-
-	printf("_____Norbert::readHeader(...)_____\n");
-
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
 	fd = open(filename, O_RDONLY);
-	if (fd < 0) {
-		sprintf(line, "Error opening file %s", filename);
-		throw std::invalid_argument(line);
+	if (fd == -1) {
+		printf("Error opening file %s", filename);
+		return -1;
 	}
 
 	// Read the complete header
@@ -286,7 +287,7 @@ void Norbert::readHeader(const char *filename){
 		// First data set is read -- of course when starting with a new file there is no
 		// data set available. So it makes no sense to complain here!
 		//throw std::invalid_argument("No header found in data file");
-		return;
+		return -1;
 	}
 
 
@@ -314,6 +315,8 @@ void Norbert::readHeader(const char *filename){
 
 
 	sensor[0].comment = "Triangle Signal";
+	
+	return 0;
 }
 
 

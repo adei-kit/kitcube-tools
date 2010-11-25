@@ -904,7 +904,8 @@ void DAQDevice::closeDatabase(){
 }
 
 
-void DAQDevice::readHeader(const char *header){
+int DAQDevice::readHeader(const char *header) {
+	return -1;
 }
 
 
@@ -1283,11 +1284,13 @@ void DAQDevice::getNewFiles() {
 					printf("Continue reading file no. %d, index %ld, name %s:\n",
 					       current_no, listIndex[current_no], listName[current_no].c_str());
 				
-				if (initDone == 0) {
-					readHeader((dataDir + listName[current_no]).c_str());
+				err = 0;
+				if (initDone == 0)
+					err = readHeader((dataDir + listName[current_no]).c_str());
+				if (err == 0) {
 					initDone = 1;
+					readData(dataDir.c_str(), listName[current_no].c_str());
 				}
-				readData(dataDir.c_str(), listName[current_no].c_str());
 			}
 			
 			if (listIndex[current_no] > lastIndex) {
@@ -1306,9 +1309,11 @@ void DAQDevice::getNewFiles() {
 					printf("Begin reading file no. %d, index %ld, name %s:\n",
 					       current_no, listIndex[current_no], listName[current_no].c_str());
 				
-				readHeader((dataDir + listName[current_no]).c_str());
-				initDone = 1;
-				readData(dataDir.c_str(), listName[current_no].c_str());
+				err = readHeader((dataDir + listName[current_no]).c_str());
+				if (err == 0) {
+					initDone = 1;
+					readData(dataDir.c_str(), listName[current_no].c_str());
+				}
 			}
 			
 			// Check if file has been completely read

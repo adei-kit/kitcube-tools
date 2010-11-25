@@ -79,7 +79,7 @@ public:
 //	const char *getSensorType(const char *unit);
 	
 	/** Get time until next sample and it's id */
-	void readHeader(const char *header);
+	int readHeader(const char *header);
 	
 	void writeHeader();
 	

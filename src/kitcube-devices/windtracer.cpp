@@ -270,9 +270,8 @@ const char *windtracer::getSensorName(const char *longName, unsigned long *aggre
 }
 
 
-void windtracer::readHeader(const char *filename){
+int windtracer::readHeader(const char *filename) {
 	int fd;
-	char line[256];
 	int n;
 	struct RecordHeader record_header;
 	struct ConfigurationRecord config_record;
@@ -294,9 +293,9 @@ void windtracer::readHeader(const char *filename){
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	fd = open(filename, O_RDONLY);
-	if (fd < 0) {
-		sprintf(line, "Error opening file %s", filename);
-		throw std::invalid_argument(line);
+	if (fd == -1) {
+		printf("Error opening file %s", filename);
+		return -1;
 	}
 	
 	
@@ -325,7 +324,7 @@ void windtracer::readHeader(const char *filename){
 		}
 	} else {
 		// file not completly transfered, try again
-		return;
+		return -1;
 	}
 	
 	// read the configuration record block descriptor
@@ -345,7 +344,7 @@ void windtracer::readHeader(const char *filename){
 		}
 	} else {
 		// file not completly transfered, try again
-		return;
+		return -1;
 	}
 	
 	// get memory for config text block
@@ -364,7 +363,7 @@ void windtracer::readHeader(const char *filename){
 			printf("Content:\n%s", config_record.chConfiguration);
 	} else {
 		// file not completly transfered, try again
-		return;
+		return -1;
 	}
 	
 	close(fd);
@@ -445,6 +444,8 @@ void windtracer::readHeader(const char *filename){
 	}
 	
 	printf("Hello world\n");
+	
+	return 0;
 }
 
 
@@ -494,8 +495,7 @@ void windtracer::writeHeader(){
 }
 
 
-void windtracer::readData(const char *dir, const char *filename)
-{
+void windtracer::readData(const char *dir, const char *filename) {
 	std::string full_data_filename;
 	int fd_data_file;
 	unsigned long last_position;

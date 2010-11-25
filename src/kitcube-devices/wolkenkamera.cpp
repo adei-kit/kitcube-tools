@@ -52,8 +52,12 @@ unsigned int wolkenkamera::getSensorGroup(){
 }
 
 
-void wolkenkamera::readHeader(const char *filename){
+int wolkenkamera::readHeader(const char *filename) {
 	int i;
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
 	sensor[0].comment = "sky picture";
@@ -66,6 +70,8 @@ void wolkenkamera::readHeader(const char *filename){
 		sensor[i].height = 4;
 		printf("Sensor %3d: %s, %.1f\n", i+1, sensor[i].comment.c_str(), sensor[i].height);
 	}
+	
+	return 0;
 }
 
 

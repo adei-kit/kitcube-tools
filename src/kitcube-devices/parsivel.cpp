@@ -21,12 +21,13 @@ parsivel::~parsivel(){
 }
 
 
-void parsivel::readHeader(const char *filename){
+int parsivel::readHeader(const char *filename) {
 	char line[256];
 	
 	
 	if (debug >= 1)
-		printf("_____parsivel::readHeader(const char *filename)_____\n");
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	
 	lenHeader = 0;	// no header
 	noData = 9999999;
@@ -81,6 +82,8 @@ void parsivel::readHeader(const char *filename){
 			printf("Sensor %3d: %s\n", i + 1, sensor[i].comment.c_str());
 		}
 	}
+	
+	return 0;
 }
 
 

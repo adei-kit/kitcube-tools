@@ -21,14 +21,15 @@ mrr::~mrr(){
 }
 
 
-void mrr::readHeader(const char *filename){
-	printf("\n_____mrr::readHeader(const char *filename)_____\n");
+int mrr::readHeader(const char *filename) {
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	if (sensorGroup == "dat") {
-		printf("Reading header of %s\n", filename);
-		
 		lenHeader = 0x2F6;	// CAUTION: header has 10 lines
 	}
+	
+	return 0;
 }
 
 

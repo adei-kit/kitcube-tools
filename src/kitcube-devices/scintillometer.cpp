@@ -25,7 +25,7 @@ sci::~sci(){
 }
 
 
-void sci::readHeader(const char *filename){
+int sci::readHeader(const char *filename) {
 	if (debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
@@ -104,6 +104,8 @@ void sci::readHeader(const char *filename){
 			printf("Sensor %3d: %s\n", i + 1, sensor[i].comment.c_str());
 		}
 	}
+	
+	return 0;
 }
 
 

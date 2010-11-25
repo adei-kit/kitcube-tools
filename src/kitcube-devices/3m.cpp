@@ -19,9 +19,10 @@ dreim::~dreim(){
 }
 
 
-void dreim::readHeader(const char *filename){
+int dreim::readHeader(const char *filename) {
 	if (debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	
 	noData = 999999;
 	
@@ -130,6 +131,8 @@ void dreim::readHeader(const char *filename){
 	} else {
 		printf("Unknown sensor group!\n");
 	}
+	
+	return 0;
 }
 
 
@@ -140,7 +143,6 @@ void dreim::setConfigDefaults(){
 void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	struct tm timestamp, gps_timestamp;
 	char *puffer, *saveptr;
-	double dummy;
 	int msec;
 	
 	

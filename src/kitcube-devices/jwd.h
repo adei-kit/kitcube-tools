@@ -27,7 +27,7 @@ public:
 	
 	void setConfigDefaults();
 	
-	void readHeader(const char *filename);
+	int readHeader(const char *filename);
 	
 	void writeHeader();
 	
