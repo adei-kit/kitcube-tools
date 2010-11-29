@@ -394,7 +394,7 @@ void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	struct tm tm_zeit;
 	
 	
-	if(debug >= 1)
+	if(debug >= 4)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
