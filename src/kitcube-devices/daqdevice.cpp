@@ -1284,13 +1284,17 @@ void DAQDevice::getNewFiles() {
 					printf("Continue reading file no. %d, index %ld, name %s:\n",
 					       current_no, listIndex[current_no], listName[current_no].c_str());
 				
+				// read header if first call of this function or if it failed below
 				err = 0;
 				if (initDone == 0)
 					err = readHeader((dataDir + listName[current_no]).c_str());
+				
+				// if successful read data else cancel handling files
 				if (err == 0) {
 					initDone = 1;
 					readData(dataDir.c_str(), listName[current_no].c_str());
-				}
+				} else
+					break;
 			}
 			
 			if (listIndex[current_no] > lastIndex) {
@@ -1309,11 +1313,16 @@ void DAQDevice::getNewFiles() {
 					printf("Begin reading file no. %d, index %ld, name %s:\n",
 					       current_no, listIndex[current_no], listName[current_no].c_str());
 				
+				// read header for each new file
+				initDone = 0;
 				err = readHeader((dataDir + listName[current_no]).c_str());
+				
+				// if successful read data else cancel handling files
 				if (err == 0) {
 					initDone = 1;
 					readData(dataDir.c_str(), listName[current_no].c_str());
-				}
+				} else
+					break;
 			}
 			
 			// Check if file has been completely read
