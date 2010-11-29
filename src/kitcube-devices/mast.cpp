@@ -206,6 +206,7 @@ int Mast::readHeader(const char *filename) {
 	if(debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	
 	fd = open(filename, O_RDONLY);
 	if (fd == -1) {
 		printf("Error opening file %s", filename);
@@ -396,6 +397,7 @@ void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	if(debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	
 	if (sizeof(float) != 4) {
 		printf("Size of 'float' is not 4! So not reading any data!\n");
 		return;
@@ -430,7 +432,7 @@ void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	tm_zeit.tm_sec = time->nSekunde;
 	
 	// Calculate the time stamp
-	l_tData->tv_sec = timegm(&tm_zeit);
+	l_tData->tv_sec = timegm(&tm_zeit);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
 	l_tData->tv_usec = time->nHundertstel * 10000;
 }
 
