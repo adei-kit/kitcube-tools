@@ -29,6 +29,7 @@ int sci::readHeader(const char *filename) {
 	if (debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	
 	noData = 999999;
 	
 	lenHeader = 0;	// no header
@@ -40,69 +41,7 @@ int sci::readHeader(const char *filename) {
 	// set default value for height
 	for (int i = 0; i < nSensors; i++) {
 		sensor[i].height = 0;
-	}
-	
-	sensor[0].comment = "air pressure";
-	sensor[0].data_format = "<scalar>";
-	
-	sensor[1].comment = "air temperature";
-	sensor[1].data_format = "<scalar>";
-	
-	sensor[2].comment = "temperature difference";
-	sensor[2].data_format = "<scalar>";
-	
-	sensor[3].comment = "path length";
-	sensor[3].data_format = "<scalar>";
-	
-	sensor[4].comment = "instrument height";
-	sensor[4].data_format = "<scalar>";
-	
-	sensor[5].comment = "logarithm of the amplitude in ch 1";
-	sensor[5].data_format = "<scalar>";
-	
-	sensor[6].comment = "logarithm of the amplitude in ch 2";
-	sensor[6].data_format = "<scalar>";
-	
-	sensor[7].comment = "correlation of the logs of the amps in ch 1 and 2";
-	sensor[7].data_format = "<scalar>";
-	
-	sensor[8].comment = "error free data periods";
-	sensor[8].data_format = "<scalar>";
-	
-	sensor[9].comment = "structure function constant of refractive index fluctuations";
-	sensor[9].data_format = "<scalar>";
-	
-	sensor[10].comment = "inner scale of refractive fluctuations";
-	sensor[10].data_format = "<scalar>";
-	
-	sensor[11].comment = "structure function constant of temperature fluctuations";
-	sensor[11].data_format = "<scalar>";
-	
-	sensor[12].comment = "kinetic energy dissipation";
-	sensor[12].data_format = "<scalar>";
-	
-	sensor[13].comment = "sensible heat flux, unstable density stratifiction";
-	sensor[13].data_format = "<scalar>";
-	
-	sensor[14].comment = "sensible heat flux, stable density stratification";
-	sensor[14].data_format = "<scalar>";
-	
-	sensor[15].comment = "momentum flux, unstable density stratification";
-	sensor[15].data_format = "<scalar>";
-	
-	sensor[16].comment = "momentum flux, stable density stratification";
-	sensor[16].data_format = "<scalar>";
-	
-	sensor[17].comment = "Monin Obukhov length, unstable density stratification";
-	sensor[17].data_format = "<scalar>";
-	
-	sensor[18].comment = "Monin Obukhov length, stable density stratification";
-	sensor[18].data_format = "<scalar>";
-	
-	if (debug) {
-		for (int i = 0; i < nSensors; i++) {
-			printf("Sensor %3d: %s\n", i + 1, sensor[i].comment.c_str());
-		}
+		sensor[i].data_format = "<scalar>";
 	}
 	
 	return 0;
@@ -125,6 +64,7 @@ void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	
 	if (debug >= 4)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	
 	// read date and time
 	puffer = strptime(line + 5,"%Y-%m-%d %T", &timestamp);
@@ -166,6 +106,7 @@ void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	       &sensorValue[8], &sensorValue[9], &sensorValue[10], &sensorValue[11],
 	       &sensorValue[12], &sensorValue[13], &sensorValue[14], &sensorValue[15],
 	       &sensorValue[16], &sensorValue[17], &sensorValue[18]);
+	// TODO: error handling
 }
 
 
@@ -175,6 +116,7 @@ unsigned int sci::getSensorGroup(){
 	
 	if (debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	
 	number = 0;
 	buffer = "";
