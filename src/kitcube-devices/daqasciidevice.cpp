@@ -176,7 +176,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	}
 	
 	
-	// Get the last time stamp + file pointer from 
+	// Get the last time stamp + file pointer from
 	lastPos = 0;
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
@@ -207,6 +207,11 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 		printf("Last position in file: %ld\n", lastPos);
 	
 	fseek(fd_data_file, lastPos, SEEK_SET);
+	
+#ifdef USE_MYSQL
+	sql = "LOCK TABLES " + dataTableName + " WRITE";
+	mysql_query(db, sql.c_str());
+#endif
 	
 	lPtr = (char *) 1;
 	int iLoop = 0;
@@ -251,7 +256,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 					}
 				}
 				sql += ") VALUES (";
-				sprintf(sData, "%ld", timestamp_data.tv_sec * 1000000 +  timestamp_data.tv_usec);
+				sprintf(sData, "%ld", timestamp_data.tv_sec * 1000000 + timestamp_data.tv_usec);
 				sql += sData;
 				if (profile_length != 0) {
 					for (i = 0; i < nSensors; i++) {
@@ -285,7 +290,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 					printf("Error: Unable to write data to database\n");
 					throw std::invalid_argument("Writing data failed");
 					break;
-				}	
+				}
 				
 				gettimeofday(&t1, &tz);
 				if (debug >= 5)
@@ -299,6 +304,11 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 		}
 		iLoop++;
 	}
+	
+#ifdef USE_MYSQL
+	sql = "UNLOCK TABLES";
+	mysql_query(db, sql.c_str());
+#endif
 	
 	if (lPtr == 0) {
 		fd_eof = true;

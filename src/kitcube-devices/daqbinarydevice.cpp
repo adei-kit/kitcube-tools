@@ -286,6 +286,11 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	
 	lseek(fd_data_file, lastPos, SEEK_SET);
 	
+#ifdef USE_MYSQL
+	sql = "LOCK TABLES " + dataTableName + " WRITE";
+	mysql_query(db, sql.c_str());
+#endif
+	
 	n = len;
 	int iLoop = 0;
 	while ((n == len) && (iLoop < 1000000)) {
@@ -298,8 +303,8 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 			
 			// print sensor values
 			if (debug >= 4) {
-				printf("%4d: Received %4d bytes ---- ", iLoop, n);
-				printf("%lds %6ldus ---- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
+				printf("%4d: Received %4d bytes --- ", iLoop, n);
+				printf("%lds %6ldus --- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
 						for (k = 0; k < profile_length; k++) {
@@ -377,6 +382,11 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		}
 		iLoop++;
 	}
+	
+#ifdef USE_MYSQL
+	sql = "UNLOCK TABLES";
+	mysql_query(db, sql.c_str());
+#endif
 	
 	if (n < len) {
 		fd_eof = true;
