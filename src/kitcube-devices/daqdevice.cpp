@@ -337,6 +337,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	if (debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	
 	// Will need the axis definition for parsing the sensor names
 	if (axis == 0)
 		readAxis(this->inifile.c_str());
@@ -1053,7 +1054,7 @@ void DAQDevice::writeData(){
 }
 
 
-long DAQDevice::getFileNumber(char* filename){
+long DAQDevice::getFileNumber(char* filename) {
 	std::string filename_prefix;
 	std::string filename_suffix;
 	std::string filename_string;
@@ -1061,11 +1062,9 @@ long DAQDevice::getFileNumber(char* filename){
 	long index;
 	
 	
-	if (debug >= 1)
+	if (debug >= 3)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
-	if (debug >= 2)
-		printf("... from file %s\n", filename);
 	
 	// Write the index of the file to a list
 	// Process in this list with the next index
@@ -1119,7 +1118,7 @@ long DAQDevice::getFileNumber(char* filename){
 	// FIXME/TODO: check, if this is really only a number
 	index = atol(filename_string.c_str());
 	
-	if (debug >= 2)
+	if (debug >= 3)
 		printf("File number is: %ld\n", index);
 	
 	return index;
@@ -1165,11 +1164,12 @@ void DAQDevice::getNewFiles() {
 	if (debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	
 	processedData = 0; // Counter for the processed bytes
 	
 	dataDir = archiveDir + getDataDir();
 	
-	if (debug >= 2)
+	if (debug >= 3)
 		printf("Reading from directory '%s'\n", dataDir.c_str());
 
 	// Get all alphabetical following files
@@ -1205,8 +1205,8 @@ void DAQDevice::getNewFiles() {
 	rewinddir(din);
 	
 	while ((file = readdir(din)) != NULL) {
-		if (debug >= 2)
-			printf("File type: %2d, file name: %s\n", file->d_type, file->d_name);
+		if (debug >= 3)
+			printf("\nFile type: %2d, file name: %s\n", file->d_type, file->d_name);
 		
 		if (file->d_type == DT_REG) {
 			// get some number for the file to order it in time
@@ -1236,8 +1236,10 @@ void DAQDevice::getNewFiles() {
 	closedir(din);
 	
 	// print list of data files found
+	if (debug >= 3)
+		printf("\n");
 	if (debug >= 1) {
-		printf("\nList of data files in %s:\n", dataDir.c_str());
+		printf("List of data files in %s:\n", dataDir.c_str());
 		printf("Number          List-Index   Next Filename\n");
 		for (i = 0; i < nList; i++) {
 			printf("%6d %19ld %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
