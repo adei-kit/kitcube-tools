@@ -11,17 +11,11 @@
 #include "scintillometer.h"
 
 
-sci::sci(){
-	
-	moduleType = "JWD";
-	moduleNumber = 0;
-	this->sensorGroup = "txt";
-	
-	this->iniGroup = "JWD-dd";
+sci::sci() {
 }
 
 
-sci::~sci(){
+sci::~sci() {
 }
 
 
@@ -48,7 +42,7 @@ int sci::readHeader(const char *filename) {
 }
 
 
-void sci::setConfigDefaults(){
+void sci::setConfigDefaults() {
 	
 	// Note:
 	// The paramters are dependant of the module number that is not known at the creation
@@ -57,7 +51,7 @@ void sci::setConfigDefaults(){
 }
 
 
-void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue){
+void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	struct tm timestamp;
 	char *puffer;
 	
@@ -110,7 +104,7 @@ void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 }
 
 
-unsigned int sci::getSensorGroup(){
+unsigned int sci::getSensorGroup() {
 	unsigned int number;
 	
 	
