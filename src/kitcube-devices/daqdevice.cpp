@@ -331,7 +331,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	char *n;
 	char *tmp;
 	std::string axisName;
-	std::string sLine;
+	std::string full_sensorlist_filename;
 	
 	
 	if (debug >= 1)
@@ -342,20 +342,20 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	if (axis == 0)
 		readAxis(this->inifile.c_str());
 	
+	full_sensorlist_filename =  configDir + sensor_list_file_name;
 	
-	sprintf(line, "%s%s", configDir.c_str(), sensor_list_file_name);
-	if (debug >= 4)
-		printf("Read sensor names from list file: %s\n", line);
+	if (debug >= 1)
+		printf("Read sensor names from list file: %s\n", full_sensorlist_filename.c_str());
 	
 	// open sensor list file
-	sensor_list_file = fopen(line, "r");
+	sensor_list_file = fopen(full_sensorlist_filename.c_str(), "r");
 	
 	// if there is no sensor list file, create a template file
 	if (sensor_list_file == NULL) {
 		printf("\033[31mError: Configuration file with sensor list is missing\033[0m\n");
-		printf("Creating template file: %s\n", line);
+		printf("Creating template file: %s\n", full_sensorlist_filename.c_str());
 		
-		sensor_list_file = fopen(line, "w");
+		sensor_list_file = fopen(full_sensorlist_filename.c_str(), "w");
 		if (sensor_list_file == NULL) {
 			throw std::invalid_argument("Error creating template file");
 		}
@@ -369,9 +369,13 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	}
 	
 	// read number of sensors from sensor list file
+	// this has to be done to be able to create the sensorType structs before actually parsing the file
 	n = fgets(line, 256, sensor_list_file);
 	sscanf(line, "Number of sensors: %d\n", &nSensors);
 	// TODO: error checking
+	
+	if (debug >= 1)
+		printf("Number of sensors: %d\n", nSensors);
 	
 	// create sensor list
 	if (sensor > 0)
@@ -382,13 +386,12 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	// read sensor descriptions, parse the lines and fill sensor list
 	// format: number <TAB> comment <TAB> KITCube sensor name <TAB> axis name
 	//----------------------------------------------------------------------
-	i = 0;
-	
-	n = fgets(line, 256, sensor_list_file);
-	
-	while (n != NULL) {
-		if (debug >= 4)
-			printf("line no. %3d: %s", i + 1, line);
+	for (i = 0; i < nSensors; i++) {
+		n = fgets(line, 256, sensor_list_file);
+		if (n == NULL) {
+			printf("Error reading sensor list file\n");
+			break;
+		}
 		
 		// TODO: check for missing entries in line
 		
@@ -419,20 +422,13 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 			throw std::invalid_argument("Axis type is not defined in the inifile");
 		}
 		
-		i++;
-		n = fgets(line, 256, sensor_list_file);
-	}
-	
-	nSensors = i;
-	
-	fclose(sensor_list_file);
-	
-	if (debug >= 3) {
-		for (i = 0; i < nSensors; i++) {
+		if (debug >= 1) {
 			printf("Sensor %3d: %s\t%s (%s)\t%s\n",
 			       i + 1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str(), axis[sensor[i].axis].unit.c_str(), sensor[i].comment.c_str());
 		}
 	}
+	
+	fclose(sensor_list_file);
 }
 
 
