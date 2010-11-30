@@ -16,7 +16,7 @@
 #define ICONV_TRUNC() (r<0) && (errno==EINVAL))
 
 
-struct SPackedTime{
+struct SPackedTime {
 	unsigned char nTag;
 	unsigned char nMonat;
 	unsigned short nJahr;
@@ -27,7 +27,7 @@ struct SPackedTime{
 };
 
 
-Mast::Mast(): DAQBinaryDevice(){
+Mast::Mast():AQBinaryDevice() {
 	
 	this->lenHeader = 0x10000; // 64k Header block
 	this->lenDataSet = 0; // Depends on the number of sensors - updated in readHeader
@@ -38,19 +38,19 @@ Mast::Mast(): DAQBinaryDevice(){
 }
 
 
-Mast::~Mast(){
+Mast::~Mast() {
 	// Free header memory
 	if (headerRaw > 0) delete [] headerRaw;
 	
 }
 
 
-void Mast::setConfigDefaults(){
+void Mast::setConfigDefaults() {
 	
 }
 
 
-const char *Mast::getDataDir(){
+const char *Mast::getDataDir() {
 	char line[256];
 	
 	// TODO: Create a single source for the filename convention...
@@ -61,7 +61,7 @@ const char *Mast::getDataDir(){
 }
 
 
-const char *Mast::getDataFilename(){
+const char *Mast::getDataFilename() {
 	char line[256];
 	
 	// TODO: Create a single source for the filename convention...
@@ -73,7 +73,7 @@ const char *Mast::getDataFilename(){
 
 
 // Move to base class?
-void Mast::replaceItem(const char **header, const char *itemTag, const char *newValue){
+void Mast::replaceItem(const char **header, const char *itemTag, const char *newValue) {
 	bool findTag;
 	const char *ptr;
 	const char *startChar;
@@ -107,7 +107,7 @@ void Mast::replaceItem(const char **header, const char *itemTag, const char *new
 }
 
 
-const char *Mast::getStringItem(const char **header, const char *itemTag){
+const char *Mast::getStringItem(const char **header, const char *itemTag) {
 	bool findTag;
 	const char *ptr;
 	const char *startChar;
@@ -147,7 +147,7 @@ const char *Mast::getStringItem(const char **header, const char *itemTag){
 }
 
 
-int Mast::getNumericItem(const char **header, const char *itemTag){
+int Mast::getNumericItem(const char **header, const char *itemTag) {
 	int value;
 	const char *ptr;
 	
@@ -158,10 +158,10 @@ int Mast::getNumericItem(const char **header, const char *itemTag){
 }
 
 
-unsigned int Mast::getSensorGroup(){
+unsigned int Mast::getSensorGroup() {
 	unsigned int number;
 
-	switch (sensorGroup.at(2)){
+	switch (sensorGroup.at(2)) {
 	case 'L': 
 	case 'l': // slow / 1Hz data
 		number = 1;
