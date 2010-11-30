@@ -215,13 +215,6 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	filenameData += filename;
 	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());	
 	
-	
-	// If number of sensors is unknown read the header first
-	//if (nSensors == 0) readHeader(filenameData.c_str());
-	// For every file the header should be read ?!
-	if (nSensors == 0)
-		readHeader(filenameData.c_str());
-	
 #ifdef USE_MYSQL
 	if (db == 0) {
 		openDatabase();
