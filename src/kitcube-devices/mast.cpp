@@ -27,7 +27,7 @@ struct SPackedTime {
 };
 
 
-Mast::Mast():AQBinaryDevice() {
+Mast::Mast():DAQBinaryDevice() {
 	
 	this->lenHeader = 0x10000; // 64k Header block
 	this->lenDataSet = 0; // Depends on the number of sensors - updated in readHeader
