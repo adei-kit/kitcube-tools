@@ -602,14 +602,17 @@ void DAQDevice::openDatabase(){
 	
 	int i;
 	MYSQL_RES *res;
-	//MYSQL_RES *resTables;
 	MYSQL_ROW row;
-	//MYSQL_ROW table;
-	char sql[256];
+	std::string sql;
+	const char *wild;
 	char line[256];
 	std::string cmd;
 	int nNewSensors;
 	int nNewAxis;
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
 	// Display arguments
@@ -626,70 +629,79 @@ void DAQDevice::openDatabase(){
 	//TODO:  Check if the data is available in the class?!
 	
 	
-	// Open database
+	// allocate MYSQL object
+	// TODO: only, if it does not exist yet!
 	db = mysql_init(NULL);
-	
-	// Connect to database
-	printf("Database: \t\t%s@%s\n", dbUser.c_str(), dbHost.c_str());
-	if (!mysql_real_connect(db, dbHost.c_str(), dbUser.c_str(), dbPassword.c_str(), 0, 0, NULL, 0)) {
-		printf("%s\n", mysql_error(db));
-		// Connection failed
-		// Set db to zero to indicate missing connection
-		db = 0;
-		
-		return;
+	if (db == NULL) {
+		printf("Error allocating MYSQL object!\n");
+		// TODO: error handling
 	}
 	
 	// Enable automatic reconnect
 	my_bool re_conn = 1;
 	mysql_options(db, MYSQL_OPT_RECONNECT, &re_conn);
 	
-	
-	// Read list of databases?!
-	// Only kitcube.* are relevant
-	
-	
-	sprintf(sql,"SHOW databases");
-	if (mysql_query(db, sql)){
-		fprintf(stderr, "%s\n", sql);
-		fprintf(stderr, "%s\n", mysql_error(db));
+	// connect to database
+	printf("Database: \t\t%s@%s\n", dbUser.c_str(), dbHost.c_str());
+	if (!mysql_real_connect(db, dbHost.c_str(), dbUser.c_str(), dbPassword.c_str(), NULL, 0, NULL, 0)) {
+		printf("Failed to connect to database: %s\n", mysql_error(db));
+		// TODO: error handling
 	}
 	
+	//----------------------------------------------------------------------
+	// read list of databases, only kitcube* are relevant
+	//----------------------------------------------------------------------
+	// send SQL query
+/*	sql = "SHOW databases";
+	if (mysql_query(db, sql.c_str())) {
+		printf("SQL command '%s' failed: %s\n", sql.c_str(), mysql_error(db));
+		// TODO: error handling
+	}
+	
+	// retrieve results
 	res = mysql_store_result(db);
+	if (res == NULL) {
+		printf("Error retrieving results: %s\n", mysql_error(db));
+		// TODO: error handling
+	}*/
 	
-	// output fields 1 and 2 of each row
-	//fprintf(fout, "Result: %d x %d\n",
-	//            mysql_num_rows(res),
-	//            mysql_num_fields(res));
-	printf("Project \"%s\" database list: \t", project.c_str());
-	while ((row = mysql_fetch_row(res)) != NULL) {
-		for (i = 0; i < mysql_num_fields(res); i++) {
-			if (strstr(row[i], project.c_str()) == row[i])
-				printf("%s", row[i]);
-		}
+	wild = (project + "%").c_str();
+	res = mysql_list_dbs(db, wild);
+	if (res == NULL) {
+		printf("Error retrieving database list: %s\n", mysql_error(db));
+		// TODO: error handling
 	}
-	mysql_free_result(res);
+	
+	printf("Project \"%s\" database list: \t", project.c_str());
+	
+	// search for kitcube* database names
+	while ((row = mysql_fetch_row(res)) != NULL) {
+		if (strstr(row[0], project.c_str()) == row[0])
+			printf("%s ", row[0]);
+	}
 	printf("\n");
+	
+	mysql_free_result(res);
 	
 	
 	// Select active database
 	// Print the tables of the database
-	sprintf(sql,"USE %s", dbName.c_str());
-	if (mysql_query(db, sql)){
+	sql = "USE " + dbName;
+	if (mysql_query(db, sql.c_str())){
 		//fprintf(stderr, "%s\n", sql);
 		//fprintf(stderr, "%s\n", mysql_error(db));
 		
 		// Create database and try again
 		printf("Create database %s\n", dbName.c_str());
-		sprintf(sql,"CREATE DATABASE %s", dbName.c_str());
-		if (mysql_query(db, sql)){
-			fprintf(stderr, "%s\n", sql);
+		sql = "CREATE DATABASE " + dbName;
+		if (mysql_query(db, sql.c_str())) {
+			fprintf(stderr, "%s\n", sql.c_str());
 			fprintf(stderr, "%s\n", mysql_error(db));
 		}
 		
-		sprintf(sql,"USE %s", dbName.c_str());
-		if (mysql_query(db, sql)){
-			fprintf(stderr, "%s\n", sql);
+		sql = "USE " + dbName;
+		if (mysql_query(db, sql.c_str())) {
+			fprintf(stderr, "%s\n", sql.c_str());
 			fprintf(stderr, "%s\n", mysql_error(db));
 			
 			return;
@@ -703,9 +715,9 @@ void DAQDevice::openDatabase(){
 	
 	// Check if axis table is available
 	// Get list of cols in data table
-	sprintf(sql,"SHOW COLUMNS FROM `%s`", axisTableName.c_str());
-	if (mysql_query(db, sql)){
-		fprintf(stderr, "%s\n", sql);
+	sql = "SHOW COLUMNS FROM " + axisTableName;
+	if (mysql_query(db, sql.c_str())) {
+		fprintf(stderr, "%s\n", sql.c_str());
 		fprintf(stderr, "%s\n", mysql_error(db));
 		
 		// Create table
@@ -722,7 +734,7 @@ void DAQDevice::openDatabase(){
 		
 		//printf("SQL: %s\n", cmd.c_str());
 		
-		if (mysql_query(db, cmd.c_str())){
+		if (mysql_query(db, cmd.c_str())) {
 			fprintf(stderr, "%s\n", cmd.c_str());
 			fprintf(stderr, "%s\n", mysql_error(db));
 			
@@ -733,9 +745,9 @@ void DAQDevice::openDatabase(){
 	mysql_free_result(res);
 	
 	// Query all axis
-	sprintf(sql,"SELECT id,name FROM `%s`", axisTableName.c_str());
-	if (mysql_query(db, sql)){
-		fprintf(stderr, "%s\n", sql);
+	sql = "SELECT id, name FROM " + axisTableName;
+	if (mysql_query(db, sql.c_str())) {
+		fprintf(stderr, "%s\n", sql.c_str());
 		fprintf(stderr, "%s\n", mysql_error(db));
 		
 		throw std::invalid_argument("Can not read axis table");
@@ -768,11 +780,10 @@ void DAQDevice::openDatabase(){
 		if (axis[i].isNew) {
 			printf("Adding axis %s -- %s (%s) to the axis list\n",
 				   axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
-			sprintf(sql,"INSERT INTO `%s` (`name`,`comment`,`unit`) VALUES ('%s','%s','%s')",
-					axisTableName.c_str(),
-					axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
-			if (mysql_query(db, sql)){
-				fprintf(stderr, "%s\n", sql);
+			sql = "INSERT INTO " + axisTableName + "(`name`, `comment`, `unit`) VALUES ('" +
+			      axis[i].name + "', '" + axis[i].desc + "', '" + axis[i].unit + "')";
+			if (mysql_query(db, sql.c_str())) {
+				fprintf(stderr, "%s\n", sql.c_str());
 				fprintf(stderr, "%s\n", mysql_error(db));
 				
 				throw std::invalid_argument("Cannot create new axis entry");
@@ -787,8 +798,8 @@ void DAQDevice::openDatabase(){
 	
 	
 	// Get list of cols in data table
-	sprintf(sql,"SHOW COLUMNS FROM `%s`", dataTableName.c_str());
-	if (mysql_query(db, sql)){
+	sql ="SHOW COLUMNS FROM " + dataTableName;
+	if (mysql_query(db, sql.c_str())) {
 		//fprintf(stderr, "%s\n", sql);
 		//fprintf(stderr, "%s\n", mysql_error(db));
 		
@@ -801,11 +812,11 @@ void DAQDevice::openDatabase(){
 		cmd += "    `usec` bigint default '0', ";
 		for (i = 0; i < nSensors; i++)
 			if (sensor[i].type == "profile") {
-				cmd += "`" + sensor[i].name + "` TEXT, ";
+				cmd += "`" + sensor[i].name + "` blob, ";
 			} else {
 				cmd += "`" + sensor[i].name + "` double, ";
 			}
-		cmd += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=MyISAM";
+		cmd += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=InnoDB";
 		
 		//printf("SQL: %s\n", cmd.c_str());
 		
@@ -825,8 +836,8 @@ void DAQDevice::openDatabase(){
 	
 	// Create sensor list table
 	// Get list of cols in data table
-	sprintf(sql,"SHOW COLUMNS FROM `%s`", sensorTableName.c_str());
-	if (mysql_query(db, sql)) {
+	sql ="SHOW COLUMNS FROM " + sensorTableName;
+	if (mysql_query(db, sql.c_str())) {
 		//fprintf(stderr, "%s\n", sql);
 		//fprintf(stderr, "%s\n", mysql_error(db));
 		
