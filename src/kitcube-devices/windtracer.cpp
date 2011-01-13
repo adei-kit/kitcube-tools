@@ -511,7 +511,13 @@ void windtracer::readData(const char *dir, const char *filename) {
 	struct ScanInfo *scan_info;
 	struct ProductPulseInfo *pulse_info;
 	float *velocity = 0, *snr = 0, *spectral_width = 0, *backscatter = 0, *spectral_data = 0;
-	
+	struct tm tm_timestamp;
+	struct timeval tv_timestamp;
+#ifdef USE_MYSQL
+	std::string sql;
+	char sData[50];
+	char *to;
+#endif	
 	
 	if(debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
@@ -645,6 +651,16 @@ void windtracer::readData(const char *dir, const char *filename) {
 		parseData(buffer, &record_header, &scan_info, &pulse_info,
 				&velocity, &snr, &spectral_width, &backscatter, &spectral_data);
 		
+		tm_timestamp.tm_sec = record_header.nSecond;
+		tm_timestamp.tm_min = record_header.nMinute;
+		tm_timestamp.tm_hour = record_header.nHour;
+		tm_timestamp.tm_mday = record_header.nDayOfMonth;
+		tm_timestamp.tm_mon = record_header.nMonth - 1;
+		tm_timestamp.tm_year = record_header.nYear - 1900;
+		
+		tv_timestamp.tv_sec = timegm(&tm_timestamp);
+		tv_timestamp.tv_usec = record_header.nNanosecond / 1000;
+		
 		// print data
 		if (debug >= 4) {
 			printf("%4d: Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%09d\n",
@@ -669,7 +685,30 @@ void windtracer::readData(const char *dir, const char *filename) {
 		//--------------------------------------------------------------
 		// TODO: store data to DB
 		//--------------------------------------------------------------
+#ifdef USE_MYSQL
+		sql = "INSERT INTO `";
+		sql += dataTableName + "` (`usec`";
+		for (int i = 0 ; i < nSensors; i++) {
+			sql += ",`";
+			sql += sensor[i].name;
+			sql += "`";
+		}
+		sql += ") VALUES (";
+		sprintf(sData, "%ld, ", tv_timestamp.tv_sec * 1000000 + tv_timestamp.tv_usec);
+		sql += sData;
 		
+		//to = new char[2*range_gates * sizeof(float) + 1];
+		//mysql_hex_string(to, (const char *)velocity, range_gates * sizeof(float));
+		
+		//sql += to;
+		
+		sql.append((const char *)velocity, 16);
+		sql +=")";
+		
+		if (mysql_real_query(db, sql.c_str(), sql.size())) {
+			printf("Error inserting data: %s\n", mysql_error(db));
+		}
+#endif
 		
 		// update position in file variable after read and write of data was successfull
 		current_position += record_header.nRecordLength;
@@ -765,7 +804,6 @@ void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
 				*spectral_data = (float *) pointer;
 			}
 		}
-			
 		
 		// advance read pointer
 		pointer += (block_desc->nBlockLength - sizeof(struct BlockDescriptor));
