@@ -3,4 +3,4 @@ Number of sensors: 1
          2	ratio of signal to noise	WTH.HYB.S.SNR.001.INST	SNR
          3	Spectral width in the Doppler spectra	WTH.HYB.V.SPW.001.INST	V
          4	backscatter coefficient at 2.0 micron	WTH.HYB.B.BCO.001.INST	NO
-         5	Doppler spectra	WTH.HYB.V.DSP.001.INST	NO
+         5	monitor spectra	WTH.HYB.V.MSP.001.INST	NO
