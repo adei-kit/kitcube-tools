@@ -595,11 +595,8 @@ const char *DAQDevice::getDataFilename(){
 }
 
 
-void DAQDevice::openDatabase(){
-	//printf("=== Create data table === \n");
+void DAQDevice::openDatabase() {
 #ifdef USE_MYSQL
-	//printf("Create data table\n");
-	
 	int i;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -683,27 +680,22 @@ void DAQDevice::openDatabase(){
 	
 	mysql_free_result(res);
 	
-	
-	// Select active database
-	// Print the tables of the database
-	sql = "USE " + dbName;
-	if (mysql_query(db, sql.c_str())){
-		//fprintf(stderr, "%s\n", sql);
-		//fprintf(stderr, "%s\n", mysql_error(db));
+	/***********************************************************************
+	 * select the default database
+	 * create it, if it doesn't exist
+	 **********************************************************************/
+	if (mysql_select_db(db, dbName.c_str())) {
+		printf("Error selecting DB '%s' for use: %s\n", dbName.c_str(), mysql_error(db));
 		
-		// Create database and try again
-		printf("Create database %s\n", dbName.c_str());
+		printf("Creating DB '%s'...\n", dbName.c_str());
 		sql = "CREATE DATABASE " + dbName;
 		if (mysql_query(db, sql.c_str())) {
-			fprintf(stderr, "%s\n", sql.c_str());
-			fprintf(stderr, "%s\n", mysql_error(db));
+			printf("Error creating new DB '%s': %s\n", dbName.c_str(), mysql_error(db));
 		}
 		
-		sql = "USE " + dbName;
-		if (mysql_query(db, sql.c_str())) {
-			fprintf(stderr, "%s\n", sql.c_str());
-			fprintf(stderr, "%s\n", mysql_error(db));
-			
+		if (mysql_select_db(db, dbName.c_str())) {
+			printf("Error selecting DB '%s' for use: %s\n", dbName.c_str(), mysql_error(db));
+			// TODO: error handling
 			return;
 		}
 	}
@@ -711,7 +703,8 @@ void DAQDevice::openDatabase(){
 	
 	// Create axis table
 	// Read axis definition from inifile
-	if (axis == 0) readAxis(this->inifile.c_str());
+	if (axis == 0)
+		readAxis(this->inifile.c_str());
 	
 	// Check if axis table is available
 	// Get list of cols in data table
@@ -722,7 +715,7 @@ void DAQDevice::openDatabase(){
 		
 		// Create table
 		printf("Creating axis table\n");
-		std::string cmd = "CREATE TABLE `";
+		cmd = "CREATE TABLE `";
 		cmd += axisTableName;
 		cmd += "` ( `id` int(10) auto_increment, ";
 		cmd += "    `name` varchar(4), ";
@@ -805,11 +798,11 @@ void DAQDevice::openDatabase(){
 		
 		// Create table
 		printf("Creating data table\n");
-		std::string cmd = "CREATE TABLE `";
+		cmd = "CREATE TABLE `";
 		cmd += dataTableName;
-		cmd += "` ( `id` bigint auto_increment, ";
+		cmd += "` (`id` bigint auto_increment, ";
 		//cmd += "    `sec` int(12)  default '0', ";
-		cmd += "    `usec` bigint default '0', ";
+		cmd += "`usec` bigint default '0', ";
 		for (i = 0; i < nSensors; i++)
 			if (sensor[i].type == "profile") {
 				cmd += "`" + sensor[i].name + "` blob, ";
