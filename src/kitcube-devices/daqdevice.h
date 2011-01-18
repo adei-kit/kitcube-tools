@@ -123,6 +123,11 @@ public:
 
 	virtual void openDatabase();
 	
+	/***********************************************************************
+	 * create data table, if it doesn't exist
+	 **********************************************************************/
+	virtual int create_data_table();
+	
 	virtual void closeDatabase();
 	
 	/** Get time until next sample and it's id */

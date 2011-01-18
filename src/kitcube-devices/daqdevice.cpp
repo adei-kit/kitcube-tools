@@ -793,32 +793,7 @@ void DAQDevice::openDatabase() {
 	/***********************************************************************
 	 * create data table, if it doesn't exist
 	 **********************************************************************/
-	res = mysql_list_tables(db, dataTableName.c_str());
-	if (res == NULL) {
-		printf("Error retrieving table list: %s\n", mysql_error(db));
-		// TODO: error handling
-	}
-	row = mysql_fetch_row(res);
-	mysql_free_result(res);
-	if (row == NULL) {
-		printf("Creating data table %s...\n", dataTableName.c_str());
-		cmd = "CREATE TABLE `";
-		cmd += dataTableName;
-		cmd += "` (`id` bigint auto_increment, ";
-		cmd += "`usec` bigint default '0', ";
-		for (i = 0; i < nSensors; i++)
-			if (sensor[i].type == "profile") {
-				cmd += "`" + sensor[i].name + "` blob, ";
-			} else {
-				cmd += "`" + sensor[i].name + "` double, ";
-			}
-		cmd += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=InnoDB";
-		
-		if (mysql_query(db, cmd.c_str())) {
-			printf("Error creating data table %s: %s\n", dataTableName.c_str(), mysql_error(db));
-			// TODO: error handling
-		}
-	}
+	create_data_table();
 	
 	
 	// TODO: Check the sensor configuration
@@ -888,6 +863,44 @@ void DAQDevice::openDatabase() {
 	printf("New sensors: \t\t%d\n", nNewSensors);
 	printf("\n");
 #endif // USE_MYSQL
+}
+
+
+int DAQDevice::create_data_table() {
+	/***********************************************************************
+	 * create data table, if it doesn't exist
+	 **********************************************************************/
+#ifdef USE_MYSQL
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	std::string sql_stmt;
+	
+	result = mysql_list_tables(db, dataTableName.c_str());
+	if (result == NULL) {
+		printf("Error retrieving table list: %s\n", mysql_error(db));
+		// TODO: error handling
+	}
+	row = mysql_fetch_row(result);
+	mysql_free_result(result);
+	if (row == NULL) {
+		printf("Creating data table %s...\n", dataTableName.c_str());
+		sql_stmt = "CREATE TABLE `" + dataTableName + "` ";
+		sql_stmt += "(`id` bigint auto_increment, `usec` bigint default '0', ";
+		for (int i = 0; i < nSensors; i++)
+			if (sensor[i].type == "profile") {
+				sql_stmt += "`" + sensor[i].name + "` blob, ";
+			} else {
+				sql_stmt += "`" + sensor[i].name + "` double, ";
+			}
+		sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=InnoDB";
+		
+		if (mysql_query(db, sql_stmt.c_str())) {
+			printf("Error creating data table %s: %s\n", dataTableName.c_str(), mysql_error(db));
+			// TODO: error handling
+		}
+	}
+#endif
+	return 0;
 }
 
 
