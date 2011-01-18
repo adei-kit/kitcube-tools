@@ -90,6 +90,8 @@ public:
 		       float **velocity, float **snr, float **spectral_width,
 		       float **backscatter, float **spectral_data);
 	
+	int create_data_table();
+	
 private:
 	unsigned char *headerRaw;
 	

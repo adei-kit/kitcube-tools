@@ -809,3 +809,38 @@ void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
 		pointer += (block_desc->nBlockLength - sizeof(struct BlockDescriptor));
 	}
 }
+
+
+int windtracer::create_data_table() {
+#ifdef USE_MYSQL
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	std::string sql_stmt;
+	
+	result = mysql_list_tables(db, dataTableName.c_str());
+	if (result == NULL) {
+		printf("Error retrieving table list: %s\n", mysql_error(db));
+		// TODO: error handling
+	}
+	row = mysql_fetch_row(result);
+	mysql_free_result(result);
+	if (row == NULL) {
+		printf("Creating data table %s...\n", dataTableName.c_str());
+		sql_stmt = "CREATE TABLE `" + dataTableName + "` ";
+		sql_stmt += "(`id` bigint auto_increment, `usec` bigint default '0', ";
+		sql_stmt += "range_gate_start blob, range_gate_center blob, range_gate_end blob, ";
+		sql_stmt += "azimuth_rate double, elevation_rate double, ";
+		sql_stmt += "azimuth_target double, elevation_target double, ";
+		sql_stmt += "azimuth_mean double, elevation_mean double, ";
+		for (int i = 0; i < nSensors; i++)
+			sql_stmt += "`" + sensor[i].name + "` blob, ";
+		sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=InnoDB";
+		
+		if (mysql_query(db, sql_stmt.c_str())) {
+			printf("Error creating data table %s: %s\n", dataTableName.c_str(), mysql_error(db));
+			// TODO: error handling
+		}
+	}
+#endif
+	return 0;
+}
