@@ -87,8 +87,7 @@ public:
 	
 	void parseData(u_char *buffer, struct RecordHeader *record_header,
 		       struct ScanInfo **scan_info, struct ProductPulseInfo **pulse_info,
-		       float **velocity, float **snr, float **spectral_width,
-		       float **backscatter, float **spectral_data);
+		       float **sensor_values);
 	
 	int create_data_table();
 	
@@ -102,6 +101,8 @@ private:
 	struct timeval tRef;
 	
 	int range_gates;
+	
+	double *range_gate_center, *range_gate_start, *range_gate_end;
 	
 	int monitor_fft_size;
 	

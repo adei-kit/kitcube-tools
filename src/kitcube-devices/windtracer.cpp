@@ -281,7 +281,6 @@ int windtracer::readHeader(const char *filename) {
 	int samples_between_gate_centers;
 	double sample_frequency, raw_data_offset_meters, range_per_sample, range_between_gate_centers;
 	double range_per_gate, first_range, corrected_first_range;
-	double *range_gate_center, *range_gate_start, *range_gate_end;
 	
 	
 	// ID of the device
@@ -510,17 +509,22 @@ void windtracer::readData(const char *dir, const char *filename) {
 	u_char *buffer = 0;
 	struct ScanInfo *scan_info;
 	struct ProductPulseInfo *pulse_info;
-	float *velocity = 0, *snr = 0, *spectral_width = 0, *backscatter = 0, *spectral_data = 0;
+	float **sensor_values;
 	struct tm tm_timestamp;
 	struct timeval tv_timestamp;
 #ifdef USE_MYSQL
 	std::string sql;
 	char sData[50];
-	char *to;
+	char *esc_str;
+	bool not_1st_entry;
 #endif	
 	
 	if(debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	sensor_values = new float*[nSensors];
+	for (int i = 0; i < nSensors; i++)
+		sensor_values[i] = 0;
 	
 	// Compile file name
 	full_data_filename = dir;
@@ -648,8 +652,7 @@ void windtracer::readData(const char *dir, const char *filename) {
 		//------------------------------------------------------
 		// parse record body for data
 		//------------------------------------------------------
-		parseData(buffer, &record_header, &scan_info, &pulse_info,
-				&velocity, &snr, &spectral_width, &backscatter, &spectral_data);
+		parseData(buffer, &record_header, &scan_info, &pulse_info, sensor_values);
 		
 		tm_timestamp.tm_sec = record_header.nSecond;
 		tm_timestamp.tm_min = record_header.nMinute;
@@ -686,27 +689,73 @@ void windtracer::readData(const char *dir, const char *filename) {
 		// TODO: store data to DB
 		//--------------------------------------------------------------
 #ifdef USE_MYSQL
-		sql = "INSERT INTO `";
-		sql += dataTableName + "` (`usec`";
-		for (int i = 0 ; i < nSensors; i++) {
-			sql += ",`";
-			sql += sensor[i].name;
-			sql += "`";
+		sql = "INSERT INTO `" + dataTableName + "` (usec, ";
+		sql += "range_gate_start, range_gate_center, range_gate_end, ";
+		sql += "azimuth_rate, elevation_rate, ";
+		sql += "azimuth_target, elevation_target, ";
+		sql += "azimuth_mean, elevation_mean";
+		for (int i = 0; i < nSensors; i++) {
+			if (sensor_values[i])
+				sql += ", `" + sensor[i].name + "`";
 		}
 		sql += ") VALUES (";
 		sprintf(sData, "%ld, ", tv_timestamp.tv_sec * 1000000 + tv_timestamp.tv_usec);
 		sql += sData;
 		
-		//to = new char[2*range_gates * sizeof(float) + 1];
-		//mysql_hex_string(to, (const char *)velocity, range_gates * sizeof(float));
+		esc_str = new char[2 * sizeof(double) * range_gates + 1];
+		sql += "'";
+		mysql_real_escape_string(db, esc_str, (const char *)range_gate_start, sizeof(double) * range_gates);
+		sql += esc_str;
+		sql += "', '";
+		mysql_real_escape_string(db, esc_str, (const char *)range_gate_center, sizeof(double) * range_gates);
+		sql += esc_str;
+		sql += "', '";
+		mysql_real_escape_string(db, esc_str, (const char *)range_gate_end, sizeof(double) * range_gates);
+		sql += esc_str;
+		sql += "', ";
+		delete [] esc_str;
 		
-		//sql += to;
+		sprintf(sData, "%f, ", scan_info->fAzimuthRate_dps);
+		sql += sData;
+		sprintf(sData, "%f, ", scan_info->fElevationRate_dps);
+		sql += sData;
+		sprintf(sData, "%f, ", scan_info->fTargetAzimuth_deg);
+		sql += sData;
+		sprintf(sData, "%f, ", scan_info->fTargetElevation_deg);
+		sql += sData;
+		sprintf(sData, "%f, ", pulse_info->fAzimuthMean_deg);
+		sql += sData;
+		sprintf(sData, "%f", pulse_info->fElevationMean_deg);
+		sql += sData;
 		
-		sql.append((const char *)velocity, 16);
-		sql +=")";
+		esc_str = new char[2 * sizeof(float) * range_gates + 1];
+		// TODO/FIXME: use data length values from file, instead of range_gates value, esp. for monitor spectral data
+		for (int i = 0; i < nSensors; i++) {
+			if (sensor_values[i]) {
+				sql += ", '";
+				mysql_real_escape_string(db, esc_str, (const char *)sensor_values[i], sizeof(float) * range_gates);
+				sql += esc_str;
+				sql += "'";
+			}
+		}
+		delete [] esc_str;
 		
-		if (mysql_real_query(db, sql.c_str(), sql.size())) {
+		sql +=") ON DUPLICATE KEY UPDATE ";
+		not_1st_entry = false;
+		for (int i = 0; i < nSensors; i++) {
+			if (sensor_values[i]) {
+				if (not_1st_entry)
+					sql += ", ";
+				sql += "`" + sensor[i].name + "`=VALUES(`" + sensor[i].name + "`)";
+				
+				not_1st_entry = true;
+			}
+		}
+		
+		
+		if (mysql_query(db, sql.c_str())) {
 			printf("Error inserting data: %s\n", mysql_error(db));
+			// TODO: error handling
 		}
 #endif
 		
@@ -714,11 +763,8 @@ void windtracer::readData(const char *dir, const char *filename) {
 		current_position += record_header.nRecordLength;
 		
 		// clean up
-		velocity = 0;
-		snr = 0;
-		spectral_width = 0;
-		backscatter = 0;
-		spectral_data = 0;
+		for (int i = 0; i < nSensors; i++)
+			sensor_values[i] = 0;
 		if (buffer != 0) {
 			delete [] buffer;
 			buffer = 0;
@@ -735,14 +781,15 @@ void windtracer::readData(const char *dir, const char *filename) {
 		fclose(fmark);
 	}
 	
+	delete [] sensor_values;
+	
 	close(fd_data_file);
 }
 
 
 void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
 			   struct ScanInfo **scan_info, struct ProductPulseInfo **pulse_info,
-			   float **velocity, float **snr, float **spectral_width,
-			   float **backscatter, float **spectral_data)
+			   float **sensor_values)
 {
 	u_char *pointer;
 	struct BlockDescriptor *block_desc;
@@ -776,32 +823,32 @@ void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
 			if (record_header->block_desc.nId == PRODUCT_VELOCITY_RECORD_ID) {
 				// check data block ID
 				if (block_desc->nId == PRODUCT_VELOCITY_DATA_BLOCK_ID) {
-					*velocity = (float *) pointer;
+					sensor_values[0] = (float *) pointer;
 				} else if (block_desc->nId == PRODUCT_SNR_DATA_BLOCK_ID) {
-					*snr = (float *) pointer;
+					sensor_values[1] = (float *) pointer;
 				} else if (block_desc->nId == PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
-					*spectral_width = (float *) pointer;
+					sensor_values[2] = (float *) pointer;
 				} else if (block_desc->nId == PRODUCT_BACKSCATTER_DATA_BLOCK_ID) {
-					*backscatter = (float *) pointer;
+					sensor_values[3] = (float *) pointer;
 				} else if (block_desc->nId == PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID) {
-					*spectral_data = (float *) pointer;
+					sensor_values[4] = (float *) pointer;
 				}
 			} else if (record_header->block_desc.nId == PRODUCT_FILTERED_VELOCITY_RECORD_ID) {
 				// check data block ID
 				if (block_desc->nId == PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID) {
-					*velocity = (float *) pointer;
+					sensor_values[5] = (float *) pointer;
 				} else if (block_desc->nId == PRODUCT_FILTERED_SNR_DATA_BLOCK_ID) {
-					*snr = (float *) pointer;
+					sensor_values[6] = (float *) pointer;
 				} else if (block_desc->nId == PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
-					*spectral_width = (float *) pointer;
+					sensor_values[7] = (float *) pointer;
 				} else if (block_desc->nId == PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID) {
-					*backscatter = (float *) pointer;
+					sensor_values[8] = (float *) pointer;
 				}
 			}
 		} else if (sensorGroup == "spectral") {
 			// check data block ID
 			if (block_desc->nId == PRODUCT_SPECTRAL_ESTIMATE_DATA_BLOCK_ID) {
-				*spectral_data = (float *) pointer;
+				sensor_values[4] = (float *) pointer;
 			}
 		}
 		
@@ -834,7 +881,7 @@ int windtracer::create_data_table() {
 		sql_stmt += "azimuth_mean double, elevation_mean double, ";
 		for (int i = 0; i < nSensors; i++)
 			sql_stmt += "`" + sensor[i].name + "` blob, ";
-		sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=InnoDB";
+		sql_stmt += "PRIMARY KEY (`id`), UNIQUE INDEX(`usec`) ) TYPE=MyISAM";
 		
 		if (mysql_query(db, sql_stmt.c_str())) {
 			printf("Error creating data table %s: %s\n", dataTableName.c_str(), mysql_error(db));

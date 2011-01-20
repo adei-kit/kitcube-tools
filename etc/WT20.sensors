@@ -1,6 +1,10 @@
-Number of sensors: 1
+Number of sensors: 9
          1	radial velocity of scatterers away from instrument	WTH.HYB.V.RAD.001.INST	V
          2	ratio of signal to noise	WTH.HYB.S.SNR.001.INST	SNR
          3	Spectral width in the Doppler spectra	WTH.HYB.V.SPW.001.INST	V
          4	backscatter coefficient at 2.0 micron	WTH.HYB.B.BCO.001.INST	NO
          5	monitor spectra	WTH.HYB.V.MSP.001.INST	NO
+         6	filtered radial velocity of scatterers away from instrument	WTH.HYB.V.RAD.002.INST	V
+         7	filtered ratio of signal to noise	WTH.HYB.S.SNR.002.INST	SNR
+         8	filtered Spectral width in the Doppler spectra	WTH.HYB.V.SPW.002.INST	V
+         9	filtered backscatter coefficient at 2.0 micron	WTH.HYB.B.BCO.002.INST	NO
