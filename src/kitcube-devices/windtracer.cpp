@@ -442,8 +442,6 @@ int windtracer::readHeader(const char *filename) {
 		}
 	}
 	
-	printf("Hello world\n");
-	
 	return 0;
 }
 
@@ -510,6 +508,7 @@ void windtracer::readData(const char *dir, const char *filename) {
 	struct ScanInfo *scan_info;
 	struct ProductPulseInfo *pulse_info;
 	float **sensor_values;
+	u_int32_t *sensor_values_length;
 	struct tm tm_timestamp;
 	struct timeval tv_timestamp;
 #ifdef USE_MYSQL
@@ -522,9 +521,13 @@ void windtracer::readData(const char *dir, const char *filename) {
 	if(debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	
 	sensor_values = new float*[nSensors];
-	for (int i = 0; i < nSensors; i++)
+	sensor_values_length = new u_int32_t [nSensors];
+	for (int i = 0; i < nSensors; i++) {
 		sensor_values[i] = 0;
+		sensor_values_length[i] = 0;
+	}
 	
 	// Compile file name
 	full_data_filename = dir;
@@ -652,7 +655,7 @@ void windtracer::readData(const char *dir, const char *filename) {
 		//------------------------------------------------------
 		// parse record body for data
 		//------------------------------------------------------
-		parseData(buffer, &record_header, &scan_info, &pulse_info, sensor_values);
+		parseData(buffer, &record_header, &scan_info, &pulse_info, sensor_values, sensor_values_length);
 		
 		tm_timestamp.tm_sec = record_header.nSecond;
 		tm_timestamp.tm_min = record_header.nMinute;
@@ -685,10 +688,10 @@ void windtracer::readData(const char *dir, const char *filename) {
 			printf("Elevation mean: %f\n", pulse_info->fElevationMean_deg);
 		}
 		
-		//--------------------------------------------------------------
-		// TODO: store data to DB
-		//--------------------------------------------------------------
 #ifdef USE_MYSQL
+		//--------------------------------------------------------------
+		// store data to DB
+		//--------------------------------------------------------------
 		sql = "INSERT INTO `" + dataTableName + "` (usec, ";
 		sql += "range_gate_start, range_gate_center, range_gate_end, ";
 		sql += "azimuth_rate, elevation_rate, ";
@@ -699,9 +702,12 @@ void windtracer::readData(const char *dir, const char *filename) {
 				sql += ", `" + sensor[i].name + "`";
 		}
 		sql += ") VALUES (";
+		
+		// time stamp
 		sprintf(sData, "%ld, ", tv_timestamp.tv_sec * 1000000 + tv_timestamp.tv_usec);
 		sql += sData;
 		
+		// range gate values
 		esc_str = new char[2 * sizeof(double) * range_gates + 1];
 		sql += "'";
 		mysql_real_escape_string(db, esc_str, (const char *)range_gate_start, sizeof(double) * range_gates);
@@ -715,6 +721,7 @@ void windtracer::readData(const char *dir, const char *filename) {
 		sql += "', ";
 		delete [] esc_str;
 		
+		// azimuth and elevation data
 		sprintf(sData, "%f, ", scan_info->fAzimuthRate_dps);
 		sql += sData;
 		sprintf(sData, "%f, ", scan_info->fElevationRate_dps);
@@ -728,19 +735,21 @@ void windtracer::readData(const char *dir, const char *filename) {
 		sprintf(sData, "%f", pulse_info->fElevationMean_deg);
 		sql += sData;
 		
-		esc_str = new char[2 * sizeof(float) * range_gates + 1];
-		// TODO/FIXME: use data length values from file, instead of range_gates value, esp. for monitor spectral data
+		// sensor values
 		for (int i = 0; i < nSensors; i++) {
 			if (sensor_values[i]) {
+				esc_str = new char[2 * sensor_values_length[i] + 1];
 				sql += ", '";
-				mysql_real_escape_string(db, esc_str, (const char *)sensor_values[i], sizeof(float) * range_gates);
+				mysql_real_escape_string(db, esc_str, (const char *)sensor_values[i], sensor_values_length[i]);
 				sql += esc_str;
 				sql += "'";
+				delete [] esc_str;
 			}
 		}
-		delete [] esc_str;
+		sql += ") ";
 		
-		sql +=") ON DUPLICATE KEY UPDATE ";
+		// update row, if time stamp already exists
+		sql += "ON DUPLICATE KEY UPDATE ";
 		not_1st_entry = false;
 		for (int i = 0; i < nSensors; i++) {
 			if (sensor_values[i]) {
@@ -763,8 +772,10 @@ void windtracer::readData(const char *dir, const char *filename) {
 		current_position += record_header.nRecordLength;
 		
 		// clean up
-		for (int i = 0; i < nSensors; i++)
+		for (int i = 0; i < nSensors; i++) {
 			sensor_values[i] = 0;
+			sensor_values_length[i] = 0;
+		}
 		if (buffer != 0) {
 			delete [] buffer;
 			buffer = 0;
@@ -782,6 +793,7 @@ void windtracer::readData(const char *dir, const char *filename) {
 	}
 	
 	delete [] sensor_values;
+	delete [] sensor_values_length;
 	
 	close(fd_data_file);
 }
@@ -789,7 +801,7 @@ void windtracer::readData(const char *dir, const char *filename) {
 
 void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
 			   struct ScanInfo **scan_info, struct ProductPulseInfo **pulse_info,
-			   float **sensor_values)
+			   float **sensor_values, u_int32_t *sensor_values_length)
 {
 	u_char *pointer;
 	struct BlockDescriptor *block_desc;
@@ -824,31 +836,41 @@ void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
 				// check data block ID
 				if (block_desc->nId == PRODUCT_VELOCITY_DATA_BLOCK_ID) {
 					sensor_values[0] = (float *) pointer;
+					sensor_values_length[0] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 				} else if (block_desc->nId == PRODUCT_SNR_DATA_BLOCK_ID) {
 					sensor_values[1] = (float *) pointer;
+					sensor_values_length[1] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 				} else if (block_desc->nId == PRODUCT_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
 					sensor_values[2] = (float *) pointer;
+					sensor_values_length[2] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 				} else if (block_desc->nId == PRODUCT_BACKSCATTER_DATA_BLOCK_ID) {
 					sensor_values[3] = (float *) pointer;
+					sensor_values_length[3] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 				} else if (block_desc->nId == PRODUCT_MONITOR_SPECTRAL_DATA_BLOCK_ID) {
 					sensor_values[4] = (float *) pointer;
+					sensor_values_length[4] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 				}
 			} else if (record_header->block_desc.nId == PRODUCT_FILTERED_VELOCITY_RECORD_ID) {
 				// check data block ID
 				if (block_desc->nId == PRODUCT_FILTERED_VELOCITY_DATA_BLOCK_ID) {
 					sensor_values[5] = (float *) pointer;
+					sensor_values_length[5] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 				} else if (block_desc->nId == PRODUCT_FILTERED_SNR_DATA_BLOCK_ID) {
 					sensor_values[6] = (float *) pointer;
+					sensor_values_length[6] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 				} else if (block_desc->nId == PRODUCT_FILTERED_SPECTRAL_WIDTH_DATA_BLOCK_ID) {
 					sensor_values[7] = (float *) pointer;
+					sensor_values_length[7] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 				} else if (block_desc->nId == PRODUCT_FILTERED_BACKSCATTER_DATA_BLOCK_ID) {
 					sensor_values[8] = (float *) pointer;
+					sensor_values_length[8] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 				}
 			}
 		} else if (sensorGroup == "spectral") {
 			// check data block ID
 			if (block_desc->nId == PRODUCT_SPECTRAL_ESTIMATE_DATA_BLOCK_ID) {
-				sensor_values[4] = (float *) pointer;
+				sensor_values[0] = (float *) pointer;
+				sensor_values_length[0] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 			}
 		}
 		

@@ -87,7 +87,7 @@ public:
 	
 	void parseData(u_char *buffer, struct RecordHeader *record_header,
 		       struct ScanInfo **scan_info, struct ProductPulseInfo **pulse_info,
-		       float **sensor_values);
+		       float **sensor_values, u_int32_t *sensor_values_length);
 	
 	int create_data_table();
 	
