@@ -281,6 +281,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	
 #ifdef USE_MYSQL
 	sql = "LOCK TABLES " + dataTableName + " WRITE";
+	//sql = "START TRANSACTION";
 	mysql_query(db, sql.c_str());
 #endif
 	
@@ -378,6 +379,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	
 #ifdef USE_MYSQL
 	sql = "UNLOCK TABLES";
+	//sql = "COMMIT";
 	mysql_query(db, sql.c_str());
 #endif
 	

@@ -892,7 +892,7 @@ int DAQDevice::create_data_table() {
 			} else {
 				sql_stmt += "`" + sensor[i].name + "` double, ";
 			}
-		sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=InnoDB";
+		sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=MyISAM";
 		
 		if (mysql_query(db, sql_stmt.c_str())) {
 			printf("Error creating data table %s: %s\n", dataTableName.c_str(), mysql_error(db));
