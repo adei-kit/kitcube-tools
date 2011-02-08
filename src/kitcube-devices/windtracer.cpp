@@ -592,6 +592,12 @@ void windtracer::readData(const char *dir, const char *filename) {
 	
 	current_position = last_position;
 	
+#ifdef USE_MYSQL
+	sql = "LOCK TABLES " + dataTableName + " WRITE";
+	//sql = "START TRANSACTION";
+	mysql_query(db, sql.c_str());
+#endif
+	
 	//----------------------------------------------------------------------
 	// read data
 	//----------------------------------------------------------------------
@@ -783,6 +789,12 @@ void windtracer::readData(const char *dir, const char *filename) {
 		
 		loop_counter++;
 	}
+	
+#ifdef USE_MYSQL
+	sql = "UNLOCK TABLES";
+	//sql = "COMMIT";
+	mysql_query(db, sql.c_str());
+#endif
 	
 	// save position in file
 	fmark = fopen(filenameMarker.c_str(), "w");
