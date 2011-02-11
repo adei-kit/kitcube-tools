@@ -11,76 +11,11 @@
 #include "windtracer.h"
 
 
-struct BlockDescriptor {
-	u_int16_t nId;
-	u_int16_t nVersion;
-	u_int32_t nBlockLength;
-};
-
-
-/* RecordHeader contains record time stamp and the length of the entire record */
-struct RecordHeader {
-	struct BlockDescriptor block_desc;
-	u_int32_t nRecordLength;
-	u_int16_t nYear;
-	u_int8_t nMonth;
-	u_int8_t nDayOfMonth;
-	u_int16_t nHour;
-	u_int8_t nMinute;
-	u_int8_t nSecond;
-	u_int32_t nNanosecond;
-};
-
-
-// Configuration text block is always the first record of any datafile and contains
-// information about the configuration of the system
-struct ConfigurationRecord {
-	struct BlockDescriptor block_desc;
-	char *chConfiguration;
-};
-
-
-// Scan Info Block provides information about the scanner, it appears before each Raw Data Record and before a Product Data Record
-struct ScanInfo {
-	struct BlockDescriptor block_desc;
-	float fScanAzimuth_deg;
-	float fScanElevation_deg;
-	float fAzimuthRate_dps;
-	float fElevationRate_dps;
-	float fTargetAzimuth_deg;
-	float fTargetElevation_deg;
-	int32_t nScanEnabled;
-	int32_t nCurrentIndex;
-	int32_t nAcqScanState;
-	int32_t nDriverScanState;
-	int32_t nAcqDwellState;
-	int32_t nScanPatternType;
-	u_int32_t nValidPos;
-	int32_t nSSDoneState;
-	u_int32_t nErrorFlags;
-};
-
-
-// ProductPulseInfo appears before Product Data Blocks and contains information about the pulse used for that products
-struct ProductPulseInfo {
-	struct BlockDescriptor block_desc;
-	float fAzimuthMin_deg;
-	float fAzimuthMean_deg;
-	float fAzimuthMax_deg;
-	float fElevationMin_deg;
-	float fElevationMean_deg;
-	float fElevationMax_deg;
-	float fMonitorCount;
-	float fMonitorFrequency_hz;
-	float fMonitorTime;
-	float fMonitorPeak;
-	float fOverLevel;
-	float fUnderLevel;
-};
-
-
-
 windtracer::windtracer(): DAQBinaryDevice(){
+	config_record.chConfiguration = 0;
+	range_gate_start = 0;
+	range_gate_center = 0;
+	range_gate_end = 0;
 	
 	headerRaw = 0;
 	
@@ -89,6 +24,15 @@ windtracer::windtracer(): DAQBinaryDevice(){
 
 
 windtracer::~windtracer(){
+	if (config_record.chConfiguration != 0)
+		delete [] config_record.chConfiguration;
+	
+	if (range_gate_start != 0) {
+		delete [] range_gate_start;
+		delete [] range_gate_center;
+		delete [] range_gate_end;
+	}
+	
 	// Free header memory
 	if (headerRaw > 0) delete [] headerRaw;
 	
@@ -274,8 +218,6 @@ int windtracer::readHeader(const char *filename) {
 	int fd;
 	int n;
 	struct RecordHeader record_header;
-	struct ConfigurationRecord config_record;
-	u_int32_t config_text_block_length;
 	char *ptr;
 	int raw_data_sample_count, samples_per_gate, gates_to_merge;
 	int samples_between_gate_centers;
@@ -350,6 +292,8 @@ int windtracer::readHeader(const char *filename) {
 	config_text_block_length = config_record.block_desc.nBlockLength - sizeof(struct BlockDescriptor);
 	if (debug >= 3)
 		printf("Config text block length: %d\n", config_text_block_length);
+	if (config_record.chConfiguration != 0)
+		delete [] config_record.chConfiguration;
 	config_record.chConfiguration = new char [config_text_block_length];
 	
 	// read the configuration text block
@@ -423,6 +367,11 @@ int windtracer::readHeader(const char *filename) {
 	corrected_first_range = first_range + ((gates_to_merge - 1) / 2) * range_per_gate;
 	
 	// get memory for range gates
+	if (range_gate_start != 0) {
+		delete [] range_gate_start;
+		delete [] range_gate_center;
+		delete [] range_gate_end;
+	}
 	range_gate_start = new double [range_gates];
 	range_gate_center = new double [range_gates];
 	range_gate_end = new double [range_gates];
@@ -698,7 +647,7 @@ void windtracer::readData(const char *dir, const char *filename) {
 		//--------------------------------------------------------------
 		// store data to DB
 		//--------------------------------------------------------------
-		sql = "INSERT INTO `" + dataTableName + "` (usec, ";
+		sql = "INSERT INTO `" + dataTableName + "` (usec, file_header, ";
 		sql += "range_gate_start, range_gate_center, range_gate_end, ";
 		sql += "azimuth_rate, elevation_rate, ";
 		sql += "azimuth_target, elevation_target, ";
@@ -712,6 +661,14 @@ void windtracer::readData(const char *dir, const char *filename) {
 		// time stamp
 		sprintf(sData, "%ld, ", tv_timestamp.tv_sec * 1000000 + tv_timestamp.tv_usec);
 		sql += sData;
+		
+		// file header
+		esc_str = new char[2 * config_text_block_length + 1];
+		sql += "'";
+		mysql_real_escape_string(db, esc_str, config_record.chConfiguration, config_text_block_length);
+		sql += esc_str;
+		sql += "', ";
+		delete [] esc_str;
 		
 		// range gate values
 		esc_str = new char[2 * sizeof(double) * range_gates + 1];
@@ -782,10 +739,7 @@ void windtracer::readData(const char *dir, const char *filename) {
 			sensor_values[i] = 0;
 			sensor_values_length[i] = 0;
 		}
-		if (buffer != 0) {
-			delete [] buffer;
-			buffer = 0;
-		}
+		delete [] buffer;
 		
 		loop_counter++;
 	}
@@ -909,6 +863,7 @@ int windtracer::create_data_table() {
 		printf("Creating data table %s...\n", dataTableName.c_str());
 		sql_stmt = "CREATE TABLE `" + dataTableName + "` ";
 		sql_stmt += "(`id` bigint auto_increment, `usec` bigint default '0', ";
+		sql_stmt += "file_header text, ";
 		sql_stmt += "range_gate_start blob, range_gate_center blob, range_gate_end blob, ";
 		sql_stmt += "azimuth_rate double, elevation_rate double, ";
 		sql_stmt += "azimuth_target double, elevation_target double, ";

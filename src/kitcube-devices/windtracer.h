@@ -51,6 +51,77 @@
 #define CONFIG_DATA_BLOCK_ID				0x04F0
 
 
+/*   */
+struct BlockDescriptor {
+	u_int16_t nId;
+	u_int16_t nVersion;
+	u_int32_t nBlockLength;
+};
+
+
+/* RecordHeader contains record time stamp and the length of the entire record */
+struct RecordHeader {
+	struct BlockDescriptor block_desc;
+	u_int32_t nRecordLength;
+	u_int16_t nYear;
+	u_int8_t nMonth;
+	u_int8_t nDayOfMonth;
+	u_int16_t nHour;
+	u_int8_t nMinute;
+	u_int8_t nSecond;
+	u_int32_t nNanosecond;
+};
+
+
+/* Configuration text block is always the first record of any datafile and contains
+   information about the configuration of the system */
+struct ConfigurationRecord {
+	struct BlockDescriptor block_desc;
+	char *chConfiguration;
+};
+
+
+/* Scan Info Block provides information about the scanner, it appears before
+   each Raw Data Record and before a Product Data Record */
+struct ScanInfo {
+	struct BlockDescriptor block_desc;
+	float fScanAzimuth_deg;
+	float fScanElevation_deg;
+	float fAzimuthRate_dps;
+	float fElevationRate_dps;
+	float fTargetAzimuth_deg;
+	float fTargetElevation_deg;
+	int32_t nScanEnabled;
+	int32_t nCurrentIndex;
+	int32_t nAcqScanState;
+	int32_t nDriverScanState;
+	int32_t nAcqDwellState;
+	int32_t nScanPatternType;
+	u_int32_t nValidPos;
+	int32_t nSSDoneState;
+	u_int32_t nErrorFlags;
+};
+
+
+/* ProductPulseInfo appears before Product Data Blocks and contains information
+   about the pulse used for that products */
+struct ProductPulseInfo {
+	struct BlockDescriptor block_desc;
+	float fAzimuthMin_deg;
+	float fAzimuthMean_deg;
+	float fAzimuthMax_deg;
+	float fElevationMin_deg;
+	float fElevationMean_deg;
+	float fElevationMax_deg;
+	float fMonitorCount;
+	float fMonitorFrequency_hz;
+	float fMonitorTime;
+	float fMonitorPeak;
+	float fOverLevel;
+	float fUnderLevel;
+};
+
+
 class windtracer: public DAQBinaryDevice  {
 public:
 	/**  */
@@ -99,6 +170,10 @@ private:
 	unsigned int tSample;
 	
 	struct timeval tRef;
+	
+	struct ConfigurationRecord config_record;
+	
+	u_int32_t config_text_block_length;
 	
 	int range_gates;
 	
