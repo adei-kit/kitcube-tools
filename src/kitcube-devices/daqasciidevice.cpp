@@ -208,10 +208,10 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	
 	lPtr = (char *) 1;
 	int iLoop = 0;
-	while ((lPtr > 0) && (iLoop < 1000000)) {
+	while ((lPtr != NULL) && (iLoop < 1000000)) {
 		lPtr = fgets(buf, len, fd_data_file);
 		
-		if (lPtr > 0) {
+		if ((lPtr != NULL) && (strchr(buf, '\n') != NULL)) {
 			// Module specific implementation
 			// Might be necessary to
 			parseData(buf, &timestamp_data, local_sensorValue);
