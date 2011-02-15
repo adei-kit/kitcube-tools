@@ -28,7 +28,7 @@ int sci::readHeader(const char *filename) {
 	
 	lenHeader = 0;	// no header
 	
-	lenDataSet = 0xAB;
+	lenDataSet = 171;	// 170 bytes + 1 for '\0' in fgets()
 	
 	profile_length = 0;
 	
