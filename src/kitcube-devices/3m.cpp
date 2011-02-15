@@ -27,107 +27,44 @@ int dreim::readHeader(const char *filename) {
 	noData = 999999;
 	
 	if (sensorGroup == "data") {
-		lenHeader = 0x7f;
+		lenHeader = 0x7f;	// 127 bytes
 		
-		lenDataSet = 55;
+		lenDataSet = 55;	// 54 bytes + 1 for '\0' in fgets()
 		
 		profile_length = 0;
 		
 		// set default value for height
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 5;
+			sensor[i].data_format = "<scalar>";
 		}
 		
-		sensor[0].comment = "air temperature";
-		sensor[0].data_format = "<scalar>";
-		
-		sensor[1].comment = "relative humidity";
-		sensor[1].data_format = "<scalar>";
-		
-		sensor[2].comment = "air pressure at surface";
-		sensor[2].data_format = "<scalar>";
-		
-		sensor[3].comment = "battery voltage";
-		sensor[3].data_format = "<scalar>";
-		
-		sensor[4].comment = "precipitation sum";
-		sensor[4].data_format = "<scalar>";
-		
-		if (debug) {
-			for (int i = 0; i < nSensors; i++) {
-				printf("Sensor %3d: %s\n", i + 1, sensor[i].comment.c_str());
-			}
-		}
 	} else if (sensorGroup == "gps") {
-		lenHeader = 128;
+		lenHeader = 0x80;	// 128 bytes
 		
-		lenDataSet = 128;	// inkl. kleiner Puffer, hier OK, da fgets nach "\n" stoppt
+		lenDataSet = 128;	// 106 - 109 bytes plus small buffer; here OK, as fgets stops after "\n"
 		
 		profile_length = 0;
 		
 		// set default value for height
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 5;
+			sensor[i].data_format = "<scalar>";
 		}
 		
-		sensor[0].comment = "Latitude";
-		sensor[0].data_format = "<scalar>";
-		
-		sensor[1].comment = "Longitude";
-		sensor[1].data_format = "<scalar>";
-		
-		sensor[2].comment = "Altitude";
-		sensor[2].data_format = "<scalar>";
-		
-		sensor[3].comment = "GPS timestamp";
-		sensor[3].data_format = "<scalar>";
-		
-		sensor[4].comment = "time difference median";
-		sensor[4].data_format = "<scalar>";
-		
-		sensor[5].comment = "time difference max";
-		sensor[5].data_format = "<scalar>";
-		
-		sensor[6].comment = "time difference min";
-		sensor[6].data_format = "<scalar>";
-		
-		sensor[7].comment = "Time correction";
-		sensor[7].data_format = "<scalar>";
-		
-		if (debug) {
-			for (int i = 0; i < nSensors; i++) {
-				printf("Sensor %3d: %s\n", i + 1, sensor[i].comment.c_str());
-			}
-		}
 	} else if (sensorGroup == "sonic") {
-		lenHeader = 74;
+		lenHeader = 0x4a;	// 74 bytes
 		
-		lenDataSet = 64;	// including some extra bytes!
+		lenDataSet = 64;	// 45 -51 bytes plus small buffer; here OK, as fgets stops after "\n"
 		
 		profile_length = 0;
 		
 		// set default value for height
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 5;
+			sensor[i].data_format = "<scalar>";
 		}
 		
-		sensor[0].comment = "wind speed, east";
-		sensor[0].data_format = "<scalar>";
-		
-		sensor[1].comment = "wind speed, north";
-		sensor[1].data_format = "<scalar>";
-		
-		sensor[2].comment = "vertical wind speed";
-		sensor[2].data_format = "<scalar>";
-		
-		sensor[3].comment = "virtual temperature";
-		sensor[3].data_format = "<scalar>";
-		
-		if (debug) {
-			for (int i = 0; i < nSensors; i++) {
-				printf("Sensor %3d: %s\n", i + 1, sensor[i].comment.c_str());
-			}
-		}
 	} else {
 		printf("Unknown sensor group!\n");
 	}
