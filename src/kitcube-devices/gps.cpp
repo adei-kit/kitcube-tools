@@ -72,6 +72,11 @@ int gps::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	       &sensorValue[11], &sensorValue[12], &sensorValue[13]);
 	// TODO: error handling
 	
+	// check quality flag
+	if (strstr(line, "DELETED") != NULL)
+		sensorValue[14] = -1;
+	else
+		sensorValue[14] = 0;
 	
 	// get seconds since the Epoch
 	l_tData->tv_sec = timegm(&timestamp);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
