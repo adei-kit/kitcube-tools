@@ -77,7 +77,7 @@ void dreim::setConfigDefaults(){
 }
 
 
-void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
+int dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	struct tm timestamp, gps_timestamp;
 	char *puffer, *saveptr;
 	int msec;
@@ -177,6 +177,8 @@ void dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	
 	// get seconds since the Epoch
 	l_tData->tv_sec = timegm(&timestamp);	// FIXME: function is non-standard GNU extension
+	
+	return 0;
 }
 
 

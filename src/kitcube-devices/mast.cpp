@@ -388,7 +388,7 @@ void Mast::writeHeader() {
 }
 
 
-void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
+int Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	float *local_sensorValue;
 	struct SPackedTime *time;
 	struct tm tm_zeit;
@@ -400,7 +400,7 @@ void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	
 	if (sizeof(float) != 4) {
 		printf("Size of 'float' is not 4! So not reading any data!\n");
-		return;
+		return -1;
 	}
 	
 	//----------------------------------------------------------------------
@@ -434,6 +434,8 @@ void Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	// Calculate the time stamp
 	l_tData->tv_sec = timegm(&tm_zeit);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
 	l_tData->tv_usec = time->nHundertstel * 10000;
+	
+	return 0;
 }
 
 

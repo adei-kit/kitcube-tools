@@ -29,7 +29,7 @@ public:
 	
 	int readHeader(const char *filename);
 	
-	void parseData(char *line, struct timeval *l_tData, double *sensorValue);
+	int parseData(char *line, struct timeval *l_tData, double *sensorValue);
 	
 	void writeData();
 	

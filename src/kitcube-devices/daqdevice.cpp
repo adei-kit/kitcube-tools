@@ -928,7 +928,7 @@ void DAQDevice::readHeader(){
 void DAQDevice::writeHeader(){
 }
 
-void DAQDevice::parseData(char* line, struct timeval* l_tData, double *sensorValue){
+int DAQDevice::parseData(char* line, struct timeval* l_tData, double *sensorValue){
 	printf("Define parseData in higher level class!\n");
 }
 

@@ -60,7 +60,7 @@ void regenwippe::setConfigDefaults(){
 }
 
 
-void regenwippe::parseData(char *line, struct timeval *l_tData, double *sensorValue){
+int regenwippe::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	struct tm timestamp;
 	char* puffer;
 	int sensor_value_new;
@@ -72,7 +72,7 @@ void regenwippe::parseData(char *line, struct timeval *l_tData, double *sensorVa
 	puffer = strptime(line,"%d.%m.%Y %T", &timestamp);
 	if (puffer == NULL) {
 		printf("Regenwippe: Error reading date and time string!\n");
-		return;
+		return -1;
 	}
 	
 	// read sensor values
@@ -87,6 +87,8 @@ void regenwippe::parseData(char *line, struct timeval *l_tData, double *sensorVa
 	l_tData->tv_sec = timegm(&timestamp);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
 	
 	sensor_value_old = sensor_value_new;
+	
+	return 0;
 }
 
 

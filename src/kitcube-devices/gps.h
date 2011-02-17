@@ -13,7 +13,7 @@
 #include "daqasciidevice.h"
 
 
-/** Implementation for the scintillometer
+/** Implementation for the gps
   * 
   */
 
@@ -21,6 +21,7 @@ class gps: public DAQAsciiDevice {
 public:
 	/**  */
 	gps();
+	
 	/**  */
 	~gps();
 	
@@ -30,7 +31,7 @@ public:
 	
 	//void writeHeader();
 	
-	void parseData(char *line, struct timeval *l_tData, double *sensorValue);
+	int parseData(char *line, struct timeval *l_tData, double *sensorValue);
 	
 	//void writeData();
 	

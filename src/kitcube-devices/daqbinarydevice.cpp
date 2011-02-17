@@ -293,7 +293,8 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		if (n == len) {
 			// Module specific implementation
 			// Might be necessary to
-			parseData((char *)buf, &timestamp_data, local_sensorValue);
+			if(parseData((char *)buf, &timestamp_data, local_sensorValue) != 0)
+				continue;
 			
 			// print sensor values
 			if (debug >= 4) {

@@ -51,7 +51,7 @@ void sci::setConfigDefaults() {
 }
 
 
-void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
+int sci::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	struct tm timestamp;
 	char *puffer;
 	
@@ -74,7 +74,7 @@ void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 		
 		if (puffer == NULL) {
 			printf("Szintillometer: Error reading date and time string!\n");
-			return;
+			return -1;
 		} else {
 			if (debug >= 3)
 				printf("Warning: wrong time stamp format in SCI data! Fixing...\n");
@@ -101,6 +101,8 @@ void sci::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	       &sensorValue[12], &sensorValue[13], &sensorValue[14], &sensorValue[15],
 	       &sensorValue[16], &sensorValue[17], &sensorValue[18]);
 	// TODO: error handling
+	
+	return 0;
 }
 
 

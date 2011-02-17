@@ -30,7 +30,7 @@ public:
 	
 	//void writeHeader();
 	
-	void parseData(char *line, struct timeval *l_tData, double *sensorValue);
+	int parseData(char *line, struct timeval *l_tData, double *sensorValue);
 	
 	//void writeData();
 	

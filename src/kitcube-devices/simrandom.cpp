@@ -117,7 +117,7 @@ void SimRandom::writeHeader(){
 }
 
 
-void SimRandom::parseData(char *line, struct timeval *l_tData, double *sensorValue){
+int SimRandom::parseData(char *line, struct timeval *l_tData, double *sensorValue){
     //unsigned long tNew;
 	//unsigned long nShift;
 	
@@ -127,7 +127,7 @@ void SimRandom::parseData(char *line, struct timeval *l_tData, double *sensorVal
 		   &sensorValue[0], &sensorValue[1], &sensorValue[2]);
 		
 	//printf("Time stamp: %ld  %ld  %f--- ", tRef.tv_sec, tData->tv_sec, sensorValue[0]);
-	
+	return 0;
 }
 
 

@@ -360,7 +360,7 @@ int Lara::readHeader(char *filename) {
 }
 
 
-void Lara::parseData(char *line, struct timeval *l_tData, double *sensorValue){
+int Lara::parseData(char *line, struct timeval *l_tData, double *sensorValue){
     unsigned long tNew;
 	unsigned long nShift;
 	
@@ -385,7 +385,7 @@ void Lara::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	l_tData->tv_usec = 0;
 	
 	//printf("Time stamp: %ld  %ld  %f--- ", tRef.tv_sec, tData->tv_sec, sensorValue[0]);
-	
+	return 0;
 }
 
 

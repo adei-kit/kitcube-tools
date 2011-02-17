@@ -214,7 +214,8 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 		if ((lPtr != NULL) && (strchr(buf, '\n') != NULL)) {
 			// Module specific implementation
 			// Might be necessary to
-			parseData(buf, &timestamp_data, local_sensorValue);
+			if(parseData(buf, &timestamp_data, local_sensorValue) != 0)
+				continue;
 			
 			// print sensor values
 			if (debug >= 4) {

@@ -26,9 +26,9 @@ int gps::readHeader(const char *filename) {
 	
 	noData = 999999;
 	
-	lenHeader = 0xACC;	// no header
+	lenHeader = 0xACC;	// 2764 bytes
 	
-	lenDataSet = 0xAB;
+	lenDataSet = 0x110;	// 109 bytes + 1 for '\0' in fgets()
 	
 	profile_length = 0;
 	
@@ -46,7 +46,7 @@ void gps::setConfigDefaults() {
 }
 
 
-void gps::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
+int gps::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	struct tm timestamp = {0};
 	char *puffer;
 	int seconds_of_day;
@@ -55,6 +55,10 @@ void gps::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	if (debug >= 4)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	
+	// check if we have a data set line
+	if (strstr(line, "KITK") == NULL)
+		return -1;
 	
 	// read year and day of year
 	puffer = strptime(line + 9, "%y:%j:", &timestamp);
@@ -72,7 +76,8 @@ void gps::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	// get seconds since the Epoch
 	l_tData->tv_sec = timegm(&timestamp);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
 	l_tData->tv_sec += seconds_of_day;
-
+	
+	return 0;
 }
 
 
