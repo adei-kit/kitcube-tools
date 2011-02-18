@@ -80,7 +80,9 @@ int gps::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	
 	// get seconds since the Epoch
 	l_tData->tv_sec = timegm(&timestamp);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
-	l_tData->tv_sec += seconds_of_day;
+	
+	// add seconds of day and 7,5 minutes due to averaging
+	l_tData->tv_sec += seconds_of_day + 450;
 	
 	return 0;
 }
