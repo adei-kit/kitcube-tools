@@ -193,7 +193,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	
 	if (lastPos == 0)
 		lastPos = lenHeader; // Move to the the first data
-	
+	currPos = lastPos;
 	
 	// Find the beginning of the new data
 	if (debug >= 1)
@@ -209,6 +209,7 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	lPtr = (char *) 1;
 	int iLoop = 0;
 	while ((lPtr != NULL) && (iLoop < 1000000)) {
+		// read one line of ASCII data
 		lPtr = fgets(buf, len, fd_data_file);
 		
 		if ((lPtr != NULL) && (strchr(buf, '\n') != NULL)) {
@@ -294,7 +295,8 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 				throw std::invalid_argument("No database");
 			}
 #endif // of USE_MYSQL
-			
+			// Get the position in this file
+			currPos = ftell(fd_data_file);
 		}
 		iLoop++;
 	}
@@ -310,8 +312,6 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 		fd_eof = false;
 	}
 	
-	// Get the position in this file
-	currPos = ftell(fd_data_file);
 	processedData += currPos - lastPos;
 	
 	if (debug >= 1)

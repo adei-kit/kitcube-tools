@@ -288,6 +288,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	n = len;
 	int iLoop = 0;
 	while ((n == len) && (iLoop < 1000000)) {
+		// read one data set of binary data
 		n = read(fd_data_file, buf, len);
 		
 		if (n == len) {
@@ -373,6 +374,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 				throw std::invalid_argument("No database");
 			}
 #endif // of USE_MYSQL
+			// Get the position in this file
 			currPos += n;
 		}
 		iLoop++;
@@ -389,8 +391,6 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	} else {
 		fd_eof = false;
 	}
-	
-	
 	
 	processedData += currPos - lastPos;
 	
