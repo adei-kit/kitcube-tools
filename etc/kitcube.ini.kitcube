@@ -29,7 +29,7 @@ samplingTime = 55 sec
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.10/etc
+configDir = /home/cube/kitcube-tools-0.11/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/archive
@@ -40,7 +40,7 @@ dbPassword = cube
 rsyncArgs = --append
 
 [Axis]
-axis = A B C DA DC DN E FC FH FM FV GI H KD KED KH KM KMS L LA MA MF MR MS N NE NF NO PA QR R T TA V VD X XG XP XR Z
+axis = A B C DA DC DN E FC FH FM FV GI H KD KED KH KM KMS L LA MA MF MR MS MW N NE NF NO PA QR R SNR T TA V VD X XG XP XR Z
 A_name = sfcorif
 A_unit = 10^(-12)/m^(2/3)
 B_name = sfcotf
@@ -89,6 +89,8 @@ MR_name = Relative_Humidity
 MR_unit = %
 MS_name = Specific_humidity
 MS_unit = g/kg
+MW_name = Water_Column
+MW_unit = mm
 N_name = Precipitation
 N_unit = mm
 NE_name = Precipitation_rate
@@ -103,6 +105,8 @@ QR_name = Quality
 QR_unit = %
 R_name = Radiation
 R_unit = W/m^2
+SNR_name = SNR
+SNR_unit = dB
 T_name = Temperature
 T_unit = C
 T_range = -50 100
@@ -811,7 +815,7 @@ moduleType = windtracer
 moduleComment = Windtracer20_base
 sensorGroup = base
 datafileMask = 20<index>_134446_base.prd
-sensorList = WT20.sensors
+sensorList = WT20.base.sensors
 datafileTemplate = 20090729_134446_base.prd.template
 samplingTime = 10 min
 
@@ -822,6 +826,17 @@ moduleType = windtracer
 moduleComment = Windtracer20_spectral
 sensorGroup = spectral
 datafileMask = 20<index>_134446_spectral.prd
-sensorList = WT20.sensors
+sensorList = WT20.spectral.sensors
 datafileTemplate = 20090729_134446_base.prd.template
 samplingTime = 10 min
+
+[GPS]
+moduleName = GPS
+moduleNumber = 65
+moduleType = gps
+moduleComment = gps_comment
+sensorGroup = tro
+sensorList = gps.tro.sensors
+datafileTemplate = 100727.RES.template
+datafileMask = kitk<index>.tro
+samplingTime = 15 min
