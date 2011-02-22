@@ -15,17 +15,19 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube \
 	EB2.DAS.sensors EB2.DAL.sensors EB2.DAR.sensors EB2.DAX.sensors \
 	20090625.chm.sensors ceilometer.nc.sensors 20090625.chm.template \
 	norbert.dat.template norbert.dat.sensors \
-	dd090826.template jwd.dd.sensors \
-	rd090826.template jwd.rd.sensors \
+	jwd.dd.sensors dd090826.template \
+	jwd.rd.sensors rd090826.template \
 	p090813.dat.template \
 	int01_090824.dat.template \
 	p090826.dat.template \
-	w20090826.dat.template regenwippe.dat.sensors \
-	100727.RES.template scintillometer.RES.sensors \
-	data.csv.template 3M.data.sensors\
-	gps.csv.template \
-	sonic.csv.template \
+	regenwippe.dat.sensors w20090826.dat.template \
+	scintillometer.RES.sensors 100727.RES.template \
+	3M.data.sensors data.csv.template \
+	3M.gps.sensors gps.csv.template \
+	3M.sonic.sensors sonic.csv.template \
 	compass.csv.template \
+	WT20.base.sensors WT20.spectral.sensors \
+	gps.tro.sensors kitk16230.tro.template \
 	SimRandom.txt.sensors SysLog.sensors \
 	katrin.ini SysLog.katrin.sensors \
 	Lara.run.sensors Lara.stab.sensors Lara.stab.template
