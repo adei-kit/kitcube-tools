@@ -837,6 +837,6 @@ moduleType = gps
 moduleComment = gps_comment
 sensorGroup = tro
 sensorList = gps.tro.sensors
-datafileTemplate = 100727.RES.template
+datafileTemplate = kitk16230.tro.template
 datafileMask = kitk<index>.tro
 samplingTime = 15 min
