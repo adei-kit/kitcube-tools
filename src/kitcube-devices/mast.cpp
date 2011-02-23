@@ -416,9 +416,12 @@ int Mast::parseData(char *line, struct timeval *l_tData, double *sensorValue) {
 	time = (struct SPackedTime *)(line + 4 + 4 * nSensors);	// TODO/FIXME: that's dangerous, as the order of the struct components is NOT fixed
 	
 	
-	// read data
+	// read data and check for NaN
 	for (int i = 0; i < nSensors; i++) {
-		sensorValue[i] = local_sensorValue[i];
+		if (local_sensorValue[i] == local_sensorValue[i])	// is number
+			sensorValue[i] = local_sensorValue[i];
+		else	// is NaN
+			sensorValue[i] = noData;
 	}
 	
 	
