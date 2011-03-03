@@ -875,15 +875,25 @@ int DAQDevice::create_data_table() {
 	MYSQL_ROW row;
 	std::string sql_stmt;
 	
+	
+	// search for tables with names like "dataTableName"
 	result = mysql_list_tables(db, dataTableName.c_str());
 	if (result == NULL) {
 		printf("Error retrieving table list: %s\n", mysql_error(db));
 		// TODO: error handling
 	}
+	
+	// fetch row from result set
 	row = mysql_fetch_row(result);
+	
+	// free memory for result set
 	mysql_free_result(result);
+	
+	// if there is no row, meaning no table, create it
 	if (row == NULL) {
 		printf("Creating data table %s...\n", dataTableName.c_str());
+		
+		// build SQL statement
 		sql_stmt = "CREATE TABLE `" + dataTableName + "` ";
 		sql_stmt += "(`id` bigint auto_increment, `usec` bigint default '0', ";
 		for (int i = 0; i < nSensors; i++)
@@ -894,6 +904,7 @@ int DAQDevice::create_data_table() {
 			}
 		sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=MyISAM";
 		
+		// execute SQL statement
 		if (mysql_query(db, sql_stmt.c_str())) {
 			printf("Error creating data table %s: %s\n", dataTableName.c_str(), mysql_error(db));
 			// TODO: error handling
