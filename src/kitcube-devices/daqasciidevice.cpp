@@ -325,6 +325,6 @@ void DAQAsciiDevice::readData(const char *dir, const char *filename){
 	}
 	
 	fclose(fd_data_file);
-	delete buf;
-	delete [] local_sensorValue;
+	delete[] buf;
+	delete[] local_sensorValue;
 }

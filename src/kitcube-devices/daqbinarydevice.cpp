@@ -405,6 +405,6 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	}
 	
 	close(fd_data_file);
-	delete buf;
-	delete [] local_sensorValue;
+	delete[] buf;
+	delete[] local_sensorValue;
 }
