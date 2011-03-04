@@ -14,8 +14,6 @@
 
 #include "daqbinarydevice.h"
 
-#include <errno.h>
-
 
 #define RAW_RECORD_ID					0x0400
 
