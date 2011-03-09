@@ -12,6 +12,7 @@
 #define SOADR_H
 
 #include "daqasciidevice.h"
+#include <cmath>
 
 
 class sodar: public DAQAsciiDevice {
@@ -39,13 +40,17 @@ public:
 	
 	void readData(const char *dir, const char *filename);
 	
-	void parseData(char *buffer, double* sensor_values, int height_no);
+	int parseData(char *buffer, double* sensor_values, int height_no);
 	
 	int read_ascii_line(char *buffer, int length, FILE *file_ptr);
+	
+	
 
 private:
 	/** */
 	double *gap_value;
+	
+	int convert_gap_values(double* sensor_values);
 
 };
 

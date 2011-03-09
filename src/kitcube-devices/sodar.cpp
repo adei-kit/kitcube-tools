@@ -61,6 +61,7 @@ int sodar::readHeader(const char *filename) {
 	sscanf(line_of_data, "%d %d %d", &no_of_comment, &no_of_variables, &no_of_heights);
 	
 	// read lines until you find the comment  "variable definitions"
+	// ich suche das, damit ich in der Daten Datei keine Zeilen abzaehlen muss ;-)
 	check_ptr = NULL;
 	while (check_ptr == NULL) {
 		if (read_ascii_line(line_of_data, 127, data_file_ptr) == -1)
@@ -193,7 +194,6 @@ void sodar::readData(const char *dir, const char *filename){
 	long lastIndex;
 	struct timeval time_stamp_tv = {0};
 	char line[256];
-	char *lPtr;
 	
 #ifdef USE_MYSQL
 	std::string sql;
@@ -317,7 +317,8 @@ void sodar::readData(const char *dir, const char *filename){
 			break;
 		}
 		
-		// TODO: search for gap values and replace them with NAN
+		// search for gap values and replace them with NAN
+		convert_gap_values(local_sensorValue);
 		
 		// print sensor values
 		if (debug >= 4) {
@@ -391,7 +392,7 @@ void sodar::readData(const char *dir, const char *filename){
 }
 
 
-void sodar::parseData(char *buffer, double* sensor_values, int height_no) {
+int sodar::parseData(char *buffer, double* sensor_values, int height_no) {
 	double dummy;
 	
 	
@@ -411,6 +412,8 @@ void sodar::parseData(char *buffer, double* sensor_values, int height_no) {
 	       &dummy,
 	       sensor_values + 8 * profile_length + height_no);
 	// TODO: error handling
+	
+	return 0;
 }
 
 
@@ -422,6 +425,20 @@ int sodar::read_ascii_line(char *buffer, int length, FILE *file_ptr) {
 	if (strchr(buffer, '\n') == NULL) {
 		printf("Error: line read from file is not complete\n");
 		return -1;
+	}
+	
+	return 0;
+}
+
+
+int sodar::convert_gap_values(double* sensor_values) {
+	// replace gap values by NAN
+	// 1st "sensor" is height, which has no gap values; so jump to 2nd "sensor"
+	for (int i = 0; i < nSensors - 2; i++) {
+		for (int j = 0; j < profile_length; j++) {
+			if (*(sensor_values + (i + 1) * profile_length + j) == gap_value[i])
+				*(sensor_values + (i + 1) * profile_length + j) = nan("123");
+		}
 	}
 	
 	return 0;
