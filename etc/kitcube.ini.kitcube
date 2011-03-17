@@ -29,7 +29,7 @@ samplingTime = 55 sec
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.11/etc
+configDir = /home/cube/kitcube-tools-0.12/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/archive
@@ -840,3 +840,14 @@ sensorList = gps.tro.sensors
 datafileTemplate = kitk16230.tro.template
 datafileMask = kitk<index>.tro
 samplingTime = 15 min
+
+[SOD]
+moduleName = SODAR
+moduleNumber = 70
+moduleType = sodar
+moduleComment = sodar_comment
+sensorGroup = mnd
+sensorList = sodar.mnd.sensors
+datafileTemplate = 110221.mnd.template
+datafileMask = <index>.mnd
+samplingTime = 30 min
