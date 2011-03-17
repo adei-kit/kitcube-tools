@@ -23,6 +23,20 @@ Version="0.1"
 #
 ################################################################################
 #
+Version="0.2"
+#
+# 2011-03-16  Norbert Flatinger, IPE
+#
+# - added using a filter merge file with rules for a flexible and detailed
+#   selection of files to get synchronized by rsync; always use this to avoid
+#   synchronizing unneeded/unwanted files
+# - added the mandatory parameter <append-filter-file>
+# - up to now rsync synchronizes files by appending new data to existing files
+#   => add a second call to rsync using ordinary rsync synchronization
+# - added the optinal paramter <sync-filter-file>
+#
+################################################################################
+#
 
 # DEBUG=yes|no
 DEBUG=yes
@@ -57,12 +71,13 @@ fi
 ################################################################################
 # Usage
 ################################################################################
-if [ $# != 2 ] ; then
-	echo -e "Usage:"
-	echo -e "	$($BASENAMEPROG "$0") SRC DEST"
+if [ $# -lt 3 -o $# -gt 4 ] ; then
+	echo -e "Usage:	$($BASENAMEPROG "$0") SRC DEST <append-filter-file> [<sync-filter-file>]"
 	echo -e " "
-	echo -e "	SRC	- source"
-	echo -e "	DEST	- destination"
+	echo -e "	SRC			- source directory with trailing '/'"
+	echo -e "	DEST			- destination directory"
+	echo -e "	<append-filter-file>	- filter merge file for appending data"
+	echo -e "	<sync-filter-file>	- filter merge file for synchronizing data"
 	echo -e " "
 	exit 1
 fi
@@ -72,15 +87,17 @@ fi
 # check if destination directory exists and create it if not
 ################################################################################
 if [ -x $MKDIRPROG ] ; then
-	if [ ! -d "$2" ] ; then
+	# destination directory
+	DEST="$2"
+	if [ ! -d "$DEST" ] ; then
 		if [ $DEBUG = yes ] ; then
-			echo -e "Destination directory $2 does not exist."
+			echo -e "Destination directory $DEST does not exist."
 			echo -e "Creating it ..."
 		fi
-		$MKDIRPROG -p "$2"
+		$MKDIRPROG -p "$DEST"
 		RETURN_VALUE=$?
 		if [ $RETURN_VALUE != 0 ] ; then
-			echo -e "\nError: could not create destination directory $2."
+			echo -e "\nError: could not create destination directory $DEST."
 			echo -e "Aborting execution ...\n"
 			exit 1
 		fi
@@ -91,13 +108,34 @@ else
 	exit 1
 fi
 
+
+################################################################################
+# check if <append-filter-file> exists
+################################################################################
+APPEND_FILTER_FILE="$3"
+if [ ! -f "$APPEND_FILTER_FILE" ] ; then
+	echo -e "\nError: filter merge file '$APPEND_FILTER_FILE' does not exist."
+	echo -e "Aborting execution...\n"
+	exit 1
+fi
+
+
+################################################################################
+# check if <sync-filter-file> exists
+################################################################################
+if [ $# -eq 4 ] ; then
+	SYNC_FILTER_FILE="$4"
+	if [ ! -f "$SYNC_FILTER_FILE" ] ; then
+		echo -e "\nError: filter merge file '$SYNC_FILTER_FILE' does not exist."
+		echo -e "Aborting execution...\n"
+		exit 1
+	fi
+fi
+
 # TODO: check of other arguments
 
 # source directory
 SRC="$1"
-
-# destination directory
-DEST="$2"
 
 
 ################################################################################
@@ -138,15 +176,26 @@ fi
 # -x		don't cross filesystem boundaries
 # -z		compress file data during the transfer
 # -h		output numbers in a human-readable format
+# -f RULE	add a file-filtering RULE
 ################################################################################
 if [ -x $RSYNCPROG ] ; then
 	# sync data
-	$RSYNCPROG -avzh --append "$SRC" "$DEST"
+	$RSYNCPROG -avh --append -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST"
 	RETURN_VALUE=$?
 	if [ $RETURN_VALUE != 0 ] ; then
 		echo -e "\nError: rsync failed with error code $RETURN_VALUE"
 		echo -e "Aborting execution ...\n"
 		exit 1
+	fi
+	
+	if [ $# -eq 4 ] ; then
+		$RSYNCPROG -avh -f "merge $SYNC_FILTER_FILE" "$SRC" "$DEST"
+		RETURN_VALUE=$?
+		if [ $RETURN_VALUE != 0 ] ; then
+			echo -e "\nError: rsync failed with error code $RETURN_VALUE"
+			echo -e "Aborting execution ...\n"
+			exit 1
+		fi
 	fi
 else
 	echo -e "\nError: cannot find or execute $RSYNCPROG."

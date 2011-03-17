@@ -1,0 +1,6 @@
+# rsync filter rules merge file for sodar (SOD)
+# the following files append new data
++ *.mnd
++ *.raw
++ *.dlg
+- *

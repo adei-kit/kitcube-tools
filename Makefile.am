@@ -2,7 +2,7 @@
 # have all needed files, that a GNU package needs
 AUTOMAKE_OPTIONS = foreign 1.4
 
-SUBDIRS = bin etc src 
+SUBDIRS = bin etc etc/rsync src 
 
 EXTRA_DIST = kitcube-tools.doxygen.in kitcube-tools.spec.in 
 

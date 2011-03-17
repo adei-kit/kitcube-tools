@@ -1,0 +1,7 @@
+# rsync filter rules merge file for T and EB masts
+# the following files append new data
++ *.DAS
++ *.DAL
++ *.DAR
++ *.DAX
+- *
