@@ -15,13 +15,13 @@ SysLog::SysLog():DAQDevice(){
 	this->moduleType = "SysLog";
 	this->moduleNumber = 99; // SysLog default number
 	this->sensorGroup = "log";
-
-	this->iniGroup = "SysLog"; 
+	
+	this->iniGroup = "SysLog";
 	
 	this->lenHeader = 0;
 	this->lenDataSet = 0; 
-    this->noData = 0;
-		
+	this->noData = 0;
+	
 	this->sensorValue = 0;
 }
 
@@ -34,7 +34,8 @@ SysLog::~SysLog(){
 void SysLog::setNData(int n) {
 	
 	if (n > 0) {
-		if (sensorValue > 0 ) delete [] sensorValue;
+		if (sensorValue > 0)
+			delete [] sensorValue;
 		sensorValue = new float[n];
 	}
 	
@@ -58,7 +59,7 @@ void SysLog::updateTimestamp(struct timeval *t){
 
 void SysLog::updateData(int ch, float data){
 	
-	if (ch< nSensors){
+	if (ch < nSensors){
 		sensorValue[ch] = data;
 	}
 }
@@ -74,7 +75,7 @@ void SysLog::setConfigDefaults(){
 	
 	this->moduleName = "System";
 	this->moduleComment = "SysLog";
-		
+	
 	sprintf(line, "SysLog.sensors");
 	this->sensorListfile = line;
 }
