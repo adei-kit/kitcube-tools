@@ -111,8 +111,6 @@ public:
 	
 	virtual void closeFile();
 	
-	virtual void copyRemoteData();
-	
 	/** Get the path to the archive directory */
 	const char *getArchiveDir();
 	
