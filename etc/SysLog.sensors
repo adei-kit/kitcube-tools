@@ -1,9 +1,8 @@
-Number of sensors: 8
+Number of sensors: 7
          1	T scheduler	DAQ.Reader.K.TSCHED.001.AVG	KMS
-         2	T data transfer	DAQ.Reader.K.TTRANS.001.AVG	KMS
-         3	T data storage	DAQ.Reader.K.TSTORE.001.AVG	KMS
-         4	Free disk space (GB)	DAQ.Reader.X.DISKFREE.001.AVG	XG
-         5	Free disk space (%)	DAQ.Reader.XP.DISKFREE.001.AVG	XP
-         6	Datarate stored	DAQ.Reader.XR.STORE.001.AVG	XR
-         7	Datarate received	DAQ.Reader.XR.RECV.001.AVG	XR
-         8	Datarate send	DAQ.Reader.XR.SEND.001.AVG	XR
+         2	T data storage	DAQ.Reader.K.TSTORE.001.AVG	KMS
+         3	Free disk space (GB)	DAQ.Reader.X.DISKFREE.001.AVG	XG
+         4	Free disk space (%)	DAQ.Reader.XP.DISKFREE.001.AVG	XP
+         5	Datarate stored	DAQ.Reader.XR.STORE.001.AVG	XR
+         6	Datarate received	DAQ.Reader.XR.RECV.001.AVG	XR
+         7	Datarate send	DAQ.Reader.XR.SEND.001.AVG	XR

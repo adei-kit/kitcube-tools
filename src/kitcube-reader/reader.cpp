@@ -309,11 +309,10 @@ int Reader::handle_timeout(){
 	//procDuration t;
 	//int iSample;
 	//struct timeval tWait;
-	struct timeval t0, t1, t2, t3, t4;
+	struct timeval t0, t2, t3, t4;
 	struct timezone tz;
 	unsigned int nData;
 	unsigned int tCycle;
-	unsigned int tTransfer;
 	unsigned int tStorage;
 	long int tScheduler; 
 	
@@ -329,32 +328,28 @@ int Reader::handle_timeout(){
 	//t.setStart();
 	gettimeofday(&t0, &tz);
 	log->updateTimestamp(&t0);
-  	
+	
 	
 	// Analyse the timeing quality of the readout process
 	tScheduler = analyseTiming(&t0);
 	log->updateData(0, (float) tScheduler / 1000.); // ms
-    
+	
 	
 	// TODO: Read data / Simulate data
-	if (debug) { 
+	if (debug) {
 		printf("     _____________________________________________________\n");
-		printf("____/__Reading Data %12ld %06ld (sample %06d)___\\_______ \n", 
-					  t0.tv_sec, t0.tv_usec, nSamples);	
+		printf("____/__Reading Data %12ld %06ld (sample %06d)___\\_______ \n",
+					  t0.tv_sec, t0.tv_usec, nSamples);
 	}
 	
 	nData = 0;
-	tTransfer = 0;
 	tStorage = 0;
-	try {	
+	try {
 		
 		for (i = 0; i < nModules; i++) {
-			
-			gettimeofday(&t1, &tz);
-			//dev[i]->copyRemoteData();
 			gettimeofday(&t2, &tz);
 			fflush(stderr);
-
+			
 			// List all new files?!
 			dev[i]->getNewFiles();
 			nData += dev[i]->getProcessedData();
@@ -362,7 +357,6 @@ int Reader::handle_timeout(){
 			if (debug > 3) printf("Processed data %d Bytes\n", dev[i]->getProcessedData());
 			gettimeofday(&t3, &tz);
 			
-			tTransfer += (t2.tv_sec - t1.tv_sec)*1000000 + (t2.tv_usec-t1.tv_usec);
 			tStorage += (t3.tv_sec - t2.tv_sec)*1000000 + (t3.tv_usec-t2.tv_usec);
 		}
 		
@@ -371,20 +365,20 @@ int Reader::handle_timeout(){
 		tCycle = (t4.tv_sec - t0.tv_sec)*1000000 + (t4.tv_usec-t0.tv_usec);
 		if (debug > 1) {
 			printf("______Performance______________________________________________\n");
-			printf("Processed data     : %4d Bytes                Cycle duration     : %6d us\n",
+			printf("Processed data: %8d Bytes     Cycle duration: %8d us\n",
 			       nData, tCycle);
-			printf("Scheduler          : %4ld us                   Data Trans./Stor.  : %6d / %6d us\n",
-			       tScheduler, tTransfer, tStorage);
+			printf("Scheduler     : %8ld us       Data Storage  : %8d us\n",
+			       tScheduler, tStorage);
 		}
 		//log->updateData(0, (float) tCycle / 1000000.); // Sensor 0: Cycle time
-		log->updateData(1, (float) tTransfer / 1000.); //ms
-		log->updateData(2, (float) tStorage / 1000.); // ms
+		log->updateData(1, (float) tStorage / 1000.); // ms
 		
 		
 		// Get free disk space
 		// Read the disk space from all devices. Report every device only once?!
 		analyseDiskSpace(dev[0]->getArchiveDir());
-		if (nSamples > 1) log->storeSensorData();
+		if (nSamples > 1)
+			log->storeSensorData();
 		
 		
 	} catch (std::invalid_argument &err) {
@@ -660,9 +654,11 @@ void Reader::analyseDiskSpace(const char *dir){
 	float rDiskFree;
 	float tSampleSec;
 	
-	if (debug > 0)
-		printf("_____Reader::analyseDiskSpace(...)_____\n");
-
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
 	tSampleSec = (float) tSample.tv_sec + (float) tSample.tv_usec / 1000000.;
 	
 	// get file system statistics
@@ -674,27 +670,24 @@ void Reader::analyseDiskSpace(const char *dir){
 #endif
 	
 	if (debug > 2) {
-		printf("Total blocks  %12ld %12.3f MByte (block size %ld bytes)\n",
-			fs.f_blocks, ((float) fs.f_blocks) / 1048576. * fs.f_bsize, fs.f_bsize);
-		printf("Free blocks   %12ld %12.3f MByte %.2f %%\n",
-			fs.f_bfree, ((float) fs.f_bfree) / 1048576. * fs.f_bsize, ((float) fs.f_bfree) / ((float) fs.f_blocks) * 100.);
-		printf("Sampling time %f  / Disk space %ld +- %ld\n", tSampleSec,
-			   diskspace, diskspace - fs.f_bfree * fs.f_bsize);
+		printf("Total blocks : %ld equals to %.3f MB (block size: %ld B)\n",
+		       fs.f_blocks, ((float) fs.f_blocks) / 1048576. * fs.f_bsize, fs.f_bsize);
+		printf("Avail. blocks: %ld equals to %.3f MB or %.2f %%\n",
+		       fs.f_bavail, ((float) fs.f_bavail) / 1048576. * fs.f_bsize, ((float) fs.f_bavail) / ((float) fs.f_blocks) * 100.);
+		printf("Sampling time %f  / Disk space %ld +- %ld\n",
+		       tSampleSec, diskspace, diskspace - fs.f_bavail * fs.f_bsize);
 	}
 	
 	
-
-	
-
 	// Write data to the syslog structure	
-	diff_diskspace = diskspace - fs.f_bfree * fs.f_bsize;
-	diskspace = fs.f_bfree * fs.f_bsize;
+	diff_diskspace = diskspace - fs.f_bavail * fs.f_bsize;
+	diskspace = fs.f_bavail * fs.f_bsize;
 	
-	rDiskFree = (float) fs.f_bfree / fs.f_blocks * 100;	
+	rDiskFree = (float) fs.f_bavail / fs.f_blocks * 100;	
 	
-	log->updateData(3, (float) diskspace / 1024 / 1024 / 1024 ); // GB
-	log->updateData(4, (float) rDiskFree ); // %
-	log->updateData(5, (float) diff_diskspace / tSampleSec / 1024 /1024 ); // MByte/sec
+	log->updateData(2, (float) diskspace / 1024 / 1024 / 1024 ); // GB
+	log->updateData(3, (float) rDiskFree ); // %
+	log->updateData(4, (float) diff_diskspace / tSampleSec / 1024 /1024 ); // MByte/sec
 	
 	
 #ifndef linux // DARWIN 	
@@ -815,7 +808,7 @@ void Reader::analyseDiskSpace(const char *dir){
 	}
 	
 	// Write data to the syslog structure
-	log->updateData(6, (float) diff_rx / tSampleSec / 1024 / 1024); // MByte/sec
-	log->updateData(7, (float) diff_tx / tSampleSec / 1024 / 1024); // MByte/sec
+	log->updateData(5, (float) diff_rx / tSampleSec / 1024 / 1024); // MByte/sec
+	log->updateData(6, (float) diff_tx / tSampleSec / 1024 / 1024); // MByte/sec
 	
 }
