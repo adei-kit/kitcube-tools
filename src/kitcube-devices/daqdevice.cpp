@@ -891,45 +891,23 @@ void DAQDevice::writeHeader(){
 
 int DAQDevice::parseData(char* line, struct timeval* l_tData, double *sensorValue){
 	printf("Define parseData in higher level class!\n");
+	
+	return -1;
 }
 
 
 void DAQDevice::storeSensorData(){
-	//unsigned char *buf;
-	//int len;
-	//int n;
-	//int fd;
-	int j;
-	//char *sensorString;
-	//int err;
-	std::string timeString;
-	std::string dateString;
-	//unsigned long timestamp;
-	
-	
-	std::string filenameMarker;
-	std::string filenameData;
-	//struct timeval lastTime;
-	//unsigned long lastPos;
-	//unsigned long lastIndex;
-	//struct timeval tWrite;
-	//char line[256];
-	
 #ifdef USE_MYSQL
-	//MYSQL_RES *res;
-	//MYSQL_RES *resTables;
-	//MYSQL_ROW row;
-	//MYSQL_ROW table;
-	std::string tableName;
 	std::string sql;
 	char sData[50];
 	struct timeval t0, t1;
 	struct timezone tz;
-	int i;
 #endif
+	
 	
 	if (debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	
 #ifdef USE_MYSQL
 	if (db == 0) {
@@ -943,23 +921,17 @@ void DAQDevice::storeSensorData(){
 	}
 #endif
 	
-	if (debug > 2)
-		printf("_____Store sensor data___%s_____________________\n", moduleName.c_str());
-	
-	
 	// Use the function setNdata, updateTimeStamp, updateData to 
 	// fill the sensor string
 		
 	// Display sensor data
-	if (debug > 1) {
-		printf("%25s ---  ", "");
-		printf(" %ld  %ld  ---- ", tData.tv_sec, tData.tv_usec);
-		for (j=0;j<nSensors; j++){
-			printf("%5.3f ", sensorValue[j]);
-		}
+	if (debug >= 1) {
+		printf("%25s --- ", moduleName.c_str());
+		printf("%ld s %ld us ---- ", tData.tv_sec, tData.tv_usec);
+		for (int i = 0; i < nSensors; i++)
+			printf("%f ", sensorValue[i]);
 		printf("\n");
 	}
-	
 	
 #ifdef USE_MYSQL
 	if (db > 0){
@@ -969,7 +941,7 @@ void DAQDevice::storeSensorData(){
 		
 		sql = "INSERT INTO `";
 		sql += dataTableName + "` (`usec`";
-		for (i=0; i<nSensors; i++){
+		for (int i = 0; i < nSensors; i++) {
 			sql += ",`";
 			sql += sensor[i].name;
 			sql += "`";
@@ -977,8 +949,7 @@ void DAQDevice::storeSensorData(){
 		sql +=") VALUES (";
 		sprintf(sData, "%ld", tData.tv_sec * 1000000 + tData.tv_usec);
 		sql += sData;
-		for (i = 0; i < nSensors; i++) {
-			
+		for (int i = 0; i < nSensors; i++) {
 			sprintf(sData, "%f", sensorValue[i]);
 			sql += ",";
 			sql += sData;
@@ -988,7 +959,6 @@ void DAQDevice::storeSensorData(){
 		//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
 		
 		gettimeofday(&t0, &tz);
-		
 		if (mysql_query(db, sql.c_str())){
 			fprintf(stderr, "%s\n", sql.c_str());
 			fprintf(stderr, "%s\n", mysql_error(db));
@@ -996,19 +966,16 @@ void DAQDevice::storeSensorData(){
 			// If this operation fails do not proceed in the file?!
 			printf("Error: Unable to write data to database\n");
 			throw std::invalid_argument("Writing data failed");
-		}	
-		
+		}
 		gettimeofday(&t1, &tz);
+		
 		if (debug >= 5)
 			printf("DB insert duration %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec-t0.tv_usec));
-		
 	} else {
 		printf("Error: No database availabe\n");
 		throw std::invalid_argument("No database");
 	}
 #endif // of USE_MYSQL
-	
-
 }
 
 
