@@ -11,9 +11,11 @@
 #define READER_H
 
 
-#include <cstdio>
-#include <string>
-#include <map>
+#include <cmath>
+
+#ifdef linux
+#include <sys/vfs.h>
+#endif
 
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
@@ -21,15 +23,19 @@
 
 #include <akutil/simpleserver.h>
 #include <akutil/procDuration.h>
+//#include <akutil/simplesocket.h>
+//#include <akutil/akinifile.h>
 
 #ifdef __WIN32__
 #include <windows.h>
 #include <akutil/timeval.h>
+#include <io.h>
 #endif
 
+#include <../kitcube-devices/createdevice.h>
+#include <../kitcube-devices/syslog.h>
 
 #define READER_PORT 6100
-
 
 
 class SimpleSocket;

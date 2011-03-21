@@ -9,47 +9,6 @@
 
 #include "reader.h"
 
-#include <stdlib.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/mount.h>
-
-#include <sys/socket.h>
-#include <ifaddrs.h>
-#include <net/if.h> // BSD ???
-
-#ifdef linux
-#include <sys/vfs.h>
-#endif
-#include <fcntl.h>
-#include <math.h>
-#include <errno.h>
-#include <fstream>
-
-#ifdef __WIN32__ // windows
-#include <io.h>
-#endif
-
-#include <akutil/simpleserver.h>
-#include <akutil/simplesocket.h>
-#include <akutil/procDuration.h>
-#include <akutil/akinifile.h>
-
-#ifdef __WIN32__
-#include <windows.h>
-#include <akutil/timeval.h>
-#endif
-
-using std::map;
-using std::pair;
-using std::string;
-
-#include <../kitcube-devices/simrandom.h>
-#include <../kitcube-devices/mast.h>
-#include <../kitcube-devices/createdevice.h>
-#include <../kitcube-devices/syslog.h>
 
 Reader::Reader(): SimpleServer(READER_PORT){
 
