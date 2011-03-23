@@ -361,9 +361,10 @@ private:
 	/** Number of values (max 24) */
 	int qdNSensors;
 	
+	double disk_avail_gb;
+	struct timeval time_now;
 	uint64_t rx;
 	uint64_t tx;
-	uint64_t diskspace;
 };
 
 #endif

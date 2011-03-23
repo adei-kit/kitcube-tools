@@ -14,7 +14,7 @@ Reader::Reader(): SimpleServer(READER_PORT){
 
 	rx = 0;
 	tx = 0;
-	diskspace = 0;
+	disk_avail_gb = 0;
 	
 }
 
@@ -189,7 +189,6 @@ void Reader::runReadout(){
 		printf("______Starting service for  %d  module(s)_______________________________\n", nModules);
 		printf("Sampling time      : %d ms\n", tSampleFromInifile);
 		
-		
 		for (i = 0; i < nModules; i++) {
 			printf("Module %2d          : %s,  type  %s\n",
 			       i + 1, iniGroup[i].c_str(), moduleType[i].c_str());
@@ -234,8 +233,8 @@ void Reader::runReadout(){
 	// TODO: Read the start time from configuration
 	// TODO: Read sampling phase from configuration
 	tStart.tv_sec = 1195487978;
-	tStart.tv_usec = 100000;      // If there are two independant loops with thee same
-	                              // sample rate there should be a phase shift between sampling
+	tStart.tv_usec = 100000;	// If there are two independant loops with thee same
+					// sample rate there should be a phase shift between sampling
 	
 	//setTRef(&tStart);
 	//setTRef();
@@ -275,6 +274,11 @@ int Reader::handle_timeout(){
 	unsigned int tStorage;
 	long int tScheduler; 
 	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
 	// TODO: Check timing
 	
 	//
@@ -295,7 +299,7 @@ int Reader::handle_timeout(){
 	
 	
 	// TODO: Read data / Simulate data
-	if (debug) {
+	if (debug >= 1) {
 		printf("     _____________________________________________________\n");
 		printf("____/__Reading Data %12ld %06ld (sample %06d)___\\_______ \n",
 					  t0.tv_sec, t0.tv_usec, nSamples);
@@ -606,53 +610,56 @@ void Reader::analyseDiskSpace(const char *dir){
 	// TODO:  How to handle the 64bit data types??? 
 	//        Change to 64bit version to be compatible...
 	struct statfs fs;
-	uint64_t diff_diskspace;
+	double disk_size_gb;
+	double disk_avail_percent;
+	double disk_space_diff;
+	double t_diff;
 	uint64_t diff_rx;
 	uint64_t diff_tx;
-
-	float rDiskFree;
-	float tSampleSec;
+	double rx_rate, tx_rate;
 	
 	
 	if (debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	tSampleSec = (float) tSample.tv_sec + (float) tSample.tv_usec / 1000000.;
+	// get time since last call to this function
+	t_diff = (double) time_now.tv_sec + (double) time_now.tv_usec / 1000000.;
+	gettimeofday(&time_now, NULL);
+	t_diff = (double) time_now.tv_sec + (double) time_now.tv_usec / 1000000. - t_diff;
+	
+	
+	// save "old" available disk space
+	disk_space_diff = disk_avail_gb;
 	
 	// get file system statistics
 	statfs(dir, &fs);
 	
-#ifndef linux
-	// Not supported under Linux?!
-	if (debug > 2) printf("Disk %s mounted to %s\n", fs.f_mntfromname, fs.f_mntonname);
-#endif
+	// evaluate file system stats
+	disk_size_gb = (double) fs.f_blocks / 1073741824. * fs.f_bsize;	// disk size in GB
+	disk_avail_gb = (double) fs.f_bavail / 1073741824. * fs.f_bsize;	// available disk space in GB
+	disk_avail_percent = (double) fs.f_bavail / fs.f_blocks * 100.;	// available disk space in %
 	
-	if (debug > 2) {
-		printf("Total blocks : %ld equals to %.3f MB (block size: %ld B)\n",
-		       fs.f_blocks, ((float) fs.f_blocks) / 1048576. * fs.f_bsize, fs.f_bsize);
-		printf("Avail. blocks: %ld equals to %.3f MB or %.2f %%\n",
-		       fs.f_bavail, ((float) fs.f_bavail) / 1048576. * fs.f_bsize, ((float) fs.f_bavail) / ((float) fs.f_blocks) * 100.);
-		printf("Sampling time %f  / Disk space %ld +- %ld\n",
-		       tSampleSec, diskspace, diskspace - fs.f_bavail * fs.f_bsize);
+	// difference in available disk space in MB
+	disk_space_diff = (disk_avail_gb - disk_space_diff) * 1024.;
+	
+	if (debug >= 2) {
+		printf("Total blocks : %ld equals to %.3f GB (block size: %ld B)\n",
+		       fs.f_blocks, disk_size_gb, fs.f_bsize);
+		printf("Avail. blocks: %ld equals to %.3f GB or %.2f %%\n",
+		       fs.f_bavail, disk_avail_gb, disk_avail_percent);
+		printf("Change in avail. disk space: %+.3f MB, rate: %.3f MB/s (Sampling time %.1f s)\n",
+		       disk_space_diff, disk_space_diff / t_diff, t_diff);
 	}
 	
+	log->updateData(2, disk_avail_gb);
+	log->updateData(3, disk_avail_percent );
+	log->updateData(4, - disk_space_diff / t_diff );	// MB/s
 	
-	// Write data to the syslog structure	
-	diff_diskspace = diskspace - fs.f_bavail * fs.f_bsize;
-	diskspace = fs.f_bavail * fs.f_bsize;
-	
-	rDiskFree = (float) fs.f_bavail / fs.f_blocks * 100;	
-	
-	log->updateData(2, (float) diskspace / 1024 / 1024 / 1024 ); // GB
-	log->updateData(3, (float) rDiskFree ); // %
-	log->updateData(4, (float) diff_diskspace / tSampleSec / 1024 /1024 ); // MByte/sec
-	
-	
-#ifndef linux // DARWIN 	
-	// 
+#ifndef linux // DARWIN
+	//
 	// Read network statistics
-	// 
+	//
 	const char *iface = "en1"; // Name of the device
 	struct ifaddrs *ifap, *ifa;
 	struct if_data *ifd = NULL;
@@ -682,37 +689,36 @@ void Reader::analyseDiskSpace(const char *dir){
 		diff_rx = ifd->ifi_ibytes -rx;
 		diff_tx = ifd->ifi_obytes -tx;
 		
-        rx = ifd->ifi_ibytes;
- 		tx = ifd->ifi_obytes;
-
-		if (debug > 2) printf("Network %s rcv=%Ld Bytes send=%Ld Bytes\n", 
-			   iface, diff_rx, diff_tx);
-	
-		/*		
-		 strncpy(ifinfo.name, iface, 32);
-		 ifinfo.rx = ifd->ifi_ibytes;
-		 ifinfo.tx = ifd->ifi_obytes;
-		 ifinfo.rxp = ifd->ifi_ipackets;
-		 ifinfo.txp = ifd->ifi_opackets;
-		 ifinfo.filled = 1;
-		 */ 
+		rx = ifd->ifi_ibytes;
+		tx = ifd->ifi_obytes;
+		
+		rx_rate = (double) diff_rx / 1048576. / t_diff;	// MB/s
+		tx_rate = (double) diff_tx / 1048576. / t_diff;	// MB/s
+		
+		/*
+		strncpy(ifinfo.name, iface, 32);
+		ifinfo.rx = ifd->ifi_ibytes;
+		ifinfo.tx = ifd->ifi_obytes;
+		ifinfo.rxp = ifd->ifi_ipackets;
+		ifinfo.txp = ifd->ifi_opackets;
+		ifinfo.filled = 1;
+		 */
 	}
-#endif	
+#endif
 	
-	
-#ifdef linux		
+#ifdef linux
 	//
 	// Linux
 	//
 	const char *iface = "eth0"; // Name of the device
 	
 	FILE *fp;
-	char temp[4][64], procline[512], *proclineptr, ifaceid[33];
+	char procline[512], *proclineptr, ifaceid[33];
 	int check;
 	
 #define PROCNETDEV "/proc/net/dev"
 	
-	if ((fp=fopen(PROCNETDEV, "r"))==NULL) {
+	if ((fp = fopen(PROCNETDEV, "r")) == NULL) {
 		if (debug)
 			printf("Error: Unable to read %s.\n", PROCNETDEV);
 		return;
@@ -722,9 +728,8 @@ void Reader::analyseDiskSpace(const char *dir){
 	strcat(ifaceid, ":");
 	
 	check = 0;
-	while (fgets(procline, 512, fp)!=NULL) {
-		sscanf(procline, "%512s", temp[0]);
-		if (strncmp(ifaceid, temp[0], strlen(ifaceid))==0) {
+	while (fgets(procline, 512, fp) != NULL) {
+		if (strstr(procline, ifaceid) != NULL) {
 			/* if (debug)
 			 printf("\n%s\n", procline); */
 			check = 1;
@@ -733,41 +738,34 @@ void Reader::analyseDiskSpace(const char *dir){
 	}
 	fclose(fp);
 	
-	if (check==0) {
+	if (check == 0) {
 		if (debug)
 			printf("Requested interface \"%s\" not found.\n", iface);
 		return;
 	} else {
-		
+		diff_rx = rx;
+		diff_tx = tx;
 		
 		/* get rx and tx from procline */
 		proclineptr = strchr(procline, ':');
-		sscanf(proclineptr+1, "%64s %64s %*s %*s %*s %*s %*s %*s %64s %64s", 
-			   temp[0], temp[1], temp[2], temp[3]);
+		sscanf(proclineptr + 1, "%lu %*u %*u %*u %*u %*u %*u %*u %lu", &rx, &tx);
 		
+		if (debug >= 4)
+			printf("Received bytes: %lu, transmitted bytes: %lu\n", rx, tx);
 		
-		diff_rx = strtoull(temp[0], (char **)NULL, 0) -rx;
-		diff_tx = strtoull(temp[2], (char **)NULL, 0) -tx;
+		diff_rx = rx - diff_rx;
+		diff_tx = tx - diff_tx;
 		
-		rx = strtoull(temp[0], (char **)NULL, 0);
-		tx = strtoull(temp[2], (char **)NULL, 0);
-		
-		
-		if (debug > 2) printf("Network %s rcv=%ld Bytes send=%ld Bytes\n", 
-			   iface, diff_rx, diff_tx);		
-		
+		rx_rate = (double) diff_rx / 1048576. / t_diff;	// MB/s
+		tx_rate = (double) diff_tx / 1048576. / t_diff;	// MB/s
 	}
+#endif
 	
-#endif	
-	
-	// Output
-	if ((nSamples > 1) &&(debug > 1)) {
-		printf("Network rx / tx    : %6ld / %6ld Bytes     Free disk space    : %02.2f %s\n", 
-			   diff_rx,diff_tx, rDiskFree, "%");
-	}
+	if (debug >= 2)
+		printf("Network device %s: rcvd %lu B at %.3f MB/s, sent %lu B at %.3f MB/s\n",
+			iface, diff_rx, rx_rate, diff_tx, tx_rate);
 	
 	// Write data to the syslog structure
-	log->updateData(5, (float) diff_rx / tSampleSec / 1024 / 1024); // MByte/sec
-	log->updateData(6, (float) diff_tx / tSampleSec / 1024 / 1024); // MByte/sec
-	
+	log->updateData(5, rx_rate);	// MB/s
+	log->updateData(6, tx_rate);	// MB/s
 }
