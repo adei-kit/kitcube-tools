@@ -13,6 +13,7 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube \
 	T07.DAS.sensors T07.DAL.sensors T07.DAR.sensors T07.DAX.sensors \
 	EB1.DAS.sensors EB1.DAL.sensors EB1.DAR.sensors EB1.DAX.sensors \
 	EB2.DAS.sensors EB2.DAL.sensors EB2.DAR.sensors EB2.DAX.sensors \
+	PT20.DAL.sensors PT20.DAR.sensors \
 	20090625.chm.sensors ceilometer.nc.sensors 20090625.chm.template \
 	norbert.dat.template norbert.dat.sensors \
 	jwd.dd.sensors dd090826.template \
