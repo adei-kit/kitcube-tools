@@ -21,7 +21,8 @@ module = Mast1-das Mast1-dal Mast1-dar Mast1-dax \
          Mast6-das Mast6-dal Mast6-dar Mast6-dax \
          Mast7-das Mast7-dal Mast7-dar Mast7-dax \
          Mast11-das Mast11-dal Mast11-dar Mast11-dax \
-         Mast12-das Mast12-dal Mast12-dar Mast12-dax
+         Mast12-das Mast12-dal Mast12-dar Mast12-dax \
+         PT20-dal PT20-dar
 ;samplingTime = 1 min
 samplingTime = 55 sec
 
@@ -29,7 +30,7 @@ samplingTime = 55 sec
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.12/etc
+configDir = /home/cube/kitcube-tools-0.13/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/archive
@@ -157,7 +158,6 @@ datafileMask = messwiese<index>.DAS
 sensorList = T01.DAS.sensors
 datafileTemplate = M11_01.DAS.template
 samplingTime = 0.05 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Sampling rate 1Hz
 [Mast1-dal]
@@ -170,7 +170,6 @@ datafileMask = messwiese<index>.DAL
 sensorList = T01.DAL.sensors
 datafileTemplate = M11_01.DAL.template
 samplingTime = 1 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Mean data of 10min intervals
 [Mast1-dar]
@@ -183,7 +182,6 @@ datafileMask = messwiese<index>.DAR
 sensorList = T01.DAR.sensors
 datafileTemplate = M11_01.DAR.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 ; Caclulated values also in a 10 min interval
 [Mast1-dax]
@@ -196,7 +194,6 @@ datafileMask = messwiese<index>.DAX
 sensorList = T01.DAX.sensors
 datafileTemplate = M11_01.DAX.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 
 ; Turbulence Mast 2
@@ -212,7 +209,6 @@ datafileMask = messwiese<index>.DAS
 sensorList = T02.DAS.sensors
 datafileTemplate = M11_01.DAS.template
 samplingTime = 0.05 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Sampling rate 1Hz
 [Mast2-dal]
@@ -225,7 +221,6 @@ datafileMask = messwiese<index>.DAL
 sensorList = T02.DAL.sensors
 datafileTemplate = M11_01.DAL.template
 samplingTime = 1 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Mean data of 10min intervals
 [Mast2-dar]
@@ -238,7 +233,6 @@ datafileMask = messwiese<index>.DAR
 sensorList = T02.DAR.sensors
 datafileTemplate = M11_01.DAR.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 ; Caclulated values also in a 10 min interval
 [Mast2-dax]
@@ -251,7 +245,6 @@ datafileMask = messwiese<index>.DAX
 sensorList = T02.DAX.sensors
 datafileTemplate = M11_01.DAX.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 
 ; Turbulence Mast 3
@@ -267,7 +260,6 @@ datafileMask = messwiese<index>.DAS
 sensorList = T03.DAS.sensors
 datafileTemplate = M11_01.DAS.template
 samplingTime = 0.05 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Sampling rate 1Hz
 [Mast3-dal]
@@ -280,7 +272,6 @@ datafileMask = messwiese<index>.DAL
 sensorList = T03.DAL.sensors
 datafileTemplate = M11_01.DAL.template
 samplingTime = 1 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Mean data of 10min intervals
 [Mast3-dar]
@@ -293,7 +284,6 @@ datafileMask = messwiese<index>.DAR
 sensorList = T03.DAR.sensors
 datafileTemplate = M11_01.DAR.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 ; Caclulated values also in a 10 min interval
 [Mast3-dax]
@@ -306,7 +296,6 @@ datafileMask = messwiese<index>.DAX
 sensorList = T03.DAX.sensors
 datafileTemplate = M11_01.DAX.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 
 ; Turbulence Mast 4
@@ -322,7 +311,6 @@ datafileMask = messwiese<index>.DAS
 sensorList = T04.DAS.sensors
 datafileTemplate = M11_01.DAS.template
 samplingTime = 0.05 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Sampling rate 1Hz
 [Mast4-dal]
@@ -335,7 +323,6 @@ datafileMask = messwiese<index>.DAL
 sensorList = T04.DAL.sensors
 datafileTemplate = M11_01.DAL.template
 samplingTime = 1 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Mean data of 10min intervals
 [Mast4-dar]
@@ -348,7 +335,6 @@ datafileMask = messwiese<index>.DAR
 sensorList = T04.DAR.sensors
 datafileTemplate = M11_01.DAR.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 ; Caclulated values also in a 10 min interval
 [Mast4-dax]
@@ -361,7 +347,6 @@ datafileMask = messwiese<index>.DAX
 sensorList = T04.DAX.sensors
 datafileTemplate = M11_01.DAX.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 
 ; Turbulence Mast 5
@@ -377,7 +362,6 @@ datafileMask = messwiese<index>.DAS
 sensorList = T05.DAS.sensors
 datafileTemplate = M11_01.DAS.template
 samplingTime = 0.05 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Sampling rate 1Hz
 [Mast5-dal]
@@ -390,7 +374,6 @@ datafileMask = messwiese<index>.DAL
 sensorList = T05.DAL.sensors
 datafileTemplate = M11_01.DAL.template
 samplingTime = 1 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Mean data of 10min intervals
 [Mast5-dar]
@@ -403,7 +386,6 @@ datafileMask = messwiese<index>.DAR
 sensorList = T05.DAR.sensors
 datafileTemplate = M11_01.DAR.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 ; Caclulated values also in a 10 min interval
 [Mast5-dax]
@@ -416,7 +398,6 @@ datafileMask = messwiese<index>.DAX
 sensorList = T05.DAX.sensors
 datafileTemplate = M11_01.DAX.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 
 ; Turbulence Mast 6
@@ -432,7 +413,6 @@ datafileMask = messwiese<index>.DAS
 sensorList = T06.DAS.sensors
 datafileTemplate = M11_01.DAS.template
 samplingTime = 0.05 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Sampling rate 1Hz
 [Mast6-dal]
@@ -445,7 +425,6 @@ datafileMask = messwiese<index>.DAL
 sensorList = T06.DAL.sensors
 datafileTemplate = M11_01.DAL.template
 samplingTime = 1 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Mean data of 10min intervals
 [Mast6-dar]
@@ -458,7 +437,6 @@ datafileMask = messwiese<index>.DAR
 sensorList = T06.DAR.sensors
 datafileTemplate = M11_01.DAR.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 ; Caclulated values also in a 10 min interval
 [Mast6-dax]
@@ -471,7 +449,6 @@ datafileMask = messwiese<index>.DAX
 sensorList = T06.DAX.sensors
 datafileTemplate = M11_01.DAX.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 
 ; Turbulence Mast 7
@@ -487,7 +464,6 @@ datafileMask = messwiese<index>.DAS
 sensorList = T07.DAS.sensors
 datafileTemplate = M11_01.DAS.template
 samplingTime = 0.05 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Sampling rate 1Hz
 [Mast7-dal]
@@ -500,7 +476,6 @@ datafileMask = messwiese<index>.DAL
 sensorList = T07.DAL.sensors
 datafileTemplate = M11_01.DAL.template
 samplingTime = 1 sec
-remoteDir = pc-t06:/cygdrive/d
 
 ; Mean data of 10min intervals
 [Mast7-dar]
@@ -513,7 +488,6 @@ datafileMask = messwiese<index>.DAR
 sensorList = T07.DAR.sensors
 datafileTemplate = M11_01.DAR.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 ; Caclulated values also in a 10 min interval
 [Mast7-dax]
@@ -526,7 +500,6 @@ datafileMask = messwiese<index>.DAX
 sensorList = T07.DAX.sensors
 datafileTemplate = M11_01.DAX.template
 samplingTime = 10 min
-remoteDir = pc-t06:/cygdrive/d
 
 
 ; Energie Bilanz Mast 1
@@ -542,7 +515,6 @@ datafileMask = messwiese<index>.DAS
 sensorList = EB1.DAS.sensors
 datafileTemplate = M11_01.DAS.template
 samplingTime = 0.05 sec
-remoteDir = pc-eb1:/cygdrive/d
 
 ; Sampling rate 1Hz
 [Mast11-dal]
@@ -555,7 +527,6 @@ datafileMask = messwiese<index>.DAL
 sensorList = EB1.DAL.sensors
 datafileTemplate = M11_01.DAL.template
 samplingTime = 1 sec
-remoteDir = pc-eb1:/cygdrive/d
 
 ; Mean data of 10min intervals
 [Mast11-dar]
@@ -568,7 +539,6 @@ datafileMask = messwiese<index>.DAR
 sensorList = EB1.DAR.sensors
 datafileTemplate = M11_01.DAR.template
 samplingTime = 10 min
-remoteDir = pc-eb1:/cygdrive/d
 
 ; Caclulated values also in a 10 min interval
 [Mast11-dax]
@@ -581,7 +551,6 @@ datafileMask = messwiese<index>.DAX
 sensorList = EB1.DAX.sensors
 datafileTemplate = M11_01.DAX.template
 samplingTime = 10 min
-remoteDir = pc-eb1:/cygdrive/d/
 
 
 ; Energie Bilanz Mast 2
@@ -597,7 +566,6 @@ datafileMask = messwiese<index>.DAS
 sensorList = EB2.DAS.sensors
 datafileTemplate = M12_01.DAS.template
 samplingTime = 0.05 sec
-remoteDir = pc-eb1:/cygdrive/d/
 
 ; Sampling rate 1Hz
 [Mast12-dal]
@@ -610,7 +578,6 @@ datafileMask = messwiese<index>.DAL
 sensorList = EB2.DAL.sensors
 datafileTemplate = M12_01.DAL.template
 samplingTime = 1 sec
-remoteDir = pc-eb1:/cygdrive/d/
 
 ; Mean data of 10min intervals
 [Mast12-dar]
@@ -623,7 +590,6 @@ datafileMask = messwiese<index>.DAR
 sensorList = EB2.DAR.sensors
 datafileTemplate = M12_01.DAR.template
 samplingTime = 10 min
-remoteDir = pc-eb1:/cygdrive/d/
 
 ; Caclulated values also in a 10 min interval
 [Mast12-dax]
@@ -636,7 +602,33 @@ datafileMask = messwiese<index>.DAX
 sensorList = EB2.DAX.sensors
 datafileTemplate = M12_01.DAX.template
 samplingTime = 10 min
-remoteDir = pc-eb1:/cygdrive/d/
+
+
+; 20m profile tower
+
+; Sampling rate 1Hz
+[PT20-dal]
+moduleName = PT20
+moduleNumber = 13
+moduleType = Mast
+moduleComment = profile_tower
+sensorGroup = DAL
+datafileMask = messwiese<index>.DAL
+sensorList = PT20.DAL.sensors
+datafileTemplate = M12_01.DAL.template
+samplingTime = 1 sec
+
+; Mean data of 10min intervals
+[PT20-dar]
+moduleName = PT20
+moduleNumber = 13
+moduleType = Mast
+moduleComment = profile_tower
+sensorGroup = DAR
+datafileMask = messwiese<index>.DAR
+sensorList = PT20.DAR.sensors
+datafileTemplate = M12_01.DAR.template
+samplingTime = 10 min
 
 
 [Ceilometer]
@@ -761,7 +753,6 @@ sensorList = wolkenkamera.jpg.sensors
 datafileTemplate = 200908261200.jpg.template
 datafileMask = kitcube_cc2_<index>.jpg
 samplingTime = 2 min
-remoteDir = imk-wk1:/home/cube
 
 [SCI]
 moduleName = SCI
@@ -773,7 +764,6 @@ sensorList = scintillometer.RES.sensors
 datafileTemplate = 100727.RES.template
 datafileMask = <index>.RES
 samplingTime = 1 min
-remoteDir = pc-szint:/cygdrive/c/
 
 [3M-data]
 moduleName = 3M
