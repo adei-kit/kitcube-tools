@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 
-#include "daqdevice.h"
+//#include "daqdevice.h"
 
 #include "mast.h"
 #include "ceilometer.h"
