@@ -168,7 +168,7 @@ void DAQBinaryDevice::writeData(){
 }
 
 
-void DAQBinaryDevice::readData(const char *dir, const char *filename){
+void DAQBinaryDevice::readData(std::string full_filename){
 	unsigned char *buf;
 	int len;
 	int n;
@@ -183,7 +183,6 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	
 	
 	FILE *fmark;
-	std::string filenameMarker;
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
@@ -191,7 +190,6 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	long lastIndex;
 	struct timeval timestamp_data;
 	//struct timeval tWrite;
-	char line[256];
 	//char *lPtr;
 	
 #ifdef USE_MYSQL
@@ -211,8 +209,7 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// Compile file name
-	filenameData = dir;
-	filenameData += filename;
+	filenameData = full_filename;
 	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());	
 	
 #ifdef USE_MYSQL
@@ -252,8 +249,6 @@ void DAQBinaryDevice::readData(const char *dir, const char *filename){
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
 	
-	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker = line;
 	if (debug >= 1)
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");

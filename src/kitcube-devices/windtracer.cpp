@@ -441,12 +441,11 @@ void windtracer::writeHeader(){
 }
 
 
-void windtracer::readData(const char *dir, const char *filename) {
+void windtracer::readData(std::string full_filename) {
 	std::string full_data_filename;
 	int fd_data_file;
 	unsigned long last_position;
 	struct timeval last_data_timestamp;
-	char line[256];
 	FILE *fmark;
 	long lastIndex;
 	unsigned long current_position;
@@ -479,8 +478,7 @@ void windtracer::readData(const char *dir, const char *filename) {
 	}
 	
 	// Compile file name
-	full_data_filename = dir;
-	full_data_filename += filename;
+	full_data_filename = full_filename;
 
 
 	// If number of sensors is unknown read the header first
@@ -519,8 +517,6 @@ void windtracer::readData(const char *dir, const char *filename) {
 	last_data_timestamp.tv_sec = 0;
 	last_data_timestamp.tv_usec = 0;
 	
-	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker = line;
 	if (debug >= 1)
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");

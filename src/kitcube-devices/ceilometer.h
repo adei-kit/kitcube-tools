@@ -53,7 +53,7 @@ public:
 
 	void writeHeader();
 	
-	void readData(const char *dir, const char *filename);
+	void readData(std::string full_filename);
 	
 	int parseData(char *line, struct timeval *l_tData, double *sensorValue);
 	

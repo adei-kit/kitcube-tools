@@ -158,7 +158,7 @@ unsigned int parsivel::getSensorGroup(){
 }
 
 
-void parsivel::readData(const char *dir, const char *filename){
+void parsivel::readData(std::string full_filename){
 	std::string filenameData;
 	float* local_sensorValue;
 	unsigned long lastPos;
@@ -175,8 +175,7 @@ void parsivel::readData(const char *dir, const char *filename){
 		printf("_____parsivel::readData(const char *dir, const char *filename)_____\n");
 	
 	// Compile file name
-	filenameData = dir;
-	filenameData += filename;
+	filenameData = full_filename;
 	
 	// If number of sensors is unknown read the header first
 	if (nSensors == 0)
@@ -209,8 +208,6 @@ void parsivel::readData(const char *dir, const char *filename){
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
 	
-	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker = line;
 	if (debug > 3) printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {

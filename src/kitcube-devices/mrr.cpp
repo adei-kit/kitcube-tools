@@ -149,6 +149,6 @@ unsigned int mrr::getSensorGroup(){
 }
 
 
-void mrr::readData(const char *dir, const char *filename){
+void mrr::readData(std::string full_filename){
 	fd_eof = false;
 }

@@ -16,7 +16,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <sys/time.h>
-#include <climits>
+#include <list>
 
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
@@ -140,7 +140,7 @@ public:
 	
 	virtual void storeSensorData();
 	
-	virtual void readData(const char* dir, const char* filename);
+	virtual void readData(std::string full_filename);
 
 	/** Update the date of the current data set and replace it by the current date. 
 	  * The function is used by writeData to generate simulated data with current time stamp
@@ -333,7 +333,12 @@ private:
 	
 	/** Flag to switch between unique and relative telescope id's */
 	int uniqueId;
-
+	
+	std::list<std::string> datei_namen;
+	
+	std::list<long> datei_nummer;
+	
+	int get_file_list(std::string directory);
 };
 
 #endif

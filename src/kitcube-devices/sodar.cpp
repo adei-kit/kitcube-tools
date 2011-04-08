@@ -179,21 +179,19 @@ int sodar::create_data_table() {
 }
 
 
-void sodar::readData(const char *dir, const char *filename){
+void sodar::readData(std::string full_filename){
 	char *buf;
 	FILE *fd_data_file;
 	double *local_sensorValue;
 	int loop_counter = 0;
 	struct tm time_stamp_tm = {0};
 	FILE *fmark;
-	std::string filenameMarker;
 	std::string full_data_file_name;
 	struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long currPos;
 	long lastIndex;
 	struct timeval time_stamp_tv = {0};
-	char line[256];
 	
 #ifdef USE_MYSQL
 	std::string sql;
@@ -225,8 +223,7 @@ void sodar::readData(const char *dir, const char *filename){
 	local_sensorValue = new double[nSensors * profile_length];
 	
 	// Compile file name
-	full_data_file_name = dir;
-	full_data_file_name += filename;
+	full_data_file_name = full_filename;
 	
 	// open data file
 	if (debug >= 1)
@@ -243,8 +240,6 @@ void sodar::readData(const char *dir, const char *filename){
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
 	
-	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker = line;
 	if (debug >= 1)
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");

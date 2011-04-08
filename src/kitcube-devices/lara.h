@@ -51,7 +51,7 @@ public:
 	
 	int parseData(char *line, struct timeval *l_tData, double *sensorValue);	
 	
-	void readData(const char *dir, char *filename);
+	void readData(std::string full_filename);
 	
 	void writeData();
 	

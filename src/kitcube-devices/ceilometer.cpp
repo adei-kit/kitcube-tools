@@ -396,20 +396,18 @@ int Ceilometer::parseData(char *line, struct timeval *l_tData, double *sensorVal
 
 
 // TODO: Move the parsing part to separate functions and move rest to base class
-void Ceilometer::readData(const char *dir, const char *filename){
+void Ceilometer::readData(std::string full_filename){
 	//int j;
 	std::string timeString;
 	std::string dateString;
 	
 	
 	FILE *fmark;
-	std::string filenameMarker;
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
 	long lastIndex;
 	//struct timeval tWrite;
-	char line[256];
 	
 #ifdef USE_MYSQL
 	struct timeval t0, t1;
@@ -431,13 +429,12 @@ void Ceilometer::readData(const char *dir, const char *filename){
 	// Negative error codes
 	
 	if (sensorGroup == "chm") {	// read *.chm file here
-		DAQBinaryDevice::readData(dir, filename);
+		DAQBinaryDevice::readData(full_filename);
 	} else if (sensorGroup == "nc") {	// read NetCDF file here
 		if (debug > 0) printf("_____Reading data_____________________\n");
 		
 		// Compile file name
-		filenameData = dir;
-		filenameData += filename;
+		filenameData = full_filename;
 		//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
 		
 		
@@ -462,8 +459,6 @@ void Ceilometer::readData(const char *dir, const char *filename){
 		lastTime.tv_sec = 0;
 		lastTime.tv_usec = 0;
 		
-		sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-		filenameMarker = line;
 		if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {

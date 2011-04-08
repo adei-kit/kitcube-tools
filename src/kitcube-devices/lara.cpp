@@ -390,15 +390,13 @@ int Lara::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 
 
 
-void Lara::readData(const char *dir, char *filename){
+void Lara::readData(std::string full_filename){
 
 	if (sensorGroup == "stab") {
-		DAQAsciiDevice::readData(dir, filename);
+		DAQAsciiDevice::readData(full_filename);
 	}	
 	
 	if (sensorGroup == "run"){
-		char line[256];
-		std::string filenameMarker;
 		FILE *fmark;
 		long lastIndex;
 		struct timeval lastTime;
@@ -410,8 +408,6 @@ void Lara::readData(const char *dir, char *filename){
 		
 		// Check if there is a new file 
 		// Get the last time stamp + file pointer from 		
-		sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-		filenameMarker =line;
 		if (debug > 2) printf("Get marker from %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {
@@ -420,8 +416,8 @@ void Lara::readData(const char *dir, char *filename){
 		}
 		
 		// Handle every file only once 
-		if ((handled == 0) && (getFileNumber((char *) filename) >= lastIndex)){			
-			readHeader(filename);		
+		if ((handled == 0) && (getFileNumber(basename((char*)full_filename.c_str())) >= lastIndex)){			
+			readHeader(basename((char*)full_filename.c_str()));
 			DAQDevice::storeSensorData();	
 		
 			// Write back the marker 
@@ -436,7 +432,7 @@ void Lara::readData(const char *dir, char *filename){
 			fd_eof = true; 			
 			
 		} else {
-			printf("File %s has been already processed (lastIndex = %ld)\n", filename, lastIndex);
+			printf("File %s has been already processed (lastIndex = %ld)\n", basename((char*)full_filename.c_str()), lastIndex);
 		}		
 		
 	}

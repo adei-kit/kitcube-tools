@@ -38,7 +38,7 @@ public:
 	
 	int create_data_table();
 	
-	void readData(const char *dir, const char *filename);
+	void readData(std::string full_filename);
 	
 	int parseData(char *buffer, double* sensor_values, int height_no);
 	

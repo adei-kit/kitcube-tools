@@ -81,18 +81,16 @@ void wolkenkamera::writeHeader(){
 
 
 // TODO: Move the parsing part to separate functions and move rest to base class
-void wolkenkamera::readData(const char *dir, const char *filename){
+void wolkenkamera::readData(std::string full_filename){
 	//int j;
 	std::string timeString;
 	std::string dateString;
 	FILE *fmark;
-	std::string filenameMarker;
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
 	long lastIndex;
 	//struct timeval tWrite;
-	char line[256];
 	struct tm time_stamp_data;
 	
 #ifdef USE_MYSQL
@@ -112,8 +110,7 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// Compile file name
-	filenameData = dir;
-	filenameData += filename;
+	filenameData = full_filename;
 	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
 	
 	
@@ -138,8 +135,6 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
 	
-	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker = line;
 	if (debug >= 3)
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
@@ -158,7 +153,7 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 		
 		
 	// extract timestamp from filename
-	strptime(filename, "kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg", &time_stamp_data);
+	strptime(full_filename.c_str(), "kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg", &time_stamp_data);
 	
 	if (debug >= 4)
 		printf("%lds\n", timegm(&time_stamp_data));
@@ -181,7 +176,7 @@ void wolkenkamera::readData(const char *dir, const char *filename){
 		sql += sData;
 		for (int j = 0; j < nSensors; j++) {
 			sql += ",";
-			sprintf(sData, "'%s'", filename);
+			sprintf(sData, "'%s'", basename((char*)full_filename.c_str()));
 			sql += sData;
 		}
 		sql += ")";

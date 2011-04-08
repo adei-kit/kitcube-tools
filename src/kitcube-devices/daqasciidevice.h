@@ -33,7 +33,7 @@ public:
 	/** Write simulated data set */
 //	virtual void writeData();
 	
-	virtual void readData(const char *dir, const char *filename);
+	virtual void readData(std::string full_filename);
 	
 protected:
 	/** File descriptor for reading binary data files */

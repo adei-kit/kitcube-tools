@@ -152,7 +152,7 @@ public:
 	
 	void writeHeader();
 	
-	void readData(const char *dir, const char *filename);
+	void readData(std::string full_filename);
 	
 	void parseData(u_char *buffer, struct RecordHeader *record_header,
 		       struct ScanInfo **scan_info, struct ProductPulseInfo **pulse_info,

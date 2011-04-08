@@ -40,7 +40,7 @@ public:
 	/** Define a sensor group number for all the availble sensor group files */
 	unsigned int getSensorGroup();
 	
-	void readData(const char *dir, const char *filename);
+	void readData(std::string full_filename);
 private:
 
 };

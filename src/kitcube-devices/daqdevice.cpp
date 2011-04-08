@@ -979,7 +979,7 @@ void DAQDevice::storeSensorData(){
 }
 
 
-void DAQDevice::readData(const char *dir, const char *filename){
+void DAQDevice::readData(std::string full_filename){
 	printf("Define readData(...) in higher class!\n");
 }
 
@@ -996,7 +996,7 @@ long DAQDevice::getFileNumber(char* filename) {
 	std::string filename_prefix;
 	std::string filename_suffix;
 	std::string filename_string;
-	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, filename_length;
+	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, filename_length, pos;
 	long index;
 	
 	
@@ -1052,6 +1052,11 @@ long DAQDevice::getFileNumber(char* filename) {
 		}
 	}
 	
+	// remove "_" from windtracer file names
+	pos = filename_string.find('_');
+	if (pos != std::string::npos)
+		filename_string.erase(pos, 1);
+	
 	// we assume, that after the removal of prefix and suffix, there are only numbers left
 	// FIXME/TODO: check, if this is really only a number
 	index = atol(filename_string.c_str());
@@ -1063,30 +1068,65 @@ long DAQDevice::getFileNumber(char* filename) {
 }
 
 
+int DAQDevice::get_file_list(std::string directory)
+{
+	DIR *dir;
+	struct dirent *dir_entry;
+	long index;
+
+	
+	dir = opendir(directory.c_str());
+	
+	// read all directory entries
+	while ((dir_entry = readdir(dir)) != NULL) {
+		if (dir_entry->d_type == DT_DIR) {
+			//
+			// if we have a real directory (not "." or ".."), call this function recursively
+			//
+			if ( strcmp(dir_entry->d_name, ".") && strcmp(dir_entry->d_name, "..") ) {
+				// add a '/' if necessary
+				if (directory.find_last_of('/') == (directory.size() - 1) )
+					get_file_list(directory + dir_entry->d_name);
+				else
+					get_file_list(directory + "/" + dir_entry->d_name);
+			}
+		} else if (dir_entry->d_type == DT_REG) {
+			//
+			// if we have a file, get its number and, if it's the right on, save name and number
+			//
+			index = getFileNumber(dir_entry->d_name);
+			
+			// if the file is one of the desired
+			if (index != 0) {
+				// add a '/' if necessary
+				if (directory.find_last_of('/') == (directory.size() - 1) )
+					datei_namen.push_back(directory + dir_entry->d_name);
+				else
+					datei_namen.push_back(directory + "/" + dir_entry->d_name);
+				
+				datei_nummer.push_back(index);
+			}
+		}
+	}
+	
+	closedir(dir);
+	
+	return 0;
+}
+
+
 void DAQDevice::getNewFiles() {
 	std::string dataDir;
-	std::string lastFile;
-	DIR *din;
-	struct dirent *file;
-	int nFiles;
 	char line[256];
-	long index;
-	
-	// Linked list of directory entries
-	std::string *listName;
-	long *listIndex;
-	unsigned int *listNext;
-	int nList;
-	int i, j;
-	int current_no;
+	int i;
 	int err;
-	
 	// Handler for marker file
 	FILE *fmark;
-	std::string filenameMarker;
 	struct timeval lastTime;
 	unsigned int lastPos;
 	long lastIndex;
+	std::list<std::string>::iterator datei_namen_pos;
+	std::list<long>::iterator datei_nummer_pos;
 	
 	
 	// Go through the list and find the next entry
@@ -1109,78 +1149,30 @@ void DAQDevice::getNewFiles() {
 	
 	if (debug >= 3)
 		printf("Reading from directory '%s'\n", dataDir.c_str());
-
-	// Get all alphabetical following files
-	din  = opendir(dataDir.c_str());
-	if (din == 0) {
-		printf("Directory '%s' is not available - waiting for data to arrive\n", dataDir.c_str());
-		return;
-	}
-	
-	// How many entries are in the dir?
-	nFiles = 0;
-	while ((file = readdir(din)) != NULL) {
-		nFiles++;
-	}
-	
-	// Initialize the file list
-	// The lists starts at 0 and ends 0 again
-	listName = new std::string [nFiles + 1];
-	listIndex = new long[nFiles + 1];
-	listNext = new unsigned int [nFiles + 1];
-	
-	listName[0] = "START";
-	listIndex [0] = 0;
-	listNext[0]= 1;
-	
-	listName[1] = "END";
-	listIndex[1] = LONG_MAX;
-	listNext[1] = 0;
-	
-	nList = 2;
 	
 	
-	rewinddir(din);
+	// clear file lists
+	datei_namen.clear();
+	datei_nummer.clear();
 	
-	while ((file = readdir(din)) != NULL) {
-		if (debug >= 3)
-			printf("\nFile type: %2d, file name: %s\n", file->d_type, file->d_name);
-		
-		if (file->d_type == DT_REG) {
-			// get some number for the file to order it in time
-			// mostly the timestamp part of the filename
-			index = getFileNumber(file->d_name);
-			
-			if (index != 0) {
-				// Insert in the list.
-				// Read the index of the following item in order to find the right slot for the current file
-				i = 0;
-				j = 0;
-				while ((index > listIndex[listNext[i]]) && (j < nList - 1)){
-					i = listNext[i];
-					j++;
-				}
-				
-				// Fill in the new entry in the list
-				listName[nList] = file->d_name;
-				listIndex[nList] = index;
-				listNext[nList] = listNext[i];
-				listNext[i] = nList;
-				nList++;
-			}
-		}
-	}
+	// get new list of files
+	get_file_list(dataDir);
 	
-	closedir(din);
+	// sort them
+	datei_namen.sort();
+	datei_nummer.sort();
+	
 	
 	// print list of data files found
-	if (debug >= 3)
-		printf("\n");
 	if (debug >= 1) {
-		printf("List of data files in %s:\n", dataDir.c_str());
-		printf("Number          List-Index   Next Filename\n");
-		for (i = 0; i < nList; i++) {
-			printf("%6d %19ld %6d %s\n", i, listIndex[i], listNext[i], listName[i].c_str());
+		datei_nummer_pos = datei_nummer.begin();
+		datei_namen_pos = datei_namen.begin();
+		printf("\nList of data files in %s:\n", dataDir.c_str());
+		printf("Number          List-Index Filename\n");
+		for (i = 0; i < datei_namen.size(); i++) {
+			printf("%6d %19ld %s\n", i, *datei_nummer_pos, datei_namen_pos->c_str());
+			datei_nummer_pos++;
+			datei_namen_pos++;
 		}
 		printf("\n");
 	}
@@ -1212,32 +1204,34 @@ void DAQDevice::getNewFiles() {
 	
 	// Read the data from the files
 	try {
-		current_no = 0;
-		for (i = 0; i < nList - 1; i++) {
+		datei_nummer_pos = datei_nummer.begin();
+		datei_namen_pos = datei_namen.begin();
+		
+		for (i = 0; i < datei_namen.size(); i++) {
 			if (debug >= 5)
-				printf("Current no.: %d; List-Index: %ld; last Index: %ld; next no.: %d\n",
-				       current_no, listIndex[current_no], lastIndex, listNext[current_no]);
+				printf("Current no.: %d; List-Index: %ld; last Index: %ld\n",
+				       i, *datei_nummer_pos, lastIndex);
 			
-			if (listIndex[current_no] == lastIndex) {
+			if (*datei_nummer_pos == lastIndex) {
 				// continue reading file from last call
 				if (debug >= 2)
 					printf("Continue reading file no. %d, index %ld, name %s:\n",
-					       current_no, listIndex[current_no], listName[current_no].c_str());
+					       i, *datei_nummer_pos, datei_namen_pos->c_str());
 				
 				// read header if first call of this function or if it failed below
 				err = 0;
 				if (initDone == 0)
-					err = readHeader((dataDir + listName[current_no]).c_str());
+					err = readHeader(datei_namen_pos->c_str());
 				
 				// if successful read data else cancel handling files
 				if (err == 0) {
 					initDone = 1;
-					readData(dataDir.c_str(), listName[current_no].c_str());
+					readData(*datei_namen_pos);
 				} else
 					break;
 			}
 			
-			if (listIndex[current_no] > lastIndex) {
+			if (*datei_nummer_pos > lastIndex) {
 				// read new file from the beginning
 				
 				// Remove the pointers of the last file
@@ -1245,38 +1239,39 @@ void DAQDevice::getNewFiles() {
 				if (fmark > 0) {
 					// Preserve the time stamp
 					fprintf(fmark, "%ld %ld %ld %d\n",
-						listIndex[current_no], lastTime.tv_sec, lastTime.tv_usec, 0);
+						*datei_nummer_pos, lastTime.tv_sec, lastTime.tv_usec, 0);
 					fclose(fmark);
 				}
 				
 				if (debug >= 2)
 					printf("Begin reading file no. %d, index %ld, name %s:\n",
-					       current_no, listIndex[current_no], listName[current_no].c_str());
+					       i, *datei_nummer_pos, datei_namen_pos->c_str());
 				
 				// read header for each new file
 				initDone = 0;
-				err = readHeader((dataDir + listName[current_no]).c_str());
+				err = readHeader(datei_namen_pos->c_str());
 				
 				// if successful read data else cancel handling files
 				if (err == 0) {
 					initDone = 1;
-					readData(dataDir.c_str(), listName[current_no].c_str());
+					readData(*datei_namen_pos);
 				} else
 					break;
 			}
 			
 			// Check if file has been completely read
-			if (listIndex[current_no] >= lastIndex) {
+			if (*datei_nummer_pos >= lastIndex) {
 				if (!reachedEOF()) {
 					if (debug >= 2) {
 						printf("EOF not reached - continue with %s, position %d in next call\n",
-							listName[current_no].c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)
+							datei_namen_pos->c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)
 					}
 					break;
 				}
 			}
 			
-			current_no = listNext[current_no];
+			datei_namen_pos++;
+			datei_nummer_pos++;
 		}
 	} catch (std::invalid_argument &err){
 		printf("Error: %s\n", err.what());
@@ -1288,9 +1283,6 @@ void DAQDevice::getNewFiles() {
 	// The marker file is also updated in readData() with the lastest position in file pointer
 	//
 	
-	delete [] listName;
-	delete [] listIndex;
-	delete [] listNext;
 }
 
 

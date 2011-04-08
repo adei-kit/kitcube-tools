@@ -368,7 +368,7 @@ void Norbert::writeHeader(){
 
 
 // TODO: Move the parsing part to separate functions and move rest to base class
-void Norbert::readData(const char *dir, const char *filename){
+void Norbert::readData(std::string full_filename){
 	unsigned char *buf;
 	int len;
 	int n;
@@ -382,7 +382,6 @@ void Norbert::readData(const char *dir, const char *filename){
 	std::string dateString;
 	unsigned long timestamp;
 	FILE *fmark;
-	std::string filenameMarker;
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
@@ -407,8 +406,7 @@ void Norbert::readData(const char *dir, const char *filename){
 	printf("_____Norbert::readData(...)_____\n");
 
 	// Compile file name
-	filenameData = dir;
-	filenameData += filename;
+	filenameData = full_filename;
 	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());
 
 
@@ -447,8 +445,6 @@ void Norbert::readData(const char *dir, const char *filename){
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
 
-	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dir, moduleNumber, sensorGroupNumber);
-	filenameMarker = line;
 	if (debug > 1)
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
