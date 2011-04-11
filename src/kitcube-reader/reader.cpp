@@ -302,7 +302,7 @@ int Reader::handle_timeout(){
 	if (debug >= 1) {
 		printf("     _____________________________________________________\n");
 		printf("____/__Reading Data %12ld %06ld (sample %06d)___\\_______ \n",
-					  t0.tv_sec, t0.tv_usec, nSamples);
+		       t0.tv_sec, t0.tv_usec, nSamples);
 	}
 	
 	nData = 0;
@@ -317,7 +317,8 @@ int Reader::handle_timeout(){
 			dev[i]->getNewFiles();
 			nData += dev[i]->getProcessedData();
 			
-			if (debug > 3) printf("Processed data %d Bytes\n", dev[i]->getProcessedData());
+			if (debug >= 1)
+				printf("Processed data %d Bytes\n", dev[i]->getProcessedData());
 			gettimeofday(&t3, &tz);
 			
 			tStorage += (t3.tv_sec - t2.tv_sec)*1000000 + (t3.tv_usec-t2.tv_usec);
@@ -326,7 +327,7 @@ int Reader::handle_timeout(){
 		// Complete cycle time
 		gettimeofday(&t4, &tz);
 		tCycle = (t4.tv_sec - t0.tv_sec)*1000000 + (t4.tv_usec-t0.tv_usec);
-		if (debug > 1) {
+		if (debug >= 1) {
 			printf("______Performance______________________________________________\n");
 			printf("Processed data: %8d Bytes     Cycle duration: %8d us\n",
 			       nData, tCycle);

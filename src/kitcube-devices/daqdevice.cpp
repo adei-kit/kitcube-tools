@@ -1147,7 +1147,7 @@ void DAQDevice::getNewFiles() {
 	
 	dataDir = archiveDir + getDataDir();
 	
-	if (debug >= 3)
+	if (debug >= 2)
 		printf("Reading from directory '%s'\n", dataDir.c_str());
 	
 	
@@ -1184,14 +1184,15 @@ void DAQDevice::getNewFiles() {
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dataDir.c_str(), moduleNumber, sensorGroupNumber);
 	filenameMarker = line;
 	fmark = fopen(filenameMarker.c_str(), "r");
-	if (fmark > 0) {
+	if (fmark != NULL) {
 		err = fscanf(fmark, "%ld %ld %ld %d", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	} else {
 		// Create new marker file
-		printf("No marker file found -- try to create a new one  %s\n", filenameMarker.c_str());
+		if (debug >= 1)
+			printf("No marker file found -- try to create a new one  %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "w");
-		if (fmark > 0) {
+		if (fmark != NULL) {
 			fprintf(fmark, "%ld %d %d %d\n", lastIndex, 0, 0, 0);
 			fclose(fmark);
 		}	
@@ -1208,13 +1209,9 @@ void DAQDevice::getNewFiles() {
 		datei_namen_pos = datei_namen.begin();
 		
 		for (i = 0; i < datei_namen.size(); i++) {
-			if (debug >= 5)
-				printf("Current no.: %d; List-Index: %ld; last Index: %ld\n",
-				       i, *datei_nummer_pos, lastIndex);
-			
 			if (*datei_nummer_pos == lastIndex) {
 				// continue reading file from last call
-				if (debug >= 2)
+				if (debug >= 1)
 					printf("Continue reading file no. %d, index %ld, name %s:\n",
 					       i, *datei_nummer_pos, datei_namen_pos->c_str());
 				
@@ -1236,14 +1233,14 @@ void DAQDevice::getNewFiles() {
 				
 				// Remove the pointers of the last file
 				fmark = fopen(filenameMarker.c_str(), "w");
-				if (fmark > 0) {
+				if (fmark != NULL) {
 					// Preserve the time stamp
 					fprintf(fmark, "%ld %ld %ld %d\n",
 						*datei_nummer_pos, lastTime.tv_sec, lastTime.tv_usec, 0);
 					fclose(fmark);
 				}
 				
-				if (debug >= 2)
+				if (debug >= 1)
 					printf("Begin reading file no. %d, index %ld, name %s:\n",
 					       i, *datei_nummer_pos, datei_namen_pos->c_str());
 				
@@ -1262,7 +1259,7 @@ void DAQDevice::getNewFiles() {
 			// Check if file has been completely read
 			if (*datei_nummer_pos >= lastIndex) {
 				if (!reachedEOF()) {
-					if (debug >= 2) {
+					if (debug >= 1) {
 						printf("EOF not reached - continue with %s, position %d in next call\n",
 							datei_namen_pos->c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)
 					}
