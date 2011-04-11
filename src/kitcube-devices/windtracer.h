@@ -177,9 +177,5 @@ private:
 	
 	double *range_gate_center, *range_gate_start, *range_gate_end;
 	
-	int monitor_fft_size;
-	
-	int fft_size;
-	
 };
 #endif

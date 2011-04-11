@@ -148,6 +148,7 @@ unsigned int windtracer::getSensorGroup(){
 	if (debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	
 	number = 0;
 	buffer = "";
 	
@@ -220,18 +221,14 @@ int windtracer::readHeader(const char *filename) {
 	struct RecordHeader record_header;
 	char *ptr;
 	int raw_data_sample_count, samples_per_gate, gates_to_merge;
-	int samples_between_gate_centers;
+	int samples_between_gate_centers, monitor_fft_size, fft_size;
 	double sample_frequency, raw_data_offset_meters, range_per_sample, range_between_gate_centers;
 	double range_per_gate, first_range, corrected_first_range;
 	
 	
-	// ID of the device
-	// NOT in the header
-	// Get it from the filename?!
-	// --> use parser function in reader...
-	
 	if(debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	
 	fd = open(filename, O_RDONLY);
 	if (fd == -1) {
@@ -251,8 +248,8 @@ int windtracer::readHeader(const char *filename) {
 		// TODO: error handling
 	} else if (n == sizeof(record_header)) {
 		if (record_header.block_desc.nId == CONFIG_RECORD_ID) {
-			if (debug >= 3) {
-				printf("Record ID: %#X\n", record_header.block_desc.nId);
+			if (debug >= 2) {
+				printf("Record ID: %#x\n", record_header.block_desc.nId);
 				printf("Record header length: %d\n", record_header.block_desc.nBlockLength);
 				printf("Record length total: %d\n", record_header.nRecordLength);
 				printf("Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%d\n",
@@ -275,8 +272,8 @@ int windtracer::readHeader(const char *filename) {
 		// TODO: error handling
 	} else if (n == sizeof(struct BlockDescriptor)) {
 		if (config_record.block_desc.nId == CONFIG_DATA_BLOCK_ID) {
-			if (debug >= 3) {
-				printf("Block ID: %#X\n", config_record.block_desc.nId);
+			if (debug >= 2) {
+				printf("Block ID: %#x\n", config_record.block_desc.nId);
 				printf("Block length: %d\n", config_record.block_desc.nBlockLength);
 			}
 		} else {
@@ -290,7 +287,7 @@ int windtracer::readHeader(const char *filename) {
 	
 	// get memory for config text block
 	config_text_block_length = config_record.block_desc.nBlockLength - sizeof(struct BlockDescriptor);
-	if (debug >= 3)
+	if (debug >= 2)
 		printf("Config text block length: %d\n", config_text_block_length);
 	if (config_record.chConfiguration != 0)
 		delete [] config_record.chConfiguration;
@@ -302,7 +299,7 @@ int windtracer::readHeader(const char *filename) {
 		printf("Error in read function!!!\n");
 		// TODO: error handling
 	} else if (n == config_text_block_length) {
-		if (debug >= 3)
+		if (debug >= 2)
 			printf("Content:\n%s", config_record.chConfiguration);
 	} else {
 		// file not completly transfered, try again
@@ -343,7 +340,7 @@ int windtracer::readHeader(const char *filename) {
 	ptr = strstr(config_record.chConfiguration, "P_FFT_SIZE");
 	fft_size = atoi(ptr + sizeof("P_FFT_SIZE"));
 	
-	if (debug >= 3) {
+	if (debug >= 2) {
 		printf("Range gates: %d\n", range_gates);
 		printf("Sample frequency: %f\n", sample_frequency);
 		printf("Raw data offset meters: %f\n", raw_data_offset_meters);
@@ -351,6 +348,7 @@ int windtracer::readHeader(const char *filename) {
 		printf("Samples per gate: %d\n", samples_per_gate);
 		printf("Gates to merge: %d\n", gates_to_merge);
 		printf("Monitor FFT size: %d\n", monitor_fft_size);
+		printf("FFT size: %d\n", fft_size);
 	}
 	
 	
@@ -384,7 +382,7 @@ int windtracer::readHeader(const char *filename) {
 		range_gate_end[i] = range_gate_center[i] + range_per_gate / 2.;
 	}
 	
-	if (debug >= 3) {
+	if (debug >= 2) {
 		for (int i = 0; i < range_gates; i++) {
 			printf("Range gate values (%d): %f %f %f\n",
 			       i, range_gate_start[i], range_gate_center[i], range_gate_end[i]);
@@ -464,7 +462,7 @@ void windtracer::readData(std::string full_filename) {
 	char sData[50];
 	char *esc_str;
 	bool not_1st_entry;
-#endif	
+#endif
 	
 	if(debug >= 1)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
@@ -520,11 +518,15 @@ void windtracer::readData(std::string full_filename) {
 	if (debug >= 1)
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
-	if (fmark > 0) {
+	if (fmark != NULL) {
 		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &last_data_timestamp.tv_sec, &last_data_timestamp.tv_usec, &last_position);
 		fclose(fmark);
 		
-		if (debug >= 1)
+		// Read back the data time stamp of the last call
+		tv_timestamp.tv_sec = last_data_timestamp.tv_sec;
+		tv_timestamp.tv_usec = last_data_timestamp.tv_usec;
+		
+		if (debug >= 2)
 			printf("Last time stamp was %ld\n", last_data_timestamp.tv_sec);
 	}
 	
@@ -619,7 +621,7 @@ void windtracer::readData(std::string full_filename) {
 		tv_timestamp.tv_usec = record_header.nNanosecond / 1000;
 		
 		// print data
-		if (debug >= 4) {
+		if (debug >= 5) {
 			printf("%4d: Timestamp: %02d.%02d.%d, %02d:%02d:%02d,%09d\n",
 				loop_counter, record_header.nDayOfMonth, record_header.nMonth, record_header.nYear,
 				record_header.nHour, record_header.nMinute, record_header.nSecond, record_header.nNanosecond);
@@ -746,11 +748,16 @@ void windtracer::readData(std::string full_filename) {
 	mysql_query(db, sql.c_str());
 #endif
 	
+	processedData += current_position - last_position;
+	
+	if (debug >= 1)
+		printf("Position in file: %ld; processed data: %d Bytes\n", current_position, processedData);
+	
 	// save position in file
 	fmark = fopen(filenameMarker.c_str(), "w");
-	if (fmark > 0) {
+	if (fmark != NULL) {
 		fprintf(fmark, "%ld %ld %ld %ld\n",
-			lastIndex, last_data_timestamp.tv_sec, last_data_timestamp.tv_usec, current_position);
+			lastIndex, tv_timestamp.tv_sec, tv_timestamp.tv_usec, current_position);
 		fclose(fmark);
 	}
 	
@@ -769,8 +776,9 @@ void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
 	struct BlockDescriptor *block_desc;
 	
 	
-	if(debug >= 1)
+	if(debug >= 3)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
 	
 	pointer = buffer;
 	
@@ -849,6 +857,10 @@ int windtracer::create_data_table() {
 	std::string sql_stmt;
 	
 	
+	if(debug >= 3)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
 	// search for tables with names like "dataTableName"
 	result = mysql_list_tables(db, dataTableName.c_str());
 	if (result == NULL) {
@@ -864,7 +876,8 @@ int windtracer::create_data_table() {
 	
 	// if there is no row, meaning no table, create it
 	if (row == NULL) {
-		printf("Creating data table %s...\n", dataTableName.c_str());
+		if (debug >= 1)
+			printf("Creating data table %s...\n", dataTableName.c_str());
 		
 		// build SQL statement
 		sql_stmt = "CREATE TABLE `" + dataTableName + "` ";
