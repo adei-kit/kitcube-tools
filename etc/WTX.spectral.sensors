@@ -1,0 +1,11 @@
+Number of sensors: 1
+         1	range_gate_start	WTX.WTX.G.RGS.002.INST	NO
+         2	range_gate_center	WTX.WTX.G.RGC.002.INST	NO
+         3	range_gate_end	WTX.WTX.G.RGE.002.INST	NO
+         4	azimuth_rate	WTX.WTX.A.AZR.002.INST	NO
+         5	elevation_rate	WTX.WTX.A.ELR.002.INST	NO
+         6	azimuth_target	WTX.WTX.A.AZT.002.INST	NO
+         7	elevation_target	WTX.WTX.A.ELT.002.INST	NO
+         8	azimuth_mean	WTX.WTX.A.AZM.002.INST	NO
+         9	elevation_mean	WTX.WTX.A.ELM.002.INST	NO
+        10	Doppler spectra	WTX.WTX.V.DSP.001.INST	NO

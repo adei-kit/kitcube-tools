@@ -1,10 +1,19 @@
-Number of sensors: 9
-         1	radial velocity of scatterers away from instrument	WTH.HYB.V.RAD.001.INST	V
-         2	ratio of signal to noise	WTH.HYB.S.SNR.001.INST	SNR
-         3	Spectral width in the Doppler spectra	WTH.HYB.V.SPW.001.INST	V
-         4	backscatter coefficient at 2.0 micron	WTH.HYB.B.BCO.001.INST	NO
-         5	monitor spectra	WTH.HYB.V.MSP.001.INST	NO
-         6	filtered radial velocity of scatterers away from instrument	WTH.HYB.V.RAD.002.INST	V
-         7	filtered ratio of signal to noise	WTH.HYB.S.SNR.002.INST	SNR
-         8	filtered Spectral width in the Doppler spectra	WTH.HYB.V.SPW.002.INST	V
-         9	filtered backscatter coefficient at 2.0 micron	WTH.HYB.B.BCO.002.INST	NO
+Number of sensors: 18
+         1	range_gate_start	WTH.HYB.G.RGS.001.INST	NO
+         2	range_gate_center	WTH.HYB.G.RGC.001.INST	NO
+         3	range_gate_end	WTH.HYB.G.RGE.001.INST	NO
+         4	azimuth_rate	WTH.HYB.A.AZR.001.INST	NO
+         5	elevation_rate	WTH.HYB.A.ELR.001.INST	NO
+         6	azimuth_target	WTH.HYB.A.AZT.001.INST	NO
+         7	elevation_target	WTH.HYB.A.ELT.001.INST	NO
+         8	azimuth_mean	WTH.HYB.A.AZM.001.INST	NO
+         9	elevation_mean	WTH.HYB.A.ELM.001.INST	NO
+        10	radial velocity of scatterers away from instrument	WTH.HYB.V.RAD.001.INST	V
+        11	ratio of signal to noise	WTH.HYB.S.SNR.001.INST	SNR
+        12	Spectral width in the Doppler spectra	WTH.HYB.V.SPW.001.INST	V
+        13	backscatter coefficient at 2.0 micron	WTH.HYB.B.BCO.001.INST	NO
+        14	monitor spectra	WTH.HYB.V.MSP.001.INST	NO
+        15	filtered radial velocity of scatterers away from instrument	WTH.HYB.V.RAD.002.INST	V
+        16	filtered ratio of signal to noise	WTH.HYB.S.SNR.002.INST	SNR
+        17	filtered Spectral width in the Doppler spectra	WTH.HYB.V.SPW.002.INST	V
+        18	filtered backscatter coefficient at 2.0 micron	WTH.HYB.B.BCO.002.INST	NO

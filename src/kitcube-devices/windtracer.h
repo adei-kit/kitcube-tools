@@ -177,5 +177,7 @@ private:
 	
 	double *range_gate_center, *range_gate_start, *range_gate_end;
 	
+	int num_sensors, num_aux_sensors;
+	
 };
 #endif

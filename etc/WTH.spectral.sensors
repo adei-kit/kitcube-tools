@@ -1,2 +1,11 @@
 Number of sensors: 1
-         1	Doppler spectra	WTH.HYB.V.DSP.001.INST	NO
+         1	range_gate_start	WTH.HYB.G.RGS.002.INST	NO
+         2	range_gate_center	WTH.HYB.G.RGC.002.INST	NO
+         3	range_gate_end	WTH.HYB.G.RGE.002.INST	NO
+         4	azimuth_rate	WTH.HYB.A.AZR.002.INST	NO
+         5	elevation_rate	WTH.HYB.A.ELR.002.INST	NO
+         6	azimuth_target	WTH.HYB.A.AZT.002.INST	NO
+         7	elevation_target	WTH.HYB.A.ELT.002.INST	NO
+         8	azimuth_mean	WTH.HYB.A.AZM.002.INST	NO
+         9	elevation_mean	WTH.HYB.A.ELM.002.INST	NO
+        10	Doppler spectra	WTH.HYB.V.DSP.001.INST	NO

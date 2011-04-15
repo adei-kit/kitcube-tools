@@ -17,6 +17,8 @@ windtracer::windtracer(): DAQBinaryDevice(){
 	range_gate_center = 0;
 	range_gate_end = 0;
 	
+	num_aux_sensors = 9;
+	
 	headerRaw = 0;
 	
 	noData = -9999;
@@ -468,9 +470,12 @@ void windtracer::readData(std::string full_filename) {
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	sensor_values = new float*[nSensors];
-	sensor_values_length = new u_int32_t [nSensors];
-	for (int i = 0; i < nSensors; i++) {
+	// number of "real" sensors = number of sensors - number of auxiliary sensors
+	num_sensors = nSensors - num_aux_sensors;
+	
+	sensor_values = new float*[num_sensors];
+	sensor_values_length = new u_int32_t [num_sensors];
+	for (int i = 0; i < num_sensors; i++) {
 		sensor_values[i] = 0;
 		sensor_values_length[i] = 0;
 	}
@@ -645,13 +650,12 @@ void windtracer::readData(std::string full_filename) {
 		//--------------------------------------------------------------
 		// store data to DB
 		//--------------------------------------------------------------
-		sql = "INSERT INTO `" + dataTableName + "` (usec, file_header, ";
-		sql += "range_gate_start, range_gate_center, range_gate_end, ";
-		sql += "azimuth_rate, elevation_rate, ";
-		sql += "azimuth_target, elevation_target, ";
-		sql += "azimuth_mean, elevation_mean";
-		for (int i = 0; i < nSensors; i++) {
-			if (sensor_values[i])
+		sql = "INSERT INTO `" + dataTableName + "` (usec, file_header";
+		for (int i = 0; i < num_aux_sensors; i++) {
+			sql += ", `" + sensor[i].name + "`";
+		}
+		for (int i = num_aux_sensors; i < nSensors; i++) {
+			if (sensor_values[i - num_aux_sensors])
 				sql += ", `" + sensor[i].name + "`";
 		}
 		sql += ") VALUES (";
@@ -697,7 +701,7 @@ void windtracer::readData(std::string full_filename) {
 		sql += sData;
 		
 		// sensor values
-		for (int i = 0; i < nSensors; i++) {
+		for (int i = 0; i < num_sensors; i++) {
 			if (sensor_values[i]) {
 				esc_str = new char[2 * sensor_values_length[i] + 1];
 				sql += ", '";
@@ -712,8 +716,8 @@ void windtracer::readData(std::string full_filename) {
 		// update row, if time stamp already exists
 		sql += "ON DUPLICATE KEY UPDATE ";
 		not_1st_entry = false;
-		for (int i = 0; i < nSensors; i++) {
-			if (sensor_values[i]) {
+		for (int i = num_aux_sensors; i < nSensors; i++) {
+			if (sensor_values[i - num_aux_sensors]) {
 				if (not_1st_entry)
 					sql += ", ";
 				sql += "`" + sensor[i].name + "`=VALUES(`" + sensor[i].name + "`)";
@@ -733,7 +737,7 @@ void windtracer::readData(std::string full_filename) {
 		current_position += record_header.nRecordLength;
 		
 		// clean up
-		for (int i = 0; i < nSensors; i++) {
+		for (int i = 0; i < num_sensors; i++) {
 			sensor_values[i] = 0;
 			sensor_values_length[i] = 0;
 		}
@@ -883,11 +887,11 @@ int windtracer::create_data_table() {
 		sql_stmt = "CREATE TABLE `" + dataTableName + "` ";
 		sql_stmt += "(`id` bigint auto_increment, `usec` bigint default '0', ";
 		sql_stmt += "file_header text, ";
-		sql_stmt += "range_gate_start blob, range_gate_center blob, range_gate_end blob, ";
-		sql_stmt += "azimuth_rate double, elevation_rate double, ";
-		sql_stmt += "azimuth_target double, elevation_target double, ";
-		sql_stmt += "azimuth_mean double, elevation_mean double, ";
-		for (int i = 0; i < nSensors; i++)
+		for (int i = 0; i < 3; i++)
+			sql_stmt += "`" + sensor[i].name + "` blob, ";
+		for (int i = 3; i < num_aux_sensors; i++)
+			sql_stmt += "`" + sensor[i].name + "` double, ";
+		for (int i = num_aux_sensors; i < nSensors; i++)
 			sql_stmt += "`" + sensor[i].name + "` blob, ";
 		sql_stmt += "PRIMARY KEY (`id`), UNIQUE INDEX(`usec`) ) TYPE=MyISAM";
 		
