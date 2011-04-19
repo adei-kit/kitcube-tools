@@ -463,7 +463,7 @@ void windtracer::readData(std::string full_filename) {
 	std::string sql;
 	char sData[50];
 	char *esc_str;
-	bool not_1st_entry;
+	bool not_1st_entry, have_data;
 #endif
 	
 	if(debug >= 1)
@@ -701,6 +701,7 @@ void windtracer::readData(std::string full_filename) {
 		sql += sData;
 		
 		// sensor values
+		have_data = false;
 		for (int i = 0; i < num_sensors; i++) {
 			if (sensor_values[i]) {
 				esc_str = new char[2 * sensor_values_length[i] + 1];
@@ -709,20 +710,23 @@ void windtracer::readData(std::string full_filename) {
 				sql += esc_str;
 				sql += "'";
 				delete [] esc_str;
+				have_data = true;
 			}
 		}
 		sql += ") ";
 		
-		// update row, if time stamp already exists
-		sql += "ON DUPLICATE KEY UPDATE ";
-		not_1st_entry = false;
-		for (int i = num_aux_sensors; i < nSensors; i++) {
-			if (sensor_values[i - num_aux_sensors]) {
-				if (not_1st_entry)
-					sql += ", ";
-				sql += "`" + sensor[i].name + "`=VALUES(`" + sensor[i].name + "`)";
-				
-				not_1st_entry = true;
+		if (have_data) {
+			// update row, if time stamp already exists
+			sql += "ON DUPLICATE KEY UPDATE ";
+			not_1st_entry = false;
+			for (int i = num_aux_sensors; i < nSensors; i++) {
+				if (sensor_values[i - num_aux_sensors]) {
+					if (not_1st_entry)
+						sql += ", ";
+					sql += "`" + sensor[i].name + "`=VALUES(`" + sensor[i].name + "`)";
+					
+					not_1st_entry = true;
+				}
 			}
 		}
 		
