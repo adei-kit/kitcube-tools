@@ -896,7 +896,7 @@ int windtracer::create_data_table() {
 		for (int i = 3; i < num_aux_sensors; i++)
 			sql_stmt += "`" + sensor[i].name + "` double, ";
 		for (int i = num_aux_sensors; i < nSensors; i++)
-			sql_stmt += "`" + sensor[i].name + "` blob, ";
+			sql_stmt += "`" + sensor[i].name + "` mediumblob, ";
 		sql_stmt += "PRIMARY KEY (`id`), UNIQUE INDEX(`usec`) ) TYPE=MyISAM";
 		
 		// execute SQL statement
