@@ -179,5 +179,6 @@ private:
 	
 	int num_sensors, num_aux_sensors;
 	
+	int create_data_table_name(std::string & data_table_name);
 };
 #endif

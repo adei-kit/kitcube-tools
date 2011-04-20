@@ -1,4 +1,4 @@
-Number of sensors: 18
+Number of sensors: 19
          1	range_gate_start	WTH.HYB.G.RGS.001.INST	NO
          2	range_gate_center	WTH.HYB.G.RGC.001.INST	NO
          3	range_gate_end	WTH.HYB.G.RGE.001.INST	NO
@@ -17,3 +17,4 @@ Number of sensors: 18
         16	filtered ratio of signal to noise	WTH.HYB.S.SNR.002.INST	SNR
         17	filtered Spectral width in the Doppler spectra	WTH.HYB.V.SPW.002.INST	V
         18	filtered backscatter coefficient at 2.0 micron	WTH.HYB.B.BCO.002.INST	NO
+        19	Doppler spectra	WTH.HYB.V.DSP.001.INST	NO

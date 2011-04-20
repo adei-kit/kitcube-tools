@@ -908,3 +908,26 @@ int windtracer::create_data_table() {
 #endif
 	return 0;
 }
+
+
+int windtracer::create_data_table_name(std::string & data_table_name)
+{
+	char *line;
+	int err;
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
+	err = asprintf(&line, "Profiles_%03d_%s", moduleNumber, moduleName.c_str());
+	if (err == -1) {
+		printf("Error: not enough space for string!\n");
+		return -1;
+	} else {
+		printf("Data table name: \t%s\n", line);
+		data_table_name = line;
+		free(line);
+		return 0;
+	}
+}

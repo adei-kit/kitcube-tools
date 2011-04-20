@@ -1,4 +1,4 @@
-Number of sensors: 18
+Number of sensors: 19
          1	range_gate_start	WTX.WTX.G.RGS.001.INST	NO
          2	range_gate_center	WTX.WTX.G.RGC.001.INST	NO
          3	range_gate_end	WTX.WTX.G.RGE.001.INST	NO
@@ -17,3 +17,4 @@ Number of sensors: 18
         16	filtered ratio of signal to noise	WTX.WTX.S.SNR.002.INST	SNR
         17	filtered Spectral width in the Doppler spectra	WTX.WTX.V.SPW.002.INST	V
         18	filtered backscatter coefficient at 1.5 micron	WTX.WTX.B.BCO.002.INST	NO
+        19	Doppler spectra	WTX.WTX.V.DSP.001.INST	NO
