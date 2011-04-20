@@ -463,7 +463,6 @@ void windtracer::readData(std::string full_filename) {
 	std::string sql;
 	char sData[50];
 	char *esc_str;
-	bool not_1st_entry, have_data;
 #endif
 	
 	if(debug >= 1)
@@ -651,9 +650,11 @@ void windtracer::readData(std::string full_filename) {
 		// store data to DB
 		//--------------------------------------------------------------
 		sql = "INSERT INTO `" + dataTableName + "` (usec, file_header";
+		// list aux sensors
 		for (int i = 0; i < num_aux_sensors; i++) {
 			sql += ", `" + sensor[i].name + "`";
 		}
+		// list real sensors, if there is data
 		for (int i = num_aux_sensors; i < nSensors; i++) {
 			if (sensor_values[i - num_aux_sensors])
 				sql += ", `" + sensor[i].name + "`";
@@ -701,7 +702,6 @@ void windtracer::readData(std::string full_filename) {
 		sql += sData;
 		
 		// sensor values
-		have_data = false;
 		for (int i = 0; i < num_sensors; i++) {
 			if (sensor_values[i]) {
 				esc_str = new char[2 * sensor_values_length[i] + 1];
@@ -710,24 +710,23 @@ void windtracer::readData(std::string full_filename) {
 				sql += esc_str;
 				sql += "'";
 				delete [] esc_str;
-				have_data = true;
 			}
 		}
 		sql += ") ";
 		
-		if (have_data) {
-			// update row, if time stamp already exists
-			sql += "ON DUPLICATE KEY UPDATE ";
-			not_1st_entry = false;
-			for (int i = num_aux_sensors; i < nSensors; i++) {
-				if (sensor_values[i - num_aux_sensors]) {
-					if (not_1st_entry)
-						sql += ", ";
-					sql += "`" + sensor[i].name + "`=VALUES(`" + sensor[i].name + "`)";
-					
-					not_1st_entry = true;
-				}
-			}
+		// update row, if time stamp already exists
+		sql += "ON DUPLICATE KEY UPDATE ";
+		// update "dummy" column to avoid a SQL syntax error when
+		// "ON DUPLICATE KEY UPDATE" is used without "arguments" i.e. in
+		// case of no data in a spectral file and to avoid a
+		// "Duplicate entry" error i.e. when inserting from a spectral
+		// file with no data and therefore inserting only aux data
+		// without using the "ON DUPLICATE KEY UPDATE" statement
+		sql += "`" + sensor[num_aux_sensors - 1].name + "`=VALUES(`" + sensor[num_aux_sensors - 1].name + "`)";
+		// update "real" sensor columns if there is data
+		for (int i = num_aux_sensors; i < nSensors; i++) {
+			if (sensor_values[i - num_aux_sensors])
+				sql += ", `" + sensor[i].name + "`=VALUES(`" + sensor[i].name + "`)";
 		}
 		
 		
@@ -891,10 +890,13 @@ int windtracer::create_data_table() {
 		sql_stmt = "CREATE TABLE `" + dataTableName + "` ";
 		sql_stmt += "(`id` bigint auto_increment, `usec` bigint default '0', ";
 		sql_stmt += "file_header text, ";
+		// add columns for range gate data
 		for (int i = 0; i < 3; i++)
 			sql_stmt += "`" + sensor[i].name + "` blob, ";
+		// add columns for azimuth and elevation data
 		for (int i = 3; i < num_aux_sensors; i++)
 			sql_stmt += "`" + sensor[i].name + "` double, ";
+		// add columns for "real"sensors
 		for (int i = num_aux_sensors; i < nSensors; i++)
 			sql_stmt += "`" + sensor[i].name + "` mediumblob, ";
 		sql_stmt += "PRIMARY KEY (`id`), UNIQUE INDEX(`usec`) ) TYPE=MyISAM";
