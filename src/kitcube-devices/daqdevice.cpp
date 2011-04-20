@@ -545,6 +545,29 @@ const char *DAQDevice::getDataFilename(){
 }
 
 
+int DAQDevice::create_data_table_name(std::string & data_table_name)
+{
+	char *line;
+	int err;
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
+	err = asprintf(&line, "Data_%03d_%s_%s", moduleNumber, moduleName.c_str(), sensorGroup.c_str());
+	if (err == -1) {
+		printf("Error: not enough space for string!\n");
+		return -1;
+	} else {
+		printf("Data table name: \t%s\n", line);
+		data_table_name = line;
+		free(line);
+		return 0;
+	}
+}
+
+
 void DAQDevice::openDatabase() {
 #ifdef USE_MYSQL
 	int i;
@@ -562,16 +585,9 @@ void DAQDevice::openDatabase() {
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	// Display arguments
-	for (i = 0; i < nSensors; i++) {
-		//printf("Col %3d: %s\n", i+1, colNames[i].c_str());
-	}
-	
 	// Create Database tables
-	sprintf(line, "Data_%03d_%s_%s", moduleNumber, moduleName.c_str(), sensorGroup.c_str());
-	printf("Data table name: \t%s\n", line);
-	this->dataTableName = line;
-	
+	create_data_table_name(dataTableName);
+	// TODO: error handling
 	
 	//TODO:  Check if the data is available in the class?!
 	

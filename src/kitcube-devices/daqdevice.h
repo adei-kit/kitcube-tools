@@ -339,6 +339,8 @@ private:
 	std::list<long> datei_nummer;
 	
 	int get_file_list(std::string directory);
+	
+	virtual int create_data_table_name(std::string & data_table_name);
 };
 
 #endif
