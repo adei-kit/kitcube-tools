@@ -9,7 +9,7 @@
 
 
 #ifndef SODAR_H
-#define SOADR_H
+#define SODAR_H
 
 #include "daqasciidevice.h"
 #include <cmath>
