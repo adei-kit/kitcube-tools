@@ -60,7 +60,7 @@ int sodar::readHeader(const char *filename) {
 	
 	sscanf(line_of_data, "%d %d %d", &no_of_comment, &no_of_variables, &no_of_heights);
 	
-	// read lines until you find the comment  "variable definitions"
+	// read lines until you find the comment "variable definitions"
 	// ich suche das, damit ich in der Daten Datei keine Zeilen abzaehlen muss ;-)
 	check_ptr = NULL;
 	while (check_ptr == NULL) {
