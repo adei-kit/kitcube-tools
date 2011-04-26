@@ -19,6 +19,7 @@ libkitcube_devices_a_SOURCES = daqdevice.h daqdevice.cpp createdevice.h createde
 	windtracer.cpp windtracer.h \
 	gps.cpp gps.h \
 	sodar.cpp sodar.h \
+	radiosonde.cpp radiosonde.h \
 	syslog.h syslog.cpp lara.h lara.cpp
 
 libkitcube_devices_a_CXXFLAGS =
