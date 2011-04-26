@@ -26,9 +26,9 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube \
 	p090826.dat.template \
 	regenwippe.dat.sensors w20090826.dat.template \
 	scintillometer.RES.sensors 100727.RES.template \
-	compass.csv.template \
 	WTH.sensors WTX.sensors \
 	gps.tro.sensors kitk16230.tro.template \
+	sodar.mnd.sensors 110222.mnd.template \
 	rs1.txt.sensors rs2.txt.sensors CN010211.txt.template \
 	SimRandom.txt.sensors SysLog.sensors \
 	katrin.ini SysLog.katrin.sensors \
