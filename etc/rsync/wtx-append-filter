@@ -1,0 +1,6 @@
+# rsync filter rules merge file for windtracer (WTX)
+# the following files append new data
++ */
++ *.prd
++ *.prf
+- *
