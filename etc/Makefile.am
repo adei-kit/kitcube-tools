@@ -28,6 +28,4 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube \
 	regenwippe.dat.sensors w20090826.dat.template \
 	SimRandom.txt.sensors \
 	SysLog.sensors \
-	norbert.dat.sensors norbert.dat.template \
-	katrin.ini SysLog.katrin.sensors \
-	Lara.run.sensors Lara.stab.sensors Lara.stab.template
+	norbert.dat.sensors norbert.dat.template
