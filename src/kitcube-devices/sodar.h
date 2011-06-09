@@ -27,12 +27,6 @@ public:
 	
 	int readHeader(const char *filename);
 	
-	//void writeHeader();
-	
-	//int parseData(char *line, struct timeval *l_tData, double *sensorValue);
-	
-	//void writeData();
-	
 	/** Define a sensor group number for all the availble sensor group files */
 	unsigned int getSensorGroup();
 	
@@ -45,7 +39,6 @@ public:
 	int read_ascii_line(char *buffer, int length, FILE *file_ptr);
 	
 	
-
 private:
 	/** */
 	double *gap_value;
