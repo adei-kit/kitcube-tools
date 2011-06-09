@@ -2,12 +2,12 @@ Number of sensors: 19
          1	range_gate_start	WTX.WTX.G.RGS.001.INST	NO
          2	range_gate_center	WTX.WTX.G.RGC.001.INST	NO
          3	range_gate_end	WTX.WTX.G.RGE.001.INST	NO
-         4	azimuth_rate	WTX.WTX.A.AZR.001.INST	NO
-         5	elevation_rate	WTX.WTX.A.ELR.001.INST	NO
-         6	azimuth_target	WTX.WTX.A.AZT.001.INST	NO
-         7	elevation_target	WTX.WTX.A.ELT.001.INST	NO
-         8	azimuth_mean	WTX.WTX.A.AZM.001.INST	NO
-         9	elevation_mean	WTX.WTX.A.ELM.001.INST	NO
+         4	azimuth_rate	WTX.WTX.A.AZR.001.INST	AR
+         5	elevation_rate	WTX.WTX.A.ELR.001.INST	AR
+         6	azimuth_target	WTX.WTX.A.AZT.001.INST	A
+         7	elevation_target	WTX.WTX.A.ELT.001.INST	A
+         8	azimuth_mean	WTX.WTX.A.AZM.001.INST	A
+         9	elevation_mean	WTX.WTX.A.ELM.001.INST	A
         10	radial velocity of scatterers away from instrument	WTX.WTX.V.RAD.001.INST	V
         11	ratio of signal to noise	WTX.WTX.S.SNR.001.INST	SNR
         12	Spectral width in the Doppler spectra	WTX.WTX.V.SPW.001.INST	V

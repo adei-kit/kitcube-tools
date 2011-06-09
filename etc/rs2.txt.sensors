@@ -3,9 +3,9 @@ Number of sensors: 13
          2	air temperature	RS2.DFM.T.AIR.001.AVG	T
          3	relative humidity	RS2.DFM.M.RH.001.AVG	MR
          4	wind speed	RS2.DFM.V.VHOR.001.AVG	V
-         5	wind direction	RS2.DFM..V.WD.001.AVG	VD
-         6	longitude	RS2.DFM..G.LON.001.AVG	GI
-         7	latitude	RS2.DFM..G.LAT.001.AVG	GI
+         5	wind direction	RS2.DFM.V.WD.001.AVG	A
+         6	longitude	RS2.DFM.G.LON.001.AVG	A
+         7	latitude	RS2.DFM.G.LAT.001.AVG	A
          8	height above ground	RS2.DFM.H.AGL.001.AVG	H
          9	geopotential height	RS2.DFM.H.GEOP.001.AVG	H
         10	dew point temperature	RS2.DFM.T.D.001.AVG	T

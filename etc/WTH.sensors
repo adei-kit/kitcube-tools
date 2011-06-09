@@ -2,12 +2,12 @@ Number of sensors: 19
          1	range_gate_start	WTH.HYB.G.RGS.001.INST	NO
          2	range_gate_center	WTH.HYB.G.RGC.001.INST	NO
          3	range_gate_end	WTH.HYB.G.RGE.001.INST	NO
-         4	azimuth_rate	WTH.HYB.A.AZR.001.INST	NO
-         5	elevation_rate	WTH.HYB.A.ELR.001.INST	NO
-         6	azimuth_target	WTH.HYB.A.AZT.001.INST	NO
-         7	elevation_target	WTH.HYB.A.ELT.001.INST	NO
-         8	azimuth_mean	WTH.HYB.A.AZM.001.INST	NO
-         9	elevation_mean	WTH.HYB.A.ELM.001.INST	NO
+         4	azimuth_rate	WTH.HYB.A.AZR.001.INST	AR
+         5	elevation_rate	WTH.HYB.A.ELR.001.INST	AR
+         6	azimuth_target	WTH.HYB.A.AZT.001.INST	A
+         7	elevation_target	WTH.HYB.A.ELT.001.INST	A
+         8	azimuth_mean	WTH.HYB.A.AZM.001.INST	A
+         9	elevation_mean	WTH.HYB.A.ELM.001.INST	A
         10	radial velocity of scatterers away from instrument	WTH.HYB.V.RAD.001.INST	V
         11	ratio of signal to noise	WTH.HYB.S.SNR.001.INST	SNR
         12	Spectral width in the Doppler spectra	WTH.HYB.V.SPW.001.INST	V

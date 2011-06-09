@@ -25,6 +25,6 @@ Number of sensors: 29
         24	soil temperature	PT20.STS.T.SOIL.004.INST	T
         25	soil temperature	PT20.STS.T.SOIL.005.INST	T
         26	soil temperature	PT20.STS.T.SOIL.006.INST	T
-        27	wind direction	PT20.WIVA.V.WD.001.INST	VD
+        27	wind direction	PT20.WIVA.V.WD.001.INST	A
         28	soil temperature	PT20.STS.T.SOIL.003.INST	T
         29	housing temperature	PT20.PT.T.H.001.INST	T

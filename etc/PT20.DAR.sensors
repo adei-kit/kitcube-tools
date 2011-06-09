@@ -103,10 +103,10 @@ Number of sensors: 116
        102	soil temperature	PT20.STS.T.SOIL.006.MAX	T
        103	soil temperature	PT20.STS.T.SOIL.006.MIN	T
        104	soil temperature	PT20.STS.T.SOIL.006.STD	T
-       105	wind direction	PT20.WIVA.V.WD.001.AVG	VD
-       106	wind direction	PT20.WIVA.V.WD.001.MAX	VD
-       107	wind direction	PT20.WIVA.V.WD.001.MIN	VD
-       108	wind direction	PT20.WIVA.V.WD.001.STD	VD
+       105	wind direction	PT20.WIVA.V.WD.001.AVG	A
+       106	wind direction	PT20.WIVA.V.WD.001.MAX	A
+       107	wind direction	PT20.WIVA.V.WD.001.MIN	A
+       108	wind direction	PT20.WIVA.V.WD.001.STD	A
        109	soil temperature	PT20.STS.T.SOIL.003.AVG	T
        110	soil temperature	PT20.STS.T.SOIL.003.MAX	T
        111	soil temperature	PT20.STS.T.SOIL.003.MIN	T

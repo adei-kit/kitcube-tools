@@ -8,7 +8,7 @@ Number of sensors: 19
          7	logarithm of the amplitude in ch 2	SCI.SLS40.S.LOGY.001.STD	NO
          8	correlation of the logs of the amps in ch 1 and 2	SCI.SLS40.S.COR.001.AVG	NO
          9	error free data periods	SCI.SLS40.S.STAT.001.AVG	QR
-        10	structure function constant of refractive index fluctuations	SCI.SLS40.F.CN.001.AVG	A
+        10	structure function constant of refractive index fluctuations	SCI.SLS40.F.CN.001.AVG	AB
         11	inner scale of refractive fluctuations	SCI.SLS40.F.LO.001.AVG	C
         12	structure function constant of temperature fluctuations	SCI.SLS40.F.RC.001.AVG	B
         13	kinetic energy dissipation	SCI.SLS40.F.DISS.001.RATE	KED

@@ -39,10 +39,10 @@ Number of sensors: 96
         38	air temperature	EB1.HMP.T.AIR.001.MAX	T
         39	air temperature	EB1.HMP.T.AIR.001.MIN	T
         40	air temperature	EB1.HMP.T.AIR.001.STD	T
-        41	inklination north south	EB1.INK.G.INKS.001.AVG	GI
-        42	inklination north south	EB1.INK.G.INKS.001.MAX	GI
-        43	inklination north south	EB1.INK.G.INKS.001.MIN	GI
-        44	inklination north south	EB1.INK.G.INKS.001.STD	GI
+        41	inklination north south	EB1.INK.G.INKS.001.AVG	A
+        42	inklination north south	EB1.INK.G.INKS.001.MAX	A
+        43	inklination north south	EB1.INK.G.INKS.001.MIN	A
+        44	inklination north south	EB1.INK.G.INKS.001.STD	A
         45	soil heat flux	EB1.SHF.F.SHF.001.AVG	R
         46	soil heat flux	EB1.SHF.F.SHF.001.MAX	R
         47	soil heat flux	EB1.SHF.F.SHF.001.MIN	R
@@ -55,10 +55,10 @@ Number of sensors: 96
         54	relative humidity	EB1.HMP.M.RH.001.MAX	MR
         55	relative humidity	EB1.HMP.M.RH.001.MIN	MR
         56	relative humidity	EB1.HMP.M.RH.001.STD	MR
-        57	inklination east west	EB1.INK.G.INKW.001.AVG	GI
-        58	inklination east west	EB1.INK.G.INKW.001.MAX	GI
-        59	inklination east west	EB1.INK.G.INKW.001.MIN	GI
-        60	inklination east west	EB1.INK.G.INKW.001.STD	GI
+        57	inklination east west	EB1.INK.G.INKW.001.AVG	A
+        58	inklination east west	EB1.INK.G.INKW.001.MAX	A
+        59	inklination east west	EB1.INK.G.INKW.001.MIN	A
+        60	inklination east west	EB1.INK.G.INKW.001.STD	A
         61	soil heat flux	EB1.SHF.F.SHF.002.AVG	R
         62	soil heat flux	EB1.SHF.F.SHF.002.MAX	R
         63	soil heat flux	EB1.SHF.F.SHF.002.MIN	R
