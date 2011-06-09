@@ -129,28 +129,10 @@ public:
 	
 	void setConfigDefaults();
 	
-	/** Read parameter from inifile */
-	//void readInifile(const char *inifile, const char *group = 0);
-	
-	/** Implements the data filename convention of the DAQ module. */
-	const char *getDataFilename();
-	
-	void replaceItem(const char **header, const char *itemTag, const char *newValue);
-	
-	const char * getStringItem(const char **header, const char *itemTag);
-	
-	int getNumericItem(const char **header, const char *itemTag);
-	
 	unsigned int getSensorGroup();
-	
-	const char *getSensorName(const char *longname, unsigned long *aggregation = 0);
-	
-//	const char *getSensorType(const char *unit);
 	
 	/** Get time until next sample and it's id */
 	int readHeader(const char *header);
-	
-	void writeHeader();
 	
 	void readData(std::string full_filename);
 	
@@ -159,6 +141,8 @@ public:
 		       float **sensor_values, u_int32_t *sensor_values_length);
 	
 	int create_data_table();
+	
+	const char *getDataDir();
 	
 private:
 	unsigned char *headerRaw;

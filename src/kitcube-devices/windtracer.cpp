@@ -46,103 +46,6 @@ void windtracer::setConfigDefaults(){
 }
 
 
-const char *windtracer::getDataFilename(){
-	char line[256];
-	
-	// TODO: Create a single source for the filename convention...
-	sprintf(line, "M%02d_%02ld.%s", moduleNumber, fileIndex, sensorGroup.c_str());
-	buffer = line;
-	
-	return(buffer.c_str());
-}
-
-
-// Move to base class?
-void windtracer::replaceItem(const char **header, const char *itemTag, const char *newValue){
-	bool findTag;
-	const char *ptr;
-	const char *startChar;
-	//char *endChar;
-	int i;
-	int len;
-	
-	
-	// TODO: Add length of the header to avoid searching outside the header !!!
-	
-	findTag = false;
-	i = 0;
-	while ((!findTag) && (i < 20)) {
-		ptr = strcasestr(*header,  itemTag);
-		if (ptr > 0){
-			startChar = strstr(ptr, ": ");
-			if (startChar > 0) {
-				
-				// Replace the data in the header
-				// TODO: Move the rest of the header?!
-				//       Check if the value has the same length?!
-				len = strlen(newValue);
-				strncpy((char *)startChar+2, newValue,len);
-				// TODO: End is not found properly?!	
-			}
-		}
-		i++;
-	}
-	
-	*header = startChar + 2 + len;
-}
-
-
-const char *windtracer::getStringItem(const char **header, const char *itemTag){
-	bool findTag;
-	const char *ptr;
-	const char *startChar;
-	const char *endChar;
-	int i;
-	int len;
-	
-	
-	// TODO: Add length of the header to avoid searching outside the header !!!
-	
-	findTag = false;
-	i = 0;
-	while ( (!findTag) && (i < 20)) {
-		ptr = strcasestr(*header,  itemTag);
-		if (ptr > 0) {
-			startChar = strstr(ptr, ": ");
-			if (startChar > 0) {
-			 
-				// Find the end of the line
-				// TODO: End is not found properly?!
-				endChar = strstr(ptr, "\n");
-				if (endChar > 0) {
-					//printf("getStringItem:  %02x %02x %02x %02x --- ", *(endChar-2), *(endChar-1), endChar[0], endChar[1]);
-					
-					len = endChar - startChar - 3;
-					std::string tag(startChar + 2, len);
-					buffer = tag;
-					findTag = true;
-				}
-			}
-		}
-		i++;
-	}
-	
-	*header = endChar + 1;
-	return (buffer.c_str());
-}
-
-
-int windtracer::getNumericItem(const char **header, const char *itemTag){
-	int value;
-	const char *ptr;
-	
-	ptr = getStringItem(header, itemTag);
-	value = atoi(ptr);
-	
-	return(value);
-}
-
-
 unsigned int windtracer::getSensorGroup(){
 	unsigned int number;
 
@@ -165,55 +68,6 @@ unsigned int windtracer::getSensorGroup(){
 	}
 	
 	return number;
-}
-
-
-const char *windtracer::getSensorName(const char *longName, unsigned long *aggregation){
-	const char *ptr;
-	unsigned long type;
-	
-	
-	buffer = longName;
-	type = 0;
-	
-	ptr = strstr(longName, "mittel");
-	if (ptr > 0){
-		std::string result(longName, ptr - longName);
-		buffer = result;
-		type = 1;
-	}
-	
-	ptr = strstr(longName, "max");
-	if (ptr > 0){
-		std::string result(longName, ptr - longName);
-		buffer = result;
-		type = 2;
-	}
-	
-	ptr = strstr(longName, "min");
-	if (ptr > 0){
-		std::string result(longName, ptr - longName);
-		buffer = result;
-		type = 3;
-	}
-	
-	ptr = strstr(longName, "sigma");
-	if (ptr > 0){
-		std::string result(longName, ptr - longName);
-		buffer = result;
-		type = 4;
-	}
-	
-	
-	if (aggregation > 0)
-		*aggregation = type;
-	
-	// Remove with characters at the end of the name
-	if (buffer.at(buffer.length()-1) == ' ')
-		buffer.erase(buffer.length()-1, buffer.length()-1);
-	
-	//buffer.erase(buffer.end(),buffer.end());
-	return(buffer.c_str());
 }
 
 
@@ -395,52 +249,6 @@ int windtracer::readHeader(const char *filename) {
 }
 
 
-void windtracer::writeHeader(){
-	struct timezone tz;
-	const char *headerReadPtr;
-	struct tm *tm_ptr;
-	char time[20];
-	char date[20];
-	int n;
-	std::string filename;
-	int len; 
-	
-
-	if (fd_data <= 0)
-		throw std::invalid_argument("Data file not open");
-		
-	// Read one sample data and replace the starting time by the original time
-	len = this->lenHeader;
-	
-	// Read the template header
-	if (datafileTemplate.length() == 0)
-		throw std::invalid_argument("No template file given");	
-	filename = configDir + datafileTemplate;
-	printf("Reading header from template file %s\n", filename.c_str());
-	readHeader(filename.c_str());
-	headerReadPtr = (const char *) headerRaw;
-	
-	if (headerRaw == 0) {
-		printf("Error: No template header found\n");
-		throw std::invalid_argument("No template header found");
-	}
-	
-	// Replace the start time by the actual time
-	gettimeofday(&tRef, &tz);
-	tm_ptr = gmtime(&tRef.tv_sec);
-	sprintf(time, "%02d:%02d:%02d", tm_ptr->tm_hour, tm_ptr->tm_min, tm_ptr->tm_sec);
-	sprintf(date, "%02d.%02d.%4d", tm_ptr->tm_mday, tm_ptr->tm_mon+1, tm_ptr->tm_year+1900);
-	
-	replaceItem(&headerReadPtr, "Referenzzeit", time);
-	replaceItem(&headerReadPtr, "Referenzdatum", date);
-	//printf("%s\n", headerRaw);
-
-	// Write 64k header
-	n = write(fd_data, headerRaw, len);
-	printf("Write header of %d bytes\n", n);
-}
-
-
 void windtracer::readData(std::string full_filename) {
 	std::string full_data_filename;
 	int fd_data_file;
@@ -458,7 +266,7 @@ void windtracer::readData(std::string full_filename) {
 	float **sensor_values;
 	u_int32_t *sensor_values_length;
 	struct tm tm_timestamp;
-	struct timeval tv_timestamp;
+	struct timeval tv_timestamp = {0};
 #ifdef USE_MYSQL
 	std::string sql;
 	char sData[50];
@@ -932,4 +740,14 @@ int windtracer::create_data_table_name(std::string & data_table_name)
 		free(line);
 		return 0;
 	}
+}
+
+
+const char *windtracer::getDataDir(){
+	char line[256];
+	
+	sprintf(line, "%s/DataFiles", moduleName.c_str());
+	buffer = line;
+	
+	return(buffer.c_str());
 }
