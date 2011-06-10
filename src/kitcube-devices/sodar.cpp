@@ -106,7 +106,7 @@ int sodar::readHeader(const char *filename) {
 	// set default value for height
 	for (int i = 0; i < nSensors; i++) {
 		sensor[i].height = 0;
-		sensor[0].data_format = "<vector>";
+		sensor[i].data_format = "<vector>";
 	}
 	
 	return 0;

@@ -71,7 +71,7 @@ int radiosonde::readHeader(const char *filename)
 	// set default value for height
 	for (int i = 0; i < nSensors; i++) {
 		sensor[i].height = 0;
-		sensor[0].data_format = "<scalar>";
+		sensor[i].data_format = "<scalar>";
 	}
 	
 	return 0;
