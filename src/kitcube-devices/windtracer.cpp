@@ -155,7 +155,7 @@ int windtracer::readHeader(const char *filename) {
 		printf("Error in read function!!!\n");
 		// TODO: error handling
 	} else if (n == config_text_block_length) {
-		if (debug >= 2)
+		if (debug >= 3)
 			printf("Content:\n%s", config_record.chConfiguration);
 	} else {
 		// file not completly transfered, try again
@@ -238,7 +238,7 @@ int windtracer::readHeader(const char *filename) {
 		range_gate_end[i] = range_gate_center[i] + range_per_gate / 2.;
 	}
 	
-	if (debug >= 2) {
+	if (debug >= 3) {
 		for (int i = 0; i < range_gates; i++) {
 			printf("Range gate values (%d): %f %f %f\n",
 			       i, range_gate_start[i], range_gate_center[i], range_gate_end[i]);
@@ -496,17 +496,35 @@ void windtracer::readData(std::string full_filename) {
 		delete [] esc_str;
 		
 		// azimuth and elevation data
-		sprintf(sData, "%f, ", scan_info->fAzimuthRate_dps);
+		if (scan_info->fAzimuthRate_dps == scan_info->fAzimuthRate_dps)
+			sprintf(sData, "%f, ", scan_info->fAzimuthRate_dps);
+		else
+			sprintf(sData, "NULL, ");
 		sql += sData;
-		sprintf(sData, "%f, ", scan_info->fElevationRate_dps);
+		if (scan_info->fElevationRate_dps == scan_info->fElevationRate_dps)
+			sprintf(sData, "%f, ", scan_info->fElevationRate_dps);
+		else
+			sprintf(sData, "NULL, ");
 		sql += sData;
-		sprintf(sData, "%f, ", scan_info->fTargetAzimuth_deg);
+		if (scan_info->fTargetAzimuth_deg == scan_info->fTargetAzimuth_deg)
+			sprintf(sData, "%f, ", scan_info->fTargetAzimuth_deg);
+		else
+			sprintf(sData, "NULL, ");
 		sql += sData;
-		sprintf(sData, "%f, ", scan_info->fTargetElevation_deg);
+		if (scan_info->fTargetElevation_deg == scan_info->fTargetElevation_deg)
+			sprintf(sData, "%f, ", scan_info->fTargetElevation_deg);
+		else
+			sprintf(sData, "NULL, ");
 		sql += sData;
-		sprintf(sData, "%f, ", pulse_info->fAzimuthMean_deg);
+		if (pulse_info->fAzimuthMean_deg == pulse_info->fAzimuthMean_deg)
+			sprintf(sData, "%f, ", pulse_info->fAzimuthMean_deg);
+		else
+			sprintf(sData, "NULL, ");
 		sql += sData;
-		sprintf(sData, "%f", pulse_info->fElevationMean_deg);
+		if (pulse_info->fElevationMean_deg == pulse_info->fElevationMean_deg)
+			sprintf(sData, "%f", pulse_info->fElevationMean_deg);
+		else
+			sprintf(sData, "NULL");
 		sql += sData;
 		
 		// sensor values
@@ -746,7 +764,7 @@ int windtracer::create_data_table_name(std::string & data_table_name)
 const char *windtracer::getDataDir(){
 	char line[256];
 	
-	sprintf(line, "%s/DataFiles", moduleName.c_str());
+	sprintf(line, "%s/DataFiles/", moduleName.c_str());
 	buffer = line;
 	
 	return(buffer.c_str());
