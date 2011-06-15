@@ -30,7 +30,7 @@ samplingTime = 55 sec
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.13/etc
+configDir = /home/cube/kitcube-tools-0.14/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/archive
@@ -41,9 +41,13 @@ dbPassword = cube
 rsyncArgs = --append
 
 [Axis]
-axis = A B C DA DC DN E FC FH FM FV GI H KD KED KH KM KMS L LA MA MF MR MS MW N NE NF NO PA QR R SNR T TA V VD X XG XP XR Z
-A_name = sfcorif
-A_unit = 10^(-12)/m^(2/3)
+axis = A AR AB B C DA DC DN E FC FH FM FV H KD KED KH KM KMS L LA MA MF MR MS MW N NE NF NO PA QR R SNR T TA V X XG XP XR Z
+A_name = angle
+A_unit = degree
+AR_name = angle_rate
+AR_unit = degree/s
+AB_name = sfcorif
+AB_unit = 10^(-12)/m^(2/3)
 B_name = sfcotf
 B_unit = K^2/m^(2/3)
 C_name = isorif
@@ -64,8 +68,6 @@ FM_name = Humidity_flow
 FM_unit = g/m^2*s
 FV_name = Covariance
 FV_unit = m^2/s^2
-GI_name = Inklination
-GI_unit = grad
 H_name = Heigth
 H_unit = m
 KD_name = Duration
@@ -116,8 +118,6 @@ TA_unit = K
 TA_range = 0 400
 V_name = Wind_speed
 V_unit = m/s
-VD_name = Wind_direction
-VD_unit = grad
 X_name = Data
 X_unit = Byte
 XG_name = Data
@@ -631,6 +631,45 @@ datafileTemplate = M12_01.DAR.template
 samplingTime = 10 min
 
 
+; 3M Mast
+
+; misc. data
+[3M-data]
+moduleName = 3M
+moduleNumber = 15
+moduleType = 3M
+moduleComment = 3M_data
+sensorGroup = data
+sensorList = 3M.data.sensors
+datafileTemplate = data.csv.template
+datafileMask = 20<index>.data.csv
+samplingTime = 5 sec
+
+; GPS coordinates
+[3M-gps]
+moduleName = 3M
+moduleNumber = 15
+moduleType = 3M
+moduleComment = 3M_gps
+sensorGroup = gps
+sensorList = 3M.gps.sensors
+datafileTemplate = data.csv.template
+datafileMask = <index>.gps.csv
+samplingTime = 60 min
+
+; wind data
+[3M-sonic]
+moduleName = 3M
+moduleNumber = 15
+moduleType = 3M
+moduleComment = 3M_sonic
+sensorGroup = sonic
+sensorList = 3M.sonic.sensors
+datafileTemplate = data.csv.template
+datafileMask = <index>.sonic.csv
+samplingTime = 0.03125 sec
+
+
 [Ceilometer]
 moduleType = Ceilometer
 moduleNumber = 20
@@ -754,6 +793,8 @@ datafileTemplate = 200908261200.jpg.template
 datafileMask = kitcube_cc2_<index>.jpg
 samplingTime = 2 min
 
+
+; scintillometer
 [SCI]
 moduleName = SCI
 moduleNumber = 50
@@ -765,61 +806,55 @@ datafileTemplate = 100727.RES.template
 datafileMask = <index>.RES
 samplingTime = 1 min
 
-[3M-data]
-moduleName = 3M
-moduleNumber = 55
-moduleType = 3M
-moduleComment = 3M_data
-sensorGroup = data
-sensorList = 3M.data.sensors
-datafileTemplate = data.csv.template
-datafileMask = 20<index>.data.csv
-samplingTime = 5 sec
 
-[3M-gps]
-moduleName = 3M
-moduleNumber = 55
-moduleType = 3M
-moduleComment = 3M_gps
-sensorGroup = gps
-sensorList = 3M.gps.sensors
-datafileTemplate = data.csv.template
-datafileMask = <index>.gps.csv
-samplingTime = 60 min
-
-[3M-sonic]
-moduleName = 3M
-moduleNumber = 55
-moduleType = 3M
-moduleComment = 3M_sonic
-sensorGroup = sonic
-sensorList = 3M.sonic.sensors
-datafileTemplate = data.csv.template
-datafileMask = <index>.sonic.csv
-samplingTime = 0.03125 sec
-
-[WT20-base]
-moduleName = WT20
+; lidars
+[WTH-base]
+moduleName = WTH
 moduleNumber = 60
 moduleType = windtracer
 moduleComment = Windtracer20_base
 sensorGroup = base
-datafileMask = 20<index>_134446_base.prd
-sensorList = WT20.base.sensors
+datafileMask = 20<index>_base.prd
+sensorList = WTH.sensors
 datafileTemplate = 20090729_134446_base.prd.template
 samplingTime = 10 min
 
-[WT20-spectral]
-moduleName = WT20
+[WTH-spectral]
+moduleName = WTH
 moduleNumber = 60
 moduleType = windtracer
 moduleComment = Windtracer20_spectral
 sensorGroup = spectral
-datafileMask = 20<index>_134446_spectral.prd
-sensorList = WT20.spectral.sensors
+datafileMask = 20<index>_spectral.prd
+sensorList = WTH.sensors
 datafileTemplate = 20090729_134446_base.prd.template
 samplingTime = 10 min
 
+
+[WTX-base]
+moduleName = WTX
+moduleNumber = 61
+moduleType = windtracer
+moduleComment = Windtracer15_base
+sensorGroup = base
+datafileMask = 20<index>_base.prd
+sensorList = WTX.sensors
+datafileTemplate = 20090729_134446_base.prd.template
+samplingTime = 10 min
+
+[WTX-spectral]
+moduleName = WTX
+moduleNumber = 61
+moduleType = windtracer
+moduleComment = Windtracer15_spectral
+sensorGroup = spectral
+datafileMask = 20<index>_spectral.prd
+sensorList = WTX.sensors
+datafileTemplate = 20090729_134446_base.prd.template
+samplingTime = 10 min
+
+
+; humidity via GPS
 [GPS]
 moduleName = GPS
 moduleNumber = 65
@@ -831,13 +866,39 @@ datafileTemplate = kitk16230.tro.template
 datafileMask = kitk<index>.tro
 samplingTime = 15 min
 
+
+; sodar: wind profile
 [SOD]
-moduleName = SODAR
+moduleName = SOD
 moduleNumber = 70
 moduleType = sodar
 moduleComment = sodar_comment
 sensorGroup = mnd
 sensorList = sodar.mnd.sensors
-datafileTemplate = 110221.mnd.template
+datafileTemplate = 110222.mnd.template
 datafileMask = <index>.mnd
 samplingTime = 30 min
+
+
+; radiosonden
+[RS1]
+moduleName = RS1
+moduleNumber = 75
+moduleType = radiosonde
+moduleComment = rs_comment
+sensorGroup = txt
+sensorList = rs1.txt.sensors
+datafileTemplate = CN010211.txt.template
+datafileMask = CN<index>.txt
+samplingTime = 8 sec
+
+[RS2]
+moduleName = RS2
+moduleNumber = 76
+moduleType = radiosonde
+moduleComment = rs_comment
+sensorGroup = txt
+sensorList = rs2.txt.sensors
+datafileTemplate = CN010211.txt.template
+datafileMask = CN<index>.txt
+samplingTime = 8 sec
