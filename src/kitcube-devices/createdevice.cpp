@@ -25,6 +25,7 @@
 #include "gps.h"
 #include "sodar.h"
 #include "radiosonde.h"
+#include "windcube.h"
 
 
 extern "C" void *createDevice(const char *devType) {
@@ -46,6 +47,7 @@ extern "C" void *createDevice(const char *devType) {
 	if (strcasestr(devType, "gps") > 0) return( new (gps));
 	if (strcasestr(devType, "sodar") > 0) return( new (sodar));
 	if (strcasestr(devType, "radiosonde") > 0) return( new (radiosonde));
+	if (strcasestr(devType, "windcube") > 0) return( new (windcube));
 	
 	if (strcasestr(devType, "Lara") > 0) return( new (Lara));
 	
