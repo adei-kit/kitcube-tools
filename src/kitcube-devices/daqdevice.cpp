@@ -1016,8 +1016,10 @@ long DAQDevice::getFileNumber(char* filename) {
 	long index;
 	
 	
-	if (debug >= 3)
+	if (debug >= 3) {
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+		printf("... from filename '%s'\n", filename);
+	}
 	
 	
 	// Write the index of the file to a list
@@ -1068,10 +1070,12 @@ long DAQDevice::getFileNumber(char* filename) {
 		}
 	}
 	
-	// remove "_" from windtracer file names
+	// remove "_" from file names
 	pos = filename_string.find('_');
-	if (pos != std::string::npos)
+	while(pos != std::string::npos) {
 		filename_string.erase(pos, 1);
+		pos = filename_string.find('_');
+	}
 	
 	// we assume, that after the removal of prefix and suffix, there are only numbers left
 	// FIXME/TODO: check, if this is really only a number
@@ -1090,6 +1094,14 @@ int DAQDevice::get_file_list(std::string directory)
 	struct dirent *dir_entry;
 	long index;
 
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
+	if (debug >= 2)
+		printf("... from directory '%s'\n", directory.c_str());
+	
 	
 	dir = opendir(directory.c_str());
 	
@@ -1162,9 +1174,6 @@ void DAQDevice::getNewFiles() {
 	processedData = 0; // Counter for the processed bytes
 	
 	dataDir = archiveDir + getDataDir();
-	
-	if (debug >= 2)
-		printf("Reading from directory '%s'\n", dataDir.c_str());
 	
 	
 	// clear file lists
