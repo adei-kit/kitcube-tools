@@ -50,7 +50,7 @@ int radiosonde::readHeader(const char *filename)
 	// get start date and time
 	puffer = strptime(line_of_data, "Datum : %d.%m.%Y\tStartzeit: %T", &start_time_l);
 	if (puffer == NULL) {
-		printf("Regenwippe: Error reading date and time string!\n");
+		printf("Radiosonde: Error reading date and time string!\n");
 		return -1;
 	}
 	
