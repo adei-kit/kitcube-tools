@@ -32,6 +32,8 @@ public:
 
 private:
 	int read_ascii_line(char *buffer, int length, FILE *file_ptr);
+	
+	long getFileNumber(char* filename);
 };
 
 #endif

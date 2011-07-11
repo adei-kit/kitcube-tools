@@ -88,7 +88,7 @@ int hatpro::readHeader(const char *filename) {
 			sensor[i].data_format = "<scalar>";
 		}
 	} else if (sensorGroup == "CBH") {
-		lenDataSet = 42;	// 41 bytes + 1 for '\0' in fgets()
+		lenDataSet = 44;	// 41 bytes + 1 for '\0' in fgets()
 		
 		profile_length = 0;
 		
@@ -241,4 +241,79 @@ int hatpro::read_ascii_line(char *buffer, int length, FILE *file_ptr) {
 	}
 	
 	return 0;
+}
+
+
+long hatpro::getFileNumber(char* filename)
+{
+	std::string filename_prefix;
+	std::string filename_suffix;
+	std::string filename_string;
+	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, filename_length, pos;
+	long index;
+	
+	
+	if (debug >= 3) {
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+		printf("... from filename '%s'\n", filename);
+	}
+	
+	
+	// Find <index> in data template
+	pos_index = datafileMask.find("<index>");
+	// FIXME: this is done in DAQDevice::readInifile already. Why repeat it here? What to do in case of error?
+	if (pos_index == std::string::npos) {
+		printf("Error: There is no tag <index> in datafileMask '%s' specified in inifile %s\n",
+			datafileMask.c_str(), inifile.c_str());
+	}
+	
+	//filename_prefix = datafileMask.substr(0, pos_index);
+	//length_prefix = filename_prefix.length();
+	filename_suffix = datafileMask.substr(pos_index + 7);
+	length_suffix = filename_suffix.length();
+	
+	if (debug >= 4)
+		printf("Position of <index> in %s is: %ld -- Prefix is: %s, suffix is: %s\n",
+		       datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
+	
+	filename_string = filename;
+	
+	// find "_" as and of prefix in filename and removewhole prefix
+	length_prefix = filename_string.find("_") + 1;
+	if (length_prefix != std::string::npos) {
+		filename_string.erase(0, length_prefix);
+	} else {
+		if (debug >= 3)
+			printf("No '_' as end of prefix found in filename!\n");
+		return 0;
+	}
+	
+	// if there is a suffix, check for suffix at end of filename and delete it
+	if (filename_suffix.size() != 0) {
+		pos_suffix = filename_string.find(filename_suffix);
+		filename_length = filename_string.length();
+		if ((pos_suffix != std::string::npos) && ((pos_suffix + length_suffix) == filename_length)) {
+			filename_string.erase(pos_suffix, length_suffix);
+		} else {
+			if (debug >= 3)
+				printf("Suffix not found or not at end of file name!\n");
+			return 0;
+		}
+	}
+	
+	// remove "_" from file names
+	pos = filename_string.find('_');
+	while(pos != std::string::npos) {
+		filename_string.erase(pos, 1);
+		pos = filename_string.find('_');
+	}
+	
+	// we assume, that after the removal of prefix and suffix, there are only numbers left
+	// FIXME/TODO: check, if this is really only a number
+	index = atol(filename_string.c_str());
+	
+	if (debug >= 3)
+		printf("File number is: %ld\n", index);
+	
+	return index;
 }
