@@ -16,7 +16,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <sys/time.h>
-#include <list>
+#include <map>
 
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
@@ -334,9 +334,7 @@ private:
 	/** Flag to switch between unique and relative telescope id's */
 	int uniqueId;
 	
-	std::list<std::string> datei_namen;
-	
-	std::list<long> datei_nummer;
+	std::map<long, std::string> dateien;
 	
 	int get_file_list(std::string directory);
 	
