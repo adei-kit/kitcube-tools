@@ -14,11 +14,6 @@
 #include "daqasciidevice.h"
 
 
-/** Implementation for the weather mast DAQ devices that are
-  * used for turbulence, energy balance and 20m mast.
-  * 
-  */
-
 class dreim: public DAQAsciiDevice {
 public:
 	/**  */
