@@ -21,6 +21,7 @@ libkitcube_devices_a_SOURCES = daqdevice.h daqdevice.cpp createdevice.h createde
 	sodar.cpp sodar.h \
 	radiosonde.cpp radiosonde.h \
 	windcube.cpp windcube.h \
+	hatpro.cpp hatpro.h \
 	syslog.h syslog.cpp lara.h lara.cpp
 
 libkitcube_devices_a_CXXFLAGS =

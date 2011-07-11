@@ -1,0 +1,5 @@
+Number of sensors: 4
+         1	rain flag	RPG.HATPRO.E.FLAG.007.INST	NO
+         2	liquid water path	RPG.HATPRO.M.LW.007.INST	NO
+         3	elevation angle	RPG.HATPRO.A.ELV.007.INST	A
+         4	azimuth angle	RPG.HATPRO.A.AZM.007.INST	A

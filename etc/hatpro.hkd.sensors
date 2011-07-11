@@ -1,0 +1,33 @@
+Number of sensors: 32
+         1	alarm flag	RPG.HATPRO.F.AF.003.INST	NO
+         2	longitude	RPG.HATPRO.G.GPS_Long.003.INST	A
+         3	latitude	RPG.HATPRO.G.GPS_Lat.003.INST	A
+         4	ambient target sensor	RPG.HATPRO.E.TAMB1.003.INST	TA
+         5	ambient target sensor	RPG.HATPRO.E.TAMB2.003.INST	TA
+         6	humidity profiler receiver	RPG.HATPRO.E.TREC1.003.INST	TA
+         7	temperature profiler receiver	RPG.HATPRO.E.TREC2.003.INST	TA
+         8	temperature stability of receiver	RPG.HATPRO.E.SREC1.003.INST	TA
+         9	temperature stability of receiver	RPG.HATPRO.E.SREC2.003.INST	TA
+        10	flash disk capacity	RPG.HATPRO.E.FLASHD.003.INST	NO
+        11	quality flag LWP	RPG.HATPRO.E.QF_LWP.003.INST	NO
+        12	quality flag IWV	RPG.HATPRO.E.QF_IWV.003.INST	NO
+        13	quality flag ATN	RPG.HATPRO.E.QF_ATN.003.INST	NO
+        14	quality flag HPC	RPG.HATPRO.E.QF_HPC.003.INST	NO
+        15	quality flag TPC	RPG.HATPRO.E.QF_TPC.003.INST	NO
+        16	quality flag TPB	RPG.HATPRO.E.QF_TPB.003.INST	NO
+        17	quality flag STA	RPG.HATPRO.E.QF_STA.003.INST	NO
+        18	quality flag LPR	RPG.HATPRO.E.QF_LPR.003.INST	NO
+        19	humidity profiler channel status	RPG.HATPRO.E.HP.003.INST	NO
+        20	temperature profiler channel status	RPG.HATPRO.E.TP.003.INST	NO
+        21	rain flag	RPG.HATPRO.E.FLAG.003.INST	NO
+        22	dew blower	RPG.HATPRO.E.DB.003.INST	NO
+        23	boundary layer mode	RPG.HATPRO.E.BLM.003.INST	NO
+        24	sky tipping calibration	RPG.HATPRO.E.SCA.003.INST	NO
+        25	gain calibration	RPG.HATPRO.E.GCA.003.INST	NO
+        26	noise calibration	RPG.HATPRO.E.NCA.003.INST	NO
+        27	noise diode receiver	RPG.HATPRO.E.ND1.003.INST	NO
+        28	noise diode receiver	RPG.HATPRO.E.ND2.003.INST	NO
+        29	receiver stability status	RPG.HATPRO.E.R1St.003.INST	NO
+        30	receiver stability status	RPG.HATPRO.E.R2St.003.INST	NO
+        31	power failure status	RPG.HATPRO.E.PF.003.INST	NO
+        32	ambient target stability status	RPG.HATPRO.E.TARST.003.INST	NO
