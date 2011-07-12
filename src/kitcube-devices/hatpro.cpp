@@ -57,37 +57,7 @@ int hatpro::readHeader(const char *filename) {
 	
 	noData = 999999;
 	
-	if (sensorGroup == "LWP") {
-		lenDataSet = 62;	// 61 bytes + 1 for '\0' in fgets()
-		
-		profile_length = 0;
-		
-		// set default value for height
-		for (int i = 0; i < nSensors; i++) {
-			sensor[i].height = 5;
-			sensor[i].data_format = "<scalar>";
-		}
-	} else if (sensorGroup == "IWV") {
-		lenDataSet = 61;	// 60 bytes + 1 for '\0' in fgets()
-		
-		profile_length = 0;
-		
-		// set default value for height
-		for (int i = 0; i < nSensors; i++) {
-			sensor[i].height = 5;
-			sensor[i].data_format = "<scalar>";
-		}
-	} else if (sensorGroup == "MET") {
-		lenDataSet = 59;	// 58 bytes + 1 for '\0' in fgets()
-		
-		profile_length = 0;
-		
-		// set default value for height
-		for (int i = 0; i < nSensors; i++) {
-			sensor[i].height = 5;
-			sensor[i].data_format = "<scalar>";
-		}
-	} else if (sensorGroup == "CBH") {
+	if (sensorGroup == "CBH") {
 		lenDataSet = 44;	// 41 bytes + 1 for '\0' in fgets()
 		
 		profile_length = 0;
@@ -109,6 +79,46 @@ int hatpro::readHeader(const char *filename) {
 			sensor[i].data_format = "<scalar>";
 		}
 		
+	} else if (sensorGroup == "IWV") {
+		lenDataSet = 61;	// 60 bytes + 1 for '\0' in fgets()
+		
+		profile_length = 0;
+		
+		// set default value for height
+		for (int i = 0; i < nSensors; i++) {
+			sensor[i].height = 5;
+			sensor[i].data_format = "<scalar>";
+		}
+	} else if (sensorGroup == "LWP") {
+		lenDataSet = 62;	// 61 bytes + 1 for '\0' in fgets()
+		
+		profile_length = 0;
+		
+		// set default value for height
+		for (int i = 0; i < nSensors; i++) {
+			sensor[i].height = 5;
+			sensor[i].data_format = "<scalar>";
+		}
+	} else if (sensorGroup == "MET") {
+		lenDataSet = 59;	// 58 bytes + 1 for '\0' in fgets()
+		
+		profile_length = 0;
+		
+		// set default value for height
+		for (int i = 0; i < nSensors; i++) {
+			sensor[i].height = 5;
+			sensor[i].data_format = "<scalar>";
+		}
+	} else if (sensorGroup == "STA") {
+		lenDataSet = 84;	// 82 bytes + 1 for '\0' in fgets()
+		
+		profile_length = 0;
+		
+		// set default value for height
+		for (int i = 0; i < nSensors; i++) {
+			sensor[i].height = 5;
+			sensor[i].data_format = "<scalar>";
+		}
 	} else if (sensorGroup == "sonic") {
 		lenDataSet = 64;	// 45 -51 bytes plus small buffer; here OK, as fgets stops after "\n"
 		
@@ -171,57 +181,57 @@ unsigned int hatpro::getSensorGroup(){
 	number = 0;
 	buffer = "";
 	
-	if (sensorGroup == "LWP") {
+	if (sensorGroup == "CBH") {
 		number = 1;
 		buffer = "time series";
 	}
 	
-	if (sensorGroup == "IWV") {
+	if (sensorGroup == "CMP") {
 		number = 2;
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "MET") {
+	if (sensorGroup == "HKD") {
 		number = 3;
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "TPC") {
+	if (sensorGroup == "HPC") {
 		number = 4;
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "TPB") {
+	if (sensorGroup == "IWV") {
 		number = 5;
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "HPC") {
+	if (sensorGroup == "LPR") {
 		number = 6;
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "LPR") {
+	if (sensorGroup == "LWP") {
 		number = 7;
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "STA") {
+	if (sensorGroup == "MET") {
 		number = 8;
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "CBH") {
+	if (sensorGroup == "STA") {
 		number = 9;
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "CMP") {
+	if (sensorGroup == "TPB") {
 		number = 10;
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "HKD") {
+	if (sensorGroup == "TPC") {
 		number = 11;
 		buffer = "profile";
 	}

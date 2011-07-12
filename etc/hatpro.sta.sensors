@@ -1,0 +1,8 @@
+Number of sensors: 7
+         1	rain flag	RPG.HATPRO.E.FLAG.009.INST	NO
+         2	lifted index	RPG.HATPRO.Q.LI.009.INST	TA
+         3	KO index	RPG.HATPRO.Q.KO.009.INST	TA
+         4	total totals	RPG.HATPRO.Q.TT.009.INST	TA
+         5	K index	RPG.HATPRO.Q.KI.009.INST	TA
+         6	showalter index	RPG.HATPRO.Q.SI.009.INST	TA
+         7	CAPE	RPG.HATPRO.Q.CAPE.009.INST	NO
