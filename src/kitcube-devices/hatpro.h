@@ -25,6 +25,8 @@ public:
 	
 	int readHeader(const char *filename);
 	
+	void readData(std::string full_filename);
+	
 	int parseData(char *line, struct timeval *l_tData, double *sensorValue);
 	
 	/** Define a sensor group number for all the availble sensor group files */
@@ -34,6 +36,8 @@ private:
 	int read_ascii_line(char *buffer, int length, FILE *file_ptr);
 	
 	long getFileNumber(char* filename);
+	
+	double *altitudes;
 };
 
 #endif
