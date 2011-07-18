@@ -315,6 +315,8 @@ protected:
 	
 	bool fd_eof;
 	
+	virtual int create_data_table_name(std::string & data_table_name);
+	
 private:
 	/** Template for the record filename */
 	std::string filenameTmpl;
@@ -337,8 +339,6 @@ private:
 	std::map<long, std::string> dateien;
 	
 	int get_file_list(std::string directory);
-	
-	virtual int create_data_table_name(std::string & data_table_name);
 };
 
 #endif

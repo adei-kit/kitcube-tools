@@ -212,169 +212,174 @@ void hatpro::readData(std::string full_filename){
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
+	if ( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "HPC") || (sensorGroup == "MET") || (sensorGroup == "STA") )
+		DAQAsciiDevice::readData(full_filename);
+	else {		
 #ifdef USE_MYSQL
-	if (db == 0) {
-		openDatabase();
-	} else {
-		// Automatic reconnect
-		if (mysql_ping(db) != 0){
-			printf("Error: Lost connection to database - automatic reconnect failed\n");
-			throw std::invalid_argument("Database unavailable\n");
+		if (db == 0) {
+			openDatabase();
+		} else {
+			// Automatic reconnect
+			if (mysql_ping(db) != 0){
+				printf("Error: Lost connection to database - automatic reconnect failed\n");
+				throw std::invalid_argument("Database unavailable\n");
+			}
 		}
-	}
 #endif
-	
-	// Allocate memory for one line of data
-	buf = new char[lenDataSet];
-	
-	// Allocate memory for sensor values: 1 comes from header, 1 is scalar and only the rest are profile sensors
-	local_sensorValue = new double[1 + (nSensors - 2) * profile_length];
-	
-	// Compile file name
-	full_data_file_name = full_filename;
-	
-	// open data file
-	if (debug >= 1)
-		printf("Open data file: %s\n", full_data_file_name.c_str());
-	fd_data_file = fopen(full_data_file_name.c_str(), "r");
-	if (fd_data_file == NULL) {
-		printf("Error opening data file %s\n", full_data_file_name.c_str());
-		return;
-	}
-	
-	
-	// Get the last time stamp + file pointer from the marker file
-	lastPos = 0;
-	lastTime.tv_sec = 0;
-	lastTime.tv_usec = 0;
-	
-	if (debug >= 1)
-		printf("Get marker from %s\n", filenameMarker.c_str());
-	fmark = fopen(filenameMarker.c_str(), "r");
-	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
-		fclose(fmark);
 		
-		// Read back the data time stamp of the last call
-		time_stamp_tv.tv_sec = lastTime.tv_sec;
-		time_stamp_tv.tv_usec = lastTime.tv_usec;
+		// Allocate memory for one line of data
+		buf = new char[lenDataSet];
+		
+		// Allocate memory for sensor values: 1 comes from header, 1 is scalar and only the rest are profile sensors
+		local_sensorValue = new double[1 + (nSensors - 2) * profile_length];
+		
+		// Compile file name
+		full_data_file_name = full_filename;
+		
+		// open data file
+		if (debug >= 1)
+			printf("Open data file: %s\n", full_data_file_name.c_str());
+		fd_data_file = fopen(full_data_file_name.c_str(), "r");
+		if (fd_data_file == NULL) {
+			printf("Error opening data file %s\n", full_data_file_name.c_str());
+			return;
+		}
+		
+		
+		// Get the last time stamp + file pointer from the marker file
+		lastPos = 0;
+		lastTime.tv_sec = 0;
+		lastTime.tv_usec = 0;
 		
 		if (debug >= 1)
-			printf("Last time stamp was %ld\n", lastTime.tv_sec);
-	}
-	
-	// Find the beginning of the new data
-	// if new file, jump to the first data set
-	if (lastPos == 0)
-		lastPos = lenHeader;
-	currPos = lastPos;
-	if (debug >= 1)
-		printf("Last position in file: %ld\n", lastPos);
-	fseek(fd_data_file, lastPos, SEEK_SET);
-	
+			printf("Get marker from %s\n", filenameMarker.c_str());
+		fmark = fopen(filenameMarker.c_str(), "r");
+		if (fmark > 0) {
+			fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+			fclose(fmark);
+			
+			// Read back the data time stamp of the last call
+			time_stamp_tv.tv_sec = lastTime.tv_sec;
+			time_stamp_tv.tv_usec = lastTime.tv_usec;
+			
+			if (debug >= 1)
+				printf("Last time stamp was %ld\n", lastTime.tv_sec);
+		}
+		
+		// Find the beginning of the new data
+		// if new file, jump to the first data set
+		if (lastPos == 0)
+			lastPos = lenHeader;
+		currPos = lastPos;
+		if (debug >= 1)
+			printf("Last position in file: %ld\n", lastPos);
+		fseek(fd_data_file, lastPos, SEEK_SET);
+		
 #ifdef USE_MYSQL
-	sql = "LOCK TABLES " + dataTableName + " WRITE";
-	mysql_query(db, sql.c_str());
+		sql = "LOCK TABLES " + dataTableName + " WRITE";
+		mysql_query(db, sql.c_str());
 #endif
-	
-	fd_eof = false;
-	
-	while (loop_counter < 1000000) {
-		// read one line of ASCII data
-		if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
-			fd_eof = true;
-			break;
-		}
 		
-		// parse data
-		parseData(buf, &time_stamp_tv, local_sensorValue);
+		fd_eof = false;
 		
-		// print sensor values
-		if (debug >= 4) {
-			printf("%4d: Received %4d bytes --- ", loop_counter, (int) strlen(buf));
-			printf("%lds %6ldus --- ", time_stamp_tv.tv_sec, time_stamp_tv.tv_usec);
-			for (int k = 0; k < profile_length; k++) {
-				printf("%6.2f ", altitudes[k]);
+		while (loop_counter < 1000000) {
+			// read one line of ASCII data
+			if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
+				fd_eof = true;
+				break;
 			}
-			for (int j = 0; j < (nSensors - 2); j++) {
+			
+			// parse data
+			parseData(buf, &time_stamp_tv, local_sensorValue);
+			
+			// print sensor values
+			if (debug >= 4) {
+				printf("%4d: Received %4d bytes --- ", loop_counter, (int) strlen(buf));
+				printf("%lds %6ldus --- ", time_stamp_tv.tv_sec, time_stamp_tv.tv_usec);
 				for (int k = 0; k < profile_length; k++) {
-					printf("%10.3f ", local_sensorValue[j * profile_length + k]);
+					printf("%.0f ", altitudes[k]);
 				}
+				printf("%.0f ", local_sensorValue[0]);
+				for (int j = 0; j < (nSensors - 2); j++) {
+					for (int k = 0; k < profile_length; k++) {
+						printf("%.2f ", local_sensorValue[1+ j * profile_length + k]);
+					}
+				}
+				printf("\n");
 			}
-			printf("\n");
-		}
 #ifdef USE_MYSQL
-		//--------------------------------------------------------------
-		// store data to DB
-		//--------------------------------------------------------------
-		sql = "INSERT INTO `" + dataTableName + "` (usec";
-		
-		// sensor names
-		for (int i = 0 ; i < nSensors; i++)
-			sql += ", `" + sensor[i].name + "`";
-		
-		sql += ") VALUES (";
-		
-		// time stamp
-		sprintf(sData, "%ld", time_stamp_tv.tv_sec * 1000000 + time_stamp_tv.tv_usec);
-		sql += sData;
-		
-		// rain flag
-		sql += ", ";
-		sprintf(sData, "%f", local_sensorValue[0]);
-		sql += sData;
+			//--------------------------------------------------------------
+			// store data to DB
+			//--------------------------------------------------------------
+			sql = "INSERT INTO `" + dataTableName + "` (usec";
+			
+			// sensor names
+			for (int i = 0 ; i < nSensors; i++)
+				sql += ", `" + sensor[i].name + "`";
+			
+			sql += ") VALUES (";
+			
+			// time stamp
+			sprintf(sData, "%ld", time_stamp_tv.tv_sec * 1000000 + time_stamp_tv.tv_usec);
+			sql += sData;
+			
+			// rain flag
+			sql += ", ";
+			sprintf(sData, "%f", local_sensorValue[0]);
+			sql += sData;
 
-		//altitudes
-		esc_str = new char[2 * profile_length * sizeof(double) + 1];
-		sql += ", '";
-		mysql_real_escape_string(db, esc_str, (const char*)altitudes, profile_length * sizeof(double));
-		sql += esc_str;
-		sql += "'";
-		
-		// sensor values
-		for (int i = 0; i < (nSensors - 2); i++) {
+			//altitudes
+			esc_str = new char[2 * profile_length * sizeof(double) + 1];
 			sql += ", '";
-			mysql_real_escape_string(db, esc_str,
-						 (const char *)(local_sensorValue +1 + i * profile_length),
-						 profile_length * sizeof(double));
+			mysql_real_escape_string(db, esc_str, (const char*)altitudes, profile_length * sizeof(double));
 			sql += esc_str;
 			sql += "'";
-		}
-		delete [] esc_str;
-		sql += ")";
-		
-		// execute SQL statement
-		if (mysql_query(db, sql.c_str())) {
-			printf("Error inserting data: %s\n", mysql_error(db));
-			// TODO: error handling
-		}
+			
+			// sensor values
+			for (int i = 0; i < (nSensors - 2); i++) {
+				sql += ", '";
+				mysql_real_escape_string(db, esc_str,
+							(const char *)(local_sensorValue + 1 + i * profile_length),
+							profile_length * sizeof(double));
+				sql += esc_str;
+				sql += "'";
+			}
+			delete [] esc_str;
+			sql += ")";
+			
+			// execute SQL statement
+			if (mysql_query(db, sql.c_str())) {
+				printf("Error inserting data: %s\n", mysql_error(db));
+				// TODO: error handling
+			}
 #endif // of USE_MYSQL
-		// Get the position in this file
-		currPos = ftell(fd_data_file);
+			// Get the position in this file
+			currPos = ftell(fd_data_file);
+			
+			loop_counter++;
+		}
 		
-		loop_counter++;
-	}
-	
 #ifdef USE_MYSQL
-	sql = "UNLOCK TABLES";
-	mysql_query(db, sql.c_str());
+		sql = "UNLOCK TABLES";
+		mysql_query(db, sql.c_str());
 #endif
-	
-	processedData += currPos - lastPos;
-	
-	if (debug >= 1)
-		printf("Position in file: %ld; processed data: %ld Bytes\n", currPos, currPos - lastPos);
-	
-	// Write the last valid time stamp / file position
-	fmark = fopen(filenameMarker.c_str(), "w");
-	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, time_stamp_tv.tv_sec, time_stamp_tv.tv_usec, currPos);
-		fclose(fmark);
+		
+		processedData += currPos - lastPos;
+		
+		if (debug >= 1)
+			printf("Position in file: %ld; processed data: %ld Bytes\n", currPos, currPos - lastPos);
+		
+		// Write the last valid time stamp / file position
+		fmark = fopen(filenameMarker.c_str(), "w");
+		if (fmark > 0) {
+			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, time_stamp_tv.tv_sec, time_stamp_tv.tv_usec, currPos);
+			fclose(fmark);
+		}
+		
+		fclose(fd_data_file);
+		delete[] buf;
+		delete[] local_sensorValue;
 	}
-	
-	fclose(fd_data_file);
-	delete[] buf;
-	delete[] local_sensorValue;
 }
 
 
@@ -578,4 +583,31 @@ long hatpro::getFileNumber(char* filename)
 		printf("File number is: %ld\n", index);
 	
 	return index;
+}
+
+
+int hatpro::create_data_table_name(std::string & data_table_name)
+{
+	char *line;
+	int err;
+	
+	
+	if (debug >= 1)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
+	if( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "HPC") || (sensorGroup == "MET") || (sensorGroup == "STA") )
+		return DAQDevice::create_data_table_name(dataTableName);
+	else {
+		err = asprintf(&line, "Profiles_%03d_%s_%s", moduleNumber, moduleName.c_str(), sensorGroup.c_str());
+		if (err == -1) {
+			printf("Error: not enough space for string!\n");
+			return -1;
+		} else {
+			printf("Data table name: \t%s\n", line);
+			data_table_name = line;
+			free(line);
+			return 0;
+		}
+	}
 }

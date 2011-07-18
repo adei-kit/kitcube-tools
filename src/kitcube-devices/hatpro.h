@@ -38,6 +38,8 @@ private:
 	long getFileNumber(char* filename);
 	
 	double *altitudes;
+	
+	int create_data_table_name(std::string & data_table_name);
 };
 
 #endif
