@@ -39,7 +39,7 @@ int hatpro::readHeader(const char *filename) {
 	
 	// read some header information from files containing profile data
 	
-	if (sensorGroup == "TPC") {
+	if ( (sensorGroup == "TPB") || (sensorGroup == "TPC") ) {
 		// get profile length
 		buf = NULL;
 		while (buf == NULL) {
@@ -152,6 +152,18 @@ int hatpro::readHeader(const char *filename) {
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 5;
 			sensor[i].data_format = "<scalar>";
+		}
+	} else if (sensorGroup == "TPB") {
+		lenDataSet = 203;	// 202 bytes + 1 for '\0' in fgets()
+		
+		sensor[0].type = "";
+		sensor[0].height = 0;
+		sensor[0].data_format = "<scalar>";
+		
+		for (int i = 1; i < nSensors; i++) {
+			sensor[i].type = "profile";
+			sensor[i].height = 0;
+			sensor[i].data_format = "<vector>";
 		}
 	} else if (sensorGroup == "TPC") {
 		lenDataSet = 347;	// 346 bytes + 1 for '\0' in fgets()
@@ -395,7 +407,7 @@ int hatpro::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	// read date and time
 	puffer = strptime(line, "%y , %m , %d , %H , %M , %S", &timestamp);
 	
-	if (sensorGroup == "TPC") {
+	if ( (sensorGroup == "TPB") || (sensorGroup == "TPC") ) {
 		// read some dummy
 		puffer = strtok(puffer - 1, ",");
 		
