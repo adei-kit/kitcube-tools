@@ -1,0 +1,4 @@
+Number of sensors: 3
+         1	rain flag	RPG.HATPRO.E.FLAG.006.INST	NO
+         2	measurement height above ground	RPG.HATPRO.H.LW.006.PROF	H
+         3	liquid water profile	RPG.HATPRO.M.LW.006.PROF	MA
