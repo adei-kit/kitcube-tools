@@ -1113,7 +1113,7 @@ int DAQDevice::get_file_list(std::string directory)
 			//
 			if ( strcmp(dir_entry->d_name, ".") && strcmp(dir_entry->d_name, "..") ) {
 				// add a '/' if necessary
-				if (directory.find_last_of('/') == (directory.size() - 1) )
+				if (directory.rfind('/') == (directory.size() - 1) )
 					get_file_list(directory + dir_entry->d_name);
 				else
 					get_file_list(directory + "/" + dir_entry->d_name);
@@ -1127,7 +1127,7 @@ int DAQDevice::get_file_list(std::string directory)
 			// if the file is one of the desired
 			if (index != 0) {
 				// add a '/' if necessary
-				if (directory.find_last_of('/') == (directory.size() - 1) )
+				if (directory.rfind('/') == (directory.size() - 1) )
 					dateien.insert(std::pair<long, std::string>(index, directory + dir_entry->d_name));
 				else
 					dateien.insert(std::pair<long, std::string>(index, directory + "/" + dir_entry->d_name));
