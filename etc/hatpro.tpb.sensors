@@ -1,4 +1,4 @@
 Number of sensors: 3
          1	rain flag	RPG.HATPRO.E.FLAG.010.INST	NO
-         2	measurements height above ground	RPG.HATPRO.H.BL.010.PROF	H
+         2	measurement height above ground	RPG.HATPRO.H.BL.010.PROF	H
          3	boundary layer temperature	RPG.HATPRO.T.BL.010.PROF	TA
