@@ -248,7 +248,7 @@ void hatpro::readData(std::string full_filename){
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	if ( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "HPC") || (sensorGroup == "MET") || (sensorGroup == "STA") )
+	if ( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "HPC") || (sensorGroup == "IWV") || (sensorGroup == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
 		DAQAsciiDevice::readData(full_filename);
 	else {		
 #ifdef USE_MYSQL
@@ -562,63 +562,68 @@ long hatpro::getFileNumber(char* filename)
 	}
 	
 	
-	// Find <index> in data template
-	pos_index = datafileMask.find("<index>");
-	// FIXME: this is done in DAQDevice::readInifile already. Why repeat it here? What to do in case of error?
-	if (pos_index == std::string::npos) {
-		printf("Error: There is no tag <index> in datafileMask '%s' specified in inifile %s\n",
-			datafileMask.c_str(), inifile.c_str());
-	}
-	
-	//filename_prefix = datafileMask.substr(0, pos_index);
-	//length_prefix = filename_prefix.length();
-	filename_suffix = datafileMask.substr(pos_index + 7);
-	length_suffix = filename_suffix.length();
-	
-	if (debug >= 4)
-		printf("Position of <index> in %s is: %ld -- Prefix is: %s, suffix is: %s\n",
-		       datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
-	
-	filename_string = filename;
-	
-	// find "_" as and of prefix in filename and removewhole prefix
-	length_prefix = filename_string.find("_") + 1;
-	if (length_prefix != std::string::npos) {
-		filename_string.erase(0, length_prefix);
-	} else {
-		if (debug >= 3)
-			printf("No '_' as end of prefix found in filename!\n");
-		return 0;
-	}
-	
-	// if there is a suffix, check for suffix at end of filename and delete it
-	if (filename_suffix.size() != 0) {
-		pos_suffix = filename_string.find(filename_suffix);
-		filename_length = filename_string.length();
-		if ((pos_suffix != std::string::npos) && ((pos_suffix + length_suffix) == filename_length)) {
-			filename_string.erase(pos_suffix, length_suffix);
+	if ( (sensorGroup == "IWV") || (sensorGroup == "LWP") )
+		return DAQDevice::getFileNumber(filename);
+	else {
+		// Find <index> in data template
+		pos_index = datafileMask.find("<index>");
+		// FIXME: this is done in DAQDevice::readInifile already. Why repeat it here? What to do in case of error?
+		if (pos_index == std::string::npos) {
+			printf("Error: There is no tag <index> in datafileMask '%s' specified in inifile %s\n",
+				datafileMask.c_str(), inifile.c_str());
+		}
+		
+		//filename_prefix = datafileMask.substr(0, pos_index);
+		//length_prefix = filename_prefix.length();
+		filename_suffix = datafileMask.substr(pos_index + 7);
+		length_suffix = filename_suffix.length();
+		
+		if (debug >= 4)
+			printf("Position of <index> in %s is: %ld -- Prefix is: %s, suffix is: %s\n",
+			datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
+		
+		filename_string = filename;
+		
+		// find "_" as end of prefix in filename and remove whole prefix
+		pos_prefix = filename_string.find("_");
+		if (pos_prefix != std::string::npos) {
+			length_prefix = pos_prefix + 1;
+			filename_string.erase(0, length_prefix);
 		} else {
 			if (debug >= 3)
-				printf("Suffix not found or not at end of file name!\n");
+				printf("No '_' as end of prefix found in filename!\n");
 			return 0;
 		}
-	}
-	
-	// remove "_" from file names
-	pos = filename_string.find('_');
-	while(pos != std::string::npos) {
-		filename_string.erase(pos, 1);
+		
+		// if there is a suffix, check for suffix at end of filename and delete it
+		if (filename_suffix.size() != 0) {
+			pos_suffix = filename_string.find(filename_suffix);
+			filename_length = filename_string.length();
+			if ((pos_suffix != std::string::npos) && ((pos_suffix + length_suffix) == filename_length)) {
+				filename_string.erase(pos_suffix, length_suffix);
+			} else {
+				if (debug >= 3)
+					printf("Suffix not found or not at end of file name!\n");
+				return 0;
+			}
+		}
+		
+		// remove "_" from file names
 		pos = filename_string.find('_');
+		while(pos != std::string::npos) {
+			filename_string.erase(pos, 1);
+			pos = filename_string.find('_');
+		}
+		
+		// we assume, that after the removal of prefix and suffix, there are only numbers left
+		// FIXME/TODO: check, if this is really only a number
+		index = atol(filename_string.c_str());
+		
+		if (debug >= 3)
+			printf("File number is: %ld\n", index);
+		
+		return index;
 	}
-	
-	// we assume, that after the removal of prefix and suffix, there are only numbers left
-	// FIXME/TODO: check, if this is really only a number
-	index = atol(filename_string.c_str());
-	
-	if (debug >= 3)
-		printf("File number is: %ld\n", index);
-	
-	return index;
 }
 
 
@@ -632,7 +637,7 @@ int hatpro::create_data_table_name(std::string & data_table_name)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	if( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "HPC") || (sensorGroup == "MET") || (sensorGroup == "STA") )
+	if( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "HPC") || (sensorGroup == "IWV") || (sensorGroup == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
 		return DAQDevice::create_data_table_name(dataTableName);
 	else {
 		err = asprintf(&line, "Profiles_%03d_%s_%s", moduleNumber, moduleName.c_str(), sensorGroup.c_str());
