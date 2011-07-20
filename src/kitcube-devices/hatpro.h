@@ -37,7 +37,13 @@ private:
 	
 	long getFileNumber(char* filename);
 	
+	int number_of_samples;
+	
 	double *altitudes;
+	
+	int pos_hpc_data;
+	
+	bool first_half;
 	
 	int create_data_table_name(std::string & data_table_name);
 };

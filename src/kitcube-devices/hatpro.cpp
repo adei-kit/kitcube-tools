@@ -36,10 +36,19 @@ int hatpro::readHeader(const char *filename) {
 		return -1;
 	}
 	
+	// read number of samples in file
+	buf = NULL;
+	while (buf == NULL) {
+		if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+			return -1;
+		
+		buf = strstr(line_of_data, "# Number of Samples");
+	}
+	number_of_samples = atoi(line_of_data);
+	
 	
 	// read some header information from files containing profile data
-	
-	if ( (sensorGroup == "CMP") || (sensorGroup == "LPR") || (sensorGroup == "TPB") || (sensorGroup == "TPC") ) {
+	if ( (sensorGroup == "CMP") || (sensorGroup == "HPC") || (sensorGroup == "LPR") || (sensorGroup == "TPB") || (sensorGroup == "TPC") ) {
 		// get profile length
 		buf = NULL;
 		while (buf == NULL) {
@@ -85,6 +94,18 @@ int hatpro::readHeader(const char *filename) {
 	}
 	lenHeader = ftell(data_file_ptr);
 	
+	// find second half of file for "HPC" data file
+	if (sensorGroup == "HPC") {
+		buf = NULL;
+		while (buf == NULL) {
+			if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+				return -1;
+			
+			buf = strstr(line_of_data, "# Ye , Mo , Da");
+		}
+		pos_hpc_data = ftell(data_file_ptr);
+	}
+	
 	// close data file
 	fclose(data_file_ptr);
 	
@@ -125,6 +146,18 @@ int hatpro::readHeader(const char *filename) {
 			sensor[i].data_format = "<scalar>";
 		}
 		
+	} else if (sensorGroup == "HPC") {
+		lenDataSet = 347;	// 346 bytes + 1 for '\0' in fgets()
+		
+		sensor[0].type = "";
+		sensor[0].height = 0;
+		sensor[0].data_format = "<scalar>";
+		
+		for (int i = 1; i < nSensors; i++) {
+			sensor[i].type = "profile";
+			sensor[i].height = 0;
+			sensor[i].data_format = "<vector>";
+		}
 	} else if (sensorGroup == "IWV") {
 		lenDataSet = 61;	// 60 bytes + 1 for '\0' in fgets()
 		
@@ -234,7 +267,7 @@ void hatpro::readData(std::string full_filename){
 	struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long currPos;
-	long lastIndex;
+	long lastIndex, tmp_pos1, tmp_pos2;
 	struct timeval time_stamp_tv = {0};
 	
 #ifdef USE_MYSQL
@@ -248,7 +281,7 @@ void hatpro::readData(std::string full_filename){
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	if ( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "HPC") || (sensorGroup == "IWV") || (sensorGroup == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
+	if ( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "IWV") || (sensorGroup == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
 		DAQAsciiDevice::readData(full_filename);
 	else {		
 #ifdef USE_MYSQL
@@ -317,16 +350,38 @@ void hatpro::readData(std::string full_filename){
 #endif
 		
 		fd_eof = false;
+		tmp_pos2 = pos_hpc_data;
 		
-		while (loop_counter < 1000000) {
+		for (loop_counter = 0; loop_counter < number_of_samples; loop_counter++) {
 			// read one line of ASCII data
 			if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
 				fd_eof = true;
 				break;
 			}
 			
+			first_half = true;
+			
 			// parse data
 			parseData(buf, &time_stamp_tv, local_sensorValue);
+			
+			if (sensorGroup == "HPC") {
+				tmp_pos1 = ftell(fd_data_file);
+				fseek(fd_data_file, tmp_pos2, SEEK_SET);
+				
+				// read one line of ASCII data
+				if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
+					fd_eof = true;
+					break;
+				}
+				
+				first_half = false;
+				
+				// parse data
+				parseData(buf, &time_stamp_tv, local_sensorValue + 1 + profile_length);
+				
+				tmp_pos2 = ftell(fd_data_file);
+				fseek(fd_data_file, tmp_pos1, SEEK_SET);
+			}
 			
 			// print sensor values
 			if (debug >= 4) {
@@ -391,14 +446,13 @@ void hatpro::readData(std::string full_filename){
 #endif // of USE_MYSQL
 			// Get the position in this file
 			currPos = ftell(fd_data_file);
-			
-			loop_counter++;
 		}
 		
 #ifdef USE_MYSQL
 		sql = "UNLOCK TABLES";
 		mysql_query(db, sql.c_str());
 #endif
+		fd_eof = true;
 		
 		processedData += currPos - lastPos;
 		
@@ -431,7 +485,7 @@ int hatpro::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	// read date and time
 	puffer = strptime(line, "%y , %m , %d , %H , %M , %S", &timestamp);
 	
-	if ( (sensorGroup == "CMP") || (sensorGroup == "LPR") || (sensorGroup == "TPB") || (sensorGroup == "TPC") ) {
+	if ( (sensorGroup == "CMP") || (sensorGroup == "HPC") || (sensorGroup == "LPR") || (sensorGroup == "TPB") || (sensorGroup == "TPC") ) {
 		// read some dummy
 		puffer = strtok(puffer - 1, ",");
 		
@@ -440,11 +494,12 @@ int hatpro::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		sensorValue[0] = strtod(puffer, NULL);
 		
 		// read sensor values
-		for (int i = 0; i < nSensors - 2; i++) {
-			for (int j = 0; j < profile_length; j++) {
-				puffer = strtok(NULL, ",\r\n");
-				sensorValue[1 + i * profile_length + j] = strtod(puffer, NULL);
-			}
+		for (int j = 0; j < profile_length; j++) {
+			puffer = strtok(NULL, ",\r\n");
+			if (first_half)
+				sensorValue[1 + j] = strtod(puffer, NULL);
+			else
+				sensorValue[j] = strtod(puffer, NULL);
 		}
 	} else {
 		// read some dummy
@@ -634,7 +689,7 @@ int hatpro::create_data_table_name(std::string & data_table_name)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	if( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "HPC") || (sensorGroup == "IWV") || (sensorGroup == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
+	if( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "IWV") || (sensorGroup == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
 		return DAQDevice::create_data_table_name(dataTableName);
 	else {
 		err = asprintf(&line, "Profiles_%03d_%s_%s", moduleNumber, moduleName.c_str(), sensorGroup.c_str());
