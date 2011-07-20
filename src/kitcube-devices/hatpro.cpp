@@ -552,7 +552,7 @@ long hatpro::getFileNumber(char* filename)
 	std::string filename_prefix;
 	std::string filename_suffix;
 	std::string filename_string;
-	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, filename_length, pos;
+	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, pos;
 	long index;
 	
 	
@@ -595,17 +595,14 @@ long hatpro::getFileNumber(char* filename)
 			return 0;
 		}
 		
-		// if there is a suffix, check for suffix at end of filename and delete it
-		if (filename_suffix.size() != 0) {
-			pos_suffix = filename_string.find(filename_suffix);
-			filename_length = filename_string.length();
-			if ((pos_suffix != std::string::npos) && ((pos_suffix + length_suffix) == filename_length)) {
-				filename_string.erase(pos_suffix, length_suffix);
-			} else {
-				if (debug >= 3)
-					printf("Suffix not found or not at end of file name!\n");
-				return 0;
-			}
+		// find "." as beginning of suffix and compare it to given suffix, then remove it
+		pos_suffix = filename_string.find(".");
+		if ((pos_suffix != std::string::npos) && (filename_string.substr(pos_suffix) == filename_suffix)) {
+			filename_string.erase(pos_suffix);
+		} else {
+			if (debug >= 3)
+				printf("Suffix not found or not at end of file name!\n");
+			return 0;
 		}
 		
 		// remove "_" from file names
