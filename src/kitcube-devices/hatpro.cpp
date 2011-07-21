@@ -158,7 +158,7 @@ int hatpro::readHeader(const char *filename) {
 			sensor[i].height = 0;
 			sensor[i].data_format = "<vector>";
 		}
-	} else if (sensorGroup == "IWV") {
+	} else if (sensorGroup.substr(0, 3) == "IWV") {
 		lenDataSet = 61;	// 60 bytes + 1 for '\0' in fgets()
 		
 		profile_length = 0;
@@ -180,7 +180,7 @@ int hatpro::readHeader(const char *filename) {
 			sensor[i].height = 0;
 			sensor[i].data_format = "<vector>";
 		}
-	} else if (sensorGroup == "LWP") {
+	} else if (sensorGroup.substr(0, 3) == "LWP") {
 		lenDataSet = 62;	// 61 bytes + 1 for '\0' in fgets()
 		
 		profile_length = 0;
@@ -234,17 +234,6 @@ int hatpro::readHeader(const char *filename) {
 			sensor[i].height = 0;
 			sensor[i].data_format = "<vector>";
 		}
-	} else if (sensorGroup == "sonic") {
-		lenDataSet = 64;	// 45 -51 bytes plus small buffer; here OK, as fgets stops after "\n"
-		
-		profile_length = 0;
-		
-		// set default value for height
-		for (int i = 0; i < nSensors; i++) {
-			sensor[i].height = 5;
-			sensor[i].data_format = "<scalar>";
-		}
-		
 	} else {
 		printf("Unknown sensor group!\n");
 	}
@@ -281,7 +270,7 @@ void hatpro::readData(std::string full_filename){
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	if ( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "IWV") || (sensorGroup == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
+	if ( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup.substr(0, 3) == "IWV") || (sensorGroup.substr(0, 3) == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
 		DAQAsciiDevice::readData(full_filename);
 	else {		
 #ifdef USE_MYSQL
@@ -549,8 +538,23 @@ unsigned int hatpro::getSensorGroup(){
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "IWV") {
-		number = 5;
+	if (sensorGroup == "IWV_PPI") {
+		number = 51;
+		buffer = "profile";
+	}
+	
+	if (sensorGroup == "IWV_RHI") {
+		number = 52;
+		buffer = "profile";
+	}
+	
+	if (sensorGroup == "IWV_VER") {
+		number = 53;
+		buffer = "profile";
+	}
+	
+	if (sensorGroup == "IWV_VOL") {
+		number = 54;
 		buffer = "profile";
 	}
 	
@@ -559,8 +563,23 @@ unsigned int hatpro::getSensorGroup(){
 		buffer = "profile";
 	}
 	
-	if (sensorGroup == "LWP") {
-		number = 7;
+	if (sensorGroup == "LWP_PPI") {
+		number = 71;
+		buffer = "profile";
+	}
+	
+	if (sensorGroup == "LWP_RHI") {
+		number = 72;
+		buffer = "profile";
+	}
+	
+	if (sensorGroup == "LWP_VER") {
+		number = 73;
+		buffer = "profile";
+	}
+	
+	if (sensorGroup == "LWP_VOL") {
+		number = 74;
 		buffer = "profile";
 	}
 	
@@ -617,7 +636,7 @@ long hatpro::getFileNumber(char* filename)
 	}
 	
 	
-	if ( (sensorGroup == "IWV") || (sensorGroup == "LWP") )
+	if ( (sensorGroup.substr(0, 3) == "IWV") || (sensorGroup.substr(0, 3) == "LWP") )
 		return DAQDevice::getFileNumber(filename);
 	else {
 		// Find <index> in data template
@@ -689,7 +708,7 @@ int hatpro::create_data_table_name(std::string & data_table_name)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	if( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup == "IWV") || (sensorGroup == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
+	if( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup.substr(0, 3) == "IWV") || (sensorGroup.substr(0, 3) == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
 		return DAQDevice::create_data_table_name(dataTableName);
 	else {
 		err = asprintf(&line, "Profiles_%03d_%s_%s", moduleNumber, moduleName.c_str(), sensorGroup.c_str());
