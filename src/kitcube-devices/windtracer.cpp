@@ -672,8 +672,8 @@ void windtracer::parseData(u_char *buffer, struct RecordHeader *record_header,
 		} else if (sensorGroup == "spectral") {
 			// check data block ID
 			if (block_desc->nId == PRODUCT_SPECTRAL_ESTIMATE_DATA_BLOCK_ID) {
-				sensor_values[0] = (float *) pointer;
-				sensor_values_length[0] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
+				sensor_values[9] = (float *) pointer;
+				sensor_values_length[9] = block_desc->nBlockLength - sizeof(struct BlockDescriptor);
 			}
 		}
 		
