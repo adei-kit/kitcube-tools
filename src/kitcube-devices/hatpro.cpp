@@ -113,7 +113,7 @@ int hatpro::readHeader(const char *filename) {
 	noData = 999999;
 	
 	if (sensorGroup == "CBH") {
-		lenDataSet = 44;	// 41 bytes + 1 for '\0' in fgets()
+		lenDataSet = 44;	// 43 bytes + 1 for '\0' in fgets()
 		
 		profile_length = 0;
 		
@@ -201,7 +201,7 @@ int hatpro::readHeader(const char *filename) {
 			sensor[i].data_format = "<scalar>";
 		}
 	} else if (sensorGroup == "STA") {
-		lenDataSet = 84;	// 82 bytes + 1 for '\0' in fgets()
+		lenDataSet = 86;	// 85 bytes + 1 for '\0' in fgets()
 		
 		profile_length = 0;
 		
