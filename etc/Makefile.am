@@ -18,11 +18,17 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube \
 	3M.gps.sensors gps.csv.template \
 	3M.sonic.sensors sonic.csv.template \
 	scintillometer.RES.sensors 100727.RES.template \
+	WTH.sensors \
+	WTX.sensors \
+	windcube.sta.sensors \
 	gps.tro.sensors kitk16230.tro.template \
 	sodar.mnd.sensors 110222.mnd.template \
 	rs1.txt.sensors rs2.txt.sensors CN010211.txt.template \
-	WTH.sensors \
-	WTX.sensors \
+	hatpro.cbh.sensors hatpro.cmp.sensors hatpro.hkd.sensors hatpro.hpc.sensors \
+	hatpro.iwv.ppi.sensors hatpro.iwv.rhi.sensors hatpro.iwv.ver.sensors hatpro.iwv.vol.sensors \
+	hatpro.lpr.sensors \
+	hatpro.lwp.ppi.sensors hatpro.lwp.rhi.sensors hatpro.lwp.ver.sensors hatpro.lwp.vol.sensors \
+	hatpro.met.sensors hatpro.sta.sensors hatpro.tpb.sensors hatpro.tpc.sensors \
 	jwd.dd.sensors dd090826.template \
 	jwd.rd.sensors rd090826.template \
 	regenwippe.dat.sensors w20090826.dat.template \
