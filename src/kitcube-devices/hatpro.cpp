@@ -348,10 +348,15 @@ void hatpro::readData(std::string full_filename){
 				break;
 			}
 			
-			first_half = true;
+			first_half = true;	// for parseData
 			
-			// parse data
-			parseData(buf, &time_stamp_tv, local_sensorValue);
+			// parse data and check for error in especially in HPC files:
+			// after restart of the application the last file is read
+			// at the middle comment lines, this is caught here
+			if (parseData(buf, &time_stamp_tv, local_sensorValue) == -1) {
+				fd_eof = true;
+				break;
+			}
 			
 			if (sensorGroup == "HPC") {
 				tmp_pos1 = ftell(fd_data_file);
@@ -363,7 +368,7 @@ void hatpro::readData(std::string full_filename){
 					break;
 				}
 				
-				first_half = false;
+				first_half = false;	// for parseData
 				
 				// parse data
 				parseData(buf, &time_stamp_tv, local_sensorValue + 1 + profile_length);
@@ -473,6 +478,12 @@ int hatpro::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	
 	// read date and time
 	puffer = strptime(line, "%y , %m , %d , %H , %M , %S", &timestamp);
+	// error checking for HPC files: at restart of the application the last
+	// file is read at the middle comment lines, this is caught here
+	if (puffer == NULL) {
+		printf("HATPRO: Error reading date and time string!\n");
+		return -1;
+	}
 	
 	if ( (sensorGroup == "CMP") || (sensorGroup == "HPC") || (sensorGroup == "LPR") || (sensorGroup == "TPB") || (sensorGroup == "TPC") ) {
 		// read some dummy
