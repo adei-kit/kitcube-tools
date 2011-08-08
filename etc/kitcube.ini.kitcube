@@ -30,7 +30,7 @@ samplingTime = 55 sec
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.15/etc
+configDir = /home/cube/kitcube-tools-0.16/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/hatzenbuehl
@@ -38,7 +38,6 @@ dbHost = imk-db1
 dbName = hatzenbuehl
 dbUser = cube
 dbPassword = cube
-rsyncArgs = --append
 
 [Axis]
 axis = A AR AB B C DA DC DN E FC FH FM FV H KD KED KH KM KMS L LA MA MF MR MS MW N NE NF NO PA QR R SNR T TA V VAR X XG XP XR Z
