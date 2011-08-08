@@ -13,16 +13,11 @@ module = Mast12-calc
 ; Reading data and filling in the database
 [Reader]
 ;module = Mast12-calc
-module = Mast1-das Mast1-dal Mast1-dar Mast1-dax \
-         Mast2-das Mast2-dal Mast2-dar Mast2-dax \
-         Mast3-das Mast3-dal Mast3-dar Mast3-dax \
-         Mast4-das Mast4-dal Mast4-dar Mast4-dax \
-         Mast5-das Mast5-dal Mast5-dar Mast5-dax \
-         Mast6-das Mast6-dal Mast6-dar Mast6-dax \
-         Mast7-das Mast7-dal Mast7-dar Mast7-dax \
-         Mast11-das Mast11-dal Mast11-dar Mast11-dax \
-         Mast12-das Mast12-dal Mast12-dar Mast12-dax \
-         PT20-dal PT20-dar
+module = RPG-CBH RPG-CMP RPG-HKD RPG-HPC \                                                                                                                                                                                       
+         RPG-IWV-PPI RPG-IWV-VER \                                                                                                                                                                                               
+         RPG-LPR \                                                                                                                                                                                                               
+         RPG-LWP-PPI RPG-LWP-VER \                                                                                                                                                                                               
+         RPG-MET RPG-STA RPG-TPB RPG-TPC
 ;samplingTime = 1 min
 samplingTime = 55 sec
 

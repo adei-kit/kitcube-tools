@@ -2,7 +2,7 @@
 #
 
 
-EXTRA_DIST = kitcube.ini kitcube.ini.kitcube \
+EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	kitcube-data.ipepdvadei kitcube-reader.ipepdvadei \
 	T01.DAS.sensors T01.DAL.sensors T01.DAR.sensors T01.DAX.sensors \
 	T02.DAS.sensors T02.DAL.sensors T02.DAR.sensors T02.DAX.sensors \
