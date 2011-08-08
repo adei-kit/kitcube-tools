@@ -12,10 +12,13 @@
 
 
 hatpro::hatpro(){
+	altitudes = 0;
 }
 
 
 hatpro::~hatpro(){
+	if (altitudes != 0)
+		delete [] altitudes;
 }
 
 
@@ -68,7 +71,7 @@ int hatpro::readHeader(const char *filename) {
 			buf = strstr(line_of_data, "# Altitude Levels");
 		}
 		
-		if (altitudes != NULL)
+		if (altitudes != 0)
 			delete [] altitudes;
 		altitudes = new double[profile_length];
 		
