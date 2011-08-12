@@ -1,4 +1,4 @@
-# rsync filter rules merge file for T and EB masts
+# rsync filter rules merge file for T, EB and PT20 masts
 # the following files append new data
 + *.DAS
 + *.DAL
