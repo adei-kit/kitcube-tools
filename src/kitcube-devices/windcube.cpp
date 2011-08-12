@@ -14,7 +14,7 @@
 windcube::windcube()
 {
 	altitudes = NULL;
-	profile_length = 9;
+	profile_length = 10;
 }
 
 
