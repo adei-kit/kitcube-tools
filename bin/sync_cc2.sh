@@ -41,6 +41,15 @@ Version="0.2"
 #
 ################################################################################
 #
+Version="0.3"
+#
+# 2011-08-19  Norbert Flatinger, IPE
+#
+# - set variable DEST to $2 right at the moment, when the destination directory
+#   is checked for existence
+#
+################################################################################
+#
 
 # DEBUG=yes|no
 DEBUG=yes
@@ -99,15 +108,17 @@ fi
 # check if destination directory exists and create it if not
 ################################################################################
 if [ -x $MKDIRPROG ] ; then
-	if [ ! -d "$2" ] ; then
+	# destination directory
+	DEST="$2"
+	if [ ! -d "$DEST" ] ; then
 		if [ $DEBUG = yes ] ; then
-			echo -e "Destination directory $2 does not exist."
+			echo -e "Destination directory $DEST does not exist."
 			echo -e "Creating it ..."
 		fi
-		$MKDIRPROG -p "$2"
+		$MKDIRPROG -p "$DEST"
 		RETURN_VALUE=$?
 		if [ $RETURN_VALUE != 0 ] ; then
-			echo -e "\nError: could not create destination directory $2."
+			echo -e "\nError: could not create destination directory $DEST."
 			echo -e "Aborting execution ...\n"
 			exit 1
 		fi
@@ -118,18 +129,12 @@ else
 	exit 1
 fi
 
-# TODO: check of other arguments?
+# TODO: check of other arguments
 
 # source directory
-#SRC=imk-wk1:/home/cube/CC2-pics/
 SRC="$1"
 
-# destination directory
-#DEST=/home/cube/archive/045/CC2-pics
-DEST="$2"
-
 # files to sync
-#FILES_TO_SYNC="kitcube_cc2_*.jpg"
 FILES_TO_SYNC="$3"
 
 
@@ -167,9 +172,11 @@ fi
 # -a		archive mode; equals -rlptgoD (no -H,-A,-X)
 # -r		recurse into directories
 # -u		skip files that are newer on the receiver
+# --append	append data onto shorter files
 # -x		don't cross filesystem boundaries
 # -z		compress file data during the transfer
-# --append	append data onto shorter files
+# -h		output numbers in a human-readable format
+# -f RULE	add a file-filtering RULE
 ################################################################################
 if [ -x $RSYNCPROG ] ; then
 	# sync data
