@@ -1,0 +1,4 @@
+# rsync filter rules merge file for cloud camera (CC)
+# the following files append new data
++ kitcube_cc2_*.jpg
+- *
