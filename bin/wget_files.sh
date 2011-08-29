@@ -33,6 +33,15 @@ Version="0.2"
 #
 ################################################################################
 #
+Version="0.3"
+#
+# 2011-08-26  Norbert Flatinger, IPE
+#
+# - set variable DEST to $2 right at the moment, when the destination directory
+#   is checked for existence
+#
+################################################################################
+#
 
 # DEBUG=yes|no
 DEBUG=yes
@@ -82,15 +91,17 @@ fi
 # check if destination directory exists and create it if not
 ################################################################################
 if [ -x $MKDIRPROG ] ; then
-	if [ ! -d "$2" ] ; then
+	# destination directory
+	DEST="$2"
+	if [ ! -d "$DEST" ] ; then
 		if [ $DEBUG = yes ] ; then
-			echo -e "Destination directory $2 does not exist."
+			echo -e "Destination directory $DEST does not exist."
 			echo -e "Creating it ..."
 		fi
-		$MKDIRPROG -p "$2"
+		$MKDIRPROG -p "$DEST"
 		RETURN_VALUE=$?
 		if [ $RETURN_VALUE != 0 ] ; then
-			echo -e "\nError: could not create destination directory $2."
+			echo -e "\nError: could not create destination directory $DEST."
 			echo -e "Aborting execution ...\n"
 			exit 1
 		fi
@@ -105,9 +116,6 @@ fi
 
 # source directory
 SRC="$1"
-
-# destination directory
-DEST="$2"
 
 
 ################################################################################
