@@ -1,0 +1,61 @@
+# Wolkenkamera 2 ohne Mail nach Ausfuehrung
+#*/3 * * * * /home/cube/bin/sync_cc2.sh imk-wk1:/home/cube/CC2-pics/ /home/cube/hatzenbuehl/045/CC2-pics kitcube_cc2_*.jpg > /dev/null 2>&1
+# Wolkenkamera 2 mit Mail nach Ausfuehrung (geht an cube@localhost)
+#*/2 * * * * /home/cube/bin/sync_cc2.sh imk-wk1:/home/cube/CC2-pics/ /home/cube/archive/045/CC2-pics kitcube_cc2_*.jpg
+
+
+# T01
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast01/DATA/ /home/cube/hatzenbuehl/001/Mast01/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# T02
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast02/DATA/ /home/cube/hatzenbuehl/002/Mast02/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# T03
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast03/DATA/ /home/cube/hatzenbuehl/003/Mast03/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# T04
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast04/DATA/ /home/cube/hatzenbuehl/004/Mast04/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# T05
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast05/DATA/ /home/cube/hatzenbuehl/005/Mast05/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# T06
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast06/DATA/ /home/cube/hatzenbuehl/006/Mast06/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# T07
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast07/DATA/ /home/cube/hatzenbuehl/007/Mast07/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# EB1
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast11/DATA/ /home/cube/hatzenbuehl/011/Mast11/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# EB2
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast12/DATA/ /home/cube/hatzenbuehl/012/Mast12/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# PT20
+* * * * * /home/cube/bin/sync_files.sh pc-t01:/cygdrive/d/Mast13/DATA/ /home/cube/hatzenbuehl/013/Mast13/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# CC2
+1-59/2 * * * * /home/cube/bin/sync_files.sh imk-wk1:/home/cube/CC2-pics/ /home/cube/hatzenbuehl/045/CC2-pics /home/cube/etc/rsync/cc-append-filter > /dev/null 2>&1
+
+# SCI
+#* * * * * /home/cube/bin/sync_files.sh pc-szint:/cygdrive/c/SCI/ /home/cube/archive/050/SCI /home/cube/etc/rsync/sci-append-filter > /dev/null 2>&1
+
+# SOD
+#3,33 * * * * /home/cube/bin/sync_files.sh pc-sodar:/cygdrive/c/APRun/workspace_MFAS_test/data/ /home/cube/archive/070/SOD /home/cube/etc/rsync/sod-append-filter /home/cube/etc/rsync/sod-sync-filter > /dev/null 2>&1
+
+# WTX
+*/5 * * * * /home/cube/bin/sync_files.sh wtx:/data/lidar/data/KITcube_WTX/ /home/cube/hatzenbuehl/061/WTX /home/cube/etc/rsync/wtx-append-filter > /dev/null 2>&1
+
+# WC
+*/5 * * * * /home/cube/bin/sync_files.sh "wcube-router:/cygdrive/d/DATA\ EOLID/" /home/cube/hatzenbuehl/062/WC /home/cube/etc/rsync/wc-append-filter > /dev/null 2>&1
+
+# HATPRO
+15,45 * * * * /home/cube/bin/sync_files.sh hatpropc:/cygdrive/c/RPG-HATPRO/Data/ /home/cube/hatzenbuehl/080/RPG /home/cube/etc/rsync/rpg-append-filter > /dev/null 2>&1
+
+
+# GPS
+30 * * * * /home/cube/bin/wget_files.sh ftp://ftp.gfz-potsdam.de/pub/nrttrop/user_ext/kit_gp/ /home/cube/hatzenbuehl/065/GPS > /dev/null 2>&1
+
+
+# CC2 shrink images
+0-58/2 * * * * /home/cube/bin/resize_cc2.sh /home/cube/hatzenbuehl/045/CC2-pics kitcube_cc2_*.jpg > /dev/null 2>&1
