@@ -91,9 +91,9 @@ void DAQAsciiDevice::closeFile(){
 
 
 void DAQAsciiDevice::readData(std::string full_filename){
-	char *buf;
-	int len;
-	//int n;
+	char *buf = NULL;
+	size_t len = 0;
+	int n;
 	FILE *fd_data_file;
 	int j, k;
 	//char *sensorString;
@@ -112,7 +112,7 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	long lastIndex;
 	struct timeval timestamp_data;
 	//struct timeval tWrite;
-	char *lPtr;
+	//char *lPtr;
 	
 #ifdef USE_MYSQL
 	//MYSQL_RES *res;
@@ -147,8 +147,8 @@ void DAQAsciiDevice::readData(std::string full_filename){
 #endif
 	
 	// Allocate memory for one data set
-	len = lenDataSet;
-	buf = new char [len];
+	//len = lenDataSet;
+	//buf = new char [len];
 	
 	// Allocate memory for sensor values
 	if (profile_length != 0) {
@@ -201,13 +201,13 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	mysql_query(db, sql.c_str());
 #endif
 	
-	lPtr = (char *) 1;
+	n = 0;
 	int iLoop = 0;
-	while ((lPtr != NULL) && (iLoop < 1000000)) {
+	while ((n == 0) && (iLoop < 1000000)) {
 		// read one line of ASCII data
-		lPtr = fgets(buf, len, fd_data_file);
+		n = read_ascii_line(&buf, &len, fd_data_file);
 		
-		if ((lPtr != NULL) && (strchr(buf, '\n') != NULL)) {
+		if (n == 0) {
 			// Module specific implementation
 			// Might be necessary to
 			if(parseData(buf, &timestamp_data, local_sensorValue) != 0)
@@ -301,7 +301,7 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	mysql_query(db, sql.c_str());
 #endif
 	
-	if (lPtr == 0) {
+	if (n == -1) {
 		fd_eof = true;
 	} else {
 		fd_eof = false;
@@ -320,6 +320,6 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	}
 	
 	fclose(fd_data_file);
-	delete[] buf;
+	free(buf);
 	delete[] local_sensorValue;
 }

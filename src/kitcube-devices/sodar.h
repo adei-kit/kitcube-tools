@@ -36,9 +36,6 @@ public:
 	
 	int parseData(char *buffer, double* sensor_values, int height_no);
 	
-	int read_ascii_line(char *buffer, int length, FILE *file_ptr);
-	
-	
 private:
 	/** */
 	double *gap_value;

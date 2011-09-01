@@ -24,7 +24,8 @@ hatpro::~hatpro(){
 
 int hatpro::readHeader(const char *filename) {
 	FILE *data_file_ptr;
-	char line_of_data[2048];
+	char *line_of_data = NULL;
+	size_t len = 0;
 	char *buf;
 	
 	
@@ -42,8 +43,10 @@ int hatpro::readHeader(const char *filename) {
 	// read number of samples in file
 	buf = NULL;
 	while (buf == NULL) {
-		if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+			free(line_of_data);
 			return -1;
+		}
 		
 		buf = strstr(line_of_data, "# Number of Samples");
 	}
@@ -55,8 +58,10 @@ int hatpro::readHeader(const char *filename) {
 		// get profile length
 		buf = NULL;
 		while (buf == NULL) {
-			if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+			if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+				free(line_of_data);
 				return -1;
+			}
 			
 			buf = strstr(line_of_data, "# Number of Altitude Levels");
 		}
@@ -65,8 +70,10 @@ int hatpro::readHeader(const char *filename) {
 		// get altitudes
 		buf = NULL;
 		while (buf == NULL) {
-			if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+			if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+				free(line_of_data);
 				return -1;
+			}
 			
 			buf = strstr(line_of_data, "# Altitude Levels");
 		}
@@ -87,8 +94,10 @@ int hatpro::readHeader(const char *filename) {
 	// read lines until you find the last line of the header
 	buf = NULL;
 	while (buf == NULL) {
-		if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+			free(line_of_data);
 			return -1;
+		}
 		
 		if (sensorGroup == "HKD")
 			buf = strstr(line_of_data, "#Ye,Mo,Da");
@@ -101,8 +110,10 @@ int hatpro::readHeader(const char *filename) {
 	if (sensorGroup == "HPC") {
 		buf = NULL;
 		while (buf == NULL) {
-			if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+			if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+				free(line_of_data);
 				return -1;
+			}
 			
 			buf = strstr(line_of_data, "# Ye , Mo , Da");
 		}
@@ -241,6 +252,8 @@ int hatpro::readHeader(const char *filename) {
 		printf("Unknown sensor group!\n");
 	}
 	
+	free(line_of_data);
+	
 	return 0;
 }
 
@@ -250,7 +263,8 @@ void hatpro::setConfigDefaults(){
 
 
 void hatpro::readData(std::string full_filename){
-	char *buf;
+	char *buf = NULL;
+	size_t len = 0;
 	FILE *fd_data_file;
 	double *local_sensorValue;
 	int loop_counter = 0;
@@ -275,7 +289,7 @@ void hatpro::readData(std::string full_filename){
 	
 	if ( (sensorGroup == "CBH") || (sensorGroup == "HKD") || (sensorGroup.substr(0, 3) == "IWV") || (sensorGroup.substr(0, 3) == "LWP") || (sensorGroup == "MET") || (sensorGroup == "STA") )
 		DAQAsciiDevice::readData(full_filename);
-	else {		
+	else {
 #ifdef USE_MYSQL
 		if (db == 0) {
 			openDatabase();
@@ -287,9 +301,6 @@ void hatpro::readData(std::string full_filename){
 			}
 		}
 #endif
-		
-		// Allocate memory for one line of data
-		buf = new char[lenDataSet];
 		
 		// Allocate memory for sensor values: 1 comes from header, 1 is scalar and only the rest are profile sensors
 		local_sensorValue = new double[1 + (nSensors - 2) * profile_length];
@@ -346,7 +357,7 @@ void hatpro::readData(std::string full_filename){
 		
 		for (loop_counter = 0; loop_counter < number_of_samples; loop_counter++) {
 			// read one line of ASCII data
-			if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
+			if (read_ascii_line(&buf, &len, fd_data_file) == -1) {
 				fd_eof = true;
 				break;
 			}
@@ -366,7 +377,7 @@ void hatpro::readData(std::string full_filename){
 				fseek(fd_data_file, tmp_pos2, SEEK_SET);
 				
 				// read one line of ASCII data
-				if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
+				if (read_ascii_line(&buf, &len, fd_data_file) == -1) {
 					fd_eof = true;
 					break;
 				}
@@ -464,7 +475,7 @@ void hatpro::readData(std::string full_filename){
 		}
 		
 		fclose(fd_data_file);
-		delete[] buf;
+		free(buf);
 		delete[] local_sensorValue;
 	}
 }
@@ -618,20 +629,6 @@ unsigned int hatpro::getSensorGroup(){
 	}
 	
 	return number;
-}
-
-
-int hatpro::read_ascii_line(char *buffer, int length, FILE *file_ptr) {
-	if (fgets(buffer, length, file_ptr) == NULL) {
-		printf("Error reading from file or EOF reached\n");
-		return -1;
-	}
-	if (strchr(buffer, '\n') == NULL) {
-		printf("Error: line read from file is not complete\n");
-		return -1;
-	}
-	
-	return 0;
 }
 
 

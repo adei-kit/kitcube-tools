@@ -328,8 +328,8 @@ void DAQDevice::readAxis(const char *inifile){
 void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	FILE *sensor_list_file;
 	int i, j;
-	char line[256];
-	char *n;
+	char *line = NULL;
+	size_t len = 0;
 	char *tmp;
 	std::string axisName;
 	std::string full_sensorlist_filename;
@@ -371,7 +371,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	
 	// read number of sensors from sensor list file
 	// this has to be done to be able to create the sensorType structs before actually parsing the file
-	n = fgets(line, 256, sensor_list_file);
+	read_ascii_line(&line, &len, sensor_list_file);
 	sscanf(line, "Number of sensors: %d\n", &nSensors);
 	// TODO: error checking
 	
@@ -388,11 +388,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	// format: number <TAB> comment <TAB> KITCube sensor name <TAB> axis name
 	//----------------------------------------------------------------------
 	for (i = 0; i < nSensors; i++) {
-		n = fgets(line, 256, sensor_list_file);
-		if (n == NULL) {
-			printf("Error reading sensor list file\n");
-			break;
-		}
+		read_ascii_line(&line, &len, sensor_list_file);
 		
 		// TODO: check for missing entries in line
 		
@@ -430,6 +426,21 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	}
 	
 	fclose(sensor_list_file);
+	free(line);
+}
+
+
+int DAQDevice::read_ascii_line(char **buffer, size_t *length, FILE *file_ptr) {
+	if (getline(buffer, length, file_ptr) == -1) {
+		printf("Error reading from file or EOF reached\n");
+		return -1;
+	}
+	if (strchr(*buffer, '\n') == NULL) {
+		printf("Error: line read from file is not complete\n");
+		return -1;
+	}
+	
+	return 0;
 }
 
 

@@ -21,7 +21,8 @@ sodar::~sodar(){
 
 int sodar::readHeader(const char *filename) {
 	FILE *data_file_ptr;
-	char line_of_data[128];
+	char *line_of_data = NULL;
+	size_t len = 0;
 	char *check_ptr;
 	int no_of_comment, no_of_variables, no_of_heights;
 	char *gap_value_str;
@@ -40,23 +41,30 @@ int sodar::readHeader(const char *filename) {
 	}
 	
 	// read 1st line and check for "FORMAT-1" string
-	if (read_ascii_line(line_of_data, 127, data_file_ptr) == -1)
+	if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+		free(line_of_data);
 		return -1;
+	}
 	
 	if (strstr(line_of_data, "FORMAT-1") == NULL) {
 		printf("Error file %s is not a \"FORMAT-1\"\n", filename);
+		free(line_of_data);
 		return -1;
 	}
 	
 	// read 2 dummy lines (1 time stamp line + 1 type of instrument line)
 	for (int i = 0; i < 2; i++) {
-		if (read_ascii_line(line_of_data, 127, data_file_ptr) == -1)
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+			free(line_of_data);
 			return -1;
+		}
 	}
 	
 	// read number of comment lines, variables and height levels
-	if (read_ascii_line(line_of_data, 127, data_file_ptr) == -1)
+	if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+		free(line_of_data);
 		return -1;
+	}
 	
 	sscanf(line_of_data, "%d %d %d", &no_of_comment, &no_of_variables, &no_of_heights);
 	
@@ -64,8 +72,10 @@ int sodar::readHeader(const char *filename) {
 	// ich suche das, damit ich in der Daten Datei keine Zeilen abzaehlen muss ;-)
 	check_ptr = NULL;
 	while (check_ptr == NULL) {
-		if (read_ascii_line(line_of_data, 127, data_file_ptr) == -1)
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+			free(line_of_data);
 			return -1;
+		}
 		
 		check_ptr = strstr(line_of_data, "variable definitions");
 	}
@@ -75,16 +85,20 @@ int sodar::readHeader(const char *filename) {
 	
 	// read 2 dummy lines (1 comment line + height variable (z) line)
 	for (int i = 0; i < 2; i++) {
-		if (read_ascii_line(line_of_data, 127, data_file_ptr) == -1)
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+			free(line_of_data);
 			return -1;
+		}
 	}
 	
 	// read gap values for all variables besides z and T and the error variable
 	no_of_gap_values = nSensors - 2;	// TODO/FIXME: this works only here!
 	gap_value = new double[no_of_gap_values];
 	for (int i = 0; i < no_of_gap_values; i++) {
-		if (read_ascii_line(line_of_data, 127, data_file_ptr) == -1)
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+			free(line_of_data);
 			return -1;
+		}
 		
 		gap_value_str = strrchr(line_of_data, '#');
 		gap_value[i] = atof(gap_value_str + 1);
@@ -108,6 +122,8 @@ int sodar::readHeader(const char *filename) {
 		sensor[i].height = 0;
 		sensor[i].data_format = "<vector>";
 	}
+	
+	free(line_of_data);
 	
 	return 0;
 }
@@ -180,7 +196,8 @@ int sodar::create_data_table() {
 
 
 void sodar::readData(std::string full_filename){
-	char *buf;
+	char *buf = NULL;
+	size_t len;
 	FILE *fd_data_file;
 	double *local_sensorValue;
 	int loop_counter = 0;
@@ -215,9 +232,6 @@ void sodar::readData(std::string full_filename){
 		}
 	}
 #endif
-	
-	// Allocate memory for one line of data
-	buf = new char[lenDataSet];
 	
 	// Allocate memory for sensor values
 	local_sensorValue = new double[nSensors * profile_length];
@@ -272,7 +286,7 @@ void sodar::readData(std::string full_filename){
 	
 	while (loop_counter < 1000000) {
 		// read the line of ASCII data containing the time stamp
-		if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
+		if (read_ascii_line(&buf, &len, fd_data_file) == -1) {
 			fd_eof = true;
 			break;
 		}
@@ -284,7 +298,7 @@ void sodar::readData(std::string full_filename){
 		time_stamp_tv.tv_sec = timegm(&time_stamp_tm); // FIXME: this function is a non-standard GNU extension, try to avoid it!
 		
 		// read 1 line of comment
-		if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
+		if (read_ascii_line(&buf, &len, fd_data_file) == -1) {
 			fd_eof = true;
 			break;
 		}
@@ -292,7 +306,7 @@ void sodar::readData(std::string full_filename){
 		// read and parse sensor value lines
 		for (int j = 0; j < profile_length; j++) {
 			// read line
-			if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
+			if (read_ascii_line(&buf, &len, fd_data_file) == -1) {
 				fd_eof = true;
 				break;
 			}
@@ -307,7 +321,7 @@ void sodar::readData(std::string full_filename){
 		//        "automatically" by the following code block
 		
 		// read 1 empty line after data block
-		if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
+		if (read_ascii_line(&buf, &len, fd_data_file) == -1) {
 			fd_eof = true;
 			break;
 		}
@@ -382,7 +396,7 @@ void sodar::readData(std::string full_filename){
 	}
 	
 	fclose(fd_data_file);
-	delete[] buf;
+	free(buf);
 	delete[] local_sensorValue;
 }
 
@@ -407,20 +421,6 @@ int sodar::parseData(char *buffer, double* sensor_values, int height_no) {
 	       &dummy,
 	       sensor_values + 8 * profile_length + height_no);
 	// TODO: error handling
-	
-	return 0;
-}
-
-
-int sodar::read_ascii_line(char *buffer, int length, FILE *file_ptr) {
-	if (fgets(buffer, length, file_ptr) == NULL) {
-		printf("Error reading from file or EOF reached\n");
-		return -1;
-	}
-	if (strchr(buffer, '\n') == NULL) {
-		printf("Error: line read from file is not complete\n");
-		return -1;
-	}
 	
 	return 0;
 }

@@ -24,7 +24,8 @@ radiosonde::~radiosonde()
 int radiosonde::readHeader(const char *filename)
 {
 	FILE *data_file_ptr;
-	char line_of_data[64];
+	char *line_of_data = NULL;
+	size_t len = 0;
 	struct tm start_time_l = {0};
 	char* puffer;
 	
@@ -41,9 +42,11 @@ int radiosonde::readHeader(const char *filename)
 	}
 	
 	// read 1st line of header to get start time
-	if (read_ascii_line(line_of_data, 64, data_file_ptr) == -1)
+	if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+		free(line_of_data);
 		return -1;
-		
+	}
+	
 	// close data file
 	fclose(data_file_ptr);
 	
@@ -51,6 +54,7 @@ int radiosonde::readHeader(const char *filename)
 	puffer = strptime(line_of_data, "Datum : %d.%m.%Y\tStartzeit: %T", &start_time_l);
 	if (puffer == NULL) {
 		printf("Radiosonde: Error reading date and time string!\n");
+		free(line_of_data);
 		return -1;
 	}
 	
@@ -73,6 +77,8 @@ int radiosonde::readHeader(const char *filename)
 		sensor[i].height = 0;
 		sensor[i].data_format = "<scalar>";
 	}
+	
+	free(line_of_data);
 	
 	return 0;
 }
@@ -139,21 +145,6 @@ int radiosonde::parseData(char *line, struct timeval *l_tData, double *sensorVal
 	// check if all sensor values could be read
 	/*if (i != nSensors)
 		return -1;*/
-	
-	return 0;
-}
-
-
-int radiosonde::read_ascii_line(char *buffer, int length, FILE *file_ptr)
-{
-	if (fgets(buffer, length, file_ptr) == NULL) {
-		printf("Error reading from file or EOF reached\n");
-		return -1;
-	}
-	if (strchr(buffer, '\n') == NULL) {
-		printf("Error: line read from file is not complete\n");
-		return -1;
-	}
 	
 	return 0;
 }

@@ -33,8 +33,6 @@ public:
 	unsigned int getSensorGroup();
 
 private:
-	int read_ascii_line(char *buffer, int length, FILE *file_ptr);
-	
 	long getFileNumber(char* filename);
 	
 	int number_of_samples;

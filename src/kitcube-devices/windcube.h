@@ -33,9 +33,6 @@ public:
 	
 	int parseData(char *buffer,struct timeval *l_tData, double* sensor_values);
 	
-	int read_ascii_line(char *buffer, int length, FILE *file_ptr);
-	
-	
 private:
 	/** */
 	double elevation_angle;

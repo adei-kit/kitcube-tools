@@ -31,8 +31,6 @@ public:
 	/** Define a sensor group number for all the availble sensor group files */
 	unsigned int getSensorGroup();
 	
-	int read_ascii_line(char *buffer, int length, FILE *file_ptr);
-	
 private:
 	struct timeval start_time;
 };

@@ -317,6 +317,8 @@ protected:
 	
 	virtual int create_data_table_name(std::string & data_table_name);
 	
+	int read_ascii_line(char **buffer, size_t *length, FILE *file_ptr);
+	
 private:
 	/** Template for the record filename */
 	std::string filenameTmpl;

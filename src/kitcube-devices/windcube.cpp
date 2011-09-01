@@ -27,7 +27,8 @@ windcube::~windcube(){
 
 int windcube::readHeader(const char *filename) {
 	FILE *data_file_ptr;
-	char line_of_data[2048];
+	char *line_of_data = NULL;
+	size_t len = 0;
 	char *buf;
 	
 	
@@ -46,8 +47,10 @@ int windcube::readHeader(const char *filename) {
 	// search for variable ScanAngle
 	buf = NULL;
 	while (buf == NULL) {
-		if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+			free(line_of_data);
 			return -1;
+		}
 		
 		buf = strstr(line_of_data, "ScanAngle");
 	}
@@ -59,8 +62,10 @@ int windcube::readHeader(const char *filename) {
 	// search for variable Altitudes
 	buf = NULL;
 	while (buf == NULL) {
-		if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+			free(line_of_data);
 			return -1;
+		}
 		
 		buf = strstr(line_of_data, "Altitudes");
 	}
@@ -80,8 +85,10 @@ int windcube::readHeader(const char *filename) {
 	// read lines until you find the variable "WiperCount" in the last line of the header
 	buf = NULL;
 	while (buf == NULL) {
-		if (read_ascii_line(line_of_data, 2048, data_file_ptr) == -1)
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+			free(line_of_data);
 			return -1;
+		}
 		
 		buf = strstr(line_of_data, "WiperCount");
 	}
@@ -112,6 +119,8 @@ int windcube::readHeader(const char *filename) {
 		sensor[i].data_format = "<vector>";
 	}
 	
+	free(line_of_data);
+	
 	return 0;
 }
 
@@ -141,7 +150,8 @@ unsigned int windcube::getSensorGroup() {
 
 
 void windcube::readData(std::string full_filename){
-	char *buf;
+	char *buf = NULL;
+	size_t len = 0;
 	FILE *fd_data_file;
 	double *local_sensorValue;
 	int loop_counter = 0;
@@ -175,9 +185,6 @@ void windcube::readData(std::string full_filename){
 		}
 	}
 #endif
-	
-	// Allocate memory for one line of data
-	buf = new char[lenDataSet];
 	
 	// Allocate memory for sensor values, 2 sensors come from header
 	local_sensorValue = new double[(nSensors - 2) * profile_length];
@@ -233,7 +240,7 @@ void windcube::readData(std::string full_filename){
 	
 	while (loop_counter < 1000000) {
 		// read one line of ASCII data
-		if (read_ascii_line(buf, lenDataSet, fd_data_file) == -1) {
+		if (read_ascii_line(&buf, &len, fd_data_file) == -1) {
 			fd_eof = true;
 			break;
 		}
@@ -326,7 +333,7 @@ void windcube::readData(std::string full_filename){
 	}
 	
 	fclose(fd_data_file);
-	delete[] buf;
+	free(buf);
 	delete[] local_sensorValue;
 }
 
@@ -373,20 +380,6 @@ int windcube::parseData(char *line, struct timeval *l_tData, double* sensor_valu
 		strtod(buffer, buf);	// sigmaFreqm, not used
 		strtod(buffer, buf);	// dsigmaFreq, not used
 		strtod(buffer, buf);	// Avail, not used
-	}
-	
-	return 0;
-}
-
-
-int windcube::read_ascii_line(char *buffer, int length, FILE *file_ptr) {
-	if (fgets(buffer, length, file_ptr) == NULL) {
-		printf("Error reading from file or EOF reached\n");
-		return -1;
-	}
-	if (strchr(buffer, '\n') == NULL) {
-		printf("Error: line read from file is not complete\n");
-		return -1;
 	}
 	
 	return 0;
