@@ -30,7 +30,7 @@ samplingTime = 55 sec
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.18/etc
+configDir = /home/cube/kitcube-tools-0.19/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/hatzenbuehl
@@ -632,42 +632,153 @@ datafileTemplate = M12_01.DAR.template
 samplingTime = 10 min
 
 
-; 3M Mast
+; 3M Masten
 
 ; misc. data
-[3M-data]
-moduleName = 3M
+[3M1-data]
+moduleName = 3M1
 moduleNumber = 15
 moduleType = 3M
 moduleComment = 3M_data
 sensorGroup = data
-sensorList = 3M.data.sensors
+sensorList = 3M1.data.sensors
 datafileTemplate = data.csv.template
-datafileMask = 20<index>.data.csv
+datafileMask = M1_Hatzenbuehl_<index>_data.csv
 samplingTime = 5 sec
 
 ; GPS coordinates
-[3M-gps]
-moduleName = 3M
+[3M1-gps]
+moduleName = 3M1
 moduleNumber = 15
 moduleType = 3M
 moduleComment = 3M_gps
 sensorGroup = gps
-sensorList = 3M.gps.sensors
+sensorList = 3M1.gps.sensors
 datafileTemplate = data.csv.template
-datafileMask = <index>.gps.csv
+datafileMask = M1_Hatzenbuehl_<index>_gps.csv
 samplingTime = 60 min
 
 ; wind data
-[3M-sonic]
-moduleName = 3M
+[3M1-sonic]
+moduleName = 3M1
 moduleNumber = 15
 moduleType = 3M
 moduleComment = 3M_sonic
 sensorGroup = sonic
-sensorList = 3M.sonic.sensors
+sensorList = 3M1.sonic.sensors
 datafileTemplate = data.csv.template
-datafileMask = <index>.sonic.csv
+datafileMask = M1_Hatzenbuehl_<index>_sonic.csv
+samplingTime = 0.03125 sec
+
+
+; misc. data
+[3M2-data]
+moduleName = 3M2
+moduleNumber = 16
+moduleType = 3M
+moduleComment = 3M_data
+sensorGroup = data
+sensorList = 3M2.data.sensors
+datafileTemplate = data.csv.template
+datafileMask = M2_Hatzenbuehl_<index>_data.csv
+samplingTime = 5 sec
+
+; GPS coordinates
+[3M2-gps]
+moduleName = 3M2
+moduleNumber = 16
+moduleType = 3M
+moduleComment = 3M_gps
+sensorGroup = gps
+sensorList = 3M2.gps.sensors
+datafileTemplate = data.csv.template
+datafileMask = M2_Hatzenbuehl_<index>_gps.csv
+samplingTime = 60 min
+
+; wind data
+[3M2-sonic]
+moduleName = 3M2
+moduleNumber = 16
+moduleType = 3M
+moduleComment = 3M_sonic
+sensorGroup = sonic
+sensorList = 3M2.sonic.sensors
+datafileTemplate = data.csv.template
+datafileMask = M2_Hatzenbuehl_<index>_sonic.csv
+samplingTime = 0.03125 sec
+
+
+; misc. data
+[3M3-data]
+moduleName = 3M3
+moduleNumber = 17
+moduleType = 3M
+moduleComment = 3M_data
+sensorGroup = data
+sensorList = 3M3.data.sensors
+datafileTemplate = data.csv.template
+datafileMask = M3_Hatzenbuehl_<index>_data.csv
+samplingTime = 5 sec
+
+; GPS coordinates
+[3M3-gps]
+moduleName = 3M3
+moduleNumber = 17
+moduleType = 3M
+moduleComment = 3M_gps
+sensorGroup = gps
+sensorList = 3M3.gps.sensors
+datafileTemplate = data.csv.template
+datafileMask = M3_Hatzenbuehl_<index>_gps.csv
+samplingTime = 60 min
+
+; wind data
+[3M3-sonic]
+moduleName = 3M3
+moduleNumber = 17
+moduleType = 3M
+moduleComment = 3M_sonic
+sensorGroup = sonic
+sensorList = 3M3.sonic.sensors
+datafileTemplate = data.csv.template
+datafileMask = M3_Hatzenbuehl_<index>_sonic.csv
+samplingTime = 0.03125 sec
+
+
+; misc. data
+[3M4-data]
+moduleName = 3M4
+moduleNumber = 18
+moduleType = 3M
+moduleComment = 3M_data
+sensorGroup = data
+sensorList = 3M4.data.sensors
+datafileTemplate = data.csv.template
+datafileMask = M4_Hatzenbuehl_<index>_data.csv
+samplingTime = 5 sec
+
+; GPS coordinates
+[3M4-gps]
+moduleName = 3M4
+moduleNumber = 18
+moduleType = 3M
+moduleComment = 3M_gps
+sensorGroup = gps
+sensorList = 3M4.gps.sensors
+datafileTemplate = data.csv.template
+datafileMask = M4_Hatzenbuehl_<index>_gps.csv
+samplingTime = 60 min
+
+; wind data
+[3M4-sonic]
+moduleName = 3M4
+moduleNumber = 18
+moduleType = 3M
+moduleComment = 3M_sonic
+sensorGroup = sonic
+sensorList = 3M4.sonic.sensors
+datafileTemplate = data.csv.template
+datafileMask = M4_Hatzenbuehl_<index>_sonic.csv
 samplingTime = 0.03125 sec
 
 

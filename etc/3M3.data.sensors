@@ -1,0 +1,6 @@
+Number of sensors: 5
+         1	air temperature	3M3.PT.T.AIR.001.AVG	T
+         2	relative humidity	3M3.HMP.M.RH.001.AVG	MR
+         3	air pressure at surface	3M3.BARO.P.SUR.001.AVG	PA
+         4	battery voltage	3M3.VOLT.U.BAT.001.AVG	E
+         5	precipitation sum	3M3.OMB.N.N.001.SUM	N

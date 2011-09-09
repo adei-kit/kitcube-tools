@@ -1,0 +1,9 @@
+Number of sensors: 8
+         1	Latitude	3M3.GPS.G.LAT.001.AVG	A
+         2	Longitude	3M3.GPS.G.LONG.001.AVG	A
+         3	Altitude	3M3.GPS.G.ALT.001.AVG	H
+         4	GPS timestamp	3M3.GPS.Y.DATE.001.AVG	NO
+         5	time difference median	3M3.GPS.Y.TIMDIFF.001.AVG	NO
+         6	time difference max	3M3.GPS.Y.TIMDIFF.001.MAX	NO
+         7	time difference min	3M3.GPS.Y.TIMDIFF.001.MIN	NO
+         8	Time correction	3M3.GPS.Y.COR.001.AVG	NO
