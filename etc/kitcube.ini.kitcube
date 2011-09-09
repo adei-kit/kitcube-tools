@@ -1014,7 +1014,7 @@ moduleComment = rs_comment
 sensorGroup = txt
 sensorList = rs1.txt.sensors
 datafileTemplate = CN010211.txt.template
-datafileMask = CN<index>.txt
+datafileMask = Hatzenbuehl_Radiosonde_<index>.txt
 samplingTime = 8 sec
 
 [RS2]
@@ -1025,7 +1025,7 @@ moduleComment = rs_comment
 sensorGroup = txt
 sensorList = rs2.txt.sensors
 datafileTemplate = CN010211.txt.template
-datafileMask = CN<index>.txt
+datafileMask = Hatzenbuehl_Radiosonde_<index>.txt
 samplingTime = 8 sec
 
 

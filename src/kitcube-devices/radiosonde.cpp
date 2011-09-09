@@ -133,7 +133,7 @@ int radiosonde::parseData(char *line, struct timeval *l_tData, double *sensorVal
 	
 	
 	// read sensor values
-	puffer = strtok(line + 5, " ");
+	puffer = strtok(line + 8, " ");
 	i = 0;
 	while (puffer != NULL) {
 		if (sscanf(puffer, "%lf", sensorValue + i) != 1)
