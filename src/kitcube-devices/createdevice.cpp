@@ -33,25 +33,43 @@ extern "C" void *createDevice(const char *devType) {
 	//
 	// List of defined DAQ module types
 	//
-	if (strcasestr(devType, "Mast") > 0) return( new (Mast));
-	if (strcasestr(devType, "Ceilometer") > 0) return( new (Ceilometer));
-	if (strcasestr(devType, "SimRandom") > 0) return( new (SimRandom));
-	if (strcasestr(devType, "Norbert") > 0) return( new (Norbert));
-	if (strcasestr(devType, "JWD") > 0) return( new (jwd));
-	if (strcasestr(devType, "Parsivel") > 0) return( new (parsivel));
-	if (strcasestr(devType, "MRR") > 0) return( new (mrr));
-	if (strcasestr(devType, "Regenwippe") > 0) return( new (regenwippe));
-	if (strcasestr(devType, "Wolkenkamera") > 0) return( new (wolkenkamera));
-	if (strcasestr(devType, "Scintillometer") > 0) return( new (sci));
-	if (strcasestr(devType, "3M") > 0) return( new (dreim));
-	if (strcasestr(devType, "windtracer") > 0) return( new (windtracer));
-	if (strcasestr(devType, "gps") > 0) return( new (gps));
-	if (strcasestr(devType, "sodar") > 0) return( new (sodar));
-	if (strcasestr(devType, "radiosonde") > 0) return( new (radiosonde));
-	if (strcasestr(devType, "windcube") > 0) return( new (windcube));
-	if (strcasestr(devType, "hatpro") > 0) return( new (hatpro));
+	if (strcasestr(devType, "Mast") != NULL)
+		return( new (Mast));
+	if (strcasestr(devType, "Ceilometer") != NULL)
+		return( new (Ceilometer));
+	if (strcasestr(devType, "SimRandom") != NULL)
+		return( new (SimRandom));
+	if (strcasestr(devType, "Norbert") != NULL)
+		return( new (Norbert));
+	if (strcasestr(devType, "JWD") != NULL)
+		return( new (jwd));
+	if (strcasestr(devType, "Parsivel") != NULL)
+		return( new (parsivel));
+	if (strcasestr(devType, "MRR") != NULL)
+		return( new (mrr));
+	if (strcasestr(devType, "Regenwippe") != NULL)
+		return( new (regenwippe));
+	if (strcasestr(devType, "Wolkenkamera") != NULL)
+		return( new (wolkenkamera));
+	if (strcasestr(devType, "Scintillometer") != NULL)
+		return( new (sci));
+	if (strcasestr(devType, "3M") != NULL)
+		return( new (dreim));
+	if (strcasestr(devType, "windtracer") != NULL)
+		return( new (windtracer));
+	if (strcasestr(devType, "gps") != NULL)
+		return( new (gps));
+	if (strcasestr(devType, "sodar") != NULL)
+		return( new (sodar));
+	if (strcasestr(devType, "radiosonde") != NULL)
+		return( new (radiosonde));
+	if (strcasestr(devType, "windcube") != NULL)
+		return( new (windcube));
+	if (strcasestr(devType, "hatpro") != NULL)
+		return( new (hatpro));
 	
-	if (strcasestr(devType, "Lara") > 0) return( new (Lara));
+	if (strcasestr(devType, "Lara") != NULL)
+		return( new (Lara));
 	
 	// Device type is unknown
 	return(0);
