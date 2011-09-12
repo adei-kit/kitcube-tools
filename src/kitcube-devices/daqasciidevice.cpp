@@ -110,7 +110,7 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	unsigned long lastPos;
 	unsigned long currPos;
 	long lastIndex;
-	struct timeval timestamp_data;
+	struct timeval timestamp_data = {0};
 	//struct timeval tWrite;
 	//char *lPtr;
 	
