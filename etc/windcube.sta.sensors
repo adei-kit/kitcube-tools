@@ -1,6 +1,6 @@
 Number of sensors: 10
          1	height above ground	WC.CUB.H.AGL.001.PROF	H
-         2	wind speed retrieval elevation angle	WC.CUB.A.ELV.001.PROF	A
+         2	wind speed retrieval elevation angle	WC.CUB.A.ELV.001.INST	A
          3	horizontal wind speed	WC.CUB.V.HOR.001.PROF	V
          4	variance of horizontal wind speed	WC.CUB.V.VAR.001.PROF	VAR
          5	wind from direction	WC.CUB.V.WD.001.PROF	A
