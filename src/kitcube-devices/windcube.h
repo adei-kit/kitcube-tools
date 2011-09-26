@@ -13,6 +13,8 @@
 
 #include "daqasciidevice.h"
 
+#include <endian.h>
+
 
 class windcube: public DAQAsciiDevice {
 public:
@@ -38,6 +40,12 @@ private:
 	double elevation_angle;
 	
 	double *altitudes;
+	
+	int initial_position;
+	
+	struct timeval initial_timestamp;
+	
+	double gain;
 	
 	int create_data_table_name(std::string & data_table_name);
 };

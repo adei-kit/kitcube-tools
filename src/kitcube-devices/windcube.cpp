@@ -30,6 +30,7 @@ int windcube::readHeader(const char *filename) {
 	char *line_of_data = NULL;
 	size_t len = 0;
 	char *buf;
+	struct tm timestamp = {0};
 	
 	
 	if (debug >= 1)
@@ -54,7 +55,6 @@ int windcube::readHeader(const char *filename) {
 		
 		buf = strstr(line_of_data, "ScanAngle");
 	}
-	
 	buf = strchr(line_of_data, '=');
 	elevation_angle = strtod(buf + 1, NULL);
 	
@@ -81,8 +81,51 @@ int windcube::readHeader(const char *filename) {
 	}
 	
 	
+	if (sensorGroup == "rtd") {
+		// search for RelativeInitialPosition
+		buf = NULL;
+		while (buf == NULL) {
+			if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+				free(line_of_data);
+				return -1;
+			}
+			
+			buf = strstr(line_of_data, "RelativeInitialPosition");
+		}
+		buf = strchr(line_of_data, '=');
+		initial_position = atoi(buf + 1);
+		
+		// search for InitialDate/Time
+		buf = NULL;
+		while (buf == NULL) {
+			if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+				free(line_of_data);
+				return -1;
+			}
+			
+			buf = strstr(line_of_data, "InitialDate/Time");
+		}
+		buf = strptime(line_of_data, "InitialDate/Time=%d/%m/%Y %T", &timestamp);
+		initial_timestamp.tv_sec = timegm(&timestamp);
+		initial_timestamp.tv_usec = strtol(buf + 1, NULL, 10);
+		
+		// search for Gain
+		buf = NULL;
+		while (buf == NULL) {
+			if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+				free(line_of_data);
+				return -1;
+			}
+			
+			buf = strstr(line_of_data, "Gain");
+		}
+		buf = strchr(line_of_data, '=');
+		gain = strtod(buf + 1, NULL);
+	}
+	
+	
 	// find out header length
-	// read lines until you find the variable "WiperCount" in the last line of the header
+	// read lines until you find the variable "WiperCount" resp. "InitialLD2" in the last line of the header
 	buf = NULL;
 	while (buf == NULL) {
 		if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
@@ -90,7 +133,11 @@ int windcube::readHeader(const char *filename) {
 			return -1;
 		}
 		
-		buf = strstr(line_of_data, "WiperCount");
+		if (sensorGroup == "sta") {
+			buf = strstr(line_of_data, "WiperCount");
+		} else if (sensorGroup == "rtd") {
+			buf = strstr(line_of_data, "InitialLD2");
+		}
 	}
 	lenHeader = ftell(data_file_ptr);
 	
@@ -101,23 +148,40 @@ int windcube::readHeader(const char *filename) {
 	
 	noData = 999999;
 	
-	lenDataSet = 2048;	// unknown bytes + 1 for '\0' in fgets();
-				// longest line found yet was ~1500
+	if (sensorGroup == "rtd")
+		lenDataSet = 135;
 	
 	// set default value for height
 	sensor[0].type = "profile";
 	sensor[0].height = 0;
 	sensor[0].data_format = "<vector>";
 	
-	sensor[1].type = "";
-	sensor[1].height = 0;
-	sensor[1].data_format = "<scalar>";
-	
-	for (int i = 2; i < nSensors; i++) {
-		sensor[i].type = "profile";
-		sensor[i].height = 0;
-		sensor[i].data_format = "<vector>";
+	if (sensorGroup == "sta") {
+		sensor[1].type = "";
+		sensor[1].height = 0;
+		sensor[1].data_format = "<scalar>";
+		
+		for (int i = 2; i < nSensors; i++) {
+			sensor[i].type = "profile";
+			sensor[i].height = 0;
+			sensor[i].data_format = "<vector>";
+		}
 	}
+	
+	if (sensorGroup == "rtd") {
+		for (int i = 1; i < 4; i++) {
+			sensor[i].type = "";
+			sensor[i].height = 0;
+			sensor[i].data_format = "<scalar>";
+		}
+		
+		for (int i = 4; i < nSensors; i++) {
+			sensor[i].type = "profile";
+			sensor[i].height = 0;
+			sensor[i].data_format = "<vector>";
+		}
+	}
+	
 	
 	free(line_of_data);
 	
@@ -145,6 +209,11 @@ unsigned int windcube::getSensorGroup() {
 		buffer = "average data";
 	}
 	
+	if (sensorGroup == "rtd") {
+		number = 2;
+		buffer = "fast data";
+	}
+	
 	return number;
 }
 
@@ -153,7 +222,8 @@ void windcube::readData(std::string full_filename){
 	char *buf = NULL;
 	size_t len = 0;
 	FILE *fd_data_file;
-	double *local_sensorValue;
+	int fd_datafile;
+	double *local_sensorValue, azimuth_angle;
 	int loop_counter = 0;
 	FILE *fmark;
 	std::string full_data_file_name;
@@ -186,8 +256,17 @@ void windcube::readData(std::string full_filename){
 	}
 #endif
 	
-	// Allocate memory for sensor values, 2 sensors come from header
-	local_sensorValue = new double[(nSensors - 2) * profile_length];
+	if (sensorGroup == "sta") {
+		// Allocate memory for sensor values, 2 sensors come from header
+		local_sensorValue = new double[(nSensors - 2) * profile_length];
+	}
+	if (sensorGroup == "rtd") {
+		// Allocate memory for one data set
+		buf = new char [lenDataSet];
+	
+		// Allocate memory for sensor values: 2 come from header, 1 is calculated, 1 is scalar and only the rest are profile sensors
+		local_sensorValue = new double[1 + (nSensors - 4) * profile_length];
+	}
 	
 	// Compile file name
 	full_data_file_name = full_filename;
@@ -195,10 +274,19 @@ void windcube::readData(std::string full_filename){
 	// open data file
 	if (debug >= 1)
 		printf("Open data file: %s\n", full_data_file_name.c_str());
-	fd_data_file = fopen(full_data_file_name.c_str(), "r");
-	if (fd_data_file == NULL) {
-		printf("Error opening data file %s\n", full_data_file_name.c_str());
-		return;
+	if (sensorGroup == "sta") {
+		fd_data_file = fopen(full_data_file_name.c_str(), "r");
+		if (fd_data_file == NULL) {
+			printf("Error opening data file %s\n", full_data_file_name.c_str());
+			return;
+		}
+	}
+	if (sensorGroup == "rtd") {
+		fd_datafile = open(full_data_file_name.c_str(), O_RDONLY);
+		if (fd_datafile == -1) {
+			printf("Error opening data file %s\n", full_data_file_name.c_str());
+			return;
+		}
 	}
 	
 	
@@ -229,7 +317,10 @@ void windcube::readData(std::string full_filename){
 	currPos = lastPos;
 	if (debug >= 1)
 		printf("Last position in file: %ld\n", lastPos);
-	fseek(fd_data_file, lastPos, SEEK_SET);
+	if (sensorGroup == "sta")
+		fseek(fd_data_file, lastPos, SEEK_SET);
+	if (sensorGroup == "rtd")
+		lseek(fd_datafile, lastPos, SEEK_SET);
 	
 #ifdef USE_MYSQL
 	sql = "LOCK TABLES " + dataTableName + " WRITE";
@@ -239,10 +330,22 @@ void windcube::readData(std::string full_filename){
 	fd_eof = false;
 	
 	while (loop_counter < 1000000) {
-		// read one line of ASCII data
-		if (read_ascii_line(&buf, &len, fd_data_file) == -1) {
-			fd_eof = true;
-			break;
+		if (sensorGroup == "sta") {
+			// read one line of ASCII data
+			if (read_ascii_line(&buf, &len, fd_data_file) == -1) {
+				fd_eof = true;
+				break;
+			}
+		}
+		
+		if (sensorGroup == "rtd") {
+			// read one data set of binary data
+			if (read(fd_datafile, buf, lenDataSet) != lenDataSet) {
+				fd_eof = true;
+				break;
+			}
+			
+			azimuth_angle = ((currPos - lenHeader) / lenDataSet * 90  + initial_position) % 360;
 		}
 		
 		// parse data
@@ -256,9 +359,20 @@ void windcube::readData(std::string full_filename){
 				printf("%6.2f ", altitudes[k]);
 			}
 			printf("%5.2f ", elevation_angle);
-			for (int j = 0; j < (nSensors - 2); j++) {
-				for (int k = 0; k < profile_length; k++) {
-					printf("%10.3f ", local_sensorValue[j * profile_length + k]);
+			if (sensorGroup == "sta") {
+				for (int j = 0; j < (nSensors - 2); j++) {
+					for (int k = 0; k < profile_length; k++) {
+						printf("%10.3f ", local_sensorValue[j * profile_length + k]);
+					}
+				}
+			}
+			if (sensorGroup == "rtd") {
+				printf("%5.2f ", azimuth_angle);
+				printf("%.0f ", local_sensorValue[0]);
+				for (int j = 0; j < (nSensors - 4); j++) {
+					for (int k = 0; k < profile_length; k++) {
+						printf("%10.3f ", local_sensorValue[1 + j * profile_length + k]);
+					}
 				}
 			}
 			printf("\n");
@@ -292,14 +406,40 @@ void windcube::readData(std::string full_filename){
 		sql += sData;
 		
 		// sensor values
-		for (int i = 0; i < (nSensors - 2); i++) {
-			sql += ", '";
-			mysql_real_escape_string(db, esc_str,
-						 (const char *)(local_sensorValue + i * profile_length),
-						 profile_length * sizeof(double));
-			sql += esc_str;
-			sql += "'";
+		if (sensorGroup == "sta") {
+			// sensor values
+			for (int i = 0; i < (nSensors - 2); i++) {
+				sql += ", '";
+				mysql_real_escape_string(db, esc_str,
+							(const char *)(local_sensorValue + i * profile_length),
+							profile_length * sizeof(double));
+				sql += esc_str;
+				sql += "'";
+			}
 		}
+		
+		if (sensorGroup == "rtd") {
+			// azimuth angle
+			sql += ", ";
+			sprintf(sData, "%f", azimuth_angle);
+			sql += sData;
+			
+			// wiper flag
+			sql += ", ";
+			sprintf(sData, "%f", local_sensorValue[0]);
+			sql += sData;
+			
+			// sensor values
+			for (int i = 0; i < (nSensors - 4); i++) {
+				sql += ", '";
+				mysql_real_escape_string(db, esc_str,
+							(const char *)(local_sensorValue + 1 + i * profile_length),
+							profile_length * sizeof(double));
+				sql += esc_str;
+				sql += "'";
+			}
+		}
+		
 		delete [] esc_str;
 		sql += ")";
 		
@@ -310,7 +450,10 @@ void windcube::readData(std::string full_filename){
 		}
 #endif // of USE_MYSQL
 		// Get the position in this file
-		currPos = ftell(fd_data_file);
+		if (sensorGroup == "sta")
+			currPos = ftell(fd_data_file);
+		if (sensorGroup == "rtd")
+			currPos += lenDataSet;
 		
 		loop_counter++;
 	}
@@ -332,7 +475,10 @@ void windcube::readData(std::string full_filename){
 		fclose(fmark);
 	}
 	
-	fclose(fd_data_file);
+	if (sensorGroup == "sta")
+		fclose(fd_data_file);
+	if (sensorGroup == "rtd") 
+		close(fd_datafile);
 	free(buf);
 	delete[] local_sensorValue;
 }
@@ -341,45 +487,72 @@ void windcube::readData(std::string full_filename){
 int windcube::parseData(char *line, struct timeval *l_tData, double* sensor_values) {
 	char *buffer, **buf;
 	struct tm time_stamp_tm;
+	u_int32_t time_diff;
+	u_int8_t wiper_flag;
 	
 	
 	if (debug >= 4)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	// get time stamp in struct tm
-	buffer = strptime(line, "%d/%m/%Y %T", &time_stamp_tm);
-	if (buffer == NULL) {
-		printf("Windcube: Error reading date and time string!\n");
-		return -1;
+	if (sensorGroup == "sta") {
+		// get time stamp in struct tm
+		buffer = strptime(line, "%d/%m/%Y %T", &time_stamp_tm);
+		if (buffer == NULL) {
+			printf("Windcube: Error reading date and time string!\n");
+			return -1;
+		}
+		
+		// convert time stamp to struct timeval
+		l_tData->tv_sec = timegm(&time_stamp_tm); // FIXME: this function is a non-standard GNU extension, try to avoid it!
+		
+		// read data
+		buf = &buffer;
+		strtod(buffer, buf);	// WiperCount, not used
+		strtod(buffer, buf);	// Tm, not used
+		for (int i = 0; i < profile_length; i++) {
+			sensor_values[i] = strtod(buffer, buf);	// Vhm
+			sensor_values[i + profile_length] = strtod(buffer, buf);	// dVh
+			strtod(buffer, buf);	// VhMax, not used
+			strtod(buffer, buf);	// VhMin, not used
+			sensor_values[i + 2 * profile_length] = strtod(buffer, buf);	// Azim
+			sensor_values[i + 3 * profile_length] = strtod(buffer, buf);	// um
+			strtod(buffer, buf);	// du, not used
+			sensor_values[i + 4 * profile_length] = strtod(buffer, buf);	// vm
+			strtod(buffer, buf);	// dv, not used
+			sensor_values[i + 5 * profile_length] = strtod(buffer, buf);	// wm
+			sensor_values[i + 6 * profile_length] = strtod(buffer, buf);	// dw
+			sensor_values[i + 7 * profile_length] = strtod(buffer, buf);	// CNRm
+			strtod(buffer, buf);	// dCNR, not used
+			strtod(buffer, buf);	// CNRmax, not used
+			strtod(buffer, buf);	// CNRmin, not used
+			strtod(buffer, buf);	// sigmaFreqm, not used
+			strtod(buffer, buf);	// dsigmaFreq, not used
+			strtod(buffer, buf);	// Avail, not used
+		}
 	}
 	
-	// convert time stamp to struct timeval
-	l_tData->tv_sec = timegm(&time_stamp_tm); // FIXME: this function is a non-standard GNU extension, try to avoid it!
-	
-	// read data
-	buf = &buffer;
-	strtod(buffer, buf);	// WiperCount, not used
-	strtod(buffer, buf);	// Tm, not used
-	for (int i = 0; i < profile_length; i++) {
-		sensor_values[i] = strtod(buffer, buf);	// Vhm
-		sensor_values[i + profile_length] = strtod(buffer, buf);	// dVh
-		strtod(buffer, buf);	// VhMax, not used
-		strtod(buffer, buf);	// VhMin, not used
-		sensor_values[i + 2 * profile_length] = strtod(buffer, buf);	// Azim
-		sensor_values[i + 3 * profile_length] = strtod(buffer, buf);	// um
-		strtod(buffer, buf);	// du, not used
-		sensor_values[i + 4 * profile_length] = strtod(buffer, buf);	// vm
-		strtod(buffer, buf);	// dv, not used
-		sensor_values[i + 5 * profile_length] = strtod(buffer, buf);	// wm
-		sensor_values[i + 6 * profile_length] = strtod(buffer, buf);	// dw
-		sensor_values[i + 7 * profile_length] = strtod(buffer, buf);	// CNRm
-		strtod(buffer, buf);	// dCNR, not used
-		strtod(buffer, buf);	// CNRmax, not used
-		strtod(buffer, buf);	// CNRmin, not used
-		strtod(buffer, buf);	// sigmaFreqm, not used
-		strtod(buffer, buf);	// dsigmaFreq, not used
-		strtod(buffer, buf);	// Avail, not used
+	if (sensorGroup == "rtd") {
+		// get time stamp
+		time_diff = be32toh(*(u_int32_t *)line);
+		l_tData->tv_sec = initial_timestamp.tv_sec + time_diff/10;
+		l_tData->tv_usec = initial_timestamp.tv_usec + (time_diff % 10) * 100000;
+		
+		// get wiper flag
+		wiper_flag = *(line + 6);
+		sensor_values[0] = wiper_flag;
+		
+		// get sensor values (CNR and RWS)
+		for (int j = 0; j < 2; j++) {
+			for (int i = 0; i < profile_length; i++)
+				sensor_values[i + 1 + j * profile_length] =
+				(int16_t)be16toh(*(int16_t *)(line + 15 + j * profile_length * 2 + i * 2)) / gain;
+		}
+		
+		// get sensor values (RWSD)
+		for (int i = 0; i < profile_length; i++)
+			sensor_values[i + 1 + 2 * profile_length] =
+			(int16_t)be16toh(*(int16_t *)(line + 15 + 2 * profile_length * 2 + i * 2)) / (10 * gain);
 	}
 	
 	return 0;
