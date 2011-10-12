@@ -23,7 +23,7 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	scintillometer.RES.sensors 100727.RES.template \
 	WTH.sensors \
 	WTX.sensors \
-	windcube.sta.sensors \
+	windcube.sta.sensors windcube.rtd.sensors \
 	gps.tro.sensors kitk16230.tro.template \
 	sodar.mnd.sensors 110222.mnd.template \
 	rs1.txt.sensors rs2.txt.sensors CN010211.txt.template \
