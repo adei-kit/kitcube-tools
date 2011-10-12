@@ -345,6 +345,9 @@ void windcube::readData(std::string full_filename){
 				break;
 			}
 			
+			// calculate azimuth angle of measurement:
+			// starting at RelativeInitialPosition and adding 90 degrees
+			// for each acquisition
 			azimuth_angle = ((currPos - lenHeader) / lenDataSet * 90  + initial_position) % 360;
 		}
 		
