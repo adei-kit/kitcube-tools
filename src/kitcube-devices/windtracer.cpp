@@ -289,19 +289,7 @@ void windtracer::readData(std::string full_filename) {
 	
 	// Compile file name
 	full_data_filename = full_filename;
-
-
-	// If number of sensors is unknown read the header first
-	if (nSensors == 0)
-		readHeader(full_data_filename.c_str());
 	
-	// if header could not be read, leave function here
-	if (lenHeader == 0) {
-		fd_eof = true;
-		return;
-	}
-	
-
 #ifdef USE_MYSQL
 	if (db == 0) {
 		openDatabase();
