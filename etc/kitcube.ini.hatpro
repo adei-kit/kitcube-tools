@@ -25,7 +25,7 @@ samplingTime = 55 sec
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.19/etc
+configDir = /home/cube/kitcube-tools-0.20/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/hatzenbuehl
@@ -962,7 +962,7 @@ samplingTime = 10 min
 
 
 ; windcube
-[WC]
+[WC-sta]
 moduleName = WC
 moduleNumber = 62
 moduleType = windcube
@@ -971,6 +971,17 @@ sensorGroup = sta
 sensorList = windcube.sta.sensors
 datafileTemplate = 110222.mnd.template
 datafileMask = WLS7-0038_<index>.sta
+samplingTime = 30 min
+
+[WC-rtd]
+moduleName = WC
+moduleNumber = 62
+moduleType = windcube
+moduleComment = windcube_comment
+sensorGroup = rtd
+sensorList = windcube.rtd.sensors
+datafileTemplate = 110222.mnd.template
+datafileMask = WLS7-0038_<index>.rtd
 samplingTime = 30 min
 
 
