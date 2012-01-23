@@ -29,7 +29,7 @@ int hatpro::readHeader(const char *filename) {
 	char *buf;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
@@ -268,9 +268,10 @@ void hatpro::readData(std::string full_filename){
 	FILE *fd_data_file;
 	double *local_sensorValue;
 	int loop_counter = 0;
-	FILE *fmark;
+
+	//FILE *fmark;
+	//struct timeval lastTime;
 	std::string full_data_file_name;
-	struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long currPos;
 	long lastIndex, tmp_pos1, tmp_pos2;
@@ -283,7 +284,7 @@ void hatpro::readData(std::string full_filename){
 #endif
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
@@ -309,7 +310,7 @@ void hatpro::readData(std::string full_filename){
 		full_data_file_name = full_filename;
 		
 		// open data file
-		if (debug >= 1)
+		if (debug > 2)
 			printf("Open data file: %s\n", full_data_file_name.c_str());
 		fd_data_file = fopen(full_data_file_name.c_str(), "r");
 		if (fd_data_file == NULL) {
@@ -319,6 +320,9 @@ void hatpro::readData(std::string full_filename){
 		
 		
 		// Get the last time stamp + file pointer from the marker file
+		loadFilePosition(lastIndex, lastPos, time_stamp_tv);
+		
+/*		
 		lastPos = 0;
 		lastTime.tv_sec = 0;
 		lastTime.tv_usec = 0;
@@ -327,7 +331,7 @@ void hatpro::readData(std::string full_filename){
 			printf("Get marker from %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {
-			fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+			fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 			fclose(fmark);
 			
 			// Read back the data time stamp of the last call
@@ -337,13 +341,14 @@ void hatpro::readData(std::string full_filename){
 			if (debug >= 1)
 				printf("Last time stamp was %ld\n", lastTime.tv_sec);
 		}
+*/
 		
 		// Find the beginning of the new data
 		// if new file, jump to the first data set
 		if (lastPos == 0)
 			lastPos = lenHeader;
 		currPos = lastPos;
-		if (debug >= 1)
+		if (debug > 2)
 			printf("Last position in file: %ld\n", lastPos);
 		fseek(fd_data_file, lastPos, SEEK_SET);
 		
@@ -394,7 +399,7 @@ void hatpro::readData(std::string full_filename){
 			// print sensor values
 			if (debug >= 4) {
 				printf("%4d: Received %4d bytes --- ", loop_counter, (int) strlen(buf));
-				printf("%lds %6ldus --- ", time_stamp_tv.tv_sec, time_stamp_tv.tv_usec);
+				printf("%lds %6ldus --- ", time_stamp_tv.tv_sec, (long) time_stamp_tv.tv_usec);
 				for (int k = 0; k < profile_length; k++) {
 					printf("%.0f ", altitudes[k]);
 				}
@@ -464,15 +469,19 @@ void hatpro::readData(std::string full_filename){
 		
 		processedData += currPos - lastPos;
 		
-		if (debug >= 1)
+		if (debug > 2)
 			printf("Position in file: %ld; processed data: %ld Bytes\n", currPos, currPos - lastPos);
 		
 		// Write the last valid time stamp / file position
+		saveFilePosition(lastIndex, currPos, time_stamp_tv);
+
+/*
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark > 0) {
-			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, time_stamp_tv.tv_sec, time_stamp_tv.tv_usec, currPos);
+			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, time_stamp_tv.tv_sec, (long) time_stamp_tv.tv_usec, currPos);
 			fclose(fmark);
 		}
+*/
 		
 		fclose(fd_data_file);
 		free(buf);
@@ -537,7 +546,7 @@ unsigned int hatpro::getSensorGroup(){
 	unsigned int number;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	number = 0;
@@ -715,7 +724,7 @@ int hatpro::create_data_table_name(std::string & data_table_name)
 	int err;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	

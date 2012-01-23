@@ -9,17 +9,21 @@
 
 #include "daqdevice.h"
 
+#include <sys/stat.h>
+
 
 DAQDevice::DAQDevice(){
 	
 	debug = 0;
 	
+	appId = 0;
 	moduleType = "Generic";
 	moduleNumber = 0;
 	this->sensorGroup = "txt";
 	sensorGroupNumber = 0;
 	
 	this->iniGroup = "DAQDevice";
+	this->tAlarm = 0; // No alarm limits
 	
 	lenHeader = 0;
 	lenDataSet = 0;
@@ -33,15 +37,24 @@ DAQDevice::DAQDevice(){
 	nAxis = 0;
 	sensor = 0;
 	nSensors = 0; // Unknown configuration
+	nSensorCols = 0;
 	sensorValue = 0;
 	processedData = 0;
 	
 	initDone = 0;
+	useTicks = true; // Store microseconds
+	
+	dataTablePrefix = "Data";
 	
 #ifdef USE_MYSQL
 	db = 0;
 #endif
 	
+#ifdef USE_PYTHON
+	pModule = 0;
+	pFunc = 0;
+#endif
+		
 }
 
 
@@ -76,6 +89,9 @@ DAQDevice::~DAQDevice(){
 	    sensorValue = 0;
 	}
 	
+	// Free the Python analysis code
+	releasePython();
+	
 }
 
 
@@ -91,6 +107,13 @@ void DAQDevice::setDebugLevel(int level){
 	this->debug = level;
 }
 
+void DAQDevice::setAppId(int id){
+	this->appId = id;
+}
+
+int DAQDevice::getAppId(){
+	return(this->appId);
+}
 
 void DAQDevice::setConfigDefaults(){
 	// Note:
@@ -100,17 +123,120 @@ void DAQDevice::setConfigDefaults(){
 }
 
 
+
+void DAQDevice::readInifileCommon(const char *filename){
+	akInifile *ini;
+	Inifile::result error;
+
+	std::string value;
+	std::string tUnit;
+	float tValue;
+
+	
+	if (debug > 2)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	// Save the name of the inifile
+	this->inifile = filename;
+
+	//
+	// Set common module independant parameters
+	//
+	this->project = "kitcube";
+	this->dbHost = "localhost";
+	this->dbUser = "root";
+	this->dbPassword = "";
+	//this->dbName = project + "_active"; // s. below
+	this->sensorTableName = "Sensorlist";
+	this->axisTableName = "Axislist";
+	this->moduleTableName = "ModuleList";
+	this->statusTableName = "Statuslist";
+	
+	this->configDir = "./";
+	this->dataDir = "./data";
+	this->remoteDir = "../kitcube-data/data";
+	this->archiveDir = "./data";
+	this->rsyncArgs = "";
+	
+	this->pythonDir = "";
+	
+	
+	if (debug > 2) {
+		ini = new akInifile(inifile.c_str(), stdout);
+	} else {
+		ini = new akInifile(inifile.c_str()); // Skip output
+	}
+	if (ini->Status()==Inifile::kSUCCESS){
+		
+		// Read global parameters
+		// The parameters should be the same for the whole system
+		if (debug > 2)
+			printf("[Common]\n");
+		ini->SpecifyGroup("Common");
+		this->project = ini->GetFirstString("project", project.c_str(), &error);
+		this->dbHost = ini->GetFirstString("dbHost", dbHost.c_str(), &error);
+		
+		this->dbName = project + "_active";
+		this->dbName = ini->GetFirstString("dbName", dbName.c_str(), &error);
+		this->dbUser = ini->GetFirstString("dbUser", dbUser.c_str(), &error);
+		this->dbPassword = ini->GetFirstString("dbPassword", dbPassword.c_str(), &error);
+		
+		// TODO: Some of the directories are not used any more.
+		//       The synchronization is done by external scripts
+		this->configDir = ini->GetFirstString("configDir", configDir.c_str(), &error);
+		this->dataDir = ini->GetFirstString("dataDir", dataDir.c_str(), &error);
+		this->remoteDir = ini->GetFirstString("remoteDir", remoteDir.c_str(), &error);
+		this->archiveDir = ini->GetFirstString("archiveDir", archiveDir.c_str(), &error);
+		this->rsyncArgs = ini->GetFirstString("rsyncArgs", rsyncArgs.c_str(), &error);
+		while (error != Inifile::kFAIL) {
+			this->rsyncArgs += " ";
+			this->rsyncArgs += ini->GetNextString("", &error);
+		}
+		
+		this->pythonDir = ini->GetFirstString("pythonDir", this->pythonDir.c_str(), &error);
+	
+		
+		// Get default parameters for the modules
+		//tValue = ini->GetFirstValue("alarmDelay", 5, &error); 
+		value = ini->GetFirstString("alarmDelay", "5", &error);
+		if (value == "no") {
+			this->tAlarm = 0; 
+		} else {	
+				sscanf(value.c_str(), "%f", &tValue);
+				tUnit = ini->GetNextString("min", &error);
+				this->tAlarm = tValue * 60;
+				if ((tUnit == "sec") || (tUnit == "s")) this->tAlarm = tValue;
+				if (tUnit == "h") this->tAlarm = tValue * 3600;
+		}
+		// Format of the timestamp
+		value = ini->GetFirstString("useTicks", "yes", &error);
+		if (value == "no") {
+			useTicks = false;
+		}
+			
+	}
+	delete ini;
+	
+}
+
+
 void DAQDevice::readInifile(const char *filename, const char *group){
 	akInifile *ini;
 	Inifile::result error;
-	std::string value;
 	char line[256];
+	std::string value;
 	float tValue;
 	std::string tUnit;
+	char sValue[20];
 	
-	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
+	// Read module number independant parameter
+	// from the [Common] section
+	readInifileCommon(filename);
+	
 	
 	//
 	// Get the module number
@@ -129,7 +255,8 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		}
 	}
 	delete ini;
-	
+
+/* -- moved to readInifileCommon()---
 	//
 	// Set other module number dependant parameters
 	//
@@ -141,12 +268,14 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	this->sensorTableName = "Sensorlist";
 	this->axisTableName = "Axislist";
 	this->moduleTableName = "ModuleList";
+	this->statusTableName = "Statuslist";
 	
 	this->configDir = "./";
 	this->dataDir = "./data";
 	this->remoteDir = "../kitcube-data/data";
 	this->archiveDir = "./data";
 	this->rsyncArgs = "";
+*/
 	
 	// Use module number in template name
 	this->moduleName = "GEN";
@@ -179,7 +308,10 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		ini = new akInifile(inifile.c_str()); // Skip output
 	}
 	if (ini->Status()==Inifile::kSUCCESS){
+	
 		
+/*	-- moved to readInifileCommon()---
+	
 		// Read global parameters
 		// The parameters should be the same for the whole system
 		if (debug > 2)
@@ -203,16 +335,9 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 			this->rsyncArgs += ini->GetNextString("", &error);
 		}
 		
-		// Add module number to dataDir + archiveDir
-		if (dataDir.at(dataDir.length()-1) != '/') dataDir += "/";
-		if (archiveDir.at(archiveDir.length()-1) != '/') archiveDir += "/";
-		if (remoteDir.at(remoteDir.length()-1) != '/') remoteDir += "/";
-		sprintf(line, "%03d/", moduleNumber);
-		this->dataDir += line;
-		this->remoteDir += line;
-		this->archiveDir += line;
+*/		
 		
-		
+
 		if (debug > 2)
 			printf("[%s]\n", iniGroup.c_str());
 		// Module specific parameters
@@ -224,12 +349,29 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->moduleName = ini->GetFirstString("moduleName", moduleName.c_str(), &error);
 		this->moduleComment= ini->GetFirstString("moduleComment", moduleComment.c_str(), &error);
 		this->datafileTemplate = ini->GetFirstString("datafileTemplate", datafileTemplate.c_str(), &error);
+
+		// Only for information ?!
+		// Seems to be not used
 		tValue= ini->GetFirstValue("samplingTime", (float) tSample, &error);
 		tUnit = ini->GetNextString("ms", &error);
 		this->tSample = tValue;
 		if ((tUnit == "sec") || (tUnit == "s")) this->tSample = tValue * 1000;
 		if (tUnit == "min") this->tSample = tValue * 60000;
 		
+		// Specifies the maximum allowed delay of new data
+		//tValue = ini->GetFirstValue("alarmDelay", (float) this->tAlarm/60, &error); 
+		sprintf(sValue,"%f", (float) this->tAlarm/60);
+		value = ini->GetFirstString("alarmDelay", sValue, &error);
+		if (value == "no") {
+			this->tAlarm = 0; 
+		} else {	
+			sscanf(value.c_str(), "%f", &tValue);
+			tUnit = ini->GetNextString("min", &error);
+			this->tAlarm = tValue * 60;
+			if ((tUnit == "sec") || (tUnit == "s")) this->tAlarm = tValue;
+			if (tUnit == "h") this->tAlarm = tValue * 3600;
+		}
+				
 		
 		// Global parameters can be overwritten by the module settings
 		this->configDir = ini->GetFirstString("configDir", configDir.c_str(), &error);
@@ -238,6 +380,22 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->archiveDir = ini->GetFirstString("archiveDir", archiveDir.c_str(), &error);
 		this->datafileMask = ini->GetFirstString("datafileMask", datafileMask.c_str(), &error);
 		this->sensorListfile = ini->GetFirstString("sensorList", sensorListfile.c_str(), &error);
+		
+		
+		// Add module number to dataDir + archiveDir
+		if (dataDir.at(dataDir.length()-1) != '/') dataDir += "/";
+		if (archiveDir.at(archiveDir.length()-1) != '/') archiveDir += "/";
+		if (remoteDir.at(remoteDir.length()-1) != '/') remoteDir += "/";
+		sprintf(line, "%03d/", moduleNumber);
+		this->dataDir += line;
+		this->remoteDir += line;
+		this->archiveDir += line;
+		
+		// Read the names of the Python analysis scripts
+		this->pythonDir = ini->GetFirstString("pythonDir", this->pythonDir.c_str(), &error);
+		this->pythonModule = ini->GetFirstString("python", "", &error);
+		this->pythonFunction = ini->GetNextString("", &error);
+
 		
 	}
 	delete ini;
@@ -265,7 +423,151 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 			   moduleName.c_str(), moduleComment.c_str(), moduleNumber,
 			   sensorGroup.c_str(), sensorGroupNumber);
 	}
+	
+	
+	// TODO: Display database configuration, table names
+	
+	
+	// Load Python, if a name of a module is defined
+	if (pythonModule.length() > 0) {
+		if (debug > 2) {
+			printf("      : Analysis with %s.py, %s()\n", 
+				   pythonModule.c_str(), pythonFunction.c_str());
+		}
+		loadPython();
+	}	
+
 }
+
+
+void DAQDevice::loadPython(){
+
+#ifdef USE_PYTHON
+	// Load the python script?!
+	// What happens if the script does not work???
+	// In priciple this class will quit, because to processing fails?!
+    // 
+	PyObject *pName;
+	
+	// Check if Python has been loaded?!
+	if (pModule > 0) {
+		// Reload function first 
+		releasePython();
+	}
+	
+	Py_Initialize();
+	PyRun_SimpleString("import sys");
+	
+	// TODO: Add the directory of the python scripts here 
+    PyRun_SimpleString("sys.path.append('')");    
+	
+	pName = PyString_FromString(pythonModule.c_str());
+    // Error checking of pName left out 
+	
+    pModule = PyImport_Import(pName);
+    Py_DECREF(pName);
+	
+	
+    if (pModule != NULL) { 
+	    pFunc = PyObject_GetAttrString(pModule, pythonFunction.c_str());
+	    // pFunc is a new reference 
+		
+	    if (pFunc && PyCallable_Check(pFunc)) {
+			
+			// Function has been loaded
+			
+		} else {
+			if (PyErr_Occurred())  PyErr_Print();
+		    fprintf(stderr, "Cannot find function \"%s\"\n", pythonFunction.c_str());
+			
+//			Py_XDECREF(pFunc);
+//			Py_DECREF(pModule);
+			
+			throw std::invalid_argument("Failed to find Python function in module");			
+	    }
+		
+	} else {
+	    PyErr_Print();
+	    fprintf(stderr, "Failed to load \"%s\"\n", pythonModule.c_str());
+	    
+		// No release of pModule needed here
+		
+		throw std::invalid_argument("Failed to load Python module");
+    }
+#endif	
+	
+}
+
+
+void DAQDevice::releasePython(){
+
+#ifdef USE_PYTHON
+	if (pModule > 0){
+		if (debug > 2) printf("Release Pyhton script\n");
+		
+		Py_XDECREF(pFunc);
+        Py_DECREF(pModule);
+
+		Py_Finalize();
+		
+		pModule = 0;
+	}
+#endif
+	
+}
+
+
+void DAQDevice::readDataWithPython(const char *filename){
+	// TODO: Extend the function to revceive more than 
+	// one dataset from  a data file
+	// E.g. handle other complex data files?!
+	
+	int i;
+	int nArgs = 1;
+	int nRes;
+	PyObject *pArgs, *pValue, *pResult;
+	
+	
+	if (debug > 2)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+		
+	
+	// Convert the argument list to python
+	pArgs = PyTuple_New(nArgs);
+	pValue = PyString_FromString(filename);
+	if (!pValue) {
+		throw(std::invalid_argument("Cannot convert argument to Python"));
+	}
+	// pValue reference stolen here: 
+	PyTuple_SetItem(pArgs, 0, pValue);
+	
+    // Call the function
+	pResult = PyObject_CallObject(this->pFunc, pArgs);
+	Py_DECREF(pArgs);
+
+	if (pResult == NULL) {
+		PyErr_Print();
+		throw(std::invalid_argument("Call of Python function failed"));
+	}
+
+	// Copy the results to the sensors list
+	nRes = PyObject_Length(pResult);
+	if (nRes != nSensors) {
+		throw(std::invalid_argument("Number of results does not match nSensors"));		
+	}
+	for (i = 0; i<nRes; i++){
+		pValue = PyList_GetItem(pResult, i);
+		printf("Result of call: %f\n", PyFloat_AsDouble(pValue));
+		sensorValue[i] = PyFloat_AsDouble(pValue);
+		Py_DECREF(pValue);
+	}
+	Py_DECREF(pResult);
+
+	// Store data 
+	storeSensorData();
+	
+}
+
 
 
 void DAQDevice::readAxis(const char *inifile){
@@ -276,7 +578,7 @@ void DAQDevice::readAxis(const char *inifile){
 	std::string item;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	//ini = new akInifile(inifile, stdout);
@@ -295,7 +597,7 @@ void DAQDevice::readAxis(const char *inifile){
 				nAxis++;
 			}
 			if (debug > 3)
-				printf("Number of axis: %d\n", nAxis);
+				printf("%-20s : %d\n", "Number of axis", nAxis);
 			
 			// Allocate axis definition
 			if (axis > 0)
@@ -333,10 +635,14 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	char *tmp;
 	std::string axisName;
 	std::string full_sensorlist_filename;
+	int n;
 	
-	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+    // Print module names
+	printf("#%03d %s/%s -- \"%s\" from [%s]:\n", moduleNumber, moduleName.c_str(), 
+		   	sensorGroup.c_str(), moduleComment.c_str(), iniGroup.c_str());
 	
 	
 	// Will need the axis definition for parsing the sensor names
@@ -345,7 +651,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	
 	full_sensorlist_filename =  configDir + sensor_list_file_name;
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("Read sensor names from list file: %s\n", full_sensorlist_filename.c_str());
 	
 	// open sensor list file
@@ -372,11 +678,23 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	// read number of sensors from sensor list file
 	// this has to be done to be able to create the sensorType structs before actually parsing the file
 	read_ascii_line(&line, &len, sensor_list_file);
-	sscanf(line, "Number of sensors: %d\n", &nSensors);
-	// TODO: error checking
+	n = sscanf(line, "Number of sensors: %d %d\n", &nSensors, &nSensorCols);
+	if (n == 0) {
+		throw std::invalid_argument("The first line with the numer of sensors is wrong");
+	}
+	if (n == 1) {
+		nSensorCols = nSensors;
+	}
+	if (n == 2){
+		if (nSensorCols > nSensors)
+			throw std::invalid_argument("The numer of sensors entries in the data table can't be larger than the number of sensors");
+	}
 	
-	if (debug >= 1)
-		printf("Number of sensors: %d\n", nSensors);
+	if (debug >= 1){
+		printf("%-20s : %d\n", "Number of sensors", nSensors);
+		if (nSensorCols < nSensors)
+			printf("%-20s : %d\n", "Number of sensor cols", nSensorCols);
+	}
 	
 	// create sensor list
 	if (sensor > 0)
@@ -420,23 +738,124 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 		}
 		
 		if (debug >= 1) {
-			printf("Sensor %3d: %s\t%s (%s)\t%s\n",
+			printf("Sensor %3d           : %s\t%s (%s)\t%s\n",
 			       i + 1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str(), axis[sensor[i].axis].unit.c_str(), sensor[i].comment.c_str());
 		}
-	}
+	}	
 	
 	fclose(sensor_list_file);
 	free(line);
+
+	// Display also other information on the DAQ module
+	if (debug >= 1) {
+		if (tAlarm)
+			printf("%-20s : %02d:%02d min\n", "Alarm delay", tAlarm/60, tAlarm%60);
+		else
+			printf("%-20s : disabled\n", "Alarm delay");
+		printf("\n");
+		
+		if (pModule > 0){
+			printf("%-20s : %s.py, %s()\n", "Python script", 
+				   pythonModule.c_str(), pythonFunction.c_str());
+		}
+	}	
+
+}
+
+
+void DAQDevice::saveFilePosition(long lastIndex, unsigned long currPos, struct timeval &timestamp){
+	FILE *fmark;
+
+	if (debug > 2)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+
+	// Write the last valid time stamp / file position
+	fmark = fopen(filenameMarker.c_str(), "w");
+	if (fmark > 0) {
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp.tv_sec, (long) timestamp.tv_usec, currPos);
+		fclose(fmark);
+	}
+
+	
+#ifdef USE_MYSQL
+	// Update the status table in the database	
+	struct timeval t;
+	struct timezone tz;
+	std::string sql;
+	char sData[50];
+
+	// Get curent time
+	gettimeofday(&t, &tz);	
+	
+	// TODO: UPDATE ...
+	// UPDATE SET usec = current time, usecData = timestamp WHERE module = this->moduleNumber
+	sql = "UPDATE `";
+	sql += statusTableName + "` SET `sec` = ";
+	sprintf(sData, "%ld", t.tv_sec);
+	sql += sData;
+	sql += ", `secData` = ";
+	sprintf(sData, "%ld", timestamp.tv_sec);
+	sql += sData;
+	sql += ", `status`= 'Running' ";
+	sql += " WHERE ( `module` = ";
+	sprintf(sData, "%d", moduleNumber);
+	sql += sData;
+	sql += " AND `sensorGroup` = \""; 
+	sql += sensorGroup;
+	sql += "\" )";
+	
+	
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to write register module in status list\n");
+		throw std::invalid_argument("Writing data failed");
+	}	
+	
+	//printf("SQL: %s\n", sql.c_str());	
+	//printf("mysql_affected_rows: %lld\n", mysql_affected_rows(db));	
+#endif
+	
+	
+}
+
+
+void DAQDevice::loadFilePosition(long &lastIndex, unsigned long &lastPos, struct timeval &timestamp){
+	FILE *fmark;
+    struct timeval lastTime;
+	
+	lastPos = 0;
+	lastTime.tv_sec = 0;
+	lastTime.tv_usec = 0;
+	
+	if (debug > 1)
+		printf("Get marker from %s\n", filenameMarker.c_str());
+	fmark = fopen(filenameMarker.c_str(), "r");
+	if (fmark > 0) {
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
+		fclose(fmark);
+		
+		// Read back the data time stamp of the last call
+		timestamp.tv_sec = lastTime.tv_sec;
+		timestamp.tv_usec = lastTime.tv_usec;
+		
+		if (debug > 1)
+			printf("Last time stamp was %ld\n", lastTime.tv_sec);
+	}	
+
+	return;
 }
 
 
 int DAQDevice::read_ascii_line(char **buffer, size_t *length, FILE *file_ptr) {
 	if (getline(buffer, length, file_ptr) == -1) {
-		printf("Error reading from file or EOF reached\n");
+		if (debug > 3) printf("Error reading from file or EOF reached\n");
 		return -1;
 	}
 	if (strchr(*buffer, '\n') == NULL) {
-		printf("Error: line read from file is not complete\n");
+		if (debug > 3) printf("Error: line read from file is not complete\n");
 		return -1;
 	}
 	
@@ -472,10 +891,10 @@ void::DAQDevice::createDirectories(const char *path){
 	int i;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
-	if (debug >= 2)
+	if (debug > 2)
 		printf("Creating directory '%s'\n", path);
 	
 	// Check if the base directory exists
@@ -487,7 +906,7 @@ void::DAQDevice::createDirectories(const char *path){
 		pos1 = pathname.find("/", pos0);
 		if (pos1 != std::string::npos) {
 			dir = pathname.substr(0, pos1);
-			if (debug >= 3)
+			if (debug > 3)
 				printf("Create directory %s (%ld, %ld)\n", dir.c_str(), pos0, pos1);
 			if (dir.length() > 0)	// FIXME: do we really need this check?
 				mkdir(dir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
@@ -562,21 +981,72 @@ int DAQDevice::create_data_table_name(std::string & data_table_name)
 	int err;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	err = asprintf(&line, "Data_%03d_%s_%s", moduleNumber, moduleName.c_str(), sensorGroup.c_str());
+	err = asprintf(&line, "%s_%03d_%s_%s", dataTablePrefix.c_str(),
+				   moduleNumber, moduleName.c_str(), sensorGroup.c_str());
 	if (err == -1) {
 		printf("Error: not enough space for string!\n");
 		return -1;
 	} else {
-		printf("Data table name: \t%s\n", line);
+		if (debug > 2) printf("Data table name: \t%s\n", line);
 		data_table_name = line;
 		free(line);
 		return 0;
 	}
+	
 }
+
+
+void DAQDevice::connectDatabase() {
+#ifdef USE_MYSQL
+	std::string sql;
+
+	// allocate MYSQL object
+	// TODO: only, if it does not exist yet!
+	db = mysql_init(NULL);
+	if (db == NULL) {
+		printf("Error allocating MYSQL object!\n");
+		// TODO: error handling
+	}
+	
+	// Enable automatic reconnect
+	my_bool re_conn = 1;
+	mysql_options(db, MYSQL_OPT_RECONNECT, &re_conn);
+	
+	// connect to database
+	//printf("Database: \t\t%s@%s\n", dbUser.c_str(), dbHost.c_str());
+	if (!mysql_real_connect(db, dbHost.c_str(), dbUser.c_str(), dbPassword.c_str(), NULL, 0, NULL, 0)) {
+		printf("Failed to connect to database: %s\n", mysql_error(db));
+		// TODO: error handling
+	}
+	
+	// **********************************************************************
+	// select the default database
+	// create it, if it doesn't exist
+	// **********************************************************************
+	if (mysql_select_db(db, dbName.c_str())) {
+		printf("Error selecting DB '%s' for use: %s\n", dbName.c_str(), mysql_error(db));
+		
+		printf("Creating DB '%s'...\n", dbName.c_str());
+		sql = "CREATE DATABASE " + dbName;
+		if (mysql_query(db, sql.c_str())) {
+			printf("Error creating new DB '%s': %s\n", dbName.c_str(), mysql_error(db));
+		}
+		
+		if (mysql_select_db(db, dbName.c_str())) {
+			printf("Error selecting DB '%s' for use: %s\n", dbName.c_str(), mysql_error(db));
+			// TODO: error handling
+			return;
+		}
+	}
+	
+	return;
+#endif	
+}
+
 
 
 void DAQDevice::openDatabase() {
@@ -592,16 +1062,18 @@ void DAQDevice::openDatabase() {
 	int nNewAxis;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	// Create Database tables
-	create_data_table_name(dataTableName);
-	// TODO: error handling
+	// TODO: error handling	
+	// TODO:  Check if the data is available in the class?!
 	
-	//TODO:  Check if the data is available in the class?!
+	// Connect to the database "<project>_active"
+	// Create database, if not existing
+	connectDatabase();
 	
+/*
 	
 	// allocate MYSQL object
 	// TODO: only, if it does not exist yet!
@@ -621,6 +1093,28 @@ void DAQDevice::openDatabase() {
 		printf("Failed to connect to database: %s\n", mysql_error(db));
 		// TODO: error handling
 	}
+	
+	// **********************************************************************
+	//select the default database
+	//create it, if it doesn't exist
+	// **********************************************************************
+	if (mysql_select_db(db, dbName.c_str())) {
+		printf("Error selecting DB '%s' for use: %s\n", dbName.c_str(), mysql_error(db));
+		
+		printf("Creating DB '%s'...\n", dbName.c_str());
+		sql = "CREATE DATABASE " + dbName;
+		if (mysql_query(db, sql.c_str())) {
+			printf("Error creating new DB '%s': %s\n", dbName.c_str(), mysql_error(db));
+		}
+		
+		if (mysql_select_db(db, dbName.c_str())) {
+			printf("Error selecting DB '%s' for use: %s\n", dbName.c_str(), mysql_error(db));
+			// TODO: error handling
+			return;
+		}
+	}
+	
+*/
 	
 	//----------------------------------------------------------------------
 	// read list of databases, only kitcube* are relevant
@@ -646,37 +1140,17 @@ void DAQDevice::openDatabase() {
 		// TODO: error handling
 	}
 	
-	printf("Project \"%s\" database list: \t", project.c_str());
+	if (debug > 2) printf("Project \"%s\" database list: \t", project.c_str());
 	
 	// search for kitcube* database names
 	while ((row = mysql_fetch_row(res)) != NULL) {
 		if (strstr(row[0], project.c_str()) == row[0])
-			printf("%s ", row[0]);
+			if (debug > 2) printf("%s ", row[0]);
 	}
-	printf("\n");
+	if (debug > 2) printf("\n");
 	
-	mysql_free_result(res);
-	
-	/***********************************************************************
-	 * select the default database
-	 * create it, if it doesn't exist
-	 **********************************************************************/
-	if (mysql_select_db(db, dbName.c_str())) {
-		printf("Error selecting DB '%s' for use: %s\n", dbName.c_str(), mysql_error(db));
-		
-		printf("Creating DB '%s'...\n", dbName.c_str());
-		sql = "CREATE DATABASE " + dbName;
-		if (mysql_query(db, sql.c_str())) {
-			printf("Error creating new DB '%s': %s\n", dbName.c_str(), mysql_error(db));
-		}
-		
-		if (mysql_select_db(db, dbName.c_str())) {
-			printf("Error selecting DB '%s' for use: %s\n", dbName.c_str(), mysql_error(db));
-			// TODO: error handling
-			return;
-		}
-	}
-	
+	mysql_free_result(res);	
+
 	
 	// Create axis table
 	// Read axis definition from inifile
@@ -700,7 +1174,7 @@ void DAQDevice::openDatabase() {
 		cmd += "    `unit` text, ";
 		cmd += "    `min`  float(10), ";
 		cmd += "    `max`  float(10), ";
-		cmd += "PRIMARY KEY (`id`), INDEX(`name`) ) TYPE=MyISAM";
+		cmd += "PRIMARY KEY (`id`), INDEX(`name`) ) ENGINE=MyISAM";
 		
 		//printf("SQL: %s\n", cmd.c_str());
 		
@@ -742,13 +1216,13 @@ void DAQDevice::openDatabase() {
 		//}
 	}
 	mysql_free_result(res);
-	printf("\n");
+	if (debug > 2) printf("\n");
 	
 	// Add the new axis definitions to the database
 	nNewAxis = 0;
 	for (i = 0; i < nAxis; i++) {
 		if (axis[i].isNew) {
-			printf("Adding axis %s -- %s (%s) to the axis list\n",
+			if (debug) printf("Adding axis %s -- %s (%s) to the axis list\n",
 				   axis[i].name.c_str(), axis[i].desc.c_str(), axis[i].unit.c_str());
 			sql = "INSERT INTO " + axisTableName + "(`name`, `comment`, `unit`) VALUES ('" +
 			      axis[i].name + "', '" + axis[i].desc + "', '" + axis[i].unit + "')";
@@ -764,12 +1238,15 @@ void DAQDevice::openDatabase() {
 			nNewAxis++;
 		}
 	}
-	printf("New axis definitions: %d\n", nNewAxis);
+	if ((debug) && (nNewAxis>0))
+		printf("New axis definitions: %d\n", nNewAxis);
 	
 	
 	/***********************************************************************
 	 * create data table, if it doesn't exist
 	 **********************************************************************/
+	// Create Database tables
+	create_data_table_name(dataTableName);
 	create_data_table();
 	
 	
@@ -794,7 +1271,7 @@ void DAQDevice::openDatabase() {
 		cmd += "`axis` int(10), ";
 		cmd += "`height` float(10)  default '0', ";
 		cmd += "`data_format` text, ";
-		cmd += "PRIMARY KEY (`id`), INDEX(`name`) ) TYPE=MyISAM";
+		cmd += "PRIMARY KEY (`id`), INDEX(`name`) ) ENGINE=MyISAM"; 
 		
 		//printf("SQL: %s\n", cmd.c_str());
 		
@@ -837,8 +1314,62 @@ void DAQDevice::openDatabase() {
 			nNewSensors++;
 		}
 	}
-	printf("New sensors: \t\t%d\n", nNewSensors);
-	printf("\n");
+	
+	if ((debug) && (nNewSensors > 0)){ 
+		printf("New sensors: \t\t%d\n", nNewSensors);
+		printf("\n");
+	}
+	
+	
+	// Create status table
+	// Get list of cols in data table
+	sql ="SHOW COLUMNS FROM " + statusTableName;
+	if (mysql_query(db, sql.c_str())) {
+		//fprintf(stderr, "%s\n", sql);
+		//fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// Create table
+		if (debug) printf("Creating status table\n");
+		cmd = "CREATE TABLE `";
+		cmd += statusTableName;
+		cmd += "` (`id` int(10) auto_increment, ";
+		cmd += "`sec` bigint default '0', ";		// ts entry by reader
+		cmd += "`appId` int(10), ";					// id of the reader
+		cmd += "`module` int(10), ";			    // no of module
+		cmd += "`moduleName` text, ";				// name of the module
+		cmd += "`sensorGroup` text, ";				// sensor group of the module
+		cmd += "`secData` bigint default '0', ";	// ts of last data
+		cmd += "`alarmEnable` int(10) default '1', "; // enable / disable alarm handling
+		cmd += "`alarmLimit` int(10) default '0', ";  // delay of alarm
+		cmd += "`alarm` int(10) default '0', ";		// is on alarm 
+		cmd += "`status` text, ";					// ???			
+		cmd += "`comment` text, ";		
+		cmd += "`secSync` bigint default '0', ";	// last successfull sync (w data)
+		cmd += "PRIMARY KEY (`id`), INDEX(`appId`, `module`) ) ENGINE=MyISAM"; 
+		
+		// if alarmLimit = 0 there will be no alarm for a module
+		// enable / disable is a user function - intended for operator
+		// TODO: secSync complements the information for a whole module?!
+		//		But rsync is hard to control, because knowledge of file 
+		//		convention or data format is required?!
+		//
+		
+		//printf("SQL: %s\n", cmd.c_str());
+		
+		if (mysql_query(db, cmd.c_str())){
+			fprintf(stderr, "%s\n", cmd.c_str());
+			fprintf(stderr, "%s\n", mysql_error(db));
+			
+			throw std::invalid_argument("Creation of table for status list failed");
+		}
+	}
+	res = mysql_store_result(db);
+	mysql_free_result(res);
+	
+	
+	// Register in the status list
+	registerStatusTab("Starting");
+	
 #endif // USE_MYSQL
 }
 
@@ -868,18 +1399,24 @@ int DAQDevice::create_data_table() {
 	
 	// if there is no row, meaning no table, create it
 	if (row == NULL) {
-		printf("Creating data table %s...\n", dataTableName.c_str());
+		if (debug) printf("Creating data table %s...\n", dataTableName.c_str());
 		
 		// build SQL statement
 		sql_stmt = "CREATE TABLE `" + dataTableName + "` ";
-		sql_stmt += "(`id` bigint auto_increment, `usec` bigint default '0', ";
-		for (int i = 0; i < nSensors; i++)
+		if (useTicks)
+			sql_stmt += "(`id` bigint auto_increment, `usec` bigint default '0', ";
+		else
+			sql_stmt += "(`id` bigint auto_increment, `sec` bigint default '0', ";
+		for (int i = 0; i < nSensorCols; i++)
 			if (sensor[i].type == "profile") {
 				sql_stmt += "`" + sensor[i].name + "` blob, ";
 			} else {
 				sql_stmt += "`" + sensor[i].name + "` double, ";
 			}
-		sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`) ) TYPE=MyISAM";
+		if (useTicks)
+			sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`) ) ENGINE=MyISAM";
+		else
+			sql_stmt += "PRIMARY KEY (`id`), INDEX(`sec`) ) ENGINE=MyISAM";
 		
 		// execute SQL statement
 		if (mysql_query(db, sql_stmt.c_str())) {
@@ -895,9 +1432,12 @@ int DAQDevice::create_data_table() {
 void DAQDevice::closeDatabase(){
 #ifdef USE_MYSQL
 	if (db > 0){
-	  // Close database
-	  mysql_close(db);
-	  db = 0;
+		// Register in the status list
+		registerStatusTab("Stopped");
+		
+		// Close database
+		mysql_close(db);
+		db = 0;
 	}
 #endif
 }
@@ -923,6 +1463,127 @@ int DAQDevice::parseData(char* line, struct timeval* l_tData, double *sensorValu
 }
 
 
+void DAQDevice::registerStatusTab(const char *status, const char *comment){
+#ifdef USE_MYSQL
+	std::string sql;
+	char sData[50];
+	struct timeval t;
+	struct timezone tz;
+	bool rows;
+	
+	if (debug > 2)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+		
+	// Get curent time
+	gettimeofday(&t, &tz);	
+
+	if (debug > 2) printf("Register module in table %s\n", statusTableName.c_str());
+	
+	// Check if the entry is available
+	// Insert new entry
+	// INSERT INTO table (sec = current time, secData = timestamp WHERE module = this->moduleNumber	
+	sql = "SELECT * FROM `";
+	sql += statusTableName; 	
+	sql += "` WHERE ( `module` = ";
+	sprintf(sData, "%d", moduleNumber);
+	sql += sData;
+	sql += " AND `sensorGroup` = \""; 
+	sql += sensorGroup;
+	sql += "\" )";
+	
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to read from status list\n");
+		throw std::invalid_argument("Reading status list failed");
+	}	
+	
+	MYSQL_RES *res;
+	res = mysql_store_result(db);
+	rows = mysql_num_rows(res);
+	mysql_free_result(res);
+	
+	
+	//printf("SQL: %s\n", sql.c_str());	
+	//printf("Rows %d\n", rows);
+	
+	
+	if (rows == 0){	
+		// Insert new entry
+		// INSERT INTO table (usec = current time, usecData = timestamp WHERE module = this->moduleNumber	
+		sql = "INSERT INTO `";
+		sql += statusTableName + "` (`sec`, `module`, `sensorGroup`";
+		sql += ") VALUES (";
+		sprintf(sData, "%ld", tData.tv_sec);
+		sql += sData;
+		sql += ",";
+		sprintf(sData, "%d", moduleNumber);
+		sql += sData;
+		sql += ",\"";
+		sql += sensorGroup;
+		sql += "\")";
+		
+		if (mysql_query(db, sql.c_str())){
+			fprintf(stderr, "%s\n", sql.c_str());
+			fprintf(stderr, "%s\n", mysql_error(db));
+			
+			// If this operation fails do not proceed in the file?!
+			printf("Error: Unable to write register module in status list\n");
+			throw std::invalid_argument("Writing data failed");
+		}
+	}
+	
+	// Update the entry 
+	// UPDATE SET usec = current time, usecData = timestamp WHERE module = this->moduleNumber	
+	sql = "UPDATE `";
+	sql += statusTableName + "` SET `sec` = ";
+	sprintf(sData, "%ld", t.tv_sec);
+	sql += sData;
+	sql += ",`moduleName`= '";
+	sql += moduleName;
+	sql += "'";
+	sql += ", `appId` = ";
+	sprintf(sData, "%d", appId);
+	sql += sData;
+	if (status > 0){
+		sql += ", `status`= '";
+		sql += status;
+		sql += "'";
+	}
+	if (comment > 0){
+		sql += ", `comment`='";
+		sql += comment;
+		sql += "'";
+	}
+	sql += ",`alarmLimit`= ";
+	sprintf(sData, "%d", tAlarm);
+	sql += sData;
+	sql += " WHERE ( `module` = ";
+	sprintf(sData, "%d", moduleNumber);
+	sql += sData;
+	sql += " AND `sensorGroup` = \""; 
+	sql += sensorGroup;
+	sql += "\" )";
+
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to write register module in status list\n");
+		throw std::invalid_argument("Writing data failed");
+	}	
+
+	//printf("SQL: %s\n", sql.c_str());	
+	//printf("mysql_affected_rows: %lld\n", mysql_affected_rows(db));
+	
+	return;
+#endif
+}
+
+
 void DAQDevice::storeSensorData(){
 #ifdef USE_MYSQL
 	std::string sql;
@@ -932,10 +1593,9 @@ void DAQDevice::storeSensorData(){
 #endif
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
-	
-	
+			
 #ifdef USE_MYSQL
 	if (db == 0) {
 		openDatabase();
@@ -947,14 +1607,15 @@ void DAQDevice::storeSensorData(){
 		}
 	}
 #endif
+
 	
 	// Use the function setNdata, updateTimeStamp, updateData to 
 	// fill the sensor string
 		
 	// Display sensor data
-	if (debug >= 1) {
+	if (debug > 1) {
 		printf("%25s --- ", moduleName.c_str());
-		printf("%ld s %ld us ---- ", tData.tv_sec, tData.tv_usec);
+		printf("%ld s %ld us ---- ", tData.tv_sec, (long) tData.tv_usec);
 		for (int i = 0; i < nSensors; i++)
 			printf("%f ", sensorValue[i]);
 		printf("\n");
@@ -967,14 +1628,20 @@ void DAQDevice::storeSensorData(){
 		//printf("Write record to database\n");
 		
 		sql = "INSERT INTO `";
-		sql += dataTableName + "` (`usec`";
+		if (useTicks)
+			sql += dataTableName + "` (`usec`";
+		else
+			sql += dataTableName + "` (`sec`";
 		for (int i = 0; i < nSensors; i++) {
 			sql += ",`";
 			sql += sensor[i].name;
 			sql += "`";
 		}
 		sql +=") VALUES (";
-		sprintf(sData, "%ld", tData.tv_sec * 1000000 + tData.tv_usec);
+		if (useTicks)
+			sprintf(sData, "%ld", tData.tv_sec * 1000000 + tData.tv_usec);
+		else
+			sprintf(sData, "%ld", tData.tv_sec);
 		sql += sData;
 		for (int i = 0; i < nSensors; i++) {
 			sprintf(sData, "%f", sensorValue[i]);
@@ -1008,6 +1675,10 @@ void DAQDevice::storeSensorData(){
 
 void DAQDevice::readData(std::string full_filename){
 	printf("Define readData(...) in higher class!\n");
+		
+	// TODO: Is it possible to have a generic readData function here???
+	//	Try to use only simpler call back functions here?!
+	
 }
 
 
@@ -1027,7 +1698,7 @@ long DAQDevice::getFileNumber(char* filename) {
 	long index;
 	
 	
-	if (debug >= 3) {
+	if (debug > 2) {
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 		printf("... from filename '%s'\n", filename);
 	}
@@ -1106,15 +1777,19 @@ int DAQDevice::get_file_list(std::string directory)
 	long index;
 
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
-	if (debug >= 2)
+	if (debug > 2)
 		printf("... from directory '%s'\n", directory.c_str());
 	
 	
-	dir = opendir(directory.c_str());
+	dir = opendir(directory.c_str());	
+	if (dir == 0){
+		printf("Directory %s is not existing\n", directory.c_str());
+		throw(std::invalid_argument("Opendir failed"));
+	}
 	
 	// read all directory entries
 	while ((dir_entry = readdir(dir)) != NULL) {
@@ -1175,7 +1850,7 @@ void DAQDevice::getNewFiles() {
 	// Define template for the data file name or the folder name?!
 	//
 
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
@@ -1191,11 +1866,11 @@ void DAQDevice::getNewFiles() {
 	get_file_list(dataDir);
 	
 	// print list of data files found
-	if (debug >= 1) {
+	if (debug > 2) {
 		dateien_pos = dateien.begin();
 		printf("\nList of data files in %s:\n", dataDir.c_str());
 		printf("Number          List-Index Filename\n");
-		for (i = 0; i < dateien.size(); i++) {
+		for (i = 0; i < (int) dateien.size(); i++) {
 			printf("%6d %19ld %s\n", i, dateien_pos->first, dateien_pos->second.c_str());
 			dateien_pos++;
 		}
@@ -1210,11 +1885,11 @@ void DAQDevice::getNewFiles() {
 	filenameMarker = line;
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark != NULL) {
-		err = fscanf(fmark, "%ld %ld %ld %d", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		err = fscanf(fmark, "%ld %ld %ld %d", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	} else {
 		// Create new marker file
-		if (debug >= 1)
+		if (debug)
 			printf("No marker file found -- try to create a new one  %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark != NULL) {
@@ -1232,12 +1907,12 @@ void DAQDevice::getNewFiles() {
 	try {
 		dateien_pos = dateien.begin();
 		
-		for (i = 0; i < dateien.size(); i++) {
+		for (i = 0; i < (int) dateien.size(); i++) {
 			if (dateien_pos->first == lastIndex) {
-				// continue reading file from last call
-				if (debug >= 1)
-					printf("Continue reading file no. %d, index %ld, name %s:\n",
-					       i, dateien_pos->first, dateien_pos->second.c_str());
+				// continue reading file from last call				
+				if ((debug > 1) || (debug && !initDone))
+					printf("#%03d: Continue reading file no. %03d, index %06ld, name %s:\n",
+					       moduleNumber, i, dateien_pos->first, dateien_pos->second.c_str());
 				
 				// read header if first call of this function or if it failed below
 				err = 0;
@@ -1260,13 +1935,14 @@ void DAQDevice::getNewFiles() {
 				if (fmark != NULL) {
 					// Preserve the time stamp
 					fprintf(fmark, "%ld %ld %ld %d\n",
-						dateien_pos->first, lastTime.tv_sec, lastTime.tv_usec, 0);
+						dateien_pos->first, lastTime.tv_sec, (long) lastTime.tv_usec, 0);
 					fclose(fmark);
 				}
 				
-				if (debug >= 1)
-					printf("Begin reading file no. %d, index %ld, name %s:\n",
-					       i, dateien_pos->first, dateien_pos->second.c_str());
+				if (debug){
+					printf("#%03d:    Begin reading file no. %03d, index %06ld, name %s:\n",
+					       moduleNumber, i, dateien_pos->first, dateien_pos->second.c_str());
+				}
 				
 				// read header for each new file
 				initDone = 0;
@@ -1366,3 +2042,110 @@ unsigned long DAQDevice::getTimestamp(const char *date, const char *time){
 bool DAQDevice::reachedEOF(){
 	return(fd_eof);
 }
+
+
+//=========== Working with the status list ============
+
+
+#ifdef USE_MYSQL
+MYSQL_RES *DAQDevice::getStatusList(const char *cond){
+	MYSQL_RES *res;
+	std::string sql;
+	
+
+	sql = "SELECT `module`, `moduleName`, `secData`, `appId`, `sec`, `status`, `alarmLimit`, `alarm`, `alarmEnable`, `sensorGroup` FROM `";
+	sql += statusTableName; 
+	sql += "`";
+	if (cond > 0) { sql += " WHERE "; sql += cond; }
+	sql += " ORDER BY `module`";
+	
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to read from status list\n");
+		throw std::invalid_argument("Reading status list failed");
+	}	
+	
+	res = mysql_store_result(db);	
+	return(res);
+}
+
+
+/*
+void DAQDevice::displayStatusList(){
+	
+}
+
+
+void DAQDevice::displayAlarmList(){
+
+	// Display only a list if there is at least a single device 
+	
+}
+
+ 
+*/ 
+
+void DAQDevice::setValue(const char *parameter, int module, int value){
+	std::string sql;
+	char sData[10];
+	
+	sql = "UPDATE `";
+	sql += statusTableName + "` SET `";
+	sql += parameter;
+	sql += "` = ";
+	sprintf(sData, "%d", value);
+	sql += sData;
+	
+	sql += " WHERE `module` = ";
+	sprintf(sData, "%d", module);
+	sql += sData;
+	
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to chage parameter in status list\n");
+		throw std::invalid_argument("Set parameter failed");
+	}	 
+	
+	return;
+}
+
+void DAQDevice::setValue(const char *parameter, int module, const char *group, int value){
+	std::string sql;
+	char sData[10];
+	
+	sql = "UPDATE `";
+	sql += statusTableName + "` SET `";
+	sql += parameter;
+	sql += "` = ";
+	sprintf(sData, "%d", value);
+	sql += sData;
+	
+	sql += " WHERE ( `module` = ";
+	sprintf(sData, "%d", module);
+	sql += sData;
+	sql += " AND `sensorGroup` = \""; 
+	sql += group;
+	sql += "\" )";
+	
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to chage parameter  in status list\n");
+		throw std::invalid_argument("Set parameter failed");
+	}	 
+	
+	return;
+}
+
+
+#endif
+
+

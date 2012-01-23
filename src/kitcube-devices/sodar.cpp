@@ -1,4 +1,4 @@
-/********************************************************************
+	/********************************************************************
 * Description:
 * Author: Norbert Flatinger
 * Created at: Tue Mar  1 15:27:32 CET 2011
@@ -12,6 +12,9 @@
 
 
 sodar::sodar(){
+	
+	dataTablePrefix = "Profiles";
+
 }
 
 
@@ -182,7 +185,7 @@ int sodar::create_data_table() {
 		sql_stmt += "(`id` bigint auto_increment, `usec` bigint default '0', ";
 		for (int i = 0; i < nSensors; i++)
 			sql_stmt += "`" + sensor[i].name + "` blob, ";
-		sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`)) TYPE=MyISAM";
+		sql_stmt += "PRIMARY KEY (`id`), INDEX(`usec`)) ENGINE=MyISAM";
 		
 		// execute SQL statement
 		if (mysql_query(db, sql_stmt.c_str())) {
@@ -202,9 +205,10 @@ void sodar::readData(std::string full_filename){
 	double *local_sensorValue;
 	int loop_counter = 0;
 	struct tm time_stamp_tm = {0};
-	FILE *fmark;
+	
+	//FILE *fmark;
+	//struct timeval lastTime;
 	std::string full_data_file_name;
-	struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long currPos;
 	long lastIndex;
@@ -250,6 +254,9 @@ void sodar::readData(std::string full_filename){
 	
 	
 	// Get the last time stamp + file pointer from the marker file
+	loadFilePosition(lastIndex, lastPos, time_stamp_tv);
+
+/*	
 	lastPos = 0;
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
@@ -258,7 +265,7 @@ void sodar::readData(std::string full_filename){
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 		
 		// Read back the data time stamp of the last call
@@ -268,7 +275,8 @@ void sodar::readData(std::string full_filename){
 		if (debug >= 1)
 			printf("Last time stamp was %ld\n", lastTime.tv_sec);
 	}
-	
+*/	
+ 
 	// Find the beginning of the new data
 	if (lastPos == 0)	// if new file, jump to the first data set
 		lastPos = lenHeader;
@@ -332,7 +340,7 @@ void sodar::readData(std::string full_filename){
 		// print sensor values
 		if (debug >= 4) {
 			printf("%4d: Received %4d bytes --- ", loop_counter, (int) strlen(buf));
-			printf("%lds %6ldus --- ", time_stamp_tv.tv_sec, time_stamp_tv.tv_usec);
+			printf("%lds %6ldus --- ", time_stamp_tv.tv_sec, (long) time_stamp_tv.tv_usec);
 			for (int j = 0; j < nSensors; j++) {
 				for (int k = 0; k < profile_length; k++) {
 					printf("%10.3f ", local_sensorValue[j * profile_length + k]);
@@ -389,11 +397,15 @@ void sodar::readData(std::string full_filename){
 		printf("Position in file: %ld; processed data: %ld Bytes\n", currPos, currPos - lastPos);
 	
 	// Write the last valid time stamp / file position
+	saveFilePosition(lastIndex, currPos, time_stamp_tv);
+
+/*	
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, time_stamp_tv.tv_sec, time_stamp_tv.tv_usec, currPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, time_stamp_tv.tv_sec, (long) time_stamp_tv.tv_usec, currPos);
 		fclose(fmark);
 	}
+*/
 	
 	fclose(fd_data_file);
 	free(buf);
@@ -440,6 +452,7 @@ int sodar::convert_gap_values(double* sensor_values) {
 }
 
 
+/*
 int sodar::create_data_table_name(std::string & data_table_name)
 {
 	char *line;
@@ -461,3 +474,4 @@ int sodar::create_data_table_name(std::string & data_table_name)
 		return 0;
 	}
 }
+*/

@@ -51,7 +51,7 @@ public:
 	void updateDataSet(unsigned char *buf);
 	
 	long getFileNumber(char* filename);
-	
+		
 private:
 	unsigned char *headerRaw;
 	

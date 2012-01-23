@@ -90,7 +90,10 @@ case "$1" in
         exit 1
       fi
       echo  "Shutting down $SERVICE_TITLE"
-      /sbin/killproc $SERVICE_PROCESS || return=$rc_failed
+      #/sbin/killproc $SERVICE_PROCESS || return=$rc_failed
+	  # Doing a coorperative shutdown safely
+	  # killproc requires better excetion handling of kitcube-reader ?!
+	  /home/kopmann/tmp/kitcube-tools/src/kitcube-reader/kitcube-monitor -a '$SERVICE_NAME' quit 
       ;;
     restart)
       $0 stop && $0 start || return=$rc_failed

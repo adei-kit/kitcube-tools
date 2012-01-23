@@ -3,6 +3,67 @@ A. Kopmann
 
 
 
+Version 0.23:
+ - Extended status table by operator enable function. Added support in kitcube-monitor. 
+ - Using hardlinks for the copies of the reader applications.
+   Makefile.am updated
+   20.1.12 (ak)
+
+
+Version 0.22:
+ - Added option to add alias names to the sensors list. With a second parameter
+   the number of created entries in the database is limited to the first part.
+   Afterwards alias names for certain sensors might follow.
+   9.12.11 (ak)
+ - Changed timing of the reader loop to start with the first loop directly after
+   the application starts
+   7.12.11 (ak)
+ - Added the line "* /" to all rsync append files (etc/rsync) in order to enable 
+   selection of file masks in a directory structure.
+ - Added new class variable dataTablePrefix in DAQDevice to define the prefix of the 
+   data tables (currently: Data_ or Profiles_). This removes the need to define 
+   create_data_table_name() in all readers with compex data.
+   23.11.11 (ak)
+ - Added update of status table for every reader call in class Wolkenkamera. 
+   Will display correct status table now, before was always hang in status "starting"
+   18.11.11 (ak)
+ - Added OrcaProcess module for KATRIN. It is intended to fiddle ORCA log files from the 
+   process containers in ADEI.
+ - Added a configuration switch to limit the timestamp to seconds only (useTicks).
+   16.11.11 (ak) 
+
+
+Version 0.21 (code returned to ak):
+ - libtool does not produce any output. Droped libtool and automatically generated newly.
+ - readHeader() is not used anymore --> implement readheader(filename) instead
+   Fixed SimRandom, works again
+ - SQL syntax in CREATE TABLE has changes: Use ENGINE instead of TYPE !!!
+ - Added build instruction for copies of the reader application (used by start scripts) 
+ - Introduced reader application id to distinguish between serveral
+   reader processes. Every application has it's own SysLog table.
+   The module numbers for the SysLog tables start from 100.
+ - Started kitcube-monitoring application to control the reader applications remotely. 
+   The first and only command (quit)  can be used to terminate the reader safely.
+ - Added new database table to summarize the status of all DAQDevices.
+   Extended Kitcube-monitoring to report on changing alarm status
+   The DAQDevice implementation needed to be extended to automatically update the Statuslist table.
+ - Debug message in the levels 0+1 reorganized. The first two level do not report on 
+   every cycle of the reader loop. 
+ - Added start-skripts for OpenSuSE. Soft-Terminate via TCP-Control.
+ - Changes to the inifile handling: Increased the maximal length of a line from 256 to 1024 
+   (reqired for the mast definition, NF has done this before but the changes where not added 
+    to the main branch of akutil). Added TAB to the list of delimiters.
+ - Special naming schemes for windtracer added.
+ - Added monitoring page to ADEI. This need a copy of kitcube-monitor at the ADEI server and 
+   some scripts (not completely satisfing now).
+ - Implemented first version of an alarm skript. Sending of Mails to the alarm list need to be added. 
+   (bin/chk_alarm.sh). Added to the crontab – without sending mails the alram log is written.
+   16.11.11 ak
+ - Added missing header, removed compiler warnings
+   Added endian.h header to the project for OSX compatibility 
+   21.10.11 ak
+
+
 Version 0.3:
  - Re-structured debug output
  - Added performance parameters to the reader. Cycle time, free disk space and the

@@ -162,9 +162,9 @@ void parsivel::readData(std::string full_filename){
 	std::string filenameData;
 	float* local_sensorValue;
 	unsigned long lastPos;
-	struct timeval lastTime;
+	//struct timeval lastTime;
 	char line[4150];
-	FILE *fmark;
+	//FILE *fmark;
 	long lastIndex;
 	struct timeval timestamp_data;
 	int iLoop;
@@ -204,6 +204,9 @@ void parsivel::readData(std::string full_filename){
 	}
 	
 	// Get the last time stamp + file pointer from 
+	loadFilePosition(lastIndex, lastPos, timestamp_data);
+	
+/*
 	lastPos = 0;
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
@@ -211,7 +214,7 @@ void parsivel::readData(std::string full_filename){
 	if (debug > 3) printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 		
 		// Read back the data time stamp of the last call
@@ -220,6 +223,7 @@ void parsivel::readData(std::string full_filename){
 		
 		if (debug > 4) printf("Last time stamp was %ld\n", lastTime.tv_sec);
 	}
+*/
 	
 	if (lastPos == 0)
 		lastPos = lenHeader; // Move to the the first data
@@ -245,8 +249,14 @@ void parsivel::readData(std::string full_filename){
 			}
 			
 		}
-		
-		
-		
+	
 	}
+	
+	
+	// 
+	// TODO: Nothing is stored in the database ?!
+	// 
+	
+	
+	
 }

@@ -22,7 +22,10 @@ libkitcube_devices_a_SOURCES = daqdevice.h daqdevice.cpp createdevice.h createde
 	radiosonde.cpp radiosonde.h \
 	windcube.cpp windcube.h \
 	hatpro.cpp hatpro.h \
-	syslog.h syslog.cpp lara.h lara.cpp
+	syslog.h syslog.cpp lara.h lara.cpp \
+	orcaprocess.h orcaprocess.cpp \
+	endian-osx.h
+
 
 libkitcube_devices_a_CXXFLAGS =
 
@@ -46,4 +49,4 @@ INCLUDES= $(all_includes)
 
 
 # the library search path.
-test_device_LDFLAGS = $(all_libraries) -L./ -L../../fdhwlib/src/akutil  -lkitcube-devices -lakutil $(ICONV_LIBS) -lnetcdf -lnetcdf_c++
+test_device_LDFLAGS = $(all_libraries) -L./ -L../akutil  -lkitcube-devices -lakutil $(ICONV_LIBS) $(PYTHON_LIBS) -lnetcdf -lnetcdf_c++

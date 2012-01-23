@@ -65,7 +65,7 @@ void DAQBinaryDevice::openFile(){ // for writing
 	filename = getDataFilename(); // Warning using global variable for returning data !!!
 	fullFilename = path + filename;
 	
-	printf("KITCube-Device (type %s): Open datafile %s\n", moduleType.c_str(), fullFilename.c_str());
+	if (debug > 1) printf("KITCube-Device (type %s): Open datafile %s\n", moduleType.c_str(), fullFilename.c_str());
 	createDirectories(fullFilename.c_str());	// FIXME: don't use fullFilename here!
 	
 	if (sensorGroup == "nc"){
@@ -108,7 +108,7 @@ void DAQBinaryDevice::writeData(){
 	std::string filename;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	if (sensorGroup == "nc"){
@@ -182,9 +182,9 @@ void DAQBinaryDevice::readData(std::string full_filename){
 	//unsigned long timestamp;
 	
 	
-	FILE *fmark;
+	//FILE *fmark;
+	//struct timeval lastTime;
 	std::string filenameData;
-	struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long currPos;
 	long lastIndex;
@@ -205,7 +205,7 @@ void DAQBinaryDevice::readData(std::string full_filename){
 	int i;
 #endif
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// Compile file name
@@ -235,7 +235,7 @@ void DAQBinaryDevice::readData(std::string full_filename){
 		local_sensorValue = new double [nSensors];
 	}
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("Open data file: %s\n", filenameData.c_str());
 	fd_data_file = open(filenameData.c_str(), O_RDONLY);
 	if (fd_data_file <= 0) {
@@ -245,6 +245,9 @@ void DAQBinaryDevice::readData(std::string full_filename){
 	
 	
 	// Get the last time stamp + file pointer from
+	loadFilePosition(lastIndex, lastPos, timestamp_data);
+	
+/*	
 	lastPos = 0;
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
@@ -253,7 +256,7 @@ void DAQBinaryDevice::readData(std::string full_filename){
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 		
 		// Read back the data time stamp of the last call
@@ -263,13 +266,14 @@ void DAQBinaryDevice::readData(std::string full_filename){
 		if (debug >= 1)
 			printf("Last time stamp was %ld\n", lastTime.tv_sec);
 	}
+*/
 	
 	if (lastPos == 0)
 		lastPos = lenHeader; // Move to the the first data
 	currPos = lastPos;
 	
 	// Find the beginning of the new data
-	if (debug >= 1)
+	if (debug > 2)
 		printf("Last position in file: %ld\n", lastPos);
 	
 	lseek(fd_data_file, lastPos, SEEK_SET);
@@ -295,7 +299,7 @@ void DAQBinaryDevice::readData(std::string full_filename){
 			// print sensor values
 			if (debug >= 4) {
 				printf("%4d: Received %4d bytes --- ", iLoop, n);
-				printf("%lds %6ldus --- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
+				printf("%lds %6ldus --- ", timestamp_data.tv_sec, (long) timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
 						for (k = 0; k < profile_length; k++) {
@@ -316,7 +320,10 @@ void DAQBinaryDevice::readData(std::string full_filename){
 				//printf("Write record to database\n");
 				
 				sql = "INSERT INTO `";
-				sql += dataTableName + "` (`usec`";
+				if (useTicks)
+					sql += dataTableName + "` (`usec`";
+				else
+					sql += dataTableName + "` (`sec`";
 				for (i = 0 ; i < nSensors; i++) {
 					if (local_sensorValue[i] != noData) {
 						sql += ",`";
@@ -325,7 +332,10 @@ void DAQBinaryDevice::readData(std::string full_filename){
 					}
 				}
 				sql += ") VALUES (";
-				sprintf(sData, "%ld", timestamp_data.tv_sec * 1000000 + timestamp_data.tv_usec);
+				if (useTicks)
+					sprintf(sData, "%ld", timestamp_data.tv_sec * 1000000 + timestamp_data.tv_usec);
+				else
+					sprintf(sData, "%ld", timestamp_data.tv_sec);
 				sql += sData;
 				if (profile_length != 0) {
 					for (i = 0; i < nSensors; i++) {
@@ -389,15 +399,19 @@ void DAQBinaryDevice::readData(std::string full_filename){
 	
 	processedData += currPos - lastPos;
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("Position in file: %ld; processed data: %ld Bytes\n", currPos, currPos - lastPos);
 	
 	// Write the last valid time stamp / file position
+	saveFilePosition(lastIndex, currPos, timestamp_data);
+	
+/*
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp_data.tv_sec, timestamp_data.tv_usec, currPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp_data.tv_sec, (long) timestamp_data.tv_usec, currPos);
 		fclose(fmark);
 	}
+*/	
 	
 	close(fd_data_file);
 	delete[] buf;

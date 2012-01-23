@@ -11,12 +11,13 @@
 
 
 SimRandom::SimRandom(){
-	
+		
 	moduleType = "Simulation";
 	moduleNumber = 0;
 	this->sensorGroup = "txt";
 	
 	this->iniGroup = "Simulation"; 
+
 	
 	// Read index from file
 	fileIndex = 0;
@@ -25,16 +26,6 @@ SimRandom::SimRandom(){
 	
 	lenDataSet = 64;	// 58 plus kleiner Puffer, hier OK, da fgets nach "\n" stoppt
 	
-	sensor[0].comment = "Ramp";
-	sensor[1].comment = "Simus 100s";
-	sensor[2].comment = "Random 0..10";
-	
-	if (debug > 3){
-		int i;
-		for (i=0;i<nSensors;i++){
-			printf("Sensor %3d: %s\n", i+1, sensor[i].comment.c_str());
-		}
-	}
 }
 
 
@@ -92,8 +83,11 @@ const char *SimRandom::getDataDir(){
 
 
 
-void SimRandom::readHeader(){
-	// Not used 	
+int SimRandom::readHeader(const char *){
+	// Not used 
+	
+	
+	return(0); // Ok
 }
 
 
@@ -107,7 +101,7 @@ void SimRandom::writeHeader(){
 	gettimeofday(&t, &tz);
 	
 	fprintf(fdata, "; Header");
-	fprintf(fdata, "; Started at %12ld %06ld\n", t.tv_sec, t.tv_usec);
+	fprintf(fdata, "; Started at %12ld %06ld\n", t.tv_sec, (long) t.tv_usec);
 	fprintf(fdata, "; Height:  4m\n"); 
 	fprintf(fdata, ";\n");
 
@@ -123,7 +117,7 @@ int SimRandom::parseData(char *line, struct timeval *l_tData, double *sensorValu
 	
 	// read nSensor values
 	// TODO: Implement for variable number nSensor 
-	sscanf(line, "%12ld %06ld %12lf %12lf %12lf", &l_tData->tv_sec, &l_tData->tv_usec,
+	sscanf(line, "%12ld %06ld %12lf %12lf %12lf", &l_tData->tv_sec, (long *) &l_tData->tv_usec,
 		   &sensorValue[0], &sensorValue[1], &sensorValue[2]);
 		
 	//printf("Time stamp: %ld  %ld  %f--- ", tRef.tv_sec, tData->tv_sec, sensorValue[0]);
@@ -144,9 +138,9 @@ void SimRandom::writeData(){
 	data1 = ( t.tv_sec)  % 10000 + (float) t.tv_usec / 1000000; // ramp data
 	data2 = sin( (2 * 3.14 *  (double)  t.tv_sec  + (double) t.tv_usec / 1000000) / 100) ; // sinus with 100s period
 	data3 = (float) rand()/RAND_MAX * 10; // random data 0..10
-	fprintf(fdata, "%12ld %06ld %12f %12f %12f\n", t.tv_sec, t.tv_usec, data1, data2, data3);
+	fprintf(fdata, "%12ld %06ld %12f %12f %12f\n", t.tv_sec, (long) t.tv_usec, data1, data2, data3);
 	fflush(fdata);
-	if (debug > 1) printf("%12ld %06ld %12f %12f %12f\n", t.tv_sec, t.tv_usec, data1, data2, data3);
+	if (debug > 1) printf("%12ld %06ld %12f %12f %12f\n", t.tv_sec, (long) t.tv_usec, data1, data2, data3);
 	
 }
 

@@ -13,8 +13,6 @@
 
 #include "daqasciidevice.h"
 
-#include <endian.h>
-
 
 class windcube: public DAQAsciiDevice {
 public:
@@ -47,7 +45,7 @@ private:
 	
 	double gain;
 	
-	int create_data_table_name(std::string & data_table_name);
+	//int create_data_table_name(std::string & data_table_name);
 };
 
 #endif

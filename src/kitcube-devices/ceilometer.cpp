@@ -185,9 +185,15 @@ int Ceilometer::readHeader(const char *filename) {
 	int len;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	// Get the sensor names from the configuration file 
+	if (nSensors == 0) getSensorNames(sensorListfile.c_str());
+	
+	//
+	// TODO: Check compatibility between sensor file and the following names
+	//
 	
 	if (sensorGroup == "nc"){	// read NetCDF file header here
 		
@@ -252,7 +258,7 @@ int Ceilometer::readHeader(const char *filename) {
 		// Some header informations are hidden in the data (e.g. height)
 		// --> So read the first data set
 		
-		printf("_____Reading header information_____________________\n");
+		//printf("_____Reading header information_____________________\n");
 		fd = open(filename, O_RDONLY);
 		if (fd == -1) {
 			printf("Error opening file %s", filename);
@@ -265,7 +271,7 @@ int Ceilometer::readHeader(const char *filename) {
 		len = this->lenDataSet;
 		headerRaw = new unsigned char [ len ]; // Is stored in the class variables
 		n = read(fd, headerRaw, len);
-		printf("Bytes read %d from file %s\n", n, filename);
+		if (debug > 2) printf("Bytes read %d from file %s\n", n, filename);
 		
 		close(fd);
 		
@@ -282,7 +288,7 @@ int Ceilometer::readHeader(const char *filename) {
 		//
 		// Read parameters
 		//
-		printf("Module: \t\t%s, ID %03d, Group %s ID %d\n", moduleName.c_str(), moduleNumber,
+		if (debug > 2) printf("Module: \t\t%s, ID %03d, Group %s ID %d\n", moduleName.c_str(), moduleNumber,
 			sensorGroup.c_str(), sensorGroupNumber);
 		
 		// Sampling time
@@ -290,7 +296,7 @@ int Ceilometer::readHeader(const char *filename) {
 		// Height (offset)
 		headerReadPtr = (const char *) headerRaw + 72;
 		sscanf(headerReadPtr, "%d", &heightOffset);
-		printf("Height = %d\n", heightOffset);
+		if (debug > 2) printf("Height = %d\n", heightOffset);
 		
 		// Unit (m/ft)
 		// In case of feet the values need to be converted to m
@@ -301,7 +307,7 @@ int Ceilometer::readHeader(const char *filename) {
 			heightUnit[1] = 0;
 		else
 			heightUnit[2] = 0;
-		printf("Unit = <%s>\n", heightUnit);
+		if (debug > 2) printf("Unit = <%s>\n", heightUnit);
 		
 		// Device ID + fabrication date
 		
@@ -322,11 +328,13 @@ int Ceilometer::readHeader(const char *filename) {
 		headerRaw[235] = 0;
 		timeString += (const char *) headerRaw + 233;
 		//timeString += ":00"; // Add missing seconds
-		printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
+		if (debug > 2) printf("Reference time stamp: \t[%s] [%s]\n", dateString.c_str(), timeString.c_str());
 		
 		timestamp = getTimestamp(dateString.c_str(), timeString.c_str());
 		tRef.tv_sec = timestamp;
 		tRef.tv_usec = 0;
+		
+		if (debug > 2) printf("nSensors: %d\n", nSensors);
 		
 		sensor[0].comment = "Cloud level 1";
 		sensor[1].comment = "Cloud level 2";
@@ -339,10 +347,11 @@ int Ceilometer::readHeader(const char *filename) {
 		
 		for (i = 0; i < nSensors; i++) {
 			sensor[i].height = heightOffset;
-			printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
+			if (debug > 2) printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
 		}
 	}
 	
+	if (debug > 2) printf("Done -- readHeader\n");
 	return 0;
 }
 
@@ -402,7 +411,7 @@ void Ceilometer::readData(std::string full_filename){
 	std::string dateString;
 	
 	
-	FILE *fmark;
+	//FILE *fmark;
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
@@ -431,7 +440,7 @@ void Ceilometer::readData(std::string full_filename){
 	if (sensorGroup == "chm") {	// read *.chm file here
 		DAQBinaryDevice::readData(full_filename);
 	} else if (sensorGroup == "nc") {	// read NetCDF file here
-		if (debug > 0) printf("_____Reading data_____________________\n");
+		if (debug > 2) printf("_____Reading data_____________________\n");
 		
 		// Compile file name
 		filenameData = full_filename;
@@ -455,6 +464,9 @@ void Ceilometer::readData(std::string full_filename){
 #endif
 
 		// Get the last time stamp + file pointer from
+		// TODO: Check lastTime - seems not to be used?!
+		loadFilePosition(lastIndex, lastPos, lastTime);
+/*		
 		lastPos = 0;
 		lastTime.tv_sec = 0;
 		lastTime.tv_usec = 0;
@@ -462,21 +474,21 @@ void Ceilometer::readData(std::string full_filename){
 		if (debug > 1) printf("Get marker from %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {
-			fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+			fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 			fclose(fmark);
 		}
-		
-		printf("\nHandling NetCDF file now!\n");
+*/		
+		if (debug > 2) printf("\nHandling NetCDF file now!\n");
 		
 		// if file already read, return
 		if (lastPos == 1) {
 			fd_eof = true;
-			printf("File already read -> nothing to do, returning...\n");
+			if (debug > 2) printf("File already read -> nothing to do, returning...\n");
 			return;
 		}
 		
 		//open NetCDF file
-		if (debug > 1) printf("Open data file %s\n", filenameData.c_str());
+		if (debug > 2) printf("Open data file %s\n", filenameData.c_str());
 		NcFile dataFile(filenameData.c_str());
 		if (!dataFile.is_valid())
 			printf("Couldn't open NetCDF file!\n");
@@ -484,32 +496,30 @@ void Ceilometer::readData(std::string full_filename){
 		
 		// read and print all dimensions
 		int no_dims = dataFile.num_dims();
-		printf("Number of dimensions: %d\n", no_dims);
+		if (debug > 2) printf("Number of dimensions: %d\n", no_dims);
 		NcDim* dims[no_dims];
 		for (int i = 0; i < no_dims; i++) {
 			dims[i] = dataFile.get_dim(i);
-			if (!dims[i]->is_valid())
-				printf("Dimension is invalid!\n");
-			printf("Dimension name: %s, size: %ld, unlimited: %d\n",
+			if (!dims[i]->is_valid()) printf("Dimension is invalid!\n");
+			if (debug > 2) printf("Dimension name: %s, size: %ld, unlimited: %d\n",
 			       dims[i]->name(), dims[i]->size(), dims[i]->is_unlimited());
 		}
 		
 		
 		// read and print all variables
 		int no_vars = dataFile.num_vars();
-		printf("Number of variables: %d\n", no_vars);
+		if (debug > 2) printf("Number of variables: %d\n", no_vars);
 		NcVar* vars[no_vars];
 		for (int i = 0; i < no_vars; i++) {
 			vars[i] = dataFile.get_var(i);
-			if (!vars[i]->is_valid())
-				printf("Variable not valid!\n");
-			printf("Variable name: %s, dimensions: %d, size: %ld, type: %d, attributes: %d\n",
+			if (!vars[i]->is_valid()) printf("Variable not valid!\n");
+			if (debug > 2) printf("Variable name: %s, dimensions: %d, size: %ld, type: %d, attributes: %d\n",
 			       vars[i]->name(), vars[i]->num_dims(), vars[i]->num_vals(), vars[i]->type(), vars[i]->num_atts());
 		}
 		
 		
 		// read and print all global attributes
-		printf("Number of attributes: %d\n", dataFile.num_atts());
+		if (debug > 2) printf("Number of attributes: %d\n", dataFile.num_atts());
 		
 		
 		// read timestamps = unlimited dimension?!
@@ -534,6 +544,8 @@ void Ceilometer::readData(std::string full_filename){
 			}
 		}
 		
+		
+		if (debug > 2) printf("Found no_vals=%d values\n", no_vals);
 		
 		// convert from seconds since 1904 to seconds since the Epoch:
 		// subtract (60 * 60 * 24 * 365 * 66 + 60 * 60 * 24 * 17) seconds
@@ -681,17 +693,20 @@ void Ceilometer::readData(std::string full_filename){
 		}
 		delete [] sensor_values;
 		
-		printf("fertig\n");
+		if (debug > 3) printf("fertig\n");
 		lastPos = 1;	// file read
 		fd_eof = true;
 		
 	
 		// Write the last valid time stamp / file position
+		saveFilePosition(lastIndex, lastPos, time_stamp_data[no_vals-1]);
+/*		
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark > 0) {
-			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
+			fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, (long) lastTime.tv_usec, lastPos);
 			fclose(fmark);
 		}
+*/ 
 	}
 }
 

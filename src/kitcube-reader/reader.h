@@ -56,7 +56,16 @@ class SysLog;
   *  - Durations for data transfer an database access
   *  - Timing acurancy of the scheduler
   * 
+  * The reader class is using several debug levels to control the
+  * amount of messages send to the terminal. 
+  * 
+  * 0: Only output of application welcome and error messages
+  * 1: Additional output of new files that are porcessed
+  * 2: Display of key information of every reader loop
+  * 3: Header information of every function called
+  * 4+5: More messages
   *
+  * 
   * The following box shows a sample call of the background recorder.
 @verbatim
 
@@ -93,6 +102,13 @@ public:
 	/**  */
 	~Reader();
 
+	/** Change the default name of the application used 
+	  * to figure out the right inifile section */
+	void setAppName(const char *name);
+	
+	/** Get the number of the application */
+	int getAppId();
+	
 	/** Read parameter from inifile.
 	  * The module definition will be read from the argument list, afterwards
 	  * from the reader section in the inifile and at last the default name (Simulation)
@@ -146,6 +162,13 @@ public:
 	//void readData(const char *dir, const char *filename);
 	
 private:
+	/** Every reader application has it's own ID */
+	int appId; 
+	
+	/** Name of the application. Used to select the application ini group.
+	  * Default: Reader */
+	std::string appName;
+	
 	/** Flag to start the server as daemon - without interactive input */
 	bool runDaemon;
 
@@ -162,9 +185,12 @@ private:
 	/** module type describes the implementation, the class */
 	std::string *moduleType;
 
+	/** Module number */
+	int *moduleNumber;
+	
 	/** a group in the *.ini file */
 	std::string *iniGroup;
-
+	
 	/** */
 	DAQDevice **dev;
 	

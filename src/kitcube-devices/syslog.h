@@ -36,6 +36,8 @@ public:
 	/** Read parameter from inifile */
 	//void readInifile(const char *inifile, const char *group = 0);
 	
+	/** Select the module id according to the application id */
+	void setAppId(int appId);
 	
 	/** Define the number arguments.
 	  * This function will also alocate memory */

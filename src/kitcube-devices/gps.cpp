@@ -20,7 +20,7 @@ gps::~gps() {
 
 
 int gps::readHeader(const char *filename) {
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
@@ -92,7 +92,7 @@ unsigned int gps::getSensorGroup() {
 	unsigned int number;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	

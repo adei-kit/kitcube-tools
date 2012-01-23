@@ -42,7 +42,7 @@ private:
 	
 	int convert_gap_values(double* sensor_values);
 	
-	int create_data_table_name(std::string & data_table_name);
+	//int create_data_table_name(std::string & data_table_name);
 };
 
 #endif

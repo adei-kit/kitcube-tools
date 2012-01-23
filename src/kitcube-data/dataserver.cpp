@@ -140,13 +140,16 @@ void DataServer::runReadout(FILE *fout){
 	timingSum2 = 0;
 	timingMin = 0;
 	timingMax = 0;
- 
 
-	printf("Create module %s, type %s\n", iniGroup.c_str(), moduleType.c_str());
+	
+
+	printf("Create module %s, type %s\n", iniGroup.c_str(), moduleType.c_str());	
 	dev = (DAQDevice *) createDevice(moduleType.c_str());
 	dev->setDebugLevel(debug);
 	
 	dev->readInifile(inifile.c_str(), iniGroup.c_str());
+	// Get the sensor names from the configuration file 
+	dev->getSensorNames(dev->sensorListfile.c_str());
 	dev->getSamplingTime(&tWait);
 	
 	dev->openFile();
@@ -207,7 +210,7 @@ int DataServer::handle_timeout(){
 
 
 	// TODO: Read data / Simulate data
-	if (debug > 1) printf("=== Writing data at: %10lds %06ldus ===\n", t.tv_sec, t.tv_usec);
+	if (debug > 1) printf("=== Writing data at: %10lds %06ldus ===\n", t.tv_sec, (long) t.tv_usec);
 	dev->writeData();
 	
 	fflush(stdout);
@@ -426,7 +429,7 @@ void DataServer::analyseTiming(struct timeval *t){
 		unsigned long long buf; 
 
 		buf = tRef.tv_sec;
-		if (fout) fprintf(fout, "%6d  | %ld.%06ld \n", index, t->tv_sec, t->tv_usec);
+		if (fout) fprintf(fout, "%6d  | %ld.%06ld \n", index, t->tv_sec, (long) t->tv_usec);
 	}
 }
 
@@ -436,9 +439,9 @@ void DataServer::displayStatus(FILE *fout){
 	if (fout == 0) return;
 
 	fprintf(fout, "\n");
-	fprintf(fout,   "Server start     : %lds %ldus\n", tRef.tv_sec, tRef.tv_usec);
+	fprintf(fout,   "Server start     : %lds %ldus\n", tRef.tv_sec, (long) tRef.tv_usec);
 	if (useTimeout){
-		fprintf(fout, "Sampling time    : %lds %ldus\n", tSample.tv_sec, tSample.tv_usec);
+		fprintf(fout, "Sampling time    : %lds %ldus\n", tSample.tv_sec, (long) tSample.tv_usec);
 		fprintf(fout, "Samples          : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
 		fprintf(fout, "Skipped          : %d last samples in a sequel\n", nSamplesSkipped );
 	
@@ -507,7 +510,7 @@ void DataServer::simQDData(struct timeval t){
 */
 
 	// Filenames accordig to M Heiduk / A Augenstein
-	sprintf(filename, "%s%04d_%02d_%02d_%02d_%02d_%02d_%07ld.k%2di16",
+	sprintf(filename, "%s%04d_%02d_%02d_%02d_%02d_%02d_%07d.k%2di16",
 		qdPath.c_str(),
 		timestamp->tm_year+1900, timestamp->tm_mon+1, timestamp->tm_mday,
 		timestamp->tm_hour, timestamp->tm_min, timestamp->tm_sec,

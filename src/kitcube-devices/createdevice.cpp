@@ -27,6 +27,7 @@
 #include "radiosonde.h"
 #include "windcube.h"
 #include "hatpro.h"
+#include "orcaprocess.h"
 
 
 extern "C" void *createDevice(const char *devType) {
@@ -68,6 +69,8 @@ extern "C" void *createDevice(const char *devType) {
 	if (strcasestr(devType, "hatpro") != NULL)
 		return( new (hatpro));
 	
+	if (strcasestr(devType, "OrcaProcess") != NULL)
+		return( new (OrcaProcess));
 	if (strcasestr(devType, "Lara") != NULL)
 		return( new (Lara));
 	

@@ -32,7 +32,7 @@ public:
 	const char *getDataDir();
 	
 	/** Get time until next sample and it's id */
-	void readHeader();
+	int readHeader(const char *filename);
 	
 	void writeHeader();
 	

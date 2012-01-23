@@ -10,6 +10,12 @@
 #ifndef DAQDEVICE_H
 #define DAQDEVICE_H
 
+#define USE_PYTHON
+
+#ifdef USE_PYTHON
+#include <Python.h>
+#endif // of USE_PYTHON
+
 #include <cstdlib>
 #include <dirent.h>
 #include <fcntl.h>
@@ -70,7 +76,12 @@ public:
 	  * Use this fucntion in the module specific implementation to override the standard defaults */
 	virtual void setConfigDefaults();
 
-	/** Read parameter from inifile */
+	
+	/** Read common parameters from inifile 
+	  * (e.g. database access, directory struction, ...) */
+	void readInifileCommon(const char *inifile);
+	
+	/** Read common and module dependant parameters from inifile */
 	virtual void readInifile(const char *inifile, const char *group = 0);
 
 	/** Read axis definition from inifile and update the axsi definition in the database */
@@ -119,11 +130,19 @@ public:
 	/** Implements the data filename convention of the DAQ module. */
 	virtual const char *getDataFilename();
 
+	/** Open the database and create all required tables 
+	  * The required tables are axislist, sensorlist, statuslist and
+	  * the data table for the current DAQ device.
+	  */
 	virtual void openDatabase();
 	
-	/***********************************************************************
-	 * create data table, if it doesn't exist
-	 **********************************************************************/
+	/** Connect to the database "<project>_active". The database is
+	  * created, if not existing. 
+	  * The function is included from openDatabase(). */
+	void connectDatabase();  
+	
+	/** Create data table, if it doesn't exist.
+	  * The function is called by openDatabase(). */
 	virtual int create_data_table();
 	
 	virtual void closeDatabase();
@@ -137,6 +156,9 @@ public:
 	virtual void writeHeader();
 
 	virtual int parseData(char* line, struct timeval* l_tData, double *sensorValue);
+	
+	/** Update or create the entry for this module in the status table */
+	void registerStatusTab(const char *status = 0, const char *comment = 0);
 	
 	virtual void storeSensorData();
 	
@@ -152,9 +174,7 @@ public:
 	/** Get the ranking number from a filename. The returned number can be used
 	  * to order files by their date. Smaller numbers are processed before larger ones.
 	  * The function needs also to check if the given filename is valid according to the
-	  * file name specification of the device. In case of violation an exception
-	  * std::invalid_argument has to be thrown.
-	  *
+	  * file name specification of the device. In case of violation zero is returned.
 	  */
 	virtual long getFileNumber(char* filename);
 	
@@ -163,7 +183,7 @@ public:
 	
 	/** Return the module number */
 	unsigned int getModuleNumber();
-
+	
 	/** Return the number of the sensor group */
 	virtual unsigned int getSensorGroup();
 	
@@ -174,6 +194,12 @@ public:
 	/** Set debug level */
 	void setDebugLevel(int level);
 	
+	/** Set the application ID */
+	virtual void setAppId(int id);
+	
+	/** Get the application ID */
+	int getAppId();
+	
 	/** Reached EOF during reading data in readData() */
 	bool reachedEOF();
 	
@@ -181,8 +207,30 @@ public:
 	unsigned int getProcessedData();
 	
 	std::string sensorListfile;
+		
+	/** Save the file pointers to the marker file 
+	  * The items stored are the index of the processed file (see getFileNumber), 
+	  * the file pointer in data file and the timestmp of the latest valid data set */
+	void saveFilePosition(long lastIndex, unsigned long currPos, struct timeval &timestamp);
+	
+	/** Restore the file pointers from the marker file */
+	void loadFilePosition(long &lastIndex, unsigned long &lastPos, struct timeval &timestamp);
+	
+#ifdef USE_MYSQL	
+	/** Get all modules from the status list */
+	MYSQL_RES * getStatusList(const char *cond = 0);
+	
+	/** Modify the alarm flag of one module in the status list */
+	void setValue(const char *parameter, int module, int value);
+
+	/** Modify the alarm flag of one module in the status list */
+	void setValue(const char *parameter, int module, const char *group, int value);
+#endif		
 	
 protected:
+	/** Use the microsecond ticks when storing the data (default: yes). */
+	bool useTicks;
+	
 	/** Length of the header block in the data file */
 	int lenHeader;
 	
@@ -195,6 +243,9 @@ protected:
 	/** Sampling time of the daq module in milliseconds */
 	int tSample; 
 	
+	/** Maximal allowed delay time before an alarm will be generated (sec) */
+	int tAlarm; 
+	
 	/** Number of axis definitions */
 	int nAxis;
 	
@@ -203,6 +254,12 @@ protected:
 
 	/** Number of sensors in the module */
 	int nSensors;
+	
+	/** Number of sensor columns in the data table. 
+	  * It is possible to have more sensors defined in the 
+	  * end of the sensor list that are just alias names for existing
+	  * entries */
+	int nSensorCols;
 	
 	/** number of values in profile data */
 	int profile_length;
@@ -227,6 +284,9 @@ protected:
 	/* Number of the line in the data file 
 	 * This variable will be stored persitently (.kitcube-data.marker) */
 	int nLine;	
+	
+	/** Application ID. Can be used to identify the calling application. */
+	int appId;
 	
 	/** Name of the project. This variable is used to generate the database */
 	std::string project;
@@ -307,6 +367,38 @@ protected:
 	std::string moduleTableName;
 	
 	std::string dataTableName;
+	
+	/** Every type of data should have a unique data table prefix.
+	  * E.g. Scalar values use the prefix Data, while higher dimensional 
+	  * structures are stored as BLOBs with the prefix Profile. */
+	std::string dataTablePrefix;
+	
+	std::string statusTableName;
+	
+#ifdef USE_PYTHON	
+	PyObject *pModule;
+	
+	PyObject *pFunc;
+#endif
+
+	std::string pythonDir;
+	
+	std::string pythonModule;
+	
+	std::string pythonFunction;
+	
+	/** Load analysis script for the DAQ module */
+	void loadPython();
+	
+	/** Release the analysis script */
+	void releasePython();
+	
+	/** Analyse data from the given data file.
+	  * The function is an alternative to the function parseData() 
+	  * Q: How many values?
+	  */
+	void readDataWithPython(const char *filename);
+
 	
 	/** Debug level (0 = no debug)*/
 	int debug;

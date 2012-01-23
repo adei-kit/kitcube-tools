@@ -1,9 +1,17 @@
 # Makefile.am
 #
 
+SUBDIRS = rsync
 
 EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
+	kitcube.ini.ipepdvadei2 \
+	Makefile.backup.imk-data1 \
 	kitcube-data.ipepdvadei kitcube-reader.ipepdvadei \
+	kcr-sim kcr-cm \
+	kcr-sim.imk-data1 kcr-mast.imk-data1 kcr-3M.imk-data1 \
+	kcr-cc.imk-data1 kcr-rs.imk-data1 kcr-hatpro.imk-data1 \
+	kcr-gps.imk-data1 \
+	kcmon.sh \
 	T01.DAS.sensors T01.DAL.sensors T01.DAR.sensors T01.DAX.sensors \
 	T02.DAS.sensors T02.DAL.sensors T02.DAR.sensors T02.DAX.sensors \
 	T03.DAS.sensors T03.DAL.sensors T03.DAR.sensors T03.DAX.sensors \
@@ -35,6 +43,11 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	jwd.dd.sensors dd090826.template \
 	jwd.rd.sensors rd090826.template \
 	regenwippe.dat.sensors w20090826.dat.template \
+	20090625.chm.sensors 20090625.chm.template \
+	wolkenkamera.jpg.sensors \
 	SimRandom.txt.sensors \
 	SysLog.sensors \
 	norbert.dat.sensors norbert.dat.template
+
+
+

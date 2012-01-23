@@ -1,7 +1,8 @@
 AC_INIT(configure.in)
 
+AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(kitcube-tools, 0.20)
+AM_INIT_AUTOMAKE(kitcube-tools, 0.23)
 
 
 AC_LANG_CPLUSPLUS
@@ -55,6 +56,25 @@ AC_SUBST(ICONV_LIBS)
 AM_CONDITIONAL(USE_ICONV, test "x$ac_cv_header_iconv_h" = "xyes")
 
 
+dnl 
+dnl Python support
+dnl
+AC_CHECK_HEADERS(Python.h)
+if test "x$ac_cv_header_Python_h" = "xyes"; then
+  echo "Yes python"
+  PYTHON="Python support"
+  USE_PYTHON_DEFINE="define USE_PYTHON"
+  PYTHON_LIBS="-lpython$PYVER"
+else
+  PYTHON="Python support disabled"
+  USE_PYTHON_DEFINE="#define USE_PYTHON"
+fi
+AC_SUBST(PYTHON)
+AC_SUBST(PYTHON_LIBS)
+AC_SUBST(USE_PYTHON_DEFINE)
+AM_CONDITIONAL(USE_PYTHON, test "x$ac_cv_header_Python_h" = "xyes")
+
+
 
 dnl
 dnl Check DAQ File Format
@@ -80,6 +100,8 @@ dnl
 AC_CHECK_HEADERS(fdhwlib.h)
 AC_CHECK_HEADERS(libraw1394/raw1394.h)
 AC_CHECK_HEADERS(IOKit/firewire/IOFirewireLib.h)
+
+
 
 
 
@@ -134,5 +156,5 @@ AC_SUBST(FDHWLIB_BUILDDATE)
 
 
 
-AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile bin/Makefile etc/Makefile etc/rsync/Makefile src/Makefile fdhwlib/src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile)
+AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile bin/Makefile etc/Makefile etc/rsync/Makefile src/Makefile src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile)
 

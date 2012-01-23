@@ -203,8 +203,12 @@ int Mast::readHeader(const char *filename) {
 	std::string heightString;
 	
 	
-	if(debug >= 1)
+	if(debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
+	// Get the sensor names from the configuration file 
+	if (nSensors == 0) getSensorNames(sensorListfile.c_str());
 	
 	
 	fd = open(filename, O_RDONLY);

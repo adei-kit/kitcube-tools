@@ -9,6 +9,8 @@
 
 #include "lara.h"
 
+#include <libgen.h>
+
 
 Lara::Lara(){
 	
@@ -373,7 +375,7 @@ int Lara::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 	// Check reference time - shift in order to aviod over lap
 	if (debug > 3) printf("Last time %ld -- new time %ld\n", l_tData->tv_sec, tRef.tv_sec + (int) sensorValue[0]);
     tNew = tRef.tv_sec + (int) sensorValue[0];
-	if (tNew <= l_tData->tv_sec){
+	if ((long) tNew <= l_tData->tv_sec){
 		nShift = l_tData->tv_sec - tNew +1;
 		tRef.tv_sec = tRef.tv_sec + nShift;
 
@@ -397,10 +399,10 @@ void Lara::readData(std::string full_filename){
 	}	
 	
 	if (sensorGroup == "run"){
-		FILE *fmark;
+		//FILE *fmark;
 		long lastIndex;
 		struct timeval lastTime;
-		int handled;
+		unsigned long handled;
 		
 		// It is needed to read the header for every file
 		// As the run parameters need to be extracted from the file name
@@ -408,12 +410,16 @@ void Lara::readData(std::string full_filename){
 		
 		// Check if there is a new file 
 		// Get the last time stamp + file pointer from 		
+		loadFilePosition(lastIndex, handled, lastTime);		
+	
+/*		
 		if (debug > 2) printf("Get marker from %s\n", filenameMarker.c_str());
 		fmark = fopen(filenameMarker.c_str(), "r");
 		if (fmark > 0) {
-			fscanf(fmark, "%ld %ld %ld %d", &lastIndex, &lastTime.tv_sec, &lastTime.tv_usec, &handled);
+			fscanf(fmark, "%ld %ld %ld %d", &lastIndex, &lastTime.tv_sec, (long *) &lastTime.tv_usec, &handled);
 			fclose(fmark);
 		}
+*/
 		
 		// Handle every file only once 
 		if ((handled == 0) && (getFileNumber(basename((char*)full_filename.c_str())) >= lastIndex)){			
@@ -422,12 +428,16 @@ void Lara::readData(std::string full_filename){
 		
 			// Write back the marker 
 			// It is necessary to write back a marker (in lastpos) that this file has been handled
+			saveFilePosition(lastIndex, 1, lastTime);
+			
+/*			
 			fmark = fopen(filenameMarker.c_str(), "w");
 			if (fmark > 0) {
-				fprintf(fmark, "%ld %ld %ld %d\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, 1);
+				fprintf(fmark, "%ld %ld %ld %d\n", lastIndex, lastTime.tv_sec, (long) lastTime.tv_usec, 1);
 				fclose(fmark);
 			}			
-
+*/
+			
 			// The file / entry is always processed completely 
 			fd_eof = true; 			
 			

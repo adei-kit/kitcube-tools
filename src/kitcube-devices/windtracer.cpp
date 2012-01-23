@@ -154,7 +154,7 @@ int windtracer::readHeader(const char *filename) {
 	if (n == -1) {
 		printf("Error in read function!!!\n");
 		// TODO: error handling
-	} else if (n == config_text_block_length) {
+	} else if (n == (int) config_text_block_length) {
 		if (debug >= 3)
 			printf("Content:\n%s", config_record.chConfiguration);
 	} else {
@@ -253,8 +253,8 @@ void windtracer::readData(std::string full_filename) {
 	std::string full_data_filename;
 	int fd_data_file;
 	unsigned long last_position;
-	struct timeval last_data_timestamp;
-	FILE *fmark;
+	//struct timeval last_data_timestamp;
+	//FILE *fmark;
 	long lastIndex;
 	unsigned long current_position;
 	int loop_counter = 0;
@@ -311,6 +311,9 @@ void windtracer::readData(std::string full_filename) {
 	}
 	
 	// Get the last time stamp + file pointer from
+	loadFilePosition(lastIndex, last_position, tv_timestamp);
+	
+/*	
 	last_position = 0;
 	last_data_timestamp.tv_sec = 0;
 	last_data_timestamp.tv_usec = 0;
@@ -319,7 +322,7 @@ void windtracer::readData(std::string full_filename) {
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark != NULL) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &last_data_timestamp.tv_sec, &last_data_timestamp.tv_usec, &last_position);
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &last_data_timestamp.tv_sec, (long *) &last_data_timestamp.tv_usec, &last_position);
 		fclose(fmark);
 		
 		// Read back the data time stamp of the last call
@@ -329,6 +332,7 @@ void windtracer::readData(std::string full_filename) {
 		if (debug >= 2)
 			printf("Last time stamp was %ld\n", last_data_timestamp.tv_sec);
 	}
+*/
 	
 	// Find the beginning of the new data
 	if (last_position == 0)	// if new file, jump to the first dataset
@@ -356,7 +360,7 @@ void windtracer::readData(std::string full_filename) {
 		
 		// read record header
 		n = read(fd_data_file, &record_header, sizeof(record_header));	// FIXME: that's dangerous, because the order of the struct components is NOT fixed
-		if (n < sizeof(record_header)) {
+		if (n < (ssize_t) sizeof(record_header)) {
 			// file not completely transfered, try again next time
 			fd_eof = true;
 			break;	// leave outer while loop over data records
@@ -575,12 +579,16 @@ void windtracer::readData(std::string full_filename) {
 		printf("Position in file: %ld; processed data: %d Bytes\n", current_position, processedData);
 	
 	// save position in file
+	saveFilePosition(lastIndex, current_position, tv_timestamp);
+
+/*	
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark != NULL) {
 		fprintf(fmark, "%ld %ld %ld %ld\n",
-			lastIndex, tv_timestamp.tv_sec, tv_timestamp.tv_usec, current_position);
+			lastIndex, tv_timestamp.tv_sec, (long) tv_timestamp.tv_usec, current_position);
 		fclose(fmark);
 	}
+*/
 	
 	delete [] sensor_values;
 	delete [] sensor_values_length;
@@ -713,7 +721,7 @@ int windtracer::create_data_table() {
 		// add columns for "real"sensors
 		for (int i = num_aux_sensors; i < nSensors; i++)
 			sql_stmt += "`" + sensor[i].name + "` mediumblob, ";
-		sql_stmt += "PRIMARY KEY (`id`), UNIQUE INDEX(`usec`) ) TYPE=MyISAM";
+		sql_stmt += "PRIMARY KEY (`id`), UNIQUE INDEX(`usec`) ) ENGINE=MyISAM";
 		
 		// execute SQL statement
 		if (mysql_query(db, sql_stmt.c_str())) {
@@ -751,8 +759,14 @@ int windtracer::create_data_table_name(std::string & data_table_name)
 
 const char *windtracer::getDataDir(){
 	char line[256];
+	std::string dirName;
 	
-	sprintf(line, "%s/DataFiles/", moduleName.c_str());
+	dirName = moduleName;
+	
+	// Differnent names used by IMK and manufacturer
+	if (moduleName == "WTH") dirName = "HYB";
+	
+	sprintf(line, "%s/DataFiles/", dirName.c_str());
 	buffer = line;
 	
 	return(buffer.c_str());

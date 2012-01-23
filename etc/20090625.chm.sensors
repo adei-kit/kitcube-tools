@@ -6,4 +6,4 @@ Number of sensors: 8
          5	Penetration depth 2	CM.CM.H.PEN.002.AVG	H
          6	Penetration depth 3	CM.CM.H.PEN.003.AVG	H
          7	Vertical visibility	CM.CM.H.SV.001.AVG	H
-         8	Detection range	CM.CM.H.DR.001.AVG	H		
+         8	Detection range	CM.CM.H.DR.001.AVG	H

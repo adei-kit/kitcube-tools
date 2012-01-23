@@ -30,7 +30,7 @@ int radiosonde::readHeader(const char *filename)
 	char* puffer;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
@@ -94,7 +94,7 @@ unsigned int radiosonde::getSensorGroup()
 	unsigned int number;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	

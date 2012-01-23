@@ -9,6 +9,9 @@
 
 #include "wolkenkamera.h"
 
+#include <libgen.h>
+
+
 
 wolkenkamera::wolkenkamera():DAQBinaryDevice(){
 	
@@ -16,6 +19,8 @@ wolkenkamera::wolkenkamera():DAQBinaryDevice(){
 	lenDataSet = 237; // In the chm files is no check sum !?
 	noData = 99999;
 	
+	// There are non scalar variables to be stored
+	dataTablePrefix = "Profiles";
 }
 
 
@@ -31,7 +36,7 @@ const char *wolkenkamera::getDataDir(){
 	char line[256];
 	
 	// TODO: evtl. an zu definierende Verzeichnisstruktur anpassen
-	sprintf(line, "CC2-pics/small/");
+	sprintf(line, "CC2/small/");
 	buffer = line;
 	
 	return(buffer.c_str());
@@ -47,6 +52,11 @@ unsigned int wolkenkamera::getSensorGroup(){
 		number = 1;
 		buffer = "standard";
 	}
+
+	if (sensorGroup == "stat") {
+		number = 2;
+		buffer = "statistic";
+	}
 	
 	return( number);
 }
@@ -56,19 +66,31 @@ int wolkenkamera::readHeader(const char *filename) {
 	int i;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+	if (sensorGroup == "jpg"){	// read jpg file and write file name?!
 	
-	sensor[0].comment = "sky picture";
-	sensor[0].data_format = "<binary>";
-	sensor[0].type = "profile";
+		sensor[0].comment = "sky picture";
+		sensor[0].data_format = "<binary>";
+		sensor[0].type = "profile";
+		
+		profile_length = 0;	// TODO/FIXME: do we need this here? this is done in daqdevice constructor, too
+		
+	}
 	
-	profile_length = 0;	// TODO/FIXME: do we need this here? this is done in daqdevice constructor, too
 	
+	if (sensorGroup == "stat"){	// read jpg file and calculate some statistics
+
+		// TODO: Where should be the master definition ???
+		
+		
+		
+	}
+		
 	for (i = 0; i < nSensors; i++) {
 		sensor[i].height = 4;
-		printf("Sensor %3d: %s, %.1f\n", i+1, sensor[i].comment.c_str(), sensor[i].height);
+		//printf("Sensor %3d: %s, %.1f\n", i+1, sensor[i].comment.c_str(), sensor[i].height);
 	}
 	
 	return 0;
@@ -85,8 +107,9 @@ void wolkenkamera::readData(std::string full_filename){
 	//int j;
 	std::string timeString;
 	std::string dateString;
-	FILE *fmark;
+	//FILE *fmark;
 	std::string filenameData;
+	std::string filename;	
 	struct timeval lastTime;
 	unsigned long lastPos;
 	long lastIndex;
@@ -106,8 +129,11 @@ void wolkenkamera::readData(std::string full_filename){
 	char sData[50];
 #endif
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+	
+	
 	
 	// Compile file name
 	filenameData = full_filename;
@@ -131,32 +157,33 @@ void wolkenkamera::readData(std::string full_filename){
 #endif
 
 	// Get the last time stamp + file pointer from
-	lastPos = 0;
-	lastTime.tv_sec = 0;
-	lastTime.tv_usec = 0;
-	
-	if (debug >= 3)
-		printf("Get marker from %s\n", filenameMarker.c_str());
-	fmark = fopen(filenameMarker.c_str(), "r");
-	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
-		fclose(fmark);
-	}
+	loadFilePosition(lastIndex, lastPos, lastTime);
 	
 	
 	// if file already read, return
 	if (lastPos == 1) {
 		fd_eof = true;
-		printf("File already read -> nothing to do, returning...\n");
+		if (debug > 1) printf("File already read -> nothing to do, returning...\n");
+		
+		saveFilePosition(lastIndex, lastPos, lastTime); // Update the entry in the status tab
 		return;
 	}
 		
-		
 	// extract timestamp from filename
-	strptime(full_filename.c_str(), "kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg", &time_stamp_data);
+	// Strip path
+    filename = basename((char*)full_filename.c_str());		
+	strptime(filename.c_str(), "kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg", &time_stamp_data);
 	
-	if (debug >= 4)
-		printf("%lds\n", timegm(&time_stamp_data));
+	if (debug > 3){	
+	    printf("Filename  : %s\n", filename.c_str());
+	    printf("Date      : %02d.%02d.%4d  %02d:%02d:%02d\n", 
+			   time_stamp_data.tm_mday, time_stamp_data.tm_mon+1, time_stamp_data.tm_year+1900,
+			   time_stamp_data.tm_hour, time_stamp_data.tm_min, time_stamp_data.tm_sec);
+		printf("Timestamp : %lds\n", timegm(&time_stamp_data));
+	}
+
+	
+	if (sensorGroup == "jpg"){
 	
 	// write data to DB
 #ifdef USE_MYSQL
@@ -176,12 +203,12 @@ void wolkenkamera::readData(std::string full_filename){
 		sql += sData;
 		for (int j = 0; j < nSensors; j++) {
 			sql += ",";
-			sprintf(sData, "'%s'", basename((char*)full_filename.c_str()));
+			sprintf(sData, "'%s'", filename.c_str());
 			sql += sData;
 		}
 		sql += ")";
 		
-		//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
+		if (debug > 4) printf("SQL: %s (db = %p)\n", sql.c_str(), db);
 		
 		gettimeofday(&t0, &tz);
 		
@@ -192,29 +219,38 @@ void wolkenkamera::readData(std::string full_filename){
 			// If this operation fails do not proceed in the file?!
 			printf("Error: Unable to write data to database\n");
 			throw std::invalid_argument("Writing data failed");
-//			break;
 		}
 		
 		gettimeofday(&t1, &tz);
 		
 		if (debug >= 5)
-			printf("DB insert duration: %ld.%ldus\n", t1.tv_sec - t0.tv_sec, t1.tv_usec - t0.tv_usec);
+			printf("DB insert duration: %ld.%ldus\n", t1.tv_sec - t0.tv_sec, (long) t1.tv_usec - t0.tv_usec);
 	} else {
 		printf("Error: No database availabe\n");
 		throw std::invalid_argument("No database");
 	}
 #endif // of USE_MYSQL
 	
+	} 
+	
+	
+	if (sensorGroup == "stat"){
+		readDataWithPython(filename.c_str());
+	}
+		
+		
 	// file read
 	fd_eof = true;
 	lastPos = 1;
 	
 	// Write the last valid time stamp / file position
-	fmark = fopen(filenameMarker.c_str(), "w");
-	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
-		fclose(fmark);
-	}
+	lastTime.tv_sec = timegm(&time_stamp_data);
+	lastTime.tv_usec = 0;
+	saveFilePosition(lastIndex, lastPos, lastTime);
+	if (debug > 3) 
+		printf("Last timestamp: %ld sec %d usec\n", lastTime.tv_sec, lastTime.tv_usec);
+
+	
 }
 
 
@@ -259,10 +295,10 @@ long wolkenkamera::getFileNumber(char* filename){
 	long index;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
-	if (debug >= 2)
+	if (debug > 2)
 		printf("From file %s\n", filename);
 	
 	// Write the index of the file to a list
@@ -324,8 +360,9 @@ long wolkenkamera::getFileNumber(char* filename){
 	// FIXME/TODO: check, if this is really only a number
 	index = atol(filename_string.c_str());
 	
-	if (debug >= 2)
+	if (debug > 2)
 		printf("Index is: %ld\n", index);
 	
 	return index;
 }
+

@@ -13,7 +13,7 @@
 SysLog::SysLog():DAQDevice(){
 	
 	this->moduleType = "SysLog";
-	this->moduleNumber = 99; // SysLog default number
+	this->moduleNumber = 100; // SysLog default number
 	this->sensorGroup = "log";
 	
 	this->iniGroup = "SysLog";
@@ -29,6 +29,17 @@ SysLog::SysLog():DAQDevice(){
 SysLog::~SysLog(){
 }
 
+
+void SysLog::setAppId(int id){
+	char buf[10];
+	
+	this->moduleNumber = 100 + id; 
+	//sprintf(buf, "Perf%d", id);
+	//this->moduleName = buf;
+
+	DAQDevice::setAppId(id);
+	
+}
 
 
 void SysLog::setNData(int n) {
@@ -72,9 +83,8 @@ void SysLog::setConfigDefaults(){
 	// The paramters are dependant of the module number that is not known at the creation 
 	// of the class but first time after reading from the inifile
 	// 
-	
-	this->moduleName = "System";
-	this->moduleComment = "SysLog";
+	this->moduleName = "Sys";
+	this->moduleComment = "System Log";
 	
 	sprintf(line, "SysLog.sensors");
 	this->sensorListfile = line;

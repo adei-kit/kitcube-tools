@@ -1,4 +1,5 @@
 # rsync filter rules merge file for HATPRO (RPG)
 # the following files append new data
 + *.ASC
++ */
 - *

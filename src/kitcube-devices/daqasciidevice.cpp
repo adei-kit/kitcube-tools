@@ -33,7 +33,7 @@ void DAQAsciiDevice::openFile(){ // for writing
 	std::string nameTemplate;
 	
 	
-	printf("_____DAQAsciiDevice::openFile()_____\n");
+	if (debug > 2) printf("_____DAQAsciiDevice::openFile()_____\n");
 	
 	// Check if template file is existing and contains header + data
 	nameTemplate = configDir + datafileTemplate;
@@ -67,7 +67,7 @@ void DAQAsciiDevice::openFile(){ // for writing
 	filename = getDataFilename(); // Warning using global variable for returning data !!!
 	fullFilename = path + filename;
 	
-	printf("KITCube-Device (type %s): Open datafile \"%s\"\n", moduleType.c_str(), fullFilename.c_str());
+	if (debug > 1) printf("KITCube-Device (type %s): Open datafile \"%s\"\n", moduleType.c_str(), fullFilename.c_str());
 	createDirectories(fullFilename.c_str());	// FIXME: don't use fullFilename here!
 	
 	fdata = fopen(fullFilename.c_str(), "a");	// use only "a", so ftell(...) works
@@ -96,29 +96,15 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	int n;
 	FILE *fd_data_file;
 	int j, k;
-	//char *sensorString;
 	double *local_sensorValue;
-	//int err;
-	//std::string timeString;
-	//std::string dateString;
-	//unsigned long timestamp;
 	
-	
-	FILE *fmark;
 	std::string filenameData;
-	struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long currPos;
 	long lastIndex;
 	struct timeval timestamp_data = {0};
-	//struct timeval tWrite;
-	//char *lPtr;
 	
 #ifdef USE_MYSQL
-	//MYSQL_RES *res;
-	//MYSQL_RES *resTables;
-	//MYSQL_ROW row;
-	//MYSQL_ROW table;
 	std::string tableName;
 	std::string sql;
 	char sData[50];
@@ -127,7 +113,7 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	int i;
 #endif
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	// Compile file name
@@ -145,11 +131,7 @@ void DAQAsciiDevice::readData(std::string full_filename){
 		}
 	}
 #endif
-	
-	// Allocate memory for one data set
-	//len = lenDataSet;
-	//buf = new char [len];
-	
+		
 	// Allocate memory for sensor values
 	if (profile_length != 0) {
 		local_sensorValue = new double [nSensors * profile_length];
@@ -157,7 +139,8 @@ void DAQAsciiDevice::readData(std::string full_filename){
 		local_sensorValue = new double [nSensors];
 	}
 	
-	if (debug >= 1)
+	
+	if (debug > 1)
 		printf("Open data file: %s\n", filenameData.c_str());
 	fd_data_file = fopen(filenameData.c_str(), "r");
 	if (fd_data_file <= 0) {
@@ -167,31 +150,14 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	
 	
 	// Get the last time stamp + file pointer from
-	lastPos = 0;
-	lastTime.tv_sec = 0;
-	lastTime.tv_usec = 0;
-	
-	if (debug >= 1)
-		printf("Get marker from %s\n", filenameMarker.c_str());
-	fmark = fopen(filenameMarker.c_str(), "r");
-	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
-		fclose(fmark);
-		
-		// Read back the data time stamp of the last call
-		timestamp_data.tv_sec = lastTime.tv_sec;
-		timestamp_data.tv_usec = lastTime.tv_usec;
-		
-		if (debug >= 1)
-			printf("Last time stamp was %ld\n", lastTime.tv_sec);
-	}
-	
+	loadFilePosition(lastIndex, lastPos, timestamp_data);
+ 
 	if (lastPos == 0)
 		lastPos = lenHeader; // Move to the the first data
 	currPos = lastPos;
 	
 	// Find the beginning of the new data
-	if (debug >= 1)
+	if (debug > 1)
 		printf("Last position in file: %ld\n", lastPos);
 	
 	fseek(fd_data_file, lastPos, SEEK_SET);
@@ -216,7 +182,7 @@ void DAQAsciiDevice::readData(std::string full_filename){
 			// print sensor values
 			if (debug >= 4) {
 				printf("%4d: Received %4d bytes --- ", iLoop, (int) strlen(buf));
-				printf("%lds %6ldus --- ", timestamp_data.tv_sec, timestamp_data.tv_usec);
+				printf("%lds %6ldus --- ", timestamp_data.tv_sec, (long) timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {
 						for (k = 0; k < profile_length; k++) {
@@ -237,7 +203,10 @@ void DAQAsciiDevice::readData(std::string full_filename){
 				//printf("Write record to database\n");
 				
 				sql = "INSERT INTO `";
-				sql += dataTableName + "` (`usec`";
+				if (useTicks)
+					sql += dataTableName + "` (`usec`";
+				else
+					sql += dataTableName + "` (`sec`";
 				for (i = 0 ; i < nSensors; i++) {
 					if (local_sensorValue[i] != noData) {
 						sql += ",`";
@@ -246,7 +215,10 @@ void DAQAsciiDevice::readData(std::string full_filename){
 					}
 				}
 				sql += ") VALUES (";
-				sprintf(sData, "%ld", timestamp_data.tv_sec * 1000000 + timestamp_data.tv_usec);
+				if (useTicks)
+					sprintf(sData, "%ld", timestamp_data.tv_sec * 1000000 + timestamp_data.tv_usec);
+				else
+					sprintf(sData, "%ld", timestamp_data.tv_sec);
 				sql += sData;
 				if (profile_length != 0) {
 					for (i = 0; i < nSensors; i++) {
@@ -309,15 +281,13 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	
 	processedData += currPos - lastPos;
 	
-	if (debug >= 1)
+	if (debug > 1)
 		printf("Position in file: %ld; processed data: %ld Bytes\n", currPos, currPos - lastPos);
+
 	
 	// Write the last valid time stamp / file position
-	fmark = fopen(filenameMarker.c_str(), "w");
-	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp_data.tv_sec, timestamp_data.tv_usec, currPos);
-		fclose(fmark);
-	}
+	saveFilePosition(lastIndex, currPos, timestamp_data);
+	
 	
 	fclose(fd_data_file);
 	free(buf);

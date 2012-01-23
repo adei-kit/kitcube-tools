@@ -10,11 +10,20 @@
 
 #include "windcube.h"
 
+#ifdef __linux__
+#include <endian.h>
+#elif __APPLE__
+// Header endian is not available in OSX, while endian swapping functions are
+#include "endian-osx.h"
+#endif
+
 
 windcube::windcube()
 {
 	altitudes = NULL;
 	profile_length = 10;
+
+	dataTablePrefix = "Profiles";
 }
 
 
@@ -225,9 +234,9 @@ void windcube::readData(std::string full_filename){
 	int fd_datafile;
 	double *local_sensorValue, azimuth_angle;
 	int loop_counter = 0;
-	FILE *fmark;
+	//FILE *fmark;
 	std::string full_data_file_name;
-	struct timeval lastTime;
+	//struct timeval lastTime;
 	unsigned long lastPos;
 	unsigned long currPos;
 	long lastIndex;
@@ -291,6 +300,9 @@ void windcube::readData(std::string full_filename){
 	
 	
 	// Get the last time stamp + file pointer from the marker file
+	loadFilePosition(lastIndex, lastPos, time_stamp_tv);
+
+/*	
 	lastPos = 0;
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
@@ -299,7 +311,7 @@ void windcube::readData(std::string full_filename){
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 		
 		// Read back the data time stamp of the last call
@@ -309,7 +321,8 @@ void windcube::readData(std::string full_filename){
 		if (debug >= 1)
 			printf("Last time stamp was %ld\n", lastTime.tv_sec);
 	}
-	
+*/	
+ 
 	// Find the beginning of the new data
 	// if new file, jump to the first data set
 	if (lastPos == 0)
@@ -357,7 +370,7 @@ void windcube::readData(std::string full_filename){
 		// print sensor values
 		if (debug >= 4) {
 			printf("%4d: Received %4d bytes --- ", loop_counter, (int) strlen(buf));
-			printf("%lds %6ldus --- ", time_stamp_tv.tv_sec, time_stamp_tv.tv_usec);
+			printf("%lds %6ldus --- ", time_stamp_tv.tv_sec, (long) time_stamp_tv.tv_usec);
 			for (int k = 0; k < profile_length; k++) {
 				printf("%6.2f ", altitudes[k]);
 			}
@@ -472,12 +485,16 @@ void windcube::readData(std::string full_filename){
 		printf("Position in file: %ld; processed data: %ld Bytes\n", currPos, currPos - lastPos);
 	
 	// Write the last valid time stamp / file position
+	saveFilePosition(lastIndex, currPos, time_stamp_tv);
+
+/*	
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, time_stamp_tv.tv_sec, time_stamp_tv.tv_usec, currPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, time_stamp_tv.tv_sec, (long) time_stamp_tv.tv_usec, currPos);
 		fclose(fmark);
 	}
-	
+*/	
+ 
 	if (sensorGroup == "sta")
 		fclose(fd_data_file);
 	if (sensorGroup == "rtd") 
@@ -561,7 +578,7 @@ int windcube::parseData(char *line, struct timeval *l_tData, double* sensor_valu
 	return 0;
 }
 
-
+/*
 int windcube::create_data_table_name(std::string & data_table_name)
 {
 	char *line;
@@ -583,3 +600,4 @@ int windcube::create_data_table_name(std::string & data_table_name)
 		return 0;
 	}
 }
+*/

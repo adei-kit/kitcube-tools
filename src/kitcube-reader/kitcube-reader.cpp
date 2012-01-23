@@ -10,6 +10,7 @@
 #include "reader.h"
 
 
+
 int main(int argc, char *argv[]){
 	Reader *data;
 	int err;
@@ -18,9 +19,19 @@ int main(int argc, char *argv[]){
 	bool runDaemon;
 	bool printHelp;
 	int debug;
+	char *namePtr;
+	std::string filename;
+	std::string applicationName;
+	//int posModulename;
+	bool isLinkedApp;	
+	struct timeval t0,t1;
+	struct timezone tz;
+	struct tm *t;
 	
-
-	printf("KITCube Data Reader (build %s %s)\n", __DATE__, __TIME__);
+	
+	gettimeofday(&t0, &tz);
+	t = localtime( &t0.tv_sec); //Alternative: t = gmtime( &t0.tv_sec);
+	printf("KITcube Data Reader (build %s %s)  %30s\n", __DATE__, __TIME__, asctime(t));
 	
 	//
 	// Default program switches
@@ -29,10 +40,38 @@ int main(int argc, char *argv[]){
 	runDaemon = false; // Run interactive as default
 	printHelp = false;
 	debug = 2;
+	isLinkedApp = false;
 	
 	//
 	// Parse command line
 	//
+
+	// Get name of the application
+	// Strip the path and the kitcube prefix
+	//printf("Arguments: %d\n", argc);
+	namePtr = strrchr(argv[0], '/');
+	if (namePtr > 0)
+		filename = namePtr + 1;
+	else
+		filename = argv[0];
+	applicationName = filename;
+	if (debug > 3) printf("Running application %s\n", applicationName.c_str()); 
+
+/*
+	if (strcmp(filename.c_str(),"kitcube-reader") != 0) {
+		isLinkedApp = true;
+		namePtr = strstr((char *) filename.c_str(), "kitcube-");
+		if (namePtr <  0){
+			//printf("Warning: Kitcube prefix is missing in the application file name\n");
+			throw std::invalid_argument("Kitcube prefix is missing in the application file name");
+		} else {
+			applicationName = namePtr+8;
+			applicationName[0] = toupper(applicationName[0]);
+		}
+	}	
+*/
+	
+	
 	while ((err = getopt(argc, argv, "dhi:m:v:")) > -1){
 		// Use a colon to specify these option that require an argument
 		
@@ -93,11 +132,14 @@ int main(int argc, char *argv[]){
 		if (iniGroup.length() >  0)
 			printf("Starting readout for iniGroup %s (debug = %d)\n", iniGroup.c_str(), debug);	
 	}
+
 	
 	try {
-		// Read inifile
+		// Create the reader process
 		data = new Reader();
 		data->setDebugLevel(debug);
+		//if (isLinkedApp) 
+		data->setAppName(applicationName.c_str());
 		data->readInifile(inifile.c_str(), iniGroup.c_str());
 		data->runAsDaemon(runDaemon);
 		
@@ -111,5 +153,15 @@ int main(int argc, char *argv[]){
 		fflush(stdout);
 	}
 	
+
+
+	if (debug) {
+		gettimeofday(&t1, &tz);
+		
+		t = localtime( &t0.tv_sec); //Alternative: t = gmtime( &t0.tv_sec);
+		printf("Terminating %-38s%30s", applicationName.c_str(), asctime(t));
+		t = localtime( &t1.tv_sec); //Alternative: t = gmtime( &t0.tv_sec);
+		printf("%80s\n\n", asctime(t));
+	}
 	exit(0);
 }

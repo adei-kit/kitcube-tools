@@ -105,10 +105,14 @@ long Norbert::getFileNumber(char *filename){
 
 	// Check for starting tag
 	if (fileString.find(filePrefix) != 0) {
-		throw std::invalid_argument("Prefix not found");
+		if (debug >=3) printf("Filename %s / prefix %s\n", fileString.c_str(), filePrefix.c_str());
+		return(0);
+		//throw std::invalid_argument("Prefix not found");
 	}
 	if (fileString.find(fileSuffix) < 0) {
-		throw std::invalid_argument("Suffix not found");
+		if (debug >=3) printf("Filename %s / suffix %s\n", fileString.c_str(), fileSuffix.c_str());
+		return(0);
+		//throw std::invalid_argument("Suffix not found");
 	}
 
 
@@ -124,7 +128,8 @@ long Norbert::getFileNumber(char *filename){
 
 	if (lenIndex > 6){
 		if (fileString.find("_") != posIndex + 6){
-			throw std::invalid_argument("Separator between date and time not found");
+			return(0);
+			//throw std::invalid_argument("Separator between date and time not found");
 		}
 
 		numString = fileString.substr(posIndex+7, 2);
@@ -381,7 +386,7 @@ void Norbert::readData(std::string full_filename){
 	std::string timeString;
 	std::string dateString;
 	unsigned long timestamp;
-	FILE *fmark;
+	//FILE *fmark;
 	std::string filenameData;
 	struct timeval lastTime;
 	unsigned long lastPos;
@@ -441,6 +446,9 @@ void Norbert::readData(std::string full_filename){
 	dateString.assign((const char*)line, 10);
 	
 	// Get the last time stamp + file pointer from
+	loadFilePosition(lastIndex, lastPos, lastTime);
+	
+/*	
 	lastPos = 0;
 	lastTime.tv_sec = 0;
 	lastTime.tv_usec = 0;
@@ -449,10 +457,12 @@ void Norbert::readData(std::string full_filename){
 		printf("Get marker from %s\n", filenameMarker.c_str());
 	fmark = fopen(filenameMarker.c_str(), "r");
 	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, &lastTime.tv_usec, &lastPos);
+		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
 	}
-
+*/
+ 
+ 
 	// if we have a new file to work on now, set data start position manually
 	if (lastPos == 0)
 		lastPos = lenHeader;
@@ -491,7 +501,7 @@ void Norbert::readData(std::string full_filename){
 			l_timestamp_data.tv_usec = 0;
 
 			if (debug > 1)
-				printf(" %ld  %ld  ---- ", l_timestamp_data.tv_sec, l_timestamp_data.tv_usec);
+				printf(" %ld  %ld  ---- ", l_timestamp_data.tv_sec, (long) l_timestamp_data.tv_usec);
 
 			// Read data values
 			//printf("%s\n", buf);
@@ -578,12 +588,16 @@ void Norbert::readData(std::string full_filename){
 
 
 	// Write the last valid time stamp / file position
+	saveFilePosition(lastIndex, lastPos, l_timestamp_data);
+
+/*	
 	fmark = fopen(filenameMarker.c_str(), "w");
 	if (fmark > 0) {
-		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, lastTime.tv_usec, lastPos);
+		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, lastTime.tv_sec, (long) lastTime.tv_usec, lastPos);
 		fclose(fmark);
 	}
-
+*/
+	
 	close(fd);
 	delete buf;
 	delete [] local_sensorValue;

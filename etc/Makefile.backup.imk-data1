@@ -1,0 +1,53 @@
+# Makefile
+# Save kitcube-tools configuration
+#
+
+ACTIONS = read.crontab
+
+FILES = Makefile \
+	kitcube.ini \
+	bin/chk_alarm.sh \
+	bin/send_heartbeat.sh \
+	bin/sync_files.sh \
+	bin/wget_files.sh \
+	bin/resize_cc2.sh \
+	bin/kcr-mast \
+	bin/kcr-3M \
+	bin/kcr-cc \
+	bin/kcr-rs \
+	bin/kcr-hatpro \
+        etc/crontab 	
+
+DATE = $(shell date -u +%C%m%d)
+
+
+all:
+	@echo "Usage: make backup"
+	@echo "       make install"
+
+backup: $(ACTIONS) kitcube-config.tar.gz 
+
+# Update crontab only if changed !!!
+# Makefile breaks if result of a line is > 0
+read.crontab:
+	@crontab -l > tmp/crontab
+	@diff tmp/crontab etc/crontab > tmp/diff-test.txt || touch tmp/diff-test.txt
+	@if [ -s tmp/diff-test.txt ]; then \
+		echo "Crontab has been changed"; \
+		cp tmp/crontab etc/crontab; \
+	fi
+
+kitcube-config.tar.gz: $(FILES)
+	tar -czf kitcube-config.tar.gz $(FILES)
+	cp kitcube-config.tar.gz kitcube-config-$(DATE).tar.gz
+
+# Ececute after compilation of kitcbe-tools
+# to copy executables to sepecial locations
+#
+# TODO: Create Links if not existing 
+#
+install:
+	scp kitcube-tools/src/kitcube-reader/kitcube-monitor imk-adei1:.
+	scp doc/kitcube-manual.pdf imk-adei1:.
+
+

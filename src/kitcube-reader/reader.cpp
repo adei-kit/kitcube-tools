@@ -9,9 +9,23 @@
 
 #include "reader.h"
 
+#include <stdlib.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/param.h>
+#include <sys/mount.h>
+
+#include <sys/socket.h>
+#include <ifaddrs.h>
+#include <net/if.h> // BSD ???
 
 Reader::Reader(): SimpleServer(READER_PORT){
 
+	appId = 0;
+	appName = "Reader";
+	nModules = 0;
+	
 	rx = 0;
 	tx = 0;
 	disk_avail_gb = 0;
@@ -23,7 +37,18 @@ Reader::~Reader(){
 	
 	delete [] iniGroup;
 	delete [] moduleType;
+	delete [] moduleNumber;
 
+}
+
+
+void Reader::setAppName(const char *name){
+	if (name > 0) this->appName = name;
+}
+
+
+int Reader::getAppId(){
+	return (this->appId);
 }
 
 
@@ -39,15 +64,41 @@ void Reader::readInifile(const char *filename, const char *group){
 	this->inifile = filename;
 	this->tSampleFromInifile = 10000; // ms
 	
-	//ini = new akInifile(inifile.c_str(), stdout);
-	ini = new akInifile(inifile.c_str());
+	if (debug > 2) {
+		ini = new akInifile(inifile.c_str(), stdout);
+	} else {
+		ini = new akInifile(inifile.c_str()); // Skip output
+	}
 	if (ini->Status()==Inifile::kSUCCESS){
+
 		
-		ini->SpecifyGroup("Reader");
+		error = ini->SpecifyGroup(this->appName.c_str());
+		if (error == Inifile::kFAIL){
+			// TODO: Alternativly terminate the application here
+			// it does not make sense to run an application that 
+			// has no valid configuration ...
+			
+			this->appName = "Reader"; // Default
+			ini->SpecifyGroup(this->appName.c_str());
+			
+		}
+		if (debug > 2) printf("[%s]\n", this->appName.c_str());
+
+		// Get reader id
+		this->appId = ini->GetFirstValue("id", 0, &error);
+	
+		// Read sampling time
+		tValue= ini->GetFirstValue("samplingTime", (float) tSampleFromInifile, &error);
+		tUnit = ini->GetNextString("ms", &error);
+		this->tSampleFromInifile = tValue; 
+		if ((tUnit == "sec") || (tUnit == "s")) this->tSampleFromInifile = tValue * 1000;
+		if (tUnit == "min") this->tSampleFromInifile = tValue * 60000;
+		
 		
 		//Try to read the group name from inifile if there no group name given
 		if ((group == 0) || (group[0] == 0)){
-			
+
+			//printf("Reading modules from inifile\n");
 			// Get the number of groups from the inifile
 			ini->GetFirstString("module", "", &error);
 			
@@ -58,17 +109,23 @@ void Reader::readInifile(const char *filename, const char *group){
 				nModules++;
 			}
 			
+			//printf("Found n = %d modules\n", nModules);
+			
 			// Allocate the arrays for all parameters
 			// TODO: Check if space has been allocated before?!
 			this->iniGroup = new std::string [nModules];
 			this->moduleType = new std::string [nModules];
+			this->moduleNumber = new int [nModules];
 			this->dev = new  DAQDevice * [nModules];
 			
+			//printf("Reading the modules again\n");
+			
 			// Read modules names
-			this->iniGroup[0] = ini->GetFirstString("module", "Simlation", &error);
+			this->iniGroup[0] = ini->GetFirstString("module", "Simulation", &error);
 			for (i=1;i<nModules;i++){
 				this->iniGroup[i] = ini->GetNextString("", &error);
 			}
+			
 			
 		} else {
 			
@@ -77,31 +134,34 @@ void Reader::readInifile(const char *filename, const char *group){
 	
 			this->iniGroup = new std::string [nModules];
 			this->moduleType = new std::string [nModules];
+			this->moduleNumber = new int [nModules];
 			
 			this->iniGroup[0] = group;
 		}
 		
 		
-		// Read sampling time
-		tValue= ini->GetFirstValue("samplingTime", (float) tSampleFromInifile, &error);
-		tUnit = ini->GetNextString("ms", &error);
-		this->tSampleFromInifile = tValue; 
-		if ((tUnit == "sec") || (tUnit == "s")) this->tSampleFromInifile = tValue * 1000;
-		if (tUnit == "min") this->tSampleFromInifile = tValue * 60000;
-		
-		
 		// Read type of the modules
 		for (i=0;i<nModules;i++){
+			//printf("Reading module definition [%s]\n", iniGroup[i].c_str());
 			error = ini->SpecifyGroup(iniGroup[i].c_str());
 			if (error == Inifile::kSUCCESS){
 				this->moduleType[i] = ini->GetFirstString("moduleType",
 							iniGroup[i].c_str(), &error);
+				this->moduleNumber[i] = ini->GetFirstValue("moduleNumber", 0, &error);
 			} else {
 				printf("Error: Section [%s] not found in inifile.\n", iniGroup[i].c_str());
 				printf("\n");
 				throw std::invalid_argument("Module is not defined");
 			}
 		}
+		
+		// Print summary
+		printf("List of modules (n=%d)  :\n", nModules);
+		for (i=0;i<nModules;i++){
+			printf("#%03d:  %s, type %s\n", moduleNumber[i], iniGroup[i].c_str(), moduleType[i].c_str());
+		}
+		printf("\n");
+		
 	
 	}
 	delete ini;
@@ -118,8 +178,9 @@ void Reader::runReadout(){
 	int i;
 	//int iSample;
 	struct timeval tWait;
-	struct timeval tStart;
+	//struct timeval tStart;
 	//char host[255];
+	int servicePort;
 	
 	if (shutdown) return; // Do not start the server!!!
 	
@@ -163,12 +224,13 @@ void Reader::runReadout(){
 	//  5 Network transfer send [Bytes]
 	// 
 	
-	if (debug > 2) printf("\n");
-	if (debug > 2) printf("______Starting system logging _______________________________\n"); 
+	if (debug) printf("\n");
+	if (debug) printf("______Starting system logging _______________________________\n"); 
 	log = new SysLog();
 	
 	log->setNData(8);
 	log->setDebugLevel(debug);
+	log->setAppId(this->appId); // Every application needs it's own log table
 
 	log->readInifile(this->inifile.c_str(), "SysLog");	
 	log->readAxis(this->inifile.c_str());
@@ -182,19 +244,28 @@ void Reader::runReadout(){
 	log->setConfig(6,"Datarate received");
 	log->setConfig(7,"Datarate send");
 	// TODO/FIXME: reduce the number of calls to setConfig!
+
+	// For every reader application a separate port is used
+	// It's buid from the base reader port + application ID
+	servicePort = READER_PORT + this->appId;
+	setPort(servicePort);
+	
 	
 	// Display configuration
 	if (debug) {
 		printf("\n");
-		printf("______Starting service for  %d  module(s)_______________________________\n", nModules);
-		printf("Sampling time      : %d ms\n", tSampleFromInifile);
+		printf("______Starting service for  %d  module(s)_______________________________\n", nModules+1);
+		printf("%-20s : %d ms\n", "Sampling time", tSampleFromInifile);
 		
 		for (i = 0; i < nModules; i++) {
-			printf("Module %2d          : %s,  type  %s\n",
+			printf("Module %2d            : %s,  type  %s\n",
 			       i + 1, iniGroup[i].c_str(), moduleType[i].c_str());
 		}
-		printf("Module %2d          : Performance module, type SysLog, %d items\n",
+		printf("Module %2d            : Performance module, type SysLog, %d items\n",
 		       nModules+1, log->getNSensors());
+
+		printf("%-20s : %d (for remote monitoring)\n", "Server port", servicePort);
+		printf("\n");
 	}
 	
 	this->dev = new  DAQDevice * [nModules];
@@ -207,21 +278,13 @@ void Reader::runReadout(){
 		}
 		
 		dev[i]->setDebugLevel(debug);
+		dev[i]->setAppId(appId);
 		
 		dev[i]->readInifile(this->inifile.c_str(), iniGroup[i].c_str());	
 		dev[i]->readAxis(this->inifile.c_str());
 		dev[i]->getSensorNames(dev[i]->sensorListfile.c_str());
 	}
 	
-	// For every module one free port is existing
-	// For more than one module  the port of the first one is selected
-	setPort(READER_PORT+dev[0]->getModuleNumber()*10+dev[0]->getSensorGroup());
-	
-	if (debug){
-		printf("Server port        : %d (for remote monitoring)\n",
-			   READER_PORT+dev[0]->getModuleNumber());
-		printf("\n");
-	}
 	
 	if (debug > 2)
 		init();
@@ -232,10 +295,18 @@ void Reader::runReadout(){
 	// Set reference time and sampling time of the server loop
 	// TODO: Read the start time from configuration
 	// TODO: Read sampling phase from configuration
-	tStart.tv_sec = 1195487978;
-	tStart.tv_usec = 100000;	// If there are two independant loops with thee same
-					// sample rate there should be a phase shift between sampling
 	
+	// The reader doesn't need to be synchronous to the last call !!!
+	//tStart.tv_sec = 1195487978;
+	//tStart.tv_usec = 100000;	// If there are two independant loops with thee same
+	//				// sample rate there should be a phase shift between sampling
+	
+	t.tv_usec += 100000; // Start with the first loop after 100ms
+	if (t.tv_usec >= 1000000){
+		t.tv_usec = t.tv_usec % 10000000;
+		t.tv_sec += 1;
+	}
+	setTRef(&t);
 	//setTRef(&tStart);
 	//setTRef();
 	enableTimeout(&tWait);
@@ -275,7 +346,7 @@ int Reader::handle_timeout(){
 	long int tScheduler; 
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
@@ -299,10 +370,10 @@ int Reader::handle_timeout(){
 	
 	
 	// TODO: Read data / Simulate data
-	if (debug >= 1) {
+	if (debug > 1) {
 		printf("     _____________________________________________________\n");
 		printf("____/__Reading Data %12ld %06ld (sample %06d)___\\_______ \n",
-		       t0.tv_sec, t0.tv_usec, nSamples);
+		       t0.tv_sec, (long) t0.tv_usec, nSamples);
 	}
 	
 	nData = 0;
@@ -317,7 +388,7 @@ int Reader::handle_timeout(){
 			dev[i]->getNewFiles();
 			nData += dev[i]->getProcessedData();
 			
-			if (debug >= 1)
+			if (debug > 1)
 				printf("Processed data %d Bytes\n", dev[i]->getProcessedData());
 			gettimeofday(&t3, &tz);
 			
@@ -327,7 +398,11 @@ int Reader::handle_timeout(){
 		// Complete cycle time
 		gettimeofday(&t4, &tz);
 		tCycle = (t4.tv_sec - t0.tv_sec)*1000000 + (t4.tv_usec-t0.tv_usec);
-		if (debug >= 1) {
+		if (debug) {
+			// only one line of output 
+			// Not every sample time?!
+		}
+		if (debug > 1) {
 			printf("______Performance______________________________________________\n");
 			printf("Processed data: %8d Bytes     Cycle duration: %8d us\n",
 			       nData, tCycle);
@@ -341,20 +416,21 @@ int Reader::handle_timeout(){
 		// Get free disk space
 		// Read the disk space from all devices. Report every device only once?!
 		analyseDiskSpace(dev[0]->getArchiveDir());
-		if (nSamples > 1)
+		if (nSamples > 1){
 			log->storeSensorData();
-		
+			log->saveFilePosition(0,0,t0);
+		}
 		
 	} catch (std::invalid_argument &err) {
 		shutdown = true;
 		printf("Error: %s\n", err.what());
 	}
 	
-	
-	if (debug) {
+
+	if (debug > 1) {
 		printf("\n");
-		fflush(stdout);
 	}
+	if (debug) fflush(stdout);
 	return(0);
 }
 
@@ -566,7 +642,7 @@ long int Reader::analyseTiming(struct timeval *t){
 		unsigned long buf;
 		
 		buf = tRef.tv_sec;
-		if (debug >2) printf("%6d  | %ld.%06ld \n", index, t->tv_sec, t->tv_usec);
+		if (debug >2) printf("%6d  | %ld.%06ld \n", index, t->tv_sec, (long) t->tv_usec);
 	}
 	
 	return(tDiff);
@@ -578,9 +654,9 @@ void Reader::displayStatus(FILE *fout){
 	if (fout == 0) return;
 	
 	fprintf(fout, "\n");
-	fprintf(fout,   "Server start      : %lds %ldus\n", tRef.tv_sec, tRef.tv_usec);
+	fprintf(fout,   "Server start      : %lds %ldus\n", tRef.tv_sec, (long) tRef.tv_usec);
 	if (useTimeout){
-		fprintf(fout, "Sampling time     : %lds %ldus\n", tSample.tv_sec, tSample.tv_usec);
+		fprintf(fout, "Sampling time     : %lds %ldus\n", tSample.tv_sec, (long) tSample.tv_usec);
 		fprintf(fout, "Samples           : %d of %d -- %d missing\n", nSamples, lastIndex, lastIndex - nSamples);
 		fprintf(fout, "Skipped           : %d last samples in a sequel\n", nSamplesSkipped );
 		
@@ -620,7 +696,7 @@ void Reader::analyseDiskSpace(const char *dir){
 	double rx_rate, tx_rate;
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
@@ -645,9 +721,9 @@ void Reader::analyseDiskSpace(const char *dir){
 	disk_space_diff = (disk_avail_gb - disk_space_diff) * 1024.;
 	
 	if (debug >= 2) {
-		printf("Total blocks : %ld equals to %.3f GB (block size: %ld B)\n",
-		       fs.f_blocks, disk_size_gb, fs.f_bsize);
-		printf("Avail. blocks: %ld equals to %.3f GB or %.2f %%\n",
+		printf("Total blocks : %lld equals to %.3f GB (block size: %ld B)\n",
+		       fs.f_blocks, disk_size_gb, (long) fs.f_bsize);
+		printf("Avail. blocks: %lld equals to %.3f GB or %.2f %%\n",
 		       fs.f_bavail, disk_avail_gb, disk_avail_percent);
 		printf("Change in avail. disk space: %+.3f MB, rate: %.3f MB/s (Sampling time %.1f s)\n",
 		       disk_space_diff, disk_space_diff / t_diff, t_diff);
@@ -763,7 +839,7 @@ void Reader::analyseDiskSpace(const char *dir){
 #endif
 	
 	if (debug >= 2)
-		printf("Network device %s: rcvd %lu B at %.3f MB/s, sent %lu B at %.3f MB/s\n",
+		printf("Network device %s: rcvd %llu B at %.3f MB/s, sent %llu B at %.3f MB/s\n",
 			iface, diff_rx, rx_rate, diff_tx, tx_rate);
 	
 	// Write data to the syslog structure

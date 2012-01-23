@@ -5,18 +5,34 @@
 
 ; Data server for simulation of device data
 [DataServer]
-module = Mast12-calc
+;module = Mast12-calc
 ;module = Mast01
-;module = Simuation
+module = Simulation
 ;module = Ceilometer
 
 ; Reading data and filling in the database
 [Reader]
-;module = Mast12-calc
-module = Mast1-das Mast1-dal Mast1-dar Mast1-dax \
-         Mast2-das Mast2-dal Mast2-dar Mast2-dax \
-         Mast3-das Mast3-dal Mast3-dar Mast3-dax \
-         Mast4-das Mast4-dal Mast4-dar Mast4-dax \
+id = 1
+;module = WC-sta
+;module = WTH-base
+;module = SCI
+module = Wolkenkamera
+;module = 3M1-data 3M1-gps 3M1-sonic
+;module = Simulation
+samplingTime = 5 sec
+
+[kcr-sim]
+id = 2
+module = Simulation 	
+samplingTime = 3 sec
+
+[kcr-mast]
+id = 3
+;module = Mast1-das Mast1-dal Mast1-dar Mast1-dax \
+;         Mast2-das Mast2-dal Mast2-dar Mast2-dax \
+;         Mast3-das Mast3-dal Mast3-dar Mast3-dax \
+;
+module = Mast4-das Mast4-dal Mast4-dar Mast4-dax \
          Mast5-das Mast5-dal Mast5-dar Mast5-dax \
          Mast6-das Mast6-dal Mast6-dar Mast6-dax \
          Mast7-das Mast7-dal Mast7-dar Mast7-dax \
@@ -24,13 +40,43 @@ module = Mast1-das Mast1-dal Mast1-dar Mast1-dax \
          Mast12-das Mast12-dal Mast12-dar Mast12-dax \
          PT20-dal PT20-dar
 ;samplingTime = 1 min
+samplingTime = 5 min
+
+[kcr-3M]
+id = 4
+module = 3M1-data 3M1-gps 3M1-sonic \
+         3M2-data 3M2-gps 3M2-sonic \
+         3M3-data 3M3-gps 3M3-sonic \
+         3M4-data 3M4-gps 3M4-sonic
+samplingTime = 5 sec
+
+
+[kcr-cc]
+id = 5
+module = Wolkenkamera 
+samplingTime = 2 min
+
+[kcr-rs]
+id = 6
+module = RS1 RS2
+samplingTime = 5sec
+
+[kcr-hatpro]
+id = 7
+module = RPG-CBH RPG-CMP RPG-HKD RPG-HPC \
+         RPG-IWV-PPI RPG-IWV-VER \
+         RPG-LPR \
+         RPG-LWP-PPI RPG-LWP-VER \  
+         RPG-MET RPG-STA RPG-TPB RPG-TPC
+;samplingTime = 1 min
 samplingTime = 55 sec
+
 
 
 ; Global parameters for the whole setup related to the
 ; database connection.
 [Common]
-configDir = /home/cube/kitcube-tools-0.20/etc
+configDir = /home/cube/kitcube-tools/etc
 dataDir = /home/cube/data
 remoteDir = /home/cube/data
 archiveDir = /home/cube/hatzenbuehl
@@ -38,6 +84,7 @@ dbHost = imk-db1
 dbName = hatzenbuehl
 dbUser = cube
 dbPassword = cube
+alarmDelay = 20 min
 
 [Axis]
 axis = A AR AB B C DA DC DN E FC FH FM FV H KD KED KH KM KMS L LA MA MF MR MS MW N NE NF NO PA QR R SNR T TA V VAR X XG XP XR Z
@@ -815,7 +862,9 @@ samplingTime = 1 sec
 
 [Simulation]
 moduleType = SimRandom
-moduleNumber = 101
+moduleNumber = 199
+dataDir = /home/cube/data
+archiveDir = /home/cube/data
 
 [Norbert]
 moduleType = Norbert
@@ -895,7 +944,7 @@ datafileMask = w20<index>.dat
 samplingTime = 1 min
 
 [Wolkenkamera]
-moduleName = Wolkenkamera
+moduleName = CC2 
 moduleNumber = 45
 moduleType = Wolkenkamera
 moduleComment = Wolkenkamera_comment
@@ -904,7 +953,7 @@ sensorList = wolkenkamera.jpg.sensors
 datafileTemplate = 200908261200.jpg.template
 datafileMask = kitcube_cc2_<index>.jpg
 samplingTime = 2 min
-
+alarmDelay = 10 min
 
 ; scintillometer
 [SCI]
