@@ -4,6 +4,8 @@ A. Kopmann
 
 
 Version 0.23:
+ - Added script to acquire monitoring information for the computer infrastructure
+   30.1.12 (ak)
  - Extended status table by operator enable function. Added support in kitcube-monitor. 
  - Using hardlinks for the copies of the reader applications.
    Makefile.am updated
