@@ -1,0 +1,115 @@
+#! /bin/sh
+# Author: A. Kopmann
+#
+# History:
+#  
+# /etc/init.d/kitcube-data
+#
+# Start reading data file from kitcube modules
+#
+### BEGIN INIT INFO
+# Provides:       kitcube-data
+# Required-Start: $network
+# Required-Stop:
+# Default-Start:  3 5
+# Default-Stop:   0 1 2 6
+# Description:    starts /home/kopmann/src/kitcube-tools/src/kitcube-data/kitcube-data
+### END INIT INFO
+
+# Guess the name of the reader
+SCRIPT=`/usr/bin/basename "$0"`
+# Strip suffix
+#MODULE=${SCRIPT#*kcr-}
+# Strip extension
+READER=${SCRIPT%.*}
+#echo "Module name: $READER\n"
+
+
+SERVICE_START="yes"
+SERVICE_USER="cube"
+SERVICE_GROUP="users"
+SERVICE_TITLE="KITcube Data Generator"
+SERVICE_NAME=$READER
+SERVICE=/home/cube/kitcube-tools/src/kitcube-data/$SERVICE_NAME
+SERVICE_INI=/home/cube/kitcube.ini
+SERVICE_ARGS="-d -v 1 -i $SERVICE_INI"
+SERVICE_PROCESS=${SERVICE_NAME:0:15}
+SERVICE_MONITOR=/home/cube/kitcube-tools/src/kitcube-reader/kitcube-monitor
+
+# load Eye specific config file ...
+#if  test -f /etc/eye.config; then
+#  echo Reading from /etc/eye.config ...
+#  . /etc/eye.config
+#fi
+
+
+
+if [ -d /home/$SERVICE_USER ] ; then
+  SERVICE_LOGFILE=/home/$SERVICE_USER/$SERVICE_NAME.$HOSTNAME.log
+else
+  SERVICE_LOGFILE=/tmp/$SERVICE_NAME.$HOSTNAME.log
+  SERVICE_USER="root"
+  SERVICE_GROUP="root"
+fi
+
+# Set $HOME env. variable 
+export HOME=/home/$SERVICE_USER
+
+base=${0##*/}
+link=${base#*[SK][0-9][0-9]}
+
+test $link = $base && SERVICE_START=yes
+test "$SERVICE_START" = yes || exit 0
+
+
+
+if ! test -x $SERVICE ; then
+ echo "No $SERVICE_TITLE found !"
+ exit 1
+fi
+
+return=$rc_done
+case "$1" in
+    status)
+      /sbin/checkproc $SERVICE_PROCESS
+      if test $? -eq 0 ; then
+        echo "$SERVICE_TITLE '$SERVICE_NAME' is running"
+      else
+        echo "$SERVICE_TITLE '$SERVICE_NAME' is stopped"
+      fi
+      exit 1
+      ;;
+    start)
+      /sbin/checkproc $SERVICE_PROCESS
+      if test $? -eq 0 ; then
+        echo "$SERVICE_TITLE '$SERVICE_NAME' already running $rc_failed"
+        exit 1
+      fi
+      # execute in $SERVICE_USER's home directory
+#      rm -f $SERVICE_LOGFILE
+      touch $SERVICE_LOGFILE
+      chown $SERVICE_USER.users $SERVICE_LOGFILE
+      /sbin/startproc -l $SERVICE_LOGFILE \
+                -u $SERVICE_USER $SERVICE $SERVICE_ARGS || return=$rc_failed
+      echo -n "Starting $SERVICE_TITLE (Logfile: $SERVICE_LOGFILE)"
+      echo -e "$return"
+      ;;
+    stop)
+      /sbin/checkproc $SERVICE_PROCESS
+      if test $? -ne 0 ; then
+        echo "$SERVICE_TITLE '$SERVICE_NAME' not running $rc_failed"
+        exit 1
+      fi
+      echo  "Shutting down $SERVICE_TITLE"
+      #/sbin/killproc $SERVICE_PROCESS || return=$rc_failed
+	  # Doing a coorperative shutdown safely
+	  # killproc requires better excetion handling of kitcube-reader ?!
+	  $SERVICE_MONITOR quit -v 5 -i $SERVICE_INI -a $SERVICE_NAME > /dev/null  
+      ;;
+    restart)
+      $0 stop && $0 start || return=$rc_failed
+      ;;
+    *)
+    echo "Usage: $0 {status|start|stop|restart}"
+    exit 1
+esac
