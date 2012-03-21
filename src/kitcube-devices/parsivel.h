@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Norbert Flatinger <norbert.flatinger@kit.edu>, (C) 2010
+// Author: Andreas Kopmann <andreas.kopmann@kit.edu>, (C) 2012
 //
 // Copyright: See COPYING file that comes with this distribution
 //
