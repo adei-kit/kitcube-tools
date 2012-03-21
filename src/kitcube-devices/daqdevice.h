@@ -52,6 +52,7 @@ struct sensorType {
 	int axis;			// Number of axis used for the sensor (from axis definition in kitcube.ini)
 	float height;			// Postion of the sensor (height in meters)
 	std::string data_format;	// <scalar>, <profile>, <2D>, <3D>
+    int size;           // Number of element for the sensor (skalar = 1, ...)
 };
 
 
@@ -154,7 +155,12 @@ public:
 	virtual void readHeader();
 
 	virtual void writeHeader();
-
+    
+    /** Read the data from the current line of the data file. 
+      * @return -1 no data found, skip storage 
+      *          0 sucess, store data, 
+      *          1 read another line 
+      */
 	virtual int parseData(char* line, struct timeval* l_tData, double *sensorValue);
 	
 	/** Update or create the entry for this module in the status table */
@@ -182,7 +188,7 @@ public:
 	void getNewFiles();
 	
 	/** Return the module number */
-	unsigned int getModuleNumber();
+	unsigned int getModuleNumber(); 
 	
 	/** Return the number of the sensor group */
 	virtual unsigned int getSensorGroup();
@@ -218,13 +224,20 @@ public:
 	
 #ifdef USE_MYSQL	
 	/** Get all modules from the status list */
-	MYSQL_RES * getStatusList(const char *cond = 0);
-	
-	/** Modify the alarm flag of one module in the status list */
-	void setValue(const char *parameter, int module, int value);
+	MYSQL_RES * getStatusList(const char *param, const char *cond = 0);
 
-	/** Modify the alarm flag of one module in the status list */
-	void setValue(const char *parameter, int module, const char *group, int value);
+	/** Create an entry in the status list */
+	void createEntry(const char *key);
+
+	/** Modify an parameter in the status list. The parameter assign
+	  * contains a list a assignments for known parameters. */
+	int setValue(const char *key, const char *assign);
+
+	/** Modify an parameter in the status list. The parameter assign
+	  * contains a list a assignments for known parameters. 
+	  * The function modifies all entries with the specified 
+	  * module number */
+	int setValue(int module, const char *assign);
 #endif		
 	
 protected:
@@ -287,6 +300,9 @@ protected:
 	
 	/** Application ID. Can be used to identify the calling application. */
 	int appId;
+    
+    /** Flag to identify flat folder mode */
+    bool isFlatFolder;
 	
 	/** Name of the project. This variable is used to generate the database */
 	std::string project;
@@ -315,12 +331,26 @@ protected:
 	std::string moduleType;
 
 	unsigned int moduleNumber;
+    
+    /** The relative folder after the module number. Default is module name.
+      * The default can be changed by the function  getDataDir for every class */
+    std::string dataSubDir;
 
 	/** Name of the sensor group. The sensor group name is used in most cases as file extention for the
 	  * data file. */
 	std::string sensorGroup;
 	
 	unsigned int sensorGroupNumber;
+	
+	/** Line number of the sensor definition in the data file header (default 1 = first line) */
+	int headerLine;
+	
+	/** List of data field separators (default "\t\n") */
+	std::string dataSep;
+	
+	/** Comment character (default "#") */
+	std::string commentChar;
+	
 	
 	/** Folder where all the configurations are stored */
 	std::string configDir; 
@@ -374,6 +404,10 @@ protected:
 	std::string dataTablePrefix;
 	
 	std::string statusTableName;
+	
+	/** Unique key used for seletion of the data set in the status table */
+	std::string statusTableKey;
+	
 	
 #ifdef USE_PYTHON	
 	PyObject *pModule;

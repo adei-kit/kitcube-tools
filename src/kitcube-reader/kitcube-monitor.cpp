@@ -56,12 +56,12 @@ void displayModules(MYSQL_RES *res, const char *title = "device list"){
 	// TODO: Disply date instead of time, if delay is more than 24h
 	// TODO: Add outformat XML
 	
-	printf("KITcube reader --  %-41s  UTC %26s", title, asctime(ts));
+	printf("KITcube status --  %-41s  UTC %26s", title, asctime(ts));
 	printf("\n");
-	printf(" %-58s || %-45s\n", "Device", "Served by reader");
-	printf(" %4s | %4s | %4s | %10s | %12s | %9s || %4s | %10s\n",  
+	printf(" %-58s || %-58s\n", "Device", "Served by application");
+	printf(" %4s | %4s | %4s | %10s | %12s | %9s || %6s | %4s | %15s\n",  
 		   "No", "dev", "grp", "last data", "delayed by", "status",
-		   "App", "status");
+		   "Name", "no", "comment");
 	while((row = mysql_fetch_row(res))) {
 		
 		printf(" %4s |%5s |%5s | ", row[0], row[1], row[9]);
@@ -77,6 +77,7 @@ void displayModules(MYSQL_RES *res, const char *title = "device list"){
 		//secData+alarmLimit < UNIX_TIMESTAMP() && alarmLimit > 0 && alarmEnable = 1"
 		else if ((tdiff > alarmLimit) && (alarmLimit > 0) && alarmEnable) alarm = "ALARM"; // Has alarm
 		printf("%10s || ", alarm.c_str());
+		printf("%6s | ", row[11]);
 		printf("%4s | ", row[3]);
 		sscanf(row[4], "%ld", &tdb);
 		tdiff = t.tv_sec - tdb;
@@ -84,7 +85,7 @@ void displayModules(MYSQL_RES *res, const char *title = "device list"){
 		//printf("%4d:%02d:%02d | ", ts->tm_hour, ts->tm_min, ts->tm_sec);
 		//printf("%6ld:%02ld:%02ld | ", tdiff/3600, (tdiff/60)%60, tdiff%60);
 		// TODO: Check if reader is delayed !!!
-		printf("%10s", row[5]);
+		printf("%15s", row[5]);
 		printf("\n");
 	}
 		
@@ -99,14 +100,17 @@ int main(int argc, char *argv[]){
 	int err;
 	
 	std::string inifile = "kitcube.ini";
+    std::string tmpDir = "/home/cube/tmp";
 	int timeout = 200; // msec ???
 	std::string fullname;
 	std::string filename;
 	std::string applicationName = "reader";
+    std::string line;
 	int port = READER_PORT;
 	int appId;
 	int moduleNo;
-	int tsync;
+	std::string key;
+	std::string settings;
 	std::string host = "localhost";
 	std::string cmd = "stat";
 
@@ -118,8 +122,10 @@ int main(int argc, char *argv[]){
 	int debug = 0;
 	int rtrn = 0;
 
+    akInifile *ini;
+    Inifile::result error;
+    
 
-	printf("KITCube Monitor (build %s %s)\n\n", __DATE__, __TIME__);
 	
 	
 	while ((err = getopt(argc, argv, "a:hH:i:n:p:tv:")) > -1){
@@ -188,9 +194,6 @@ int main(int argc, char *argv[]){
 		}	
 */		
 		// Read application id from inifile
-		akInifile *ini;
-		Inifile::result error;
-		
 		ini = new akInifile(inifile.c_str());
 		if (ini->Status()==Inifile::kSUCCESS){
 			error = ini->SpecifyGroup(applicationName.c_str());
@@ -236,9 +239,13 @@ int main(int argc, char *argv[]){
 		moduleNo = atoi(argv[2 + nOpts]);
 	}
 	
-	tsync = -1;
+    key = "";	
+	if (argc - nOpts >= 3 ){
+		key = argv[2 + nOpts];
+	}
+	
 	if (argc - nOpts >= 4 ){
-		tsync = atoi(argv[3 + nOpts]);
+		settings = argv[3 + nOpts];
 	}
 	
 	
@@ -256,6 +263,8 @@ int main(int argc, char *argv[]){
 	
 	// Display help
 	if (printHelp){
+		printf("KITCube Monitor (build %s %s)\n\n", __DATE__, __TIME__);
+		
 		printf("kitcube-monitor <opts> <cmd>\n");
 		printf("\t-i <inifile>\tSelect the inifile\n");
 		printf("\t-H <host>\tSelect the iniGroup name as used in the inifile\n");
@@ -269,7 +278,10 @@ int main(int argc, char *argv[]){
 		printf("\t   newalarm\tDisplay changes in the alarm status\n");
 		printf("\t   alarmEnable <module>\tEnable the alarm handler\n");
 		printf("\t   alarmDisable <module>\tDisable the alarm handler\n");
-		printf("\t   tsync <module> <time>\tSet last syncronization timestamp\n");		
+		printf("\t<cmd>\tCommands for scripting:\n");	
+		printf("\t   create <key> <assign>\tCreate new entry\n");		
+		printf("\t   set <key> <assign>\t\tSet parameter\n");		
+		printf("\t   set <module> <assign>\tSet parameter\n");		
 		exit(0);
 	}
 
@@ -312,13 +324,25 @@ int main(int argc, char *argv[]){
 		exit(0);
 	}
 	
-#ifdef USE_MYSQL	
+#ifdef USE_MYSQL
+    
+	// Read tmp directory (used for database availablitity flag)
+    ini = new akInifile(inifile.c_str());
+    if (ini->Status()==Inifile::kSUCCESS){
+        error = ini->SpecifyGroup("Common");
+        if (error == Inifile::kSUCCESS){
+            tmpDir = ini->GetFirstString("tmpDir", tmpDir.c_str(), &error);	
+        }
+    }
+    delete ini;
+    
+    
 	try {
 		// Connect to database 
 		// Set flag if not available
 		
 		dev = new DAQDevice();
-		
+        		
 		dev->setDebugLevel(debug);
 		dev->readInifileCommon(inifile.c_str());
 
@@ -327,7 +351,7 @@ int main(int argc, char *argv[]){
 		dev->connectDatabase();	
 		if (debug) printf("Done\n");
 		accessStatuslist = true;
-		
+        
 		// Commands for status list
 		try {
 			if (cmd == "alarmEnable") {
@@ -335,7 +359,7 @@ int main(int argc, char *argv[]){
 				if (moduleNo <0) {
 					printf( "Module number required\n");
 				} else {
-					dev->setValue("alarmEnable", moduleNo, 1);
+					dev->setValue(moduleNo, "alarmEnable=1");
 					printf("Alarm monitoring enabled for module %d\n", moduleNo);
 				}
 				
@@ -344,7 +368,7 @@ int main(int argc, char *argv[]){
 				if (moduleNo <0) {
 					printf( "Module number required\n");
 				} else {
-					dev->setValue("alarmEnable", moduleNo, 0);
+					dev->setValue(moduleNo, "alarmEnable=0");
 					printf("Alarm monitoring disabled for module %d\n", moduleNo);
 					printf("Warning: Don't forget to enable the alarm monitoring later !!!\n");
 				}
@@ -352,7 +376,9 @@ int main(int argc, char *argv[]){
 			} else if (cmd == "alarm") {
 				
 				// Show all devices where no new data is transfered
-				res = dev->getStatusList("secData+alarmLimit < UNIX_TIMESTAMP() && alarmLimit > 0 && alarmEnable = 1");		
+				res = dev->getStatusList(
+						"module, moduleName, secData, appId, sec, status, alarmLimit, alarm, alarmEnable, sensorGroup, skey, appName",
+						"secData+alarmLimit < UNIX_TIMESTAMP() && alarmLimit > 0 && alarmEnable = 1");		
 				displayModules(res, "ALARM list");
 				
 				if (mysql_num_rows(res) == 0)
@@ -364,10 +390,35 @@ int main(int argc, char *argv[]){
 				
 				// Check for alarms 
 				bool changes = false;
-				
+
+
+                // Database is available, clear database persistence flag
+                // Check if database was not available
+                line = "test -f ";
+                line += tmpDir + "/NODATABASE";
+                if (system(line.c_str()) == 0){
+                
+                    printf("\n\n");
+                    printf("Database is available again - KITcube status reporting will continue\n");
+                    printf("The reports should be carefully checked on effects caused by the absent database\n");                
+                    printf("\n\n");
+                    
+                    changes = true; 
+                    rtrn = 1;
+     
+                    // clear flag   
+                    line = "rm -f ";
+                    line += tmpDir + "/NODATABASE";
+                    //printf("CMD: %s\n", line.c_str());
+                    system(line.c_str());
+                }
+                
+                
 				// Show all devices where no new data is transfered
 				
-				res = dev->getStatusList("secData+alarmLimit < UNIX_TIMESTAMP() && alarmLimit > 0 && alarm = 0 && alarmEnable = 1");		
+				res = dev->getStatusList(
+					"module, moduleName, secData, appId, sec, status, alarmLimit, alarm, alarmEnable, sensorGroup, skey, appName",
+					"secData+alarmLimit < UNIX_TIMESTAMP() && alarmLimit > 0 && alarm = 0 && alarmEnable = 1");		
 				
 				if (mysql_num_rows(res)){
 					
@@ -378,7 +429,7 @@ int main(int argc, char *argv[]){
 					// Set the alarm flag
 					mysql_data_seek(res, 0);
 					while((row = mysql_fetch_row(res))) {
-						if (!test) dev->setValue("alarm", atoi(row[0]), row[9], 1);
+						if (!test) dev->setValue(row[10], "alarm=1");
 					}
 					
 					changes = true;
@@ -387,7 +438,9 @@ int main(int argc, char *argv[]){
 				mysql_free_result(res); 
 				
 				
-				res = dev->getStatusList("secData+alarmLimit > UNIX_TIMESTAMP() && alarmLimit > 0 && alarm = 1 && alarmEnable = 1");		
+				res = dev->getStatusList(
+					"module, moduleName, secData, appId, sec, status, alarmLimit, alarm, alarmEnable, sensorGroup, skey, appName",
+					"secData+alarmLimit > UNIX_TIMESTAMP() && alarmLimit > 0 && alarm = 1 && alarmEnable = 1");		
 				
 				if (mysql_num_rows(res)){
 					// Print list of cleared alarms
@@ -397,7 +450,7 @@ int main(int argc, char *argv[]){
 					// Clear the alarm flag
 					mysql_data_seek(res, 0);
 					while((row = mysql_fetch_row(res))) {
-						if (!test) dev->setValue("alarm", atoi(row[0]), row[9], 0);
+						if (!test) dev->setValue(row[10], "alarm=0");
 					}
 					
 					changes = true;
@@ -409,13 +462,24 @@ int main(int argc, char *argv[]){
 					printf("\n  --- no changes in the alarm status of the modules ---\n");
 			
 				
-			} else if (cmd == "setsync") {
-				dev->setValue("secSync", moduleNo, tsync);
+			} else if (cmd == "set") {
+				printf("Entry %s: Set %s\n", key.c_str(), settings.c_str());
+				err = dev->setValue(key.c_str(), settings.c_str());
+				if (err) {
+					printf("Error: Failed to set values -- is the key available?\n");
+					rtrn = 1;
+				}
+			
+				
+			} else if (cmd == "create") {
+				printf("Create entry %s\n", key.c_str());
+				dev->createEntry(key.c_str());
 				
 				
 			} else { 
 				// Display status (default operation)
-				res = dev->getStatusList();
+				res = dev->getStatusList(
+						"module, moduleName, secData, appId, sec, status, alarmLimit, alarm, alarmEnable, sensorGroup, skey, appName");
 				displayModules(res);
 				mysql_free_result(res); 
 			}
@@ -433,7 +497,40 @@ int main(int argc, char *argv[]){
 	}
 	catch (std::invalid_argument &err) {
 		printf("Error: %s\n", err.what());
-		
+        
+        // Write persistence flag that the database failure has been notified !!!
+		if (cmd == "newalarm") {
+            
+            // Check if database problem has already been reported
+            line = "test ! -f ";
+            line += tmpDir + "/NODATABASE";
+            //printf("CMD: %s\n", line.c_str());
+            //printf("Test = %d\n", system(line.c_str()));
+  
+            if (system(line.c_str()) == 0) {
+                // Report the error 
+                
+                printf("\n\n");
+                printf("Database is unavailable - KITcube status can not be reported\n");
+                printf("There might be more things broken than the database\n");                
+                printf("\n\n");
+                
+                rtrn = 1; 
+                
+            } else {
+                
+                printf("\n  --- database is still unreachable ---\n");
+             
+            }
+            
+            // Set the database flag
+            line = "touch ";
+            line += tmpDir + "/NODATABASE";
+            //printf("CMD: %s\n", line.c_str());
+            system(line.c_str());
+            
+        }
+        
 	}
 	
 	printf("\n");

@@ -51,6 +51,16 @@ DataServer::~DataServer(){
 }
 
 
+void DataServer::setAppName(const char *name){
+	if (name > 0) this->appName = name;
+}
+
+
+int DataServer::getAppId(){
+	return (this->appId);
+}
+
+
 void DataServer::readInifile(const char *filename, const char *group){
 	akInifile *ini;
 	Inifile::result error;
@@ -65,11 +75,24 @@ void DataServer::readInifile(const char *filename, const char *group){
 	//ini = new akInifile(inifile.c_str(), stdout);
 	ini = new akInifile(inifile.c_str());
 	if (ini->Status()==Inifile::kSUCCESS){
-		
+	
+		error = ini->SpecifyGroup(this->appName.c_str());
+		if (error == Inifile::kFAIL){
+			// TODO: Alternativly terminate the application here
+			// it does not make sense to run an application that 
+			// has no valid configuration ...
+			
+			this->appName = "DataServer"; // Default
+			ini->SpecifyGroup(this->appName.c_str());
+			
+		}
+		if (debug > 2) printf("[%s]\n", this->appName.c_str());
+        
+  		// Get reader id
+		this->appId = ini->GetFirstValue("id", 0, &error);
+        
 		if ((group == 0) || (group[0] == 0)){
-			//printf("Get group from inifile\n");
-			// Read module name
-			ini->SpecifyGroup("DataServer");
+			//printf("Get group from inifile\n");            
 			this->iniGroup = ini->GetFirstString("module", iniGroup.c_str(), &error);
 			// TODO: Guess type of the module ?!
 		} else {
@@ -108,6 +131,7 @@ void DataServer::runReadout(FILE *fout){
 	struct timeval tStart;
 	//char host[255];
 	//char dataName[255];
+	int servicePort;
 
 	if (shutdown) return; // Do not start the server!!!
 
@@ -158,9 +182,14 @@ void DataServer::runReadout(FILE *fout){
 
 
 	// For every module one free port is existing
+	// For every reader application a separate port is used
+	// It's buid from the base reader port + application ID
+	servicePort = DATASERVER_PORT + this->appId;
+	setPort(servicePort);
+
+	// Display configuration
 	printf("_____Starting service for module %d at port %d_______________________________\n",
-		   dev->getModuleNumber(), DATASERVER_PORT+dev->getModuleNumber());
-	setPort(DATASERVER_PORT + dev->getModuleNumber() * 10 + dev->getSensorGroup());
+		   dev->getModuleNumber(), servicePort);
 	init();
 	
 	// Set reference time and sampling time of the server loop

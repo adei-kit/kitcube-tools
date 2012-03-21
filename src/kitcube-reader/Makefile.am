@@ -43,9 +43,10 @@ endif
 
 
 # Make copies of the reader for startup scriptes
-all: kcr-mast kcr-3M kcr-cm kcr-cc kcr-gps kcr-rs kcr-hatpro kcr-sim
+LINKS = kcr-mast kcr-3M kcr-cm kcr-cc kcr-gps kcr-rs kcr-hatpro kcr-sim kcr-wora
+all: $(LINKS)
 
-kcr-*: kitcube-reader-mysql
+$(LINKS): kitcube-reader-mysql
 	rm -f $@ 
 	ln $< $@
 

@@ -54,7 +54,7 @@ const char *Mast::getDataDir() {
 	char line[256];
 	
 	// TODO: Create a single source for the filename convention...
-	sprintf(line, "Mast%02d/DATA/", moduleNumber);
+	sprintf(line, "%s/DATA/", moduleName.c_str());
 	buffer = line;
 	
 	return(buffer.c_str());

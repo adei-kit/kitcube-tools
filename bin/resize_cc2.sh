@@ -47,7 +47,7 @@ FINDPROG="/usr/bin/find"
 # define sort command
 SORTPROG="/usr/bin/sort"
 # define convert command
-CONVERTPROG="/usr/bin/convert"
+CONVERTPROG="/usr/local/bin/convert"
 #define dirname command
 DIRNAMEPROG="/usr/bin/dirname"
 # define rm command
@@ -168,12 +168,13 @@ if [ -x $FINDPROG -a -x $SORTPROG -a -x $CONVERTPROG -a -x $DIRNAMEPROG ] ; then
 	if [ $DEBUG = yes ] ; then
 		echo -e "Searching file list for new and unconverted files ..."
 	fi
-	for i in `$FINDPROG "$SRC" -maxdepth 1 -name "$FILES_TO_SYNC" | $SORTPROG` ; do
+	for i in `$FINDPROG "$SRC" -maxdepth 3 -name "$FILES_TO_SYNC" | $SORTPROG` ; do
 		if [ "$i" \> "$LAST_CONVERTED_FILE" ] ; then
 			if [ $DEBUG = yes ] ; then
 				echo -e "Converting $i ..."
 			fi
-			$CONVERTPROG "$i" -resize 25% "$($DIRNAMEPROG "$i")/small/$($BASENAMEPROG "$i")"
+echo "Convert $i"
+#$CONVERTPROG "$i" -resize 25% "$($DIRNAMEPROG "$i")/small/$($BASENAMEPROG "$i")"
 			RETURN_VALUE=$?
 			if [ $RETURN_VALUE != 0 ] ; then
 				echo -e "Error: converting $i"

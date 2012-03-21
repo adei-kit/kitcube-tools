@@ -18,6 +18,8 @@ DAQAsciiDevice::DAQAsciiDevice():DAQDevice(){
 	// Clear counters for writing in a loop
 	nSamples = 0;
 	nTemplate = 0;
+	
+	nMap = 0; // No channels defined
 }
 
 
@@ -90,12 +92,183 @@ void DAQAsciiDevice::closeFile(){
 }
 
 
+int DAQAsciiDevice::readHeader(const char *filename){
+	int i;
+	FILE *data_file_ptr;
+	char *line_of_data = NULL;
+	size_t len = 0;
+	
+	// Reading header from a generic CSV file
+	if (debug > 2)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+
+	// open data file
+	data_file_ptr = fopen(filename, "r");
+	if (data_file_ptr == NULL) {
+		printf("Error opening file %s\n", filename);
+		return -1;
+	}
+	
+	// Definintions:
+	// Character list for comment lines
+	// Field separators
+	
+	// Drop comment lines 
+	if (debug > 3) printf("Header in line: %d\n", headerLine);
+	i = 1;
+	while(i < headerLine) {
+		// Drop the first nComment lines
+		if (read_ascii_line(&line_of_data, &len, data_file_ptr) != -1){
+			if (debug > 3) printf("Line: %s", line_of_data);
+		}
+		i++;
+    }
+
+	// Read sensor configuration
+	if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
+		free(line_of_data);
+		return(-1);
+    }
+	if (debug > 3) printf("Header: %s", line_of_data);
+	
+	// close data file
+	fclose(data_file_ptr);
+	
+
+	// Get the ID's of process channels
+	int j;
+	char *pCh;
+	char *pChRes;
+	char buffer[256];
+	
+	// TODO: Allocate map dynamically (currently it's 32) !!!
+	
+	i = 0;
+	pCh = strtok(line_of_data, dataSep.c_str());
+	if (pCh) pCh = strtok(NULL, dataSep.c_str());
+	while (pCh && (i < nSensors) && (i<32)){
+		
+		// Strip the trailing "sampletime"
+		strcpy(buffer, pCh);
+		if (debug > 3) printf("Searching for column: %s\n", buffer);
+		
+		map[i] = -1;
+		for (j=0;j<nSensors;j++){
+			pChRes = strstr(buffer, sensor[j].comment.c_str());
+			if (pChRes == buffer) map[i] = j;
+		}
+		
+		if (debug) 
+			printf("Channel %d: %s --> %d\n", i, buffer, map[i]);
+		
+		if (map[i] == -1) {
+			printf("OrcaProcess: Error reading sensor configuration!\n");
+			printf("             Sensor name %s not found in sensor definition file", buffer);
+			free(line_of_data);
+			
+			throw(std::invalid_argument("Sensor name not found in definition file"));
+			return(1); // TODO: Howto stop the application here???
+		}
+		
+		// Read the next token
+		i++;
+		pCh = strtok(NULL, dataSep.c_str());
+		
+	}
+	nMap = i;
+	
+	
+	// Other settings ?!
+	noData = 99999;
+	
+	// Can be detemined?!
+	lenHeader = 0;	// CAUTION: header contains 11 lines
+	
+	lenDataSet = 0;	// 198 bytes + 1 for '\0' in fgets();
+	// this is only one line of data,
+	// a data set consists of "number of height levels" lines
+	
+	profile_length = 0;	// scalar data
+	
+	// set default value for height
+	for (int i = 0; i < nSensors; i++) {
+		sensor[i].height = 0;
+		sensor[i].data_format = "<scalar>";
+        sensor[i].size = 1;
+	}
+	
+	free(line_of_data);
+	
+	return 0;
+	
+	
+}
+
+
+int DAQAsciiDevice::parseData(char* line, struct timeval* l_tData, double *sensorValue){
+	
+	// Reading data from a generic CSV file
+
+	int i;
+	char *puffer;
+	double value;
+	int err;	
+	
+	if (debug >= 4)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	
+
+	// TODO: Don't read comment lines
+	if (strchr(commentChar.c_str(), line[0]) > 0){
+		if (debug > 3) printf("Drop: %s", line);
+		return 1;
+	}
+	
+	// Write no data to all other variables
+	for (i=0; i <nSensors;i++){
+		sensorValue[i] = noData;
+	}
+	
+	// read sensor values
+	i = 0;
+	
+	// Read timestamp
+	puffer = strtok(line, dataSep.c_str());
+	if (puffer) {
+		err = sscanf(puffer, "%ld", &l_tData->tv_sec);
+		if (err == 1) {
+			if (debug > 2) printf("Timestamp %ld\n", l_tData->tv_sec);
+		}
+		
+		puffer = strtok(NULL, dataSep.c_str());
+	}
+	while ((puffer != NULL) && (i<nMap)) {
+		err = sscanf(puffer, "%lf", &value);
+		
+		if (err == 1) {
+			sensorValue[map[i]] = value;
+		}
+		
+		if (debug > 2) printf("Sensor %d: %f\n", map[i], value);
+		
+		// Get next value
+		puffer = strtok(NULL, dataSep.c_str());
+		i++;
+	}
+	
+	return 0;
+	
+}
+
+
 void DAQAsciiDevice::readData(std::string full_filename){
+	int i;
 	char *buf = NULL;
 	size_t len = 0;
 	int n;
 	FILE *fd_data_file;
 	int j, k;
+    int nSensorElements;
 	double *local_sensorValue;
 	
 	std::string filenameData;
@@ -103,6 +276,8 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	unsigned long currPos;
 	long lastIndex;
 	struct timeval timestamp_data = {0};
+    int newline;
+    double *pSensor;
 	
 #ifdef USE_MYSQL
 	std::string tableName;
@@ -110,7 +285,7 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	char sData[50];
 	struct timeval t0, t1;
 	struct timezone tz;
-	int i;
+    char* esc_str;
 #endif
 	
 	if (debug > 2)
@@ -133,10 +308,16 @@ void DAQAsciiDevice::readData(std::string full_filename){
 #endif
 		
 	// Allocate memory for sensor values
+    // TODO: calculate the length of the data set
+    //       What to do with other data formats that are not double arrays?
+    //       e.g. cloud camera -- link to data file?
+    //       Native e.g. netcdf formats?!
 	if (profile_length != 0) {
 		local_sensorValue = new double [nSensors * profile_length];
 	} else {
-		local_sensorValue = new double [nSensors];
+        nSensorElements = 0;
+        for (i=0;i<nSensors;i++) nSensorElements += sensor[i].size;
+		local_sensorValue = new double [nSensorElements];
 	}
 	
 	
@@ -170,16 +351,20 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	n = 0;
 	int iLoop = 0;
 	while ((n == 0) && (iLoop < 1000000)) {
-		// read one line of ASCII data
-		n = read_ascii_line(&buf, &len, fd_data_file);
-		
+		// read one or more line of ASCII data
+        newline = 1;
+        while ((n == 0) && (newline == 1)){
+            n = read_ascii_line(&buf, &len, fd_data_file);
+		    if (n == 0) 
+                newline = parseData(buf, &timestamp_data, local_sensorValue);
+        } 
+        
 		if (n == 0) {
-			// Module specific implementation
-			// Might be necessary to
-			if(parseData(buf, &timestamp_data, local_sensorValue) != 0)
-				continue;
+			// No data in this line
+			if(newline < 0) continue;
 			
 			// print sensor values
+            // TODO: Use the size field of the sensor array to decode the data
 			if (debug >= 4) {
 				printf("%4d: Received %4d bytes --- ", iLoop, (int) strlen(buf));
 				printf("%lds %6ldus --- ", timestamp_data.tv_sec, (long) timestamp_data.tv_usec);
@@ -190,8 +375,10 @@ void DAQAsciiDevice::readData(std::string full_filename){
 						}
 					}
 				} else {
+                    pSensor = local_sensorValue;
 					for (j = 0; j < nSensors; j++) {
-						printf("%f ", local_sensorValue[j]);
+						printf("%f ", *pSensor);
+                        pSensor += sensor[j].size;                   
 					}
 				}
 				printf("\n");
@@ -201,18 +388,21 @@ void DAQAsciiDevice::readData(std::string full_filename){
 				// Write dataset to database
 				// Store in the order of appearance	
 				//printf("Write record to database\n");
-				
+ 				
 				sql = "INSERT INTO `";
 				if (useTicks)
 					sql += dataTableName + "` (`usec`";
 				else
 					sql += dataTableName + "` (`sec`";
+
+                pSensor = local_sensorValue;
 				for (i = 0 ; i < nSensors; i++) {
-					if (local_sensorValue[i] != noData) {
+					if (*pSensor != noData) {
 						sql += ",`";
 						sql += sensor[i].name;
 						sql += "`";
 					}
+                    pSensor += sensor[i].size;
 				}
 				sql += ") VALUES (";
 				if (useTicks)
@@ -220,6 +410,9 @@ void DAQAsciiDevice::readData(std::string full_filename){
 				else
 					sprintf(sData, "%ld", timestamp_data.tv_sec);
 				sql += sData;
+                
+                // TODO: Save the data according to the size defined in sensors list
+                //       What is the difference to the BLOBs stored in binaryDevice ???
 				if (profile_length != 0) {
 					for (i = 0; i < nSensors; i++) {
 						sql += ", '";
@@ -230,17 +423,34 @@ void DAQAsciiDevice::readData(std::string full_filename){
 						sql += "'";
 					}
 				} else {
+                    pSensor = local_sensorValue;
 					for (i = 0; i < nSensors; i++) {
-						if (local_sensorValue[i] != noData) {
-							sql += ",";
-							sprintf(sData, "%f", local_sensorValue[i]);
-							sql += sData;
+						if (*pSensor != noData) {
+                            if (sensor[i].size == 1){
+                                sql += ",";
+                                sprintf(sData, "%f", *pSensor);
+                                sql += sData;
+                            } else if (sensor[i].size > 1) {
+                                    //sql += ", '";
+                                    //for (k = 0; k < sensor[i].size; k++) {
+                                    //    sprintf(sData, "%f, ", *pSensor++);
+                                    //    sql += sData;
+                                    //}
+                                    //sql += "'"; 
+                                    esc_str = new char[2 * sensor[i].size * sizeof(double) + 1];
+                                    sql += ", compress('";
+                                    mysql_real_escape_string(db, esc_str, (const char*) pSensor, sensor[i].size * sizeof(double));
+                                    sql += esc_str;
+                                    sql += "')";
+                                    delete [] esc_str;
+                            }
 						}
+                        pSensor += sensor[i].size;                        
 					}
 				}
 				sql += ")";
 				
-				//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
+				if (debug > 4) printf("SQL: %s (db = %p)\n", sql.c_str(), db);
 				
 				gettimeofday(&t0, &tz);
 				

@@ -1,0 +1,10 @@
+Number of sensors: 9
+1	Soil temperature	EB2.SISOMOP.T.SOIL.001.AVG	T
+2	Soil temperature	EB2.SISOMOP.T.SOIL.002.AVG	T
+3	Soil temperature	EB2.SISOMOP.T.SOIL.003.AVG	T
+4	Soil moisture	EB2.SISOMOP.M.SOIL.001.COUNTS	J
+5	Soil moisture	EB2.SISOMOP.M.SOIL.002.COUNTS	J
+6	Soil moisture	EB2.SISOMOP.M.SOIL.003.COUNTS	J
+7	Soil moisture	EB2.SISOMOP.M.SOIL.001.AVG	MR
+8	Soil moisture	EB2.SISOMOP.M.SOIL.002.AVG	MR
+9	Soil moisture	EB2.SISOMOP.M.SOIL.003.AVG	MR

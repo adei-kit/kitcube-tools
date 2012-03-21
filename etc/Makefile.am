@@ -10,8 +10,9 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	kcr-sim kcr-cm \
 	kcr-sim.imk-data1 kcr-mast.imk-data1 kcr-3M.imk-data1 \
 	kcr-cc.imk-data1 kcr-rs.imk-data1 kcr-hatpro.imk-data1 \
-	kcr-gps.imk-data1 \
-	kcmon.sh \
+	kcr-gps.imk-data1 kcr-wora.imk-data1 kcr-application.imk-data1 \
+	kcd-application.imk-data1 \
+	kcmon.sh iptables.sh \
 	T01.DAS.sensors T01.DAL.sensors T01.DAR.sensors T01.DAX.sensors \
 	T02.DAS.sensors T02.DAL.sensors T02.DAR.sensors T02.DAX.sensors \
 	T03.DAS.sensors T03.DAL.sensors T03.DAR.sensors T03.DAX.sensors \
@@ -19,8 +20,8 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	T05.DAS.sensors T05.DAL.sensors T05.DAR.sensors T05.DAX.sensors \
 	T06.DAS.sensors T06.DAL.sensors T06.DAR.sensors T06.DAX.sensors \
 	T07.DAS.sensors T07.DAL.sensors T07.DAR.sensors T07.DAX.sensors \
-	EB1.DAS.sensors EB1.DAL.sensors EB1.DAR.sensors EB1.DAX.sensors \
-	EB2.DAS.sensors EB2.DAL.sensors EB2.DAR.sensors EB2.DAX.sensors \
+	EB1.DAS.sensors EB1.DAL.sensors EB1.DAR.sensors EB1.DAX.sensors SM11.txt.sensors \
+	EB2.DAS.sensors EB2.DAL.sensors EB2.DAR.sensors EB2.DAX.sensors SM12.txt.sensors \
 	PT20.DAL.sensors PT20.DAR.sensors \
 	3M1.data.sensors data.csv.template \
 	3M1.gps.sensors gps.csv.template \

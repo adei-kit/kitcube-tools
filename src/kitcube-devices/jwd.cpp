@@ -44,6 +44,7 @@ int jwd::readHeader(const char *filename) {
 		// set default value for height
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 0;
+            sensor[i].size = 1;
 		}
 		
 		sensor[0].comment = "Rain intensity";
@@ -94,6 +95,7 @@ int jwd::readHeader(const char *filename) {
 			sensor[0].data_format += line;
 		}
 		sensor[0].data_format += "20</unknown> </profile>";
+        sensor[0].size = 20; 
 		
 		if (debug) {
 			for (int i = 0; i < nSensors; i++) {

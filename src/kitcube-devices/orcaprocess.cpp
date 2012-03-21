@@ -184,7 +184,7 @@ int OrcaProcess::parseData(char *line, struct timeval *l_tData, double *sensorVa
 		//       With this version a change of the configuration 
 		//       requires the creation a new file
 		
-		return 1; 
+		return -1; 
 	}
 	
 	// Write no data to all other variables

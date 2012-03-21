@@ -17,10 +17,14 @@ DAQDevice::DAQDevice(){
 	debug = 0;
 	
 	appId = 0;
+    isFlatFolder = 0;
 	moduleType = "Generic";
 	moduleNumber = 0;
 	this->sensorGroup = "txt";
 	sensorGroupNumber = 0;
+	headerLine = 1;
+	dataSep = "\t\n";
+	commentChar = "#";
 	
 	this->iniGroup = "DAQDevice";
 	this->tAlarm = 0; // No alarm limits
@@ -28,6 +32,7 @@ DAQDevice::DAQDevice(){
 	lenHeader = 0;
 	lenDataSet = 0;
 	profile_length = 0;
+	
 	
 	fileIndex = 0;
 	nLine = 0;
@@ -252,6 +257,14 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 			this->moduleNumber = ini->GetFirstValue("moduleNumber", (int) moduleNumber, &error);
 			this->sensorGroup = ini->GetFirstString("sensorGroup", sensorGroup.c_str(), &error);
 			this->sensorGroupNumber = getSensorGroup();
+			this->headerLine = ini->GetFirstValue("headerLine", (int) headerLine, &error);
+			this->dataSep = ini->GetFirstString("dataSep", dataSep.c_str(), &error);
+			this->commentChar = ini->GetFirstString("commentChar", commentChar.c_str(), &error);
+            value = ini->GetFirstString("flatFolder", "no", &error);
+            if (value == "yes") {
+                isFlatFolder = true;
+            }
+  
 		}
 	}
 	delete ini;
@@ -349,7 +362,8 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->moduleName = ini->GetFirstString("moduleName", moduleName.c_str(), &error);
 		this->moduleComment= ini->GetFirstString("moduleComment", moduleComment.c_str(), &error);
 		this->datafileTemplate = ini->GetFirstString("datafileTemplate", datafileTemplate.c_str(), &error);
-
+        this->dataSubDir = ini->GetFirstString("dataSubDir", getDataDir(), &error);
+        
 		// Only for information ?!
 		// Seems to be not used
 		tValue= ini->GetFirstValue("samplingTime", (float) tSample, &error);
@@ -413,8 +427,14 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	if (datafileMask.find("<index>") == std::string::npos){
 		printf("There is no tag <index> in datafileMask=%s specified in inifile %s\n",
 			   datafileMask.c_str(), inifile.c_str());
-		throw std::invalid_argument("Missing <index> in datafileMask");
+		//throw std::invalid_argument("Missing <index> in datafileMask");
 	}
+	
+	statusTableKey = "reader.";
+	sprintf(sValue,"%d", moduleNumber);
+	statusTableKey += sValue;
+	statusTableKey += ".";
+	statusTableKey += sensorGroup;
 	
 	
 	// Display configuration for one module
@@ -422,6 +442,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		printf("Module: %s (%s, %d) Sensor group %s (%d)\n",
 			   moduleName.c_str(), moduleComment.c_str(), moduleNumber,
 			   sensorGroup.c_str(), sensorGroupNumber);
+		printf("Key: %s\n", statusTableKey.c_str());
 	}
 	
 	
@@ -707,6 +728,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	//----------------------------------------------------------------------
 	for (i = 0; i < nSensors; i++) {
 		read_ascii_line(&line, &len, sensor_list_file);
+        if (debug > 4) printf("Line: %s\n", line);
 		
 		// TODO: check for missing entries in line
 		
@@ -797,12 +819,9 @@ void DAQDevice::saveFilePosition(long lastIndex, unsigned long currPos, struct t
 	sprintf(sData, "%ld", timestamp.tv_sec);
 	sql += sData;
 	sql += ", `status`= 'Running' ";
-	sql += " WHERE ( `module` = ";
-	sprintf(sData, "%d", moduleNumber);
-	sql += sData;
-	sql += " AND `sensorGroup` = \""; 
-	sql += sensorGroup;
-	sql += "\" )";
+	sql += " WHERE `skey` = '";
+	sql += statusTableKey;
+	sql += "' "; 
 	
 	
 	if (mysql_query(db, sql.c_str())){
@@ -1021,6 +1040,7 @@ void DAQDevice::connectDatabase() {
 	if (!mysql_real_connect(db, dbHost.c_str(), dbUser.c_str(), dbPassword.c_str(), NULL, 0, NULL, 0)) {
 		printf("Failed to connect to database: %s\n", mysql_error(db));
 		// TODO: error handling
+        throw std::invalid_argument("Failed to connect to database");
 	}
 	
 	// **********************************************************************
@@ -1333,18 +1353,28 @@ void DAQDevice::openDatabase() {
 		cmd = "CREATE TABLE `";
 		cmd += statusTableName;
 		cmd += "` (`id` int(10) auto_increment, ";
+		cmd += "`skey` text, ";						// unique key: TODO add unique statement?!
 		cmd += "`sec` bigint default '0', ";		// ts entry by reader
-		cmd += "`appId` int(10), ";					// id of the reader
+		cmd += "`appName` text, ";					// name of the reporting application
+		cmd += "`appId` int(10), ";					// id of the application (used by reader)
 		cmd += "`module` int(10), ";			    // no of module
 		cmd += "`moduleName` text, ";				// name of the module
 		cmd += "`sensorGroup` text, ";				// sensor group of the module
+		cmd += "`sensorName` text, ";				// sensor name 
+
 		cmd += "`secData` bigint default '0', ";	// ts of last data
+		cmd += "`valueData` double, ";				// value last data
+
 		cmd += "`alarmEnable` int(10) default '1', "; // enable / disable alarm handling
 		cmd += "`alarmLimit` int(10) default '0', ";  // delay of alarm
-		cmd += "`alarm` int(10) default '0', ";		// is on alarm 
+		cmd += "`alarmLow` double, ";				// lower alarm limit
+		cmd += "`alarmHigh` double, ";				// upper alarm limit
+		cmd += "`alarmTime` int(10) default '0', ";	// limit
+
+		cmd += "`secAlarm` bigint default '0', ";	// ts of alarm condition (report after alarmTime)
+		cmd += "`alarm` int(10) default '0', ";		// flag: alarm has been reported 
 		cmd += "`status` text, ";					// ???			
 		cmd += "`comment` text, ";		
-		cmd += "`secSync` bigint default '0', ";	// last successfull sync (w data)
 		cmd += "PRIMARY KEY (`id`), INDEX(`appId`, `module`) ) ENGINE=MyISAM"; 
 		
 		// if alarmLimit = 0 there will be no alarm for a module
@@ -1484,12 +1514,9 @@ void DAQDevice::registerStatusTab(const char *status, const char *comment){
 	// INSERT INTO table (sec = current time, secData = timestamp WHERE module = this->moduleNumber	
 	sql = "SELECT * FROM `";
 	sql += statusTableName; 	
-	sql += "` WHERE ( `module` = ";
-	sprintf(sData, "%d", moduleNumber);
-	sql += sData;
-	sql += " AND `sensorGroup` = \""; 
-	sql += sensorGroup;
-	sql += "\" )";
+	sql += "` WHERE `skey` = '";
+	sql += statusTableKey;
+	sql += "' ";
 	
 	if (mysql_query(db, sql.c_str())){
 		fprintf(stderr, "%s\n", sql.c_str());
@@ -1514,8 +1541,10 @@ void DAQDevice::registerStatusTab(const char *status, const char *comment){
 		// Insert new entry
 		// INSERT INTO table (usec = current time, usecData = timestamp WHERE module = this->moduleNumber	
 		sql = "INSERT INTO `";
-		sql += statusTableName + "` (`sec`, `module`, `sensorGroup`";
-		sql += ") VALUES (";
+		sql += statusTableName + "` (`skey`, `sec`, `module`, `sensorGroup`";
+		sql += ") VALUES ('";
+		sql += statusTableKey;
+		sql += "',";
 		sprintf(sData, "%ld", tData.tv_sec);
 		sql += sData;
 		sql += ",";
@@ -1544,6 +1573,7 @@ void DAQDevice::registerStatusTab(const char *status, const char *comment){
 	sql += ",`moduleName`= '";
 	sql += moduleName;
 	sql += "'";
+	sql += ", `appName` = 'Reader'";
 	sql += ", `appId` = ";
 	sprintf(sData, "%d", appId);
 	sql += sData;
@@ -1560,12 +1590,9 @@ void DAQDevice::registerStatusTab(const char *status, const char *comment){
 	sql += ",`alarmLimit`= ";
 	sprintf(sData, "%d", tAlarm);
 	sql += sData;
-	sql += " WHERE ( `module` = ";
-	sprintf(sData, "%d", moduleNumber);
-	sql += sData;
-	sql += " AND `sensorGroup` = \""; 
-	sql += sensorGroup;
-	sql += "\" )";
+	sql += " WHERE `skey` = '";
+	sql += statusTableKey;
+	sql += "' ";
 
 	if (mysql_query(db, sql.c_str())){
 		fprintf(stderr, "%s\n", sql.c_str());
@@ -1714,20 +1741,24 @@ long DAQDevice::getFileNumber(char* filename) {
 	if (pos_index == std::string::npos) {
 		printf("Error: There is no tag <index> in datafileMask '%s' specified in inifile %s\n",
 			datafileMask.c_str(), inifile.c_str());
+
+        if (datafileMask == filename) return 1;
+        else return 0;
+        
+	} else {
+        filename_prefix = datafileMask.substr(0, pos_index);
+        length_prefix = filename_prefix.length();
+        filename_suffix = datafileMask.substr(pos_index + 7);
+        length_suffix = filename_suffix.length();
 	}
-	
-	filename_prefix = datafileMask.substr(0, pos_index);
-	length_prefix = filename_prefix.length();
-	filename_suffix = datafileMask.substr(pos_index + 7);
-	length_suffix = filename_suffix.length();
-	
+        
 	if (debug >= 4)
 		printf("Position of <index> in %s is: %ld -- Prefix is: %s, suffix is: %s\n",
 		       datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
 	
 	filename_string = filename;
 	
-	// if there is a prefix, check for prefix at beginning of file name and delete it
+	// If there is a prefix, check for prefix at beginning of file name and delete it
 	if (filename_prefix.size() != 0) {
 		pos_prefix = filename_string.find(filename_prefix);
 		if (pos_prefix == 0) {
@@ -1739,7 +1770,7 @@ long DAQDevice::getFileNumber(char* filename) {
 		}
 	}
 	
-	// if there is a suffix, check for suffix at end of filename and delete it
+	// If there is a suffix, check for suffix at end of filename and delete it
 	if (filename_suffix.size() != 0) {
 		pos_suffix = filename_string.find(filename_suffix);
 		filename_length = filename_string.length();
@@ -1856,7 +1887,7 @@ void DAQDevice::getNewFiles() {
 	
 	processedData = 0; // Counter for the processed bytes
 	
-	dataDir = archiveDir + getDataDir();
+	dataDir = archiveDir + dataSubDir;
 	
 	
 	// clear file list
@@ -1908,6 +1939,7 @@ void DAQDevice::getNewFiles() {
 		dateien_pos = dateien.begin();
 		
 		for (i = 0; i < (int) dateien.size(); i++) {
+            
 			if (dateien_pos->first == lastIndex) {
 				// continue reading file from last call				
 				if ((debug > 1) || (debug && !initDone))
@@ -2048,12 +2080,14 @@ bool DAQDevice::reachedEOF(){
 
 
 #ifdef USE_MYSQL
-MYSQL_RES *DAQDevice::getStatusList(const char *cond){
+MYSQL_RES *DAQDevice::getStatusList(const char *param, const char *cond){
 	MYSQL_RES *res;
 	std::string sql;
 	
 
-	sql = "SELECT `module`, `moduleName`, `secData`, `appId`, `sec`, `status`, `alarmLimit`, `alarm`, `alarmEnable`, `sensorGroup` FROM `";
+	sql = "SELECT "; 
+	sql += param; 
+	sql += " FROM `";
 	sql += statusTableName; 
 	sql += "`";
 	if (cond > 0) { sql += " WHERE "; sql += cond; }
@@ -2088,61 +2122,120 @@ void DAQDevice::displayAlarmList(){
  
 */ 
 
-void DAQDevice::setValue(const char *parameter, int module, int value){
+
+void DAQDevice::createEntry(const char *key){
 	std::string sql;
-	char sData[10];
+	bool rows;
 	
-	sql = "UPDATE `";
-	sql += statusTableName + "` SET `";
-	sql += parameter;
-	sql += "` = ";
-	sprintf(sData, "%d", value);
-	sql += sData;
 	
-	sql += " WHERE `module` = ";
-	sprintf(sData, "%d", module);
-	sql += sData;
+	sql = "SELECT * FROM `";
+	sql += statusTableName;
+	sql += "` WHERE `skey` = '";
+	sql += key;
+	sql += "'";
 	
 	if (mysql_query(db, sql.c_str())){
 		fprintf(stderr, "%s\n", sql.c_str());
 		fprintf(stderr, "%s\n", mysql_error(db));
 		
 		// If this operation fails do not proceed in the file?!
-		printf("Error: Unable to chage parameter in status list\n");
-		throw std::invalid_argument("Set parameter failed");
+		printf("Error: Unable to access database\n");
+		throw std::invalid_argument("Create entry failed");
 	}	 
+	
+	MYSQL_RES *res;
+	res = mysql_store_result(db);
+	rows = 0;
+	if (res != NULL) {
+		rows = mysql_num_rows(res);
+		mysql_free_result(res);
+	}
+	
+	// Create entry if not existing
+	// TODO: Use unique key!?
+	if (rows == 0){
+
+		sql = "INSERT INTO `";
+		sql += statusTableName;
+		sql += "` ( `skey` ) VALUES ('";
+		sql += key;
+		sql += "') ";
+		
+		if (mysql_query(db, sql.c_str())){
+			fprintf(stderr, "%s\n", sql.c_str());
+			fprintf(stderr, "%s\n", mysql_error(db));
+			
+			// If this operation fails do not proceed in the file?!
+			printf("Error: Unable to access database\n");
+			throw std::invalid_argument("Create entry failed");
+		}	 		
+		
+	}
 	
 	return;
 }
 
-void DAQDevice::setValue(const char *parameter, int module, const char *group, int value){
+
+
+int DAQDevice::setValue(const char *key, const char *assign){
 	std::string sql;
-	char sData[10];
+	int rows;
+
 	
 	sql = "UPDATE `";
-	sql += statusTableName + "` SET `";
-	sql += parameter;
-	sql += "` = ";
-	sprintf(sData, "%d", value);
-	sql += sData;
+	sql += statusTableName + "` SET ";
+	sql += assign;	
+	sql += " WHERE `skey` = '";
+	sql += key;
+	sql += "'";
 	
-	sql += " WHERE ( `module` = ";
-	sprintf(sData, "%d", module);
-	sql += sData;
-	sql += " AND `sensorGroup` = \""; 
-	sql += group;
-	sql += "\" )";
+	//printf("SQL: %s\n", sql.c_str());
 	
 	if (mysql_query(db, sql.c_str())){
 		fprintf(stderr, "%s\n", sql.c_str());
 		fprintf(stderr, "%s\n", mysql_error(db));
 		
 		// If this operation fails do not proceed in the file?!
-		printf("Error: Unable to chage parameter  in status list\n");
+		printf("Error: Unable to change parameter in status list\n");
+		throw std::invalid_argument("Set parameter failed");
+	}	 
+			
+	rows = mysql_affected_rows(db);
+	if (debug > 3) printf("Affected rows = %d\n", rows);
+
+	if (rows == 0) return 1;	
+		
+	return 0;
+}
+
+int DAQDevice::setValue(int module, const char *assign){
+	std::string sql;
+	char sValue[10];
+	int rows;
+
+	
+	sql = "UPDATE `";
+	sql += statusTableName + "` SET ";
+	sql += assign;	
+	sql += " WHERE `module` = ";
+	sprintf(sValue, "%d", module);
+	sql += sValue;
+	
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to change parameter  in status list\n");
 		throw std::invalid_argument("Set parameter failed");
 	}	 
 	
-	return;
+	rows = mysql_affected_rows(db);
+	if (debug > 3) printf("Affected rows = %d\n", rows);
+
+	if (rows == 0) return 1;	
+			
+	return 0;
 }
 
 

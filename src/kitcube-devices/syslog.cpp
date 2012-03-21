@@ -31,7 +31,7 @@ SysLog::~SysLog(){
 
 
 void SysLog::setAppId(int id){
-	char buf[10];
+	//char buf[10];
 	
 	this->moduleNumber = 100 + id; 
 	//sprintf(buf, "Perf%d", id);

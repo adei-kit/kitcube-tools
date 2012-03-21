@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Norbert Flatinger <norbert.flatinger@kit.edu>, (C) 2010
+// Author: Andreas Kopmann <andreas.kopmann@kit.edu>, (C) 2012
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -35,6 +35,7 @@ int parsivel::readHeader(const char *filename) {
 	// set default value for height
 	for (int i = 0; i < nSensors; i++) {
 		sensor[i].height = 0;
+        sensor[i].size = 1;
 	}
 	
 	sensor[0].comment = "Weather code";
@@ -54,17 +55,11 @@ int parsivel::readHeader(const char *filename) {
 	
 	sensor[5].comment = "Signal amplitude laser";
 	sensor[5].data_format = "<scalar>";
+
+  	sensor[6].comment = "Total number of drops";
+	sensor[6].data_format = "<scalar>";  
 	
-	sensor[6].comment = "drop velocities (m/s)";
-	sensor[6].data_format = "<profile size=\"32\"> <unknown unit=\"no unit\">";
-	for (int i = 1; i < 32; i++) {
-		sprintf(line, "%i ", i);
-		sensor[0].data_format += line;
-	}
-	sensor[6].data_format += "32</unknown> </profile>";
-	sensor[6].type = "profile";
-	
-	sensor[7].comment = "drop density (1/m^3/mm)";
+	sensor[7].comment = "drop velocities (m/s)";
 	sensor[7].data_format = "<profile size=\"32\"> <unknown unit=\"no unit\">";
 	for (int i = 1; i < 32; i++) {
 		sprintf(line, "%i ", i);
@@ -72,10 +67,22 @@ int parsivel::readHeader(const char *filename) {
 	}
 	sensor[7].data_format += "32</unknown> </profile>";
 	sensor[7].type = "profile";
+    sensor[7].size = 32;
 	
-	sensor[8].comment = "Number of drops";
-	sensor[8].data_format = "<2D size=\"32*32\">";
+	sensor[8].comment = "drop density (1/m^3/mm)";
+	sensor[8].data_format = "<profile size=\"32\"> <unknown unit=\"no unit\">";
+	for (int i = 1; i < 32; i++) {
+		sprintf(line, "%i ", i);
+		sensor[0].data_format += line;
+	}
+	sensor[8].data_format += "32</unknown> </profile>";
 	sensor[8].type = "profile";
+    sensor[8].size = 32;
+	
+	sensor[9].comment = "Number of drops";
+	sensor[9].data_format = "<2D size=\"32*32\">";
+	sensor[9].type = "profile";
+    sensor[9].size = 32*32;
 	
 	if (debug >= 1) {
 		for (int i = 0; i < nSensors; i++) {
@@ -158,105 +165,100 @@ unsigned int parsivel::getSensorGroup(){
 }
 
 
-void parsivel::readData(std::string full_filename){
-	std::string filenameData;
-	float* local_sensorValue;
-	unsigned long lastPos;
-	//struct timeval lastTime;
-	char line[4150];
-	//FILE *fmark;
-	long lastIndex;
-	struct timeval timestamp_data;
-	int iLoop;
-	char *lPtr, *date_time;
+int parsivel::parseData(char *line, struct timeval *l_tData, double *sensorValue){
+    std::string buf;
+	int i;
+    //double value;
+	//int err;
+    char *res;
+    struct tm timestamp_tm;
+	double *pSensor;
+    double *pRain;
+    
 	
-	
-	if (debug >= 1)
-		printf("_____parsivel::readData(const char *dir, const char *filename)_____\n");
-	
-	// Compile file name
-	filenameData = full_filename;
-	
-	// If number of sensors is unknown read the header first
-	if (nSensors == 0)
-		readHeader(filenameData.c_str());
-	
-#ifdef USE_MYSQL
-	if (db == 0) {
-		openDatabase();
-	} else {
-		// Automatic reconnect
-		if (mysql_ping(db) != 0){
-			printf("Error: Lost connection to database - automatic reconnect failed\n");
-			throw std::invalid_argument("Database unavailable\n");
-		}
-	}
-#endif
-	
-	// number of sensors here: 6 + 32 + 32 + 32 * 32
-	local_sensorValue = new float [nSensors - 3 + 32 + 32 + 32 * 32];
-	
-	if (debug > 3) printf("Open data file %s\n", filenameData.c_str());
-	fdata = fopen(filenameData.c_str(), "r");
-	if (fdata <= 0) {
-		printf("Error opening data file %s\n", filenameData.c_str());
-		return;
-	}
-	
-	// Get the last time stamp + file pointer from 
-	loadFilePosition(lastIndex, lastPos, timestamp_data);
-	
-/*
-	lastPos = 0;
-	lastTime.tv_sec = 0;
-	lastTime.tv_usec = 0;
-	
-	if (debug > 3) printf("Get marker from %s\n", filenameMarker.c_str());
-	fmark = fopen(filenameMarker.c_str(), "r");
-	if (fmark > 0) {
-		fscanf(fmark, "%ld %ld %ld %ld", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
-		fclose(fmark);
+	if (debug >= 4)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+    
+    
+    pRain = sensorValue + 6; // Number of rain drops in interval
+    
+
+    buf = line;
+    if (debug > 5) printf("%s ... (n=%ld) \n", buf.substr(0,60).c_str(), strlen(line));
+    
+    
+    // Read time stamp
+    if (buf.substr(0,3) == "#0#"){
+        res = strptime(line, "#0#,%d.%m.%Y %T", &timestamp_tm);
+        timestamp_tm.tm_gmtoff = 0;
+        l_tData->tv_sec = timegm(&timestamp_tm);
+        //printf("DATE: %s %d(res=%d)\n", asctime(&timestamp_tm), l_tData->tv_sec, res);
+    }
+
+    if (buf.substr(0,3) == "#1#"){
+        res = strtok(line, ",");
+        for (i=0;i<7;i++){
+            res = strtok(NULL, ",");
+            sscanf(res, "%lf", &(sensorValue[i]));            
+            // Replace -9.999 with the nodata flag
+            if (sensorValue[i] == -9.999) sensorValue[i] = noData; 
+            
+            if (debug > 5) printf("%s %d: %f \n", res, i, sensorValue[i]);             
+        } 
+        if (debug > 5) printf("\n");
+    }
+   
+    if (buf.substr(0,3) == "#3#"){
+        pSensor = sensorValue + 7;
+        
+        *pSensor = noData;
+        if (*pRain > 0){
+            res = strtok(line, ",");
+            for (i=0;i<32;i++){
+                res = strtok(NULL, ",");
+                sscanf(res, "%lf", &(pSensor[i]));
+                if (debug > 5) printf("%f \t", pSensor[i]);            
+            } 
+            if (debug > 5) printf("\n");
+        }
+    }    
+
+    if (buf.substr(0,3) == "#4#"){
+        pSensor = sensorValue + 7 + 32;
+
+        *pSensor = noData;
+        if (*pRain > 0){        
+            res = strtok(line, ",");
+            for (i=0;i<32;i++){
+                res = strtok(NULL, ",");
+                sscanf(res, "%lf", &(pSensor[i]));
+                if (debug > 5) printf("%f \t", pSensor[i]);   
+            }
+        if (debug > 5) printf("\n");
+        } 
+    }    
+    
+    // Check if it's the last line
+    if (buf.substr(0,3) == "#5#"){
+        pSensor = sensorValue + 7 + 32 + 32;
+        
+        *pSensor = noData;
+        if (*pRain > 0){        
+            res = strtok(line, ",");
+            for (i=0;i<32*32;i++){
+                res = strtok(NULL, ",");
+                sscanf(res, "%lf", &(pSensor[i]));
+                if (debug > 5) printf("%f\t", pSensor[i]);            
+            }
+            if (debug > 5) printf("\n");
+        }
+        
+        // The dataset is now complete
+        return(0);
+    }
 		
-		// Read back the data time stamp of the last call
-		timestamp_data.tv_sec = lastTime.tv_sec;
-		timestamp_data.tv_usec = lastTime.tv_usec;
-		
-		if (debug > 4) printf("Last time stamp was %ld\n", lastTime.tv_sec);
-	}
-*/
-	
-	if (lastPos == 0)
-		lastPos = lenHeader; // Move to the the first data
-	
-	// Find the beginning of the new data
-	if (debug > 4)
-		printf("LastPos: %ld\n", lastPos);
-	fseek(fdata, lastPos, SEEK_SET);
-	
-	iLoop = 0;
-	lPtr = (char *) 1;
-	while ((lPtr > 0) && (iLoop < 100)) {
-		
-		lPtr = fgets(line, 4150, fdata);
-		
-		if (lPtr != NULL) {
-			if (strlen(line) != 24) {
-				// bail out
-			} else{
-				// read date and time
-				date_time = strtok(line, ",");
-				date_time = strtok(NULL, ",");
-			}
-			
-		}
-	
-	}
-	
-	
-	// 
-	// TODO: Nothing is stored in the database ?!
-	// 
-	
-	
-	
+    // Read the next line
+	return 1;
 }
+
+

@@ -2,15 +2,35 @@ ChangeLog - kitcube-tools
 A. Kopmann
 
 
+Version 0.24:
+ - Implementation for Parsivel added. Evaluated benefit of compression 
+   for complex (= blob) data in the database. 
+ - Implementation for soil moisture probe (sisomop.cpp) added.
+   The module is another device attached to the masts.
+   21.3.12 (ak)
+ - Added three modes to sync_files. 
+   One mode handles flat directories with manys files. (e.g. CC, CM)
+   8.3.12 (ak)
+
 
 Version 0.23:
+ - Added appId and init scripts for kitcube-data. 
+   3.3.12 (ak) 
+ - Detect name of the application to be started from the name of the start-script
+   so that no modification in the file are required for a new application.
+ - Improved detection of unavailable database
+   14.2.12 (ak) 
+ - Extension of alarm module for multiple applications.
+   Alarm notification script for sync_files.sh added.
+   1.2.12 (ak)
+ - Added customizable reader for CSV data files to DAQAsciiDevice.
+   There are a few inifile parameters to select comment character and data separator.
  - Added script to acquire monitoring information for the computer infrastructure
    30.1.12 (ak)
  - Extended status table by operator enable function. Added support in kitcube-monitor. 
  - Using hardlinks for the copies of the reader applications.
    Makefile.am updated
    20.1.12 (ak)
-
 
 Version 0.22:
  - Added option to add alias names to the sensors list. With a second parameter

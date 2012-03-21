@@ -23,7 +23,7 @@ Version="0.1"
 #
 ################################################################################
 #
-Version="0.2"
+#Version="0.2"
 #
 # 2011-03-16  Norbert Flatinger, IPE
 #
@@ -37,6 +37,12 @@ Version="0.2"
 #
 ################################################################################
 #
+Version="0.3"
+# 2012-02-01 ak
+# 
+# - Added interface to KITcube alarm notification
+# - Added support for flat directory structures
+#   
 
 # DEBUG=yes|no
 DEBUG=yes
@@ -56,6 +62,11 @@ RSYNCPROG="/usr/bin/rsync"
 #RSYNCPROG="$HOME/bin/rsync.sh"
 # define rm command
 RMPROG="/bin/rm"
+# notify alarm system
+ALARMPROG="./report_alarm.sh"
+# split flat folders by date
+SPLITPROG="./split_flatdir.sh"
+
 
 
 if [ -x $BASENAMEPROG ] ; then
@@ -68,9 +79,17 @@ else
 	exit 1
 fi
 
+
 ################################################################################
 # Usage
 ################################################################################
+# Get mode of operation 
+# Available are 
+#     standard (sync_files) Get files from remote host
+#     flat (sync_flat)      Get files from remote host and split flat dirs
+# TODO: push (sync_push)      Push file to a remote server
+#
+
 if [ $# -lt 3 -o $# -gt 4 ] ; then
 	echo -e "Usage:	$($BASENAMEPROG "$0") SRC DEST <append-filter-file> [<sync-filter-file>]"
 	echo -e " "
@@ -83,13 +102,55 @@ if [ $# -lt 3 -o $# -gt 4 ] ; then
 fi
 
 
+# source directory
+SRC="$1"
+# destination directory
+DEST="$2"
+
+# define semaphore
+#SEMFILE="$0".semaphore
+SEMFILE="sync.semaphore"
+
+
+
+
+# Extract mode from script file name sync_<mode>.sh
+#MODE=$($BASENAMEPROG -s .sh "$0")
+MODE=${0##*/}        
+MODE=${MODE#*_}
+MODE=${MODE%.*}
+
+
+if [ $MODE = "append" ] ; then
+
+    echo -e "Only append data"
+
+fi
+
+
+if [ $MODE = "flat" ] ; then
+
+    # Additonal option for flat folders
+    FLATDIR="$DEST/flat"
+    DEST="$DEST/incoming"
+
+    echo -e "Using flat folder mode: The second directory <DEST>/$FLATDIR will also compared by rsync"
+    echo -e "Make sure the flat folder mode is also enabled in kitcube-reader"
+    echo -e " "
+    echo -e "$FLATOPTS"
+    echo -e "$DEST"
+    echo -e ""
+fi
+
+
+
+
+
 ################################################################################
 # check if destination directory exists and create it if not
 ################################################################################
 if [ -x $MKDIRPROG ] ; then
-	# destination directory
-	DEST="$2"
-	if [ ! -d "$DEST" ] ; then
+    if [ ! -d "$DEST" ] ; then
 		if [ $DEBUG = yes ] ; then
 			echo -e "Destination directory $DEST does not exist."
 			echo -e "Creating it ..."
@@ -123,19 +184,17 @@ fi
 ################################################################################
 # check if <sync-filter-file> exists
 ################################################################################
-if [ $# -eq 4 ] ; then
-	SYNC_FILTER_FILE="$4"
-	if [ ! -f "$SYNC_FILTER_FILE" ] ; then
-		echo -e "\nError: filter merge file '$SYNC_FILTER_FILE' does not exist."
-		echo -e "Aborting execution...\n"
-		exit 1
-	fi
-fi
+#if [ $# -eq 4 ] ; then
+#	SYNC_FILTER_FILE="$4"
+#	if [ ! -f "$SYNC_FILTER_FILE" ] ; then
+#		echo -e "\nError: filter merge file '$SYNC_FILTER_FILE' does not exist."
+#		echo -e "Aborting execution...\n"
+#		exit 1
+#	fi
+#fi
 
 # TODO: check of other arguments
 
-# source directory
-SRC="$1"
 
 
 ################################################################################
@@ -143,10 +202,6 @@ SRC="$1"
 # errors - in that case the semaphore file exists.
 ################################################################################
 if [ -x $DATEPROG ] ; then
-	# define semaphore
-	#SEMFILE="$0".semaphore
-	SEMFILE="sync.semaphore"
-
 	# check if semaphore file exists
 	if [ -e "$DEST/$SEMFILE" ] ; then
 		echo -e "\nSemaphore file exists. Either due to errors of previous instance"
@@ -180,28 +235,51 @@ fi
 ################################################################################
 if [ -x $RSYNCPROG ] ; then
 	# sync data
-	$RSYNCPROG -avh --append -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST"
+    if [ $MODE = "flat" ] ; then
+        # Warming the compare-dest option seems to work only with absolute path
+        $RSYNCPROG -avh --compare-dest="$FLATDIR" --append  -f "merge $APPEND_FILTER_FILE"  "$SRC" "$DEST" > "$DEST/rsync-res.txt"
+    elif [ $MODE = "append" ] ; then 
+        $RSYNCPROG -avh  --append -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$DEST/rsync-res.txt"
+    else
+        $RSYNCPROG -avh  -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$DEST/rsync-res.txt"
+    fi
 	RETURN_VALUE=$?
 	if [ $RETURN_VALUE != 0 ] ; then
 		echo -e "\nError: rsync failed with error code $RETURN_VALUE"
 		echo -e "Aborting execution ...\n"
-		exit 1
+#		exit 1
 	fi
 	
-	if [ $# -eq 4 ] ; then
-		$RSYNCPROG -avh -f "merge $SYNC_FILTER_FILE" "$SRC" "$DEST"
-		RETURN_VALUE=$?
-		if [ $RETURN_VALUE != 0 ] ; then
-			echo -e "\nError: rsync failed with error code $RETURN_VALUE"
-			echo -e "Aborting execution ...\n"
-			exit 1
-		fi
-	fi
+#	if [ $# -eq 4 ] ; then
+#		$RSYNCPROG -avh -f "merge $SYNC_FILTER_FILE" "$SRC" "$DEST"
+#		RETURN_VALUE=$?
+#		if [ $RETURN_VALUE != 0 ] ; then
+#			echo -e "\nError: rsync failed with error code $RETURN_VALUE"
+#			echo -e "Aborting execution ...\n"
+#			exit 1
+#		fi
+#	fi
+
+    # Report the rsync progress to the alarm system - if defined
+    if [ -x $ALARMPROG ]; then
+        $ALARMPROG "$DEST"
+    fi
+
+
+    # split the files by date
+    if [ $MODE = "flat" ] ; then
+        if [ -x $ALARMPROG ]; then
+            echo ""
+            $SPLITPROG "$2" "$4"
+        fi 
+    fi
+
 else
 	echo -e "\nError: cannot find or execute $RSYNCPROG."
 	echo -e "Aborting execution...\n"
 	exit 1
 fi
+
 
 
 ################################################################################

@@ -36,6 +36,7 @@ int gps::readHeader(const char *filename) {
 	for (int i = 0; i < nSensors; i++) {
 		sensor[i].height = 0;
 		sensor[i].data_format = "<scalar>";
+        sensor[i].size = 1; 
 	}
 
 	return 0;

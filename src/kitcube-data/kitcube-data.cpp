@@ -45,6 +45,8 @@ int main(int argc, char *argv[]){
 	else
 		applicationName = argv[0];
 	//printf("Running application %s\n", applicationName.c_str()); 
+
+/*    
 	if (strcmp(applicationName.c_str(),"kitcube-data") != 0) {
 		isLinkedApp = true;
 		namePtr = strstr(namePtr+1, "kitcube-");
@@ -55,7 +57,7 @@ int main(int argc, char *argv[]){
 			iniGroup = namePtr+8;
 		}
 	}
-	
+*/	
 	
 	while ((err = getopt(argc, argv, "dhi:m:v:")) > -1){
 		// Use a colon to specify these option that require an argument
@@ -116,6 +118,7 @@ int main(int argc, char *argv[]){
 	try {
 		data = new DataServer();
 		data->setDebugLevel(debug);
+		data->setAppName(applicationName.c_str());
 		data->readInifile(inifile.c_str(), iniGroup.c_str());
 		data->runAsDaemon(runDaemon);
 		

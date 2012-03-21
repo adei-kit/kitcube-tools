@@ -252,6 +252,7 @@ int Ceilometer::readHeader(const char *filename) {
 		for (i = 0; i < nSensors; i++) {
 			sensor[i].height = 110;	// TODO: read sensor height from data file!
 		}
+        
 	} else {
 		// There is no header for this format
 		// This means all output is static all the time?!
@@ -439,6 +440,7 @@ void Ceilometer::readData(std::string full_filename){
 	
 	if (sensorGroup == "chm") {	// read *.chm file here
 		DAQBinaryDevice::readData(full_filename);
+        
 	} else if (sensorGroup == "nc") {	// read NetCDF file here
 		if (debug > 2) printf("_____Reading data_____________________\n");
 		

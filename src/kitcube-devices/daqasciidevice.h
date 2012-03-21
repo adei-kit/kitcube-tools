@@ -29,11 +29,17 @@ public:
 	
 	/** Close file for reading */
 	virtual void closeFile();
+
+	/** Get time until next sample and it's id */
+	virtual int readHeader(const char *header);
+	
+	virtual int parseData(char* line, struct timeval* l_tData, double *sensorValue);
+		
+	virtual void readData(std::string full_filename);
 	
 	/** Write simulated data set */
-//	virtual void writeData();
+	//	virtual void writeData();
 	
-	virtual void readData(std::string full_filename);
 	
 protected:
 	/** File descriptor for reading binary data files */
@@ -44,6 +50,13 @@ protected:
 	
 	/** Number of the current data set in the template file used by writeData() */
 	unsigned long nTemplate;
+	
+	/** Number of channels in the data files */
+	int nMap;
+	
+	/** Mapping of the sensors */
+	int map[32];	
+	
 };
 
 #endif

@@ -28,7 +28,7 @@
 #endif
 
 
-#define DATASERVER_PORT 4900
+#define DATASERVER_PORT 6100 // Use the same port as reader apps but different appIds
 
 
 class SimpleSocket;
@@ -120,6 +120,13 @@ class DataServer : public SimpleServer  {
 		/**  */
 		~DataServer();
 
+        /** Change the default name of the application used 
+         * to figure out the right inifile section */
+        void setAppName(const char *name);
+ 
+        /** Get the number of the application */
+        int getAppId();
+
 		/** Read parameter from inifile */
 		void readInifile(const char *inifile, const char *module = 0);
 
@@ -168,7 +175,14 @@ class DataServer : public SimpleServer  {
 		int simDataIndex;
 		
 	private:
-		/** Flag to start the server as daemon - without interactive input */
+        /** Every reader application has it's own ID */
+        int appId; 
+
+        /** Name of the application. Used to select the application ini group.
+         * Default: Reader */
+        std::string appName;
+
+        /** Flag to start the server as daemon - without interactive input */
 		bool runDaemon;
 		
 		/** Module name as given in sensor list */

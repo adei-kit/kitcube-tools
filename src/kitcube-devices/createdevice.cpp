@@ -28,6 +28,8 @@
 #include "windcube.h"
 #include "hatpro.h"
 #include "orcaprocess.h"
+#include "sisomop.h"
+#include "daqasciidevice.h"
 
 
 extern "C" void *createDevice(const char *devType) {
@@ -68,11 +70,17 @@ extern "C" void *createDevice(const char *devType) {
 		return( new (windcube));
 	if (strcasestr(devType, "hatpro") != NULL)
 		return( new (hatpro));
+	if (strcasestr(devType, "sisomop") != NULL)
+		return( new (sisomop));
 	
 	if (strcasestr(devType, "OrcaProcess") != NULL)
 		return( new (OrcaProcess));
 	if (strcasestr(devType, "Lara") != NULL)
 		return( new (Lara));
+	
+	if (strcasestr(devType, "CSV") != NULL)
+		return( new (DAQAsciiDevice));
+
 	
 	// Device type is unknown
 	return(0);

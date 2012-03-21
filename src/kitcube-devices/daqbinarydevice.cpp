@@ -191,6 +191,8 @@ void DAQBinaryDevice::readData(std::string full_filename){
 	struct timeval timestamp_data;
 	//struct timeval tWrite;
 	//char *lPtr;
+    struct tm *ts;
+
 	
 #ifdef USE_MYSQL
 	//MYSQL_RES *res;
@@ -289,6 +291,9 @@ void DAQBinaryDevice::readData(std::string full_filename){
 	while ((n == len) && (iLoop < 1000000)) {
 		// read one data set of binary data
 		n = read(fd_data_file, buf, len);
+        if (debug > 4) {
+           printf("Read n=%d bytes / dataset size=%d\n", n, len);
+        }
 		
 		if (n == len) {
 			// Module specific implementation
@@ -298,7 +303,12 @@ void DAQBinaryDevice::readData(std::string full_filename){
 			
 			// print sensor values
 			if (debug >= 4) {
+                ts = gmtime( &timestamp_data.tv_sec);
+
 				printf("%4d: Received %4d bytes --- ", iLoop, n);
+                printf("%02d.%02d.%02d %02d:%02d:%02d / ", 
+                       ts->tm_mday, ts->tm_mon + 1, ts->tm_year + 1900,
+                       ts->tm_hour, ts->tm_min, ts->tm_sec);
 				printf("%lds %6ldus --- ", timestamp_data.tv_sec, (long) timestamp_data.tv_usec);
 				if (profile_length != 0) {
 					for (j = 0; j < nSensors; j++) {

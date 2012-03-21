@@ -36,7 +36,7 @@ const char *wolkenkamera::getDataDir(){
 	char line[256];
 	
 	// TODO: evtl. an zu definierende Verzeichnisstruktur anpassen
-	sprintf(line, "CC2/small/");
+	sprintf(line, "%s/small/", moduleName.c_str());
 	buffer = line;
 	
 	return(buffer.c_str());
@@ -100,6 +100,8 @@ int wolkenkamera::readHeader(const char *filename) {
 void wolkenkamera::writeHeader(){
 	// Nothing to do -- there is no header
 }
+
+
 
 
 // TODO: Move the parsing part to separate functions and move rest to base class

@@ -366,7 +366,7 @@ void windcube::readData(std::string full_filename){
 		
 		// parse data
 		parseData(buf, &time_stamp_tv, local_sensorValue);
-		
+ 		
 		// print sensor values
 		if (debug >= 4) {
 			printf("%4d: Received %4d bytes --- ", loop_counter, (int) strlen(buf));
