@@ -1771,6 +1771,9 @@ long DAQDevice::getFileNumber(char* filename) {
 	}
 	
 	// If there is a suffix, check for suffix at end of filename and delete it
+    // TODO: Allow extra .gz at the end of the suffix if compressed data files are allowed
+    //          Add new flag to the inifile!!!
+    // 
 	if (filename_suffix.size() != 0) {
 		pos_suffix = filename_string.find(filename_suffix);
 		filename_length = filename_string.length();
@@ -1961,6 +1964,10 @@ void DAQDevice::getNewFiles() {
 			
 			if (dateien_pos->first > lastIndex) {
 				// read new file from the beginning
+                // Post handling of the old file ?!
+                // TODO: E.g. Compress file
+                //      Always compress, if module defines compress flag
+                // 
 				
 				// Remove the pointers of the last file
 				fmark = fopen(filenameMarker.c_str(), "w");
@@ -1971,6 +1978,8 @@ void DAQDevice::getNewFiles() {
 					fclose(fmark);
 				}
 				
+                // TODO: Uncompress the file if necessary directly before handling
+                
 				if (debug){
 					printf("#%03d:    Begin reading file no. %03d, index %06ld, name %s:\n",
 					       moduleNumber, i, dateien_pos->first, dateien_pos->second.c_str());
