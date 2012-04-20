@@ -9,9 +9,15 @@
 #----------------------------------------------------------------------
 #
 
+if [ "$KITCUBEDIR" = "" ] ; then
+KITCUBEDIR=/home/cube
+fi
+
+
 APPNAME="Sync"
 
-PROXYPROG="../kitcube-tools/src/kitcube-reader/kitcube-monitor -i ../kitcube-tools/etc/kitcube.ini"
+#PROXYPROG="/home/cube/kitcube-tools/src/kitcube-reader/kitcube-monitor -i /home/cube/kitcube.ini"
+PROXYPROG="$KITCUBE/bin/kitcube-monitor -i $KITCUBEDIR/kitcube.ini"
 
 
 # Welcome 
@@ -27,24 +33,22 @@ MOD=${DEST:19:3}
 MODID=${DEST:23}
 
 # Not perfect, might be improved later
-MODULES=${DEST#*/home/cube/archive/}
-MOD=${MODULES%/*}
-MODID=${MODULES#*/}
+dir=${DEST#*/archive/} ; MODNO=${dir%%/*}
+dir=${DEST#*/$MODNO/} ; MODID=${dir%%/*}
 
-if [ ${#DEST} -eq ${#MODULES} ]; then
+#echo "Module identification: MODNO=$MODNO, MODID=$MODID"
+if [ "$MODNO" == "" -o "$MODID" == "" -o "${MODNO//[^0-9]/}" != "$MODNO" ] ; then  
     MOD=191
     MODID=SIM
 
     echo "Error: Destination dir is NOT according KITcube conventions"
     echo "       Using simulation settings - module($MOD,$MODID)"
 
+    exit 1
 fi 
-
 
 # Key for status table
 KEY="$APPNAME.$MOD"
-
-
 
 
 # Find the latest processed file
@@ -64,10 +68,12 @@ echo "$NEWEST" ) `
 #echo "Newset file $NEWEST"
 if [ "$NEWEST" != "$DEST/compareTo" ] ; then
     # return the date
-    # Linux
-    #ATIME=$(stat --format "%X" $NEWEST)
-    # OSX, but is not able to return the UTC time ???
-    ATIME=$(stat -f %B $NEWEST)
+    if [ "$OSTYPE" = "linux" ] ; then
+        ATIME=$(stat --format "%Y" $NEWEST)
+    else
+        # OSX, but is not able to return the UTC time ???
+        ATIME=$(stat -f %B $NEWEST)
+    fi 
     #echo $ATIME
   
     FILENAME=`basename $NEWEST`

@@ -50,6 +50,7 @@ DAQDevice::DAQDevice(){
 	useTicks = true; // Store microseconds
 	
 	dataTablePrefix = "Data";
+    compressionType = "";
 	
 #ifdef USE_MYSQL
 	db = 0;
@@ -264,6 +265,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
             if (value == "yes") {
                 isFlatFolder = true;
             }
+            this->compressionType = ini->GetFirstString("compressionType", "", &error);
   
 		}
 	}
@@ -1730,6 +1732,18 @@ long DAQDevice::getFileNumber(char* filename) {
 		printf("... from filename '%s'\n", filename);
 	}
 	
+   	filename_string = filename; 
+    
+    // Strip compression suffix if any
+    if (compressionType == "gz") {
+        pos_suffix = filename_string.find(".gz");
+        if (pos_suffix == filename_string.length() - 3) {
+          filename_string = filename_string.substr(0, pos_suffix);
+          if (debug >= 3) printf("Found compression suffix in %s --> %s (pos_suffix = %ld)\n", 
+                 filename, filename_string.c_str(), pos_suffix);
+        }
+    }
+    
 	
 	// Write the index of the file to a list
 	// Process in this list with the next index
@@ -1739,10 +1753,10 @@ long DAQDevice::getFileNumber(char* filename) {
 	pos_index = datafileMask.find("<index>");
 	// FIXME: this is done in DAQDevice::readInifile already. Why repeat it here? What to do in case of error?
 	if (pos_index == std::string::npos) {
-		printf("Error: There is no tag <index> in datafileMask '%s' specified in inifile %s\n",
-			datafileMask.c_str(), inifile.c_str());
+		//printf("Error: There is no tag <index> in datafileMask '%s' specified in inifile %s\n",
+		//	datafileMask.c_str(), inifile.c_str());
 
-        if (datafileMask == filename) return 1;
+        if (datafileMask == filename_string) return 1;
         else return 0;
         
 	} else {
@@ -1756,7 +1770,7 @@ long DAQDevice::getFileNumber(char* filename) {
 		printf("Position of <index> in %s is: %ld -- Prefix is: %s, suffix is: %s\n",
 		       datafileMask.c_str(), pos_index, filename_prefix.c_str(), filename_suffix.c_str());
 	
-	filename_string = filename;
+	//filename_string = filename;
 	
 	// If there is a prefix, check for prefix at beginning of file name and delete it
 	if (filename_prefix.size() != 0) {
@@ -1771,9 +1785,6 @@ long DAQDevice::getFileNumber(char* filename) {
 	}
 	
 	// If there is a suffix, check for suffix at end of filename and delete it
-    // TODO: Allow extra .gz at the end of the suffix if compressed data files are allowed
-    //          Add new flag to the inifile!!!
-    // 
 	if (filename_suffix.size() != 0) {
 		pos_suffix = filename_string.find(filename_suffix);
 		filename_length = filename_string.length();
@@ -1861,7 +1872,12 @@ int DAQDevice::get_file_list(std::string directory)
 }
 
 
-void DAQDevice::getNewFiles() {
+//
+// TODO: Check if recuresion is possible ?!
+//      Use of global class variables might be dangerous?!
+//
+
+void DAQDevice::getNewFiles(const char *dir) {
 	std::string dataDir;
 	char line[256];
 	int i;
@@ -1873,7 +1889,12 @@ void DAQDevice::getNewFiles() {
 	long lastIndex;
 	std::map<long, std::string>::iterator dateien_pos;
 	
-	
+    long currentIndex;
+    std::string currentFilename;
+    size_t pos_suffix;
+    std::string cmd;
+    
+    
 	// Go through the list and find the next entry
 	// Is there function that gives the distance?
 	//
@@ -1890,9 +1911,14 @@ void DAQDevice::getNewFiles() {
 	
 	processedData = 0; // Counter for the processed bytes
 	
-	dataDir = archiveDir + dataSubDir;
+
+    if (dir == 0){
+        dataDir = archiveDir + dataSubDir;
+	} else {
+        dataDir = dir;
+    }
 	
-	
+    
 	// clear file list
 	dateien.clear();
 	
@@ -1943,71 +1969,110 @@ void DAQDevice::getNewFiles() {
 		
 		for (i = 0; i < (int) dateien.size(); i++) {
             
-			if (dateien_pos->first == lastIndex) {
+            currentIndex = dateien_pos->first;
+            currentFilename = dateien_pos->second;
+            
+            
+            if (currentIndex >= lastIndex){
+                
+                // Uncompress if necessary
+                // TODO: Extract tar-files and call NewFiles recursivlely !!!
+                // Only uncompress if data has not been processed before !!!
+                if (compressionType == "gz") {
+                    pos_suffix = currentFilename.find(".gz");
+                    if (pos_suffix == currentFilename.length() - 3) {
+                        cmd = "gunzip ";
+                        cmd += currentFilename;
+                        system(cmd.c_str());
+                        //printf("Uncompress cmd: %s\n", cmd.c_str());
+                        
+                        currentFilename = currentFilename.substr(0, pos_suffix);
+                        if (debug > 1) printf("Found compression suffix in %s --> %s (pos_suffix = %ld)\n", 
+                               dateien_pos->second.c_str(), currentFilename.c_str(), pos_suffix);
+                        
+                    }
+                }
+                
+            }
+            
+			if (currentIndex == lastIndex) {
 				// continue reading file from last call				
 				if ((debug > 1) || (debug && !initDone))
 					printf("#%03d: Continue reading file no. %03d, index %06ld, name %s:\n",
-					       moduleNumber, i, dateien_pos->first, dateien_pos->second.c_str());
+					       moduleNumber, i, currentIndex, currentFilename.c_str());
 				
 				// read header if first call of this function or if it failed below
 				err = 0;
 				if (initDone == 0)
-					err = readHeader(dateien_pos->second.c_str());
+					err = readHeader(currentFilename.c_str());
 				
 				// if successful read data else cancel handling files
 				if (err == 0) {
 					initDone = 1;
-					readData(dateien_pos->second);
+					readData(currentFilename);
 				} else
 					break;
 			}
 			
-			if (dateien_pos->first > lastIndex) {
+			if (currentIndex > lastIndex) {
 				// read new file from the beginning
-                // Post handling of the old file ?!
-                // TODO: E.g. Compress file
-                //      Always compress, if module defines compress flag
-                // 
-				
+                
 				// Remove the pointers of the last file
+                // TODO: Move to the end of the loop whne the result is checked !!!
 				fmark = fopen(filenameMarker.c_str(), "w");
 				if (fmark != NULL) {
 					// Preserve the time stamp
 					fprintf(fmark, "%ld %ld %ld %d\n",
-						dateien_pos->first, lastTime.tv_sec, (long) lastTime.tv_usec, 0);
+						currentIndex, lastTime.tv_sec, (long) lastTime.tv_usec, 0);
 					fclose(fmark);
 				}
-				
-                // TODO: Uncompress the file if necessary directly before handling
-                
+				                
 				if (debug){
 					printf("#%03d:    Begin reading file no. %03d, index %06ld, name %s:\n",
-					       moduleNumber, i, dateien_pos->first, dateien_pos->second.c_str());
+					       moduleNumber, i, currentIndex, currentFilename.c_str());
 				}
 				
 				// read header for each new file
 				initDone = 0;
-				err = readHeader(dateien_pos->second.c_str());
+				err = readHeader(currentFilename.c_str());
 				
 				// if successful read data else cancel handling files
 				if (err == 0) {
 					initDone = 1;
-					readData(dateien_pos->second);
+					readData(currentFilename);
 				} else
 					break;
 			}
 			
 			// Check if file has been completely read
-			if (dateien_pos->first >= lastIndex) {
+			if (currentIndex >= lastIndex) {
+                // TODO: Uncluear if this detector is really working here ?!
 				if (!reachedEOF()) {
-					if (debug >= 1) {
+					if (debug > 1) {
 						printf("EOF not reached - continue with %s, position %d in next call\n",
-							dateien_pos->second.c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)
+							currentFilename.c_str(), lastPos);	// FIXME: this gives wrong numbers, as lastPos gets updated in readData(...)
 					}
 					break;
-				}
-			}
-			
+                    
+				} 
+                
+                // else -- Reading complete
+                // TODO: THIS needs to be marked in the marker file, if it's really working
+                //          do not resume with a closed file !!!
+              
+                if (i < (int) dateien.size() - 1){
+                    // Compress all procressed files again
+                    if (compressionType == "gz") {
+                        cmd = "gzip ";
+                        cmd += currentFilename;
+                        system(cmd.c_str());
+                        //printf("Uncompress cmd: %s\n", cmd.c_str());
+                    }
+                }
+                
+			} 
+            
+            
 			dateien_pos++;
 		}
 	} catch (std::invalid_argument &err){

@@ -185,7 +185,7 @@ public:
 	virtual long getFileNumber(char* filename);
 	
 	/** Get list of new files */
-	void getNewFiles();
+	void getNewFiles(const char *dir = 0);
 	
 	/** Return the module number */
 	unsigned int getModuleNumber(); 
@@ -377,7 +377,12 @@ protected:
 	
 	/** Flag to idenitfy the first run */
 	int initDone;
-	
+    
+    /** Type of compression used for the raw data file */  
+    std::string compressionType;
+    
+    
+    
 #ifdef USE_MYSQL	
 	MYSQL *db;
 #endif

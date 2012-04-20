@@ -39,7 +39,7 @@ int parsivel::readHeader(const char *filename) {
 	char line[256];
 	
 	
-	if (debug >= 1)
+	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
@@ -98,7 +98,7 @@ int parsivel::readHeader(const char *filename) {
 	sensor[9].type = "profile";
     sensor[9].size = 32*32;
 	
-	if (debug >= 1) {
+	if (debug >= 3) {
 		for (int i = 0; i < nSensors; i++) {
 			printf("Sensor %3d: %s\n", i + 1, sensor[i].comment.c_str());
 		}

@@ -47,6 +47,10 @@ Version="0.3"
 # DEBUG=yes|no
 DEBUG=yes
 
+if [ "$KITCUBEDIR" = "" ] ; then
+    KITCUBEDIR=/home/cube
+fi
+
 
 ################################################################################
 # define used commands
@@ -63,9 +67,11 @@ RSYNCPROG="/usr/bin/rsync"
 # define rm command
 RMPROG="/bin/rm"
 # notify alarm system
-ALARMPROG="./report_alarm.sh"
+ALARMPROG="$KITCUBEDIR/bin/report_alarm.sh"
 # split flat folders by date
-SPLITPROG="./split_flatdir.sh"
+SPLITPROG="$KITCUBEDIR/bin/split_flatdir.sh"
+
+
 
 
 
@@ -80,6 +86,17 @@ else
 fi
 
 
+
+# Extract mode from script file name sync_<mode>.sh
+#MODE=$($BASENAMEPROG -s .sh "$0")
+MODE=${0##*/}        
+MODE=${MODE#*_}
+MODE=${MODE%.*}
+
+
+
+
+
 ################################################################################
 # Usage
 ################################################################################
@@ -90,14 +107,41 @@ fi
 # TODO: push (sync_push)      Push file to a remote server
 #
 
-if [ $# -lt 3 -o $# -gt 4 ] ; then
-	echo -e "Usage:	$($BASENAMEPROG "$0") SRC DEST <append-filter-file> [<sync-filter-file>]"
+NARGS=3
+OPTS=""
+if [ $MODE = "flat" ] ; then
+    NARGS=4
+    OPTS="<filemask>"
+
+    FORMAT_CC="kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg"
+    FORMAT_CM="chm%Y%m%d_%H%M%S.dat"
+
+fi 
+
+if [ $# -lt $NARGS -o $# -gt $NARGS ] ; then
+	echo -e "Usage:	$($BASENAMEPROG "$0") <SRC> <DEST> <rsync-filter-file> $OPTS"
 	echo -e " "
-	echo -e "	SRC			- source directory with trailing '/'"
-	echo -e "	DEST			- destination directory"
-	echo -e "	<append-filter-file>	- filter merge file for appending data"
-	echo -e "	<sync-filter-file>	- filter merge file for synchronizing data"
+	echo -e "	<SRC>			- source directory with trailing '/'"
+	echo -e "	<DEST>			- destination directory"
+	echo -e "	<rsync-filter-file>	- filter merge file for appending data"
 	echo -e " "
+
+if [ $MODE = "append" ] ; then
+    echo -e "   The script only appends data to existing files."
+    echo -e " "
+fi
+
+if [ $MODE = "flat" ] ; then
+    echo -e "     $OPTS              - pattern for detecting date from filename by strptime"
+    echo -e "                               Known pattern are:"
+    echo -e "                                  CC -  cloud cameras ($FORMAT_CC)"
+    echo -e "                                  CM -  Ceilometer ($FORMAT_CM)"
+    echo -e "                                  RPG - for several HATPRO files" 
+    echo -e " "
+fi 
+
+    #echo -e "Basedir: $KITCUBEDIR"
+
 	exit 1
 fi
 
@@ -112,13 +156,6 @@ DEST="$2"
 SEMFILE="sync.semaphore"
 
 
-
-
-# Extract mode from script file name sync_<mode>.sh
-#MODE=$($BASENAMEPROG -s .sh "$0")
-MODE=${0##*/}        
-MODE=${MODE#*_}
-MODE=${MODE%.*}
 
 
 if [ $MODE = "append" ] ; then
@@ -237,7 +274,7 @@ if [ -x $RSYNCPROG ] ; then
 	# sync data
     if [ $MODE = "flat" ] ; then
         # Warming the compare-dest option seems to work only with absolute path
-        $RSYNCPROG -avh --compare-dest="$FLATDIR" --append  -f "merge $APPEND_FILTER_FILE"  "$SRC" "$DEST" > "$DEST/rsync-res.txt"
+        $RSYNCPROG -avh --compare-dest="$FLATDIR" --append -f "merge $APPEND_FILTER_FILE"  "$SRC" "$DEST" > "$DEST/rsync-res.txt"
     elif [ $MODE = "append" ] ; then 
         $RSYNCPROG -avh  --append -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$DEST/rsync-res.txt"
     else
