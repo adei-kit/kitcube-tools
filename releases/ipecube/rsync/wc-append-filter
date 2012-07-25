@@ -1,0 +1,7 @@
+# rsync filter rules merge file for windcube (WC)
+# the following files append new data
++ */
++ *.rtd
++ *.sta
++ *.dsp
+- *

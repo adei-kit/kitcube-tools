@@ -1,0 +1,16 @@
+Number of sensors: 15
+         1	total delay	GPS.HUM.M.TROTOT.001.AVG	MW
+         2	total delay sigma	GPS.HUM.M.TROTOT.001.STD	MW
+         3	integrated water vapor	GPS.HUM.M.IWV.001.AVG	MW
+         4	integrated water vapor sigma	GPS.HUM.M.IWV.001.STD	MW
+         5	zenit wet delay	GPS.HUM.M.TROWET.001.AVG	MW
+         6	zenit wet delay sigma	GPS.HUM.M.TROWET.001.STD	MW
+         7	surface pressure	GPS.HUM.P.SUR.001.AVG	PA
+         8	air temperature	GPS.HUM.T.AIR.001.AVG	T
+         9	relative humidity	GPS.HUM.M.RH.001.AVG	MR
+        10	number of days	GPS.HUM.O.NDAY.001.INST	NO
+        11	number of deleted data	GPS.HUM.O.NDEL.001.INST	NO
+        12	number of satellites	GPS.HUM.O.NSAT.001.INST	NO
+        13	atmospheric gradient	GPS.HUM.G.DEVN.001.AVG	NO
+        14	atmospheric gradient	GPS.HUM.G.DEVE.001.AVG	NO
+        15	bad quality flag	GPS.HUM.M.STAT.001.INST	NO

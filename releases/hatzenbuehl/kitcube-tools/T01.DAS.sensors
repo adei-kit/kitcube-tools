@@ -1,0 +1,7 @@
+Number of sensors: 6
+         1	auxiliary quantity, dew point	T01.DEW.T.REF.001.INST	NO
+         2	auxiliary quantity, dew point	T01.DEW.T.DIF.001.INST	NO
+         3	wind speed east	T01.SONIC.V.U.001.INST	V
+         4	wind speed north	T01.SONIC.V.V.001.INST	V
+         5	wind speed vertical	T01.SONIC.V.W.001.INST	V
+         6	virtual temperature	T01.SONIC.T.VIR.001.INST	TA

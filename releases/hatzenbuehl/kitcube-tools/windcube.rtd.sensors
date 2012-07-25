@@ -1,0 +1,8 @@
+Number of sensors: 7
+         1	height above ground	WC.CUB.H.AGL.002.PROF	H
+         2	wind speed retrieval elevation angle	WC.CUB.A.ELV.002.INST	A
+         3	azimuth angle	WC.CUB.A.AZI.002.INST	A
+         4	wiper flag	WC.CUB.E.FLAG.002.INST	NO
+         5	carrier to noise ratio	WC.CUB.S.CNR.002.PROF	SNR
+         6	radial velocity	WC.CUB.V.RAD.002.PROF	V
+         7	averaged doppler spectra	WC.CUB.V.DSP.002.PROF	NO

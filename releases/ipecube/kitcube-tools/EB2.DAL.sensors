@@ -1,0 +1,19 @@
+Number of sensors: 18
+         1	longwave incoming radiation flux	EB2.PYG.R.LWDP.001.INST	R
+         2	longwave outgoing radiation flux	EB2.PYG.R.LWUP.001.INST	R
+         3	air pressure	EB2.BARO.P.SUR.001.INST	PA
+         4	temperature pyrgeometer top	EB2.PYG.T.TOP.001.INST	T
+         5	temperature pyrgeometer bottom	EB2.PYG.T.BOT.001.INST	T
+         6	precipitation	EB2.OMB.N.N.001.INST	N
+         7	global radiation	EB2.PYR.R.SWDR.001.INST	R
+         8	air temperature	EB2.HMP.T.AIR.001.INST	T
+         9	inklination north south	EB2.INK.G.INKS.001.INST	A
+        10	soil heat flux	EB2.SHF.F.SHF.001.INST	R
+        11	reflected irradiance	EB2.PYR.R.SWUR.001.INST	R
+        12	relative humidity	EB2.HMP.M.RH.001.INST	MR
+        13	inklination east west	EB2.INK.G.INKW.001.INST	A
+        14	soil heat flux	EB2.SHF.F.SHF.002.INST	R
+        15	surface temperature	EB2.KT.T.SUR.001.INST	T
+        16	soil heat flux	EB2.SHF.F.SHF.003.INST	R
+        17	precipitation	EB2.OMB.N.N.002.INST	N
+        18	housing temperature	EB2.PT.T.H.001.INST	T

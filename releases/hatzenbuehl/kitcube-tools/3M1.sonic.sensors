@@ -1,0 +1,5 @@
+Number of sensors: 4
+         1	wind speed, east	3M1.SONIC.V.U.001.INST	V
+         2	wind speed, north	3M1.SONIC.V.V.001.INST	V
+         3	vertical wind speed	3M1.SONIC.V.VER.001.INST	V
+         4	virtual temperature	3M1.SONIC.T.VIR.001.INST	T

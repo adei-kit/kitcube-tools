@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #----------------------------------------------------------------------
 # Description:
 # Author: Norbert Flatinger
@@ -43,11 +43,23 @@ Version="0.3"
 # - Added interface to KITcube alarm notification
 # - Added support for flat directory structures
 #   
+Version="0.4"
+# 2012-07-09 ak
+#
+# - Added version to import data from a remote disk. This might be necessary if the 
+#   data is too large for netweor transfer or network is even not available. 
+# - The script is acomplished by a script that collects the calls of all 
+#   remotely managed devices 
+#
+
+
 
 # DEBUG=yes|no
 DEBUG=yes
 
-if [ "$KITCUBEDIR" = "" ] ; then
+source ~/.bashrc
+#echo "Env: KITCUBEDIR=$KITCUBEDIR"
+if [ "x$KITCUBEDIR" = "x" ] ; then
     KITCUBEDIR=/home/cube
 fi
 
@@ -131,6 +143,11 @@ if [ $MODE = "append" ] ; then
     echo -e " "
 fi
 
+if [ $MODE = "offline" ] ; then
+    echo -e "   The script imports data tranfered by USB disks / USB stick or other removable media."
+    echo -e " "
+fi
+
 if [ $MODE = "flat" ] ; then
     echo -e "     $OPTS              - pattern for detecting date from filename by strptime"
     echo -e "                               Known pattern are:"
@@ -161,6 +178,12 @@ SEMFILE="sync.semaphore"
 if [ $MODE = "append" ] ; then
 
     echo -e "Only append data"
+
+fi
+
+if [ $MODE = "import" ] ; then
+  
+    echo -e "Import data from removable storage"
 
 fi
 
@@ -241,19 +264,42 @@ fi
 if [ -x $DATEPROG ] ; then
 	# check if semaphore file exists
 	if [ -e "$DEST/$SEMFILE" ] ; then
-		echo -e "\nSemaphore file exists. Either due to errors of previous instance"
-		echo -e "or because there is another session running in parallel."
-		echo -e "Aborting execution...\n "
-		exit 1
+                # Get PID
+                RES=`cat $DEST/$SEMFILE | grep PID | tr -d '"' `
+                PID=${RES#*:}
+                PID=${PID%*,}
+                PIDQUERY=`ps -p $PID | wc -l`
+                if [ $PIDQUERY == 2 ] ; then
+                        echo -e "\nSemaphore file $DEST/$SEMFILE exists. Either due to errors of previous instance"
+                        echo -e "or because there is another session running in parallel."
+                        echo -e "Aborting execution...\n "
+                        exit 2
+                fi
 	else
 		TIMESTAMP=`$DATEPROG -u +%Y-%m-%d-%H-%M-%S`
 		echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/$SEMFILE"
+		echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/sync_files.log"
 	fi
 else
 	echo -e "\nError: cannot find or execute $DATEPROG."
 	echo -e "Aborting execution...\n"
 	exit 1
 fi
+
+# Create semaphore file
+TIMESTAMP=`$DATEPROG -u +%Y-%m-%d-%H-%M-%S`
+#echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/$SEMFILE"
+echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/sync_files.log"
+
+TS=`$DATEPROG +"%s"`
+echo "{"                                > $DEST/$SEMFILE
+echo "  \"Date\": \"`date`\","          >> $DEST/$SEMFILE
+echo "  \"Timestamp\": \"$TS\","        >> $DEST/$SEMFILE
+echo "  \"PID\": \"$$\","               >> $DEST/$SEMFILE
+echo "  \"Destination\": \"$DEST\""     >> $DEST/$SEMFILE
+echo "}"                                >> $DEST/$SEMFILE
+
+
 
 
 ################################################################################
@@ -277,6 +323,9 @@ if [ -x $RSYNCPROG ] ; then
         $RSYNCPROG -avh --compare-dest="$FLATDIR" --append -f "merge $APPEND_FILTER_FILE"  "$SRC" "$DEST" > "$DEST/rsync-res.txt"
     elif [ $MODE = "append" ] ; then 
         $RSYNCPROG -avh  --append -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$DEST/rsync-res.txt"
+    elif [ $MODE = "offline" ] ; then
+        # Do NOT overwrite newer files !!!
+        $RSYNCPROG -avh --update -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$DEST/rsync-res.txt"
     else
         $RSYNCPROG -avh  -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$DEST/rsync-res.txt"
     fi
@@ -287,27 +336,20 @@ if [ -x $RSYNCPROG ] ; then
 #		exit 1
 	fi
 	
-#	if [ $# -eq 4 ] ; then
-#		$RSYNCPROG -avh -f "merge $SYNC_FILTER_FILE" "$SRC" "$DEST"
-#		RETURN_VALUE=$?
-#		if [ $RETURN_VALUE != 0 ] ; then
-#			echo -e "\nError: rsync failed with error code $RETURN_VALUE"
-#			echo -e "Aborting execution ...\n"
-#			exit 1
-#		fi
-#	fi
-
     # Report the rsync progress to the alarm system - if defined
+    # TODO: Add the key already here
     if [ -x $ALARMPROG ]; then
-        $ALARMPROG "$DEST"
+        $ALARMPROG "$DEST" "$APPEND_FILTER_FILE"
     fi
 
 
     # split the files by date
     if [ $MODE = "flat" ] ; then
-        if [ -x $ALARMPROG ]; then
+ 	#echo "Split files in a hierachical directory structure using $SPLITPROG"
+        if [ -x $SPLITPROG ] ; then
+            #echo "Splitting..."
             echo ""
-            $SPLITPROG "$2" "$4"
+            $SPLITPROG "$2" "$4" > "$DEST/split_flatdir.log"
         fi 
     fi
 
@@ -335,3 +377,5 @@ fi
 if [ $DEBUG = yes ] ; then
 	echo "$($BASENAMEPROG "$0"): successfully finished."
 fi
+
+

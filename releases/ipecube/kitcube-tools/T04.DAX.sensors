@@ -1,0 +1,7 @@
+Number of sensors: 6
+         1	wind speed	T04.SONIC.V.VHOR.001.AVG	V
+         2	wind direction	T04.SONIC.V.WD.001.AVG	A
+         3	covariance east and vertical	T04.SONIC.F.CUW.001.AVG	FV
+         4	covariance north and vertical	T04.SONIC.F.CVW.001.AVG	FV
+         5	kinematic heat flux	T04.SONIC.F.CWT.001.AVG	FH
+         6	dew point	T04.DEW.T.D.001.AVG	T

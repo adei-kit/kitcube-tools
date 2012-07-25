@@ -1,0 +1,4 @@
+# .htaccess
+#
+DirectoryIndex kitcube.php
+

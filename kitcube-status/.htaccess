@@ -1,0 +1,10 @@
+DirectoryIndex kitcube-status.html 
+
+#Options ExecCGI 
+AddType application/x-httpd-cgi .cgi
+AddHandler cgi-script .cgi
+
+#AuthType Bas-c
+#AuthName  "Kaffee Authorization"
+#AuthUserFile /home/sanshiro/public_html/Kaffee/.htpasswd
+#Require user kaffee

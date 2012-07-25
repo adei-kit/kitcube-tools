@@ -14,10 +14,10 @@ KITCUBEDIR=/home/cube
 fi
 
 
-APPNAME="Sync"
+APPNAME="sync"
 
 #PROXYPROG="/home/cube/kitcube-tools/src/kitcube-reader/kitcube-monitor -i /home/cube/kitcube.ini"
-PROXYPROG="$KITCUBE/bin/kitcube-monitor -i $KITCUBEDIR/kitcube.ini"
+PROXYPROG="$KITCUBEDIR/bin/kitcube-monitor -i $KITCUBEDIR/kitcube.ini"
 
 
 # Welcome 
@@ -29,8 +29,8 @@ echo "report-alarm.sh - Analysing rsync results"
 # /home/cube/archive/<moduleNo>/<moduleId>
 # TODO: Add more robust string operation
 DEST="$1"
-MOD=${DEST:19:3}
-MODID=${DEST:23}
+#MOD=${DEST:19:3}
+#MODID=${DEST:23}
 
 # Not perfect, might be improved later
 dir=${DEST#*/archive/} ; MODNO=${dir%%/*}
@@ -38,18 +38,30 @@ dir=${DEST#*/$MODNO/} ; MODID=${dir%%/*}
 
 #echo "Module identification: MODNO=$MODNO, MODID=$MODID"
 if [ "$MODNO" == "" -o "$MODID" == "" -o "${MODNO//[^0-9]/}" != "$MODNO" ] ; then  
-    MOD=191
+    MODNO=191
     MODID=SIM
 
     echo "Error: Destination dir is NOT according KITcube conventions"
-    echo "       Using simulation settings - module($MOD,$MODID)"
+    echo "       Using simulation settings - module($MODNO,$MODID)"
 
     exit 1
 fi 
 
-# Key for status table
-KEY="$APPNAME.$MOD"
+# Parse append file 
+FILTER="$2"
+GROUP=${FILTER#*append-filter}
+if [ "$GROUP" == "$FILTER" ] ; then 
+    GROUP=""
+fi 
+GROUP=${GROUP#*-}
+if [ "$GROUP" != ""  ] ; then
+    GROUPKEY=".$GROUP"
+fi
 
+
+# Key for status table
+shopt -s extglob
+KEY="$APPNAME.${MODNO##+(0)}$GROUPKEY"
 
 # Find the latest processed file
 NEWEST="$DEST/compareTo"
@@ -68,7 +80,7 @@ echo "$NEWEST" ) `
 #echo "Newset file $NEWEST"
 if [ "$NEWEST" != "$DEST/compareTo" ] ; then
     # return the date
-    if [ "$OSTYPE" = "linux" ] ; then
+    if [ `echo $OSTYPE | grep linux` != "" ] ; then
         ATIME=$(stat --format "%Y" $NEWEST)
     else
         # OSX, but is not able to return the UTC time ???
@@ -87,8 +99,7 @@ if [ "$NEWEST" != "$DEST/compareTo" ] ; then
 
     if [ $RETURN_VALUE != 0 ] ; then
         echo "report-alarm.sh: Create new entry"
-        $PROXYPROG create $KEY 
-        $PROXYPROG set $KEY appId=0,appName=\'$APPNAME\',module=$MOD,moduleName=\'$MODID\',sensorGroup=\'\',alarmLimit=0,secData=$ATIME,status=\'$FILENAME\'
+        $PROXYPROG create $KEY appId=0,appName=\'$APPNAME\',module=$MODNO,moduleName=\'$MODID\',sensorGroup=\'$GROUP\',alarmLimit=900,secData=$ATIME,status=\'$FILENAME\'
     fi
 
 

@@ -1,0 +1,13 @@
+# rsync filter rules merge file for ORCA process container files
+# Copy: PAC data - detdaqorcamac --> ipepdvadei2.ka.fzk.de
+#
+# the following files append new data
+- data/
+- openFiles/
+- sentFiles/
+- test/
+- TempData/
+- sync.semaphore
+#+ */
+#- *
+

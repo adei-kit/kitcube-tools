@@ -1,0 +1,5 @@
+Number of sensors: 4
+         1	rain flag	RPG.HATPRO.E.FLAG.005.VOL	NO
+         2	integrated water vapor	RPG.HATPRO.M.IWP.005.VOL	NO
+         3	elevation angle	RPG.HATPRO.A.ELV.005.VOL	A
+         4	azimuth angle	RPG.HATPRO.A.AZM.005.VOL	A

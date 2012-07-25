@@ -1,0 +1,14 @@
+Number of sensors: 13
+         1	pressure	RS1.DFM.P.AIR.001.AVG	PA
+         2	air temperature	RS1.DFM.T.AIR.001.AVG	T
+         3	relative humidity	RS1.DFM.M.RH.001.AVG	MR
+         4	wind speed	RS1.DFM.V.VHOR.001.AVG	V
+         5	wind direction	RS1.DFM.V.WD.001.AVG	A
+         6	longitude	RS1.DFM.G.LON.001.AVG	A
+         7	latitude	RS1.DFM.G.LAT.001.AVG	A
+         8	height above ground	RS1.DFM.H.AGL.001.AVG	H
+         9	geopotential height	RS1.DFM.H.GEOP.001.AVG	H
+        10	dew point temperature	RS1.DFM.T.D.001.AVG	T
+        11	virtual temperature	RS1.DFM.T.VIR.001.AVG	T
+        12	ascent speed	RS1.DFM.V.ASC.001.AVG	NO
+        13	air density	RS1.DFM.D.AIR.001.AVG	DA

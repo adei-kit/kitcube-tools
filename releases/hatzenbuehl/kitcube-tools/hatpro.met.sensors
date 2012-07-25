@@ -1,0 +1,5 @@
+Number of sensors: 4
+         1	rain flag	RPG.HATPRO.E.FLAG.008.INST	NO
+         2	housing pressure	RPG.HATPRO.P.H.008.INST	PA
+         3	housing temperature	RPG.HATPRO.T.H.008.INST	TA
+         4	housing rel. humidity	RPG.HATPRO.M.HRH.008.INST	MR

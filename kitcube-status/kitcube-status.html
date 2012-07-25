@@ -1,0 +1,916 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+<head>
+  <title>KITcube Status</title>
+  
+  <style type="text/css">
+    body {
+        margin:             0;
+        padding:            0;
+        border:             0;
+    }
+    .banner {
+        color:               #000055;
+//      border:              1px solid #002D27;
+        margin-left:         0px;
+        margin-right:        0px;
+        padding:             0px;
+        font-family:         Verdana,Arial,sans-serif; 
+        font-size:           0.8em;
+        font-weight:         normal;
+        color:               lightgrey;
+        text-align:          left;
+        height:              50px;
+        background:          url(kitcube.jpg) #476c99 no-repeat;
+    }
+    .title {
+        color: #663300;
+    }
+    .summarytable {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    .summarytable th {
+        //background: #ccccff;
+        background: #97acd9;
+        width: 120px;
+    }
+    .summarytable td {
+        text-align: center;
+    }
+    #maintab {
+        margin:5px;
+    }
+    #maintab .ui-tabs-nav {       
+    }
+    #maintab li a {
+        line-height: 8px; !important
+    }
+    .ui-dialog-titlebar {
+        line-height: 8px; !important
+    }
+    .ui-selecting {
+        background: yellow;
+    }
+    .ui-selected {
+        background: yellow;
+    }
+    #popupdialog a:link {
+        color: blue; !important
+    }
+    #popupdialog a:visited {
+        color: blue; !important
+    }
+ </style>
+  <link rel="stylesheet" type="text/css" href="js/jqueryui/css/smoothness/jquery-ui-1.8.8.custom.css">
+
+    <script type="text/javascript" src="js/jqueryui/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="js/jqueryui/js/jquery-ui-1.8.8.custom.min.js"></script>
+    <script type="text/javascript" src="js/jquery.alphanumeric.js"></script>
+	<script type="text/javascript" src="js/jqueryui/js/jquery.tablesorter.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+        <table width="100%">
+            <tr><td><!-- <font size="+1" class="title"><b>KITcube Status</b></font> --></td>
+            <td align="right"><span id="timestamp">loading...</span><span id="elapse"></span></td></tr>
+        </table>
+    </div>
+
+    <div id="maintab">
+        <ul>
+            <li> <a href="#summary">Summary</a>
+            <li> <a href="#modules">Module List</a>
+            <li> <a href="#computer">Computer Infrastructure</a>
+		<li> <a href="#radiosonde">Radiosonde</a></li>
+            <li> <a href="#all">All (Raw Data)</a>
+        </ul>
+
+        <div id="summary" class="ui-widget-content">
+
+  <table width="100%">
+  <tr valign="top"><td> 
+  
+   <div id="selectibles">
+   <div id="sortables">
+         
+        
+        <div>
+		<table width="95%"><tr><td><b class="handle">Energy balance station EB1</b></td><td align="right""><span id="ts-eb1"> ...</span></td></tr></table>
+	<table class="summarytable" width="95%">
+        <tr>
+            <th>Temperature 3m</th><th>Humidity 3m</th><th>Air pressure 0.1m</th>
+        </tr><tr>
+            <td class="field ui-selected" id="4" adei="???">-</td><td class="field" id="5" adei="???">-</td><td class="field" id="3" adei="???">-</td>
+        </tr>
+        <tr>
+	    <th>Wind direction 4m</th><th>Wind speed 4m</th><th></th>
+	</tr><tr>
+	    <td class="field" id="7"</td><td class="field" id="6"></td><td></td>
+        </tr>    
+        </table><br>
+        </div>
+
+
+        <div>
+          <b class="handle">Computer infrastructure</b><br>
+          <table class="summarytable" width="95%">
+          <tr>
+            <th>Server room<br>temperature</th><th>Free disk<br>space</th><th>Free disk<br>space</th>
+          </tr><tr>
+            <td class="field" id="0" adei="???">-</td><td class="field" id="1" adei="???">-</td><td class="field" id="2" adei="???">-</td>
+          </tr>
+          </table><br>
+        </div>
+ 
+        <div>
+          <b class="handle">Alarm List</b> (see also module list)<br>
+          <div id="alarmlist">Waiting for alarm list ...</div><br>
+        </div>
+                      
+        <div>
+        <p>Note: Select one or more sensor for display of trend. Use &lt;cmd&gt;-key for multiple sensors. </p> </div>    
+    
+   </div>
+   </div>
+   
+    <div id="message"></div>
+
+
+   </td><td width="480px">
+
+	    <div width="480" height="320"><img id="ccImage" width="480" height"320"></div>
+            <div><table border="0"><tr><td><a id="zoomPlot" target="_blank"><div><img id="trend" width="480" height="320"></div></a></td></tr><tr><td><div id="legend"></div></td></tr></table></div>
+            <div id="inlinegraph">Select sensor and time range</div>
+            <div style="width:480px;height:200px">
+            <button onclick="plot(7776600, '90 days')">90 days</button>
+            <button onclick="plot(2592000, '30 days')">30 days</button>
+            <button onclick="plot(1209600, '14 days')">14 days</button>
+            <button onclick="plot(604800, '7 days')">7 days</button>
+            <button onclick="plot(259200, '3 days')">3 days</button><br>
+            <button onclick="plot(86400, '24 hours')">24 hours</button>
+            <button onclick="plot(28800, '8 hours')">8 hours</button>
+            <button onclick="plot(10800, '3 hours')">3 hours</button>
+            <button onclick="plot(3600, '1 hour')">1 hour</button>
+            <button onclick="plot(900, '15 minutes')">15 min</button>
+            </div>
+            
+   </td></tr></table>   
+    
+   </div> <!--summary -->
+
+  
+
+  <div id="modules" class="ui-widget-content">
+    <p>Loading module status list ...</p>
+                    
+  </div>
+
+  <div id="computer" class="ui-widget-content">
+
+    <table width="100%" border="0">
+    <tr valign="top"><td width="50%">
+      <div id="cisensors">       	    
+        <p>Waiting for data</p>
+      </div>
+      </td><td>
+      <div id="gude">
+	<p>Waiting for data</p>
+      </div>
+    </td></tr>
+   </table>
+  </div> <!-- ci -->
+
+  <div id="all" class="ui-widget-content">
+    <p>Waiting for data</p>
+  </div><!-- all -->
+  <div id="radiosonde" class="ui-widget-content">
+	  <table width="100%"><tr valign="top">
+	  <td>
+	  <div id="rslist">
+		<p>Loading data</p>
+	</div>
+	</td><td style="text-align: center">
+	<div>
+		<table><tr><td>
+					<button onclick="plotRS('T');">Temperature</button> <button onclick="plotRS('M');">Moisture</button> <button onclick="plotRS('P');">Pressure</button></td></tr>
+			<tr><td><a id="rsplotlink" href="rsplot1.png"><img id="rsplot" src="rsplot1.png" width="480" height="720"/></a></td></tr>
+	  </div>
+  	</td></tr></table>
+  </div>
+</div>
+
+<div id="popupdialog"></div>
+
+
+<script type="text/javascript" src="js/jqueryui/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="js/jqueryui/js/jquery-ui-1.8.8.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.alphanumeric.js"></script>
+<script type="text/javascript" src="js/jqueryui/js/jquery.tablesorter.min.js"></script>
+
+
+<script type="text/javascript">
+function element(id) {
+    return document.getElementById(id);
+}
+
+function createXHR() {
+    try { return new XMLHttpRequest(); } catch (e) {}
+    try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e) {}
+    try { return new ActiveXObject("Microsoft.XMLHTTP"); } catch (e) {}
+    return null;
+}
+
+function getJsonDocument(url, callback) {
+    var xhr = createXHR();
+    xhr.onreadystatechange = function() {
+	if ((xhr.readyState == 4) && (xhr.status == 200)) {
+	    try {
+	        doc = eval('(' + xhr.responseText + ')')
+		callback(doc)
+	    }
+	    catch (e) {}
+	}
+    }
+    xhr.open("GET", url, true);
+    xhr.send(null);}
+</script>
+
+
+<script type="text/javascript">
+var update_timestamp = 0;
+var legend_list = {};
+var length = 86400;
+var idlist = '';
+var sensorlist = '';
+var adeibaseurl = '';
+
+// taken from $GRAPH_COLORS in adei/config.php //
+var legend_color_table = [ 
+    "black", "blue", "orange", "brown", 
+    "#90EE90", "#ADD8E6", "#FFC0CB", "#A020F0", 
+    "#1E90FF" 
+];
+
+
+function updateSensorlist() {
+        sensorlist = '';
+        jQuery('.ui-selected').each(function(i) {
+                var id = $(this).attr('id');
+                var adeigrp = $(this).attr('adei');
+                if (sensorlist != '') {
+                        sensorlist += ",";
+                }
+                sensorlist += 'kitcube__hatzenbuehl__' + adeigrp;
+        });
+}
+
+
+function updateElapse() {
+    var now = new Date();
+    var elapse = Math.floor(now.getTime()/1000) - update_timestamp;
+    if (update_timestamp > 0) {
+        element('elapse').innerHTML = (
+            ' &nbsp;&nbsp; ' + elapse + ' sec ago'
+        );
+    }
+    
+    //element('message').innerHTML = ('<pre> updateElapse: ' + elapse + ' update = ' + update_timestamp + '</pre>')
+
+    
+    return elapse;
+}
+
+
+function updateGraph() {
+    //element('message').innerHTML = ('<pre>' + sensorlist + '</pre>')
+
+    // Re-read sensorlist
+    updateSensorlist();
+
+    var plotquery = 'getadeiplot.cgi/adeiplot.png?idlist=' + sensorlist + '&length=' + length + '&date=' + escape(Date()) + '&width=480&height=320';
+    var zoomquery = 'getadeiplot.cgi/adeiplot.png?idlist=' + sensorlist + '&length=' + length + '&date=' + escape(Date()) + '&width=1024&height=768';
+    var ccquery = 'getadeicc.cgi/ccplot.jpg?' + escape(Date()) + '&width=480&height=320';
+
+    element('trend').src = plotquery;
+    element('ccImage').src = ccquery;
+    element('zoomPlot').href = zoomquery;
+
+}
+
+
+function loadCC() {
+	getJsonDocument('./getadeicc.cgi?cmd=ls', function(response) {
+		var html='<pre>Test</pre>';
+		html += '<pre>' + response.data[0] + '</pre>';
+		for (var i = 0; i < response.data.length; i++) {
+			html += '<pre>' + response.data[i] + '</pre>';
+		}
+		
+		element('CC-files').innerHTML = html;	
+	});	
+}
+
+function RSvishelp(diff,datalength) {
+	if(lastPage==-1) {
+		if(diff==-1)
+		{
+			RSvisibility(1,datalength);
+			return;
+		}
+		if(diff==1)
+		{
+			RSvisibility(parseInt(datalength/pagesize)+((datalength%pagesize==0)?0:1),datalength);
+			return;
+		}
+	}
+	RSvisibility(lastPage+diff,datalength);	
+}
+var lastSortedBy = 0;
+var sortcounter = 1;
+var lastPage = 1;
+var pagesize = 25;
+function RSvisibility(page,datalength) { //page: -1->All
+	if(page==0)
+		return;
+	if(page>parseInt(datalength/pagesize)+((datalength%pagesize==0)?0:1))
+		return;
+
+	$("#rstable tr").each(function() {
+			$(this).css({'display':'none'});
+	});
+
+	$("#rstable thead tr").each(function() {
+			$(this).css({'display':'table-row'});
+	});
+
+
+
+	if(page!=-1)
+	{
+		if(page!="initial") {
+			lastPage=page;
+		}
+		else if(lastPage==-1) {
+			RSvisibility(-1,datalength);
+			return;
+			}
+			
+/*		for(var i=datalength-1-((lastPage-1)*pagesize);i>datalength-1-(lastPage*pagesize) && i>=0;i--)
+		{
+			element("rs"+i).style.display = "table-row";
+		}*/
+		var counter=datalength-1;
+		var start=datalength-1-((lastPage-1)*pagesize);
+		var ende=datalength-1-(lastPage*pagesize);
+		$("#rstable tr").each(function() {
+			if(counter<ende) {
+				return false;
+			}
+			if(counter>=start) {
+				counter--;
+				return true;
+			}
+			$(this).css({'display':'table-row'});
+			counter--;
+		});			
+	}
+	else {
+		$("#rstable tr").each(function() {
+				$(this).css({'display':'table-row'});
+		});
+		lastPage=-1;
+	}
+
+	$(".pages td").each(function() {
+		if($(this).html()==lastPage) {
+			$(this).css({'background':'yellow'});		
+			}
+		else {
+			$(this).css({'background':'#DDDDDD'});
+		}
+	});
+}
+function loadRS(page) {
+		if(page==-1) {
+			page = lastPage;
+		}
+	getJsonDocument('./getadeirs.cgi?mode=summary', function(response) {
+		var rshtml = "";
+		var selectedID = new Array();
+
+		if($("#rstable")) {
+		jQuery('.ui-selected').each(function(i) {
+				var next = $(this).attr('id');
+				selectedID.push(next);
+			});
+		}
+	
+		rshtml = '<table id="rstable" class="summarytable"><thead><tr><th width="10%">ID</th><th width="40%">Start</th><th>Duration</th><th>Peak</th></tr></thead>';
+		for(var i=0; i<response.tableData.length; i++)
+		{
+		rshtml += '<tr class="rsfield" id="rs'+i+'" style="display:none"><td width="10%" style="text-align:right">'+response.tableData[i].ID+'</td><td width="40%" style="text-align:right">'+response.tableData[i].Starttime+'</td><td style="text-align:right">'+response.tableData[i].Duration+'</td><td style="text-align:right">'+response.tableData[i].maxheight+'</td></tr>';
+		}
+		rshtml += "</table>";
+		//Navigation	
+		rshtml += "<table style='margin-top:20px' width='100%'><tr>";
+		rshtml += '<td style="text-align:center"><button onclick="RSvishelp(-1,'+response.tableData.length+');"><<<</button></td>';
+		rshtml += '<td style="text-align:center"><button onclick="RSvisibility(-1,'+response.tableData.length+');">ALL</button></td>';
+		rshtml += '<td style="text-align:center"><button onclick="RSvishelp(1,'+response.tableData.length+');">>>></button></td>';
+		rshtml += '</tr></table>';
+
+		rshtml += '<table class="pages" style="margin-top:20px; margin-left:150px"><tr>';
+		for (var i=0; i<parseInt(response.tableData.length/pagesize)+((response.tableData.length%pagesize==0)?0:1);i++)
+		{
+			if(i+1!=lastPage)
+				rshtml += '<td style="background:#DDDDDD; width:20px; text-align:center">'+(i+1)+'</td>';
+			else
+				rshtml += '<td style="background:yellow; width:20px; text-align:center">'+(i+1)+'</td>';
+		}
+		rshtml += '</tr></table>';
+
+
+		element('rslist').innerHTML = rshtml;	
+
+		for(var i=0; i<selectedID.length; i++)
+		{
+			$("#"+selectedID[i]).addClass("ui-selected");
+		}
+
+		// call the tablesorter plugin
+		$("#rstable").tablesorter({
+                // sort on the first column, order desc
+			sortList: [[lastSortedBy,sortcounter%2]],
+		});
+		$("#rstable").bind("sortEnd",function() {
+			RSvisibility("initial",response.tableData.length);
+		});	
+		$("#rstable th").click(function() {
+				var headername = $(this).html();
+				if(headername == "ID") { 
+					if(lastSortedBy == 0) {
+						sortcounter++;
+						}
+					else {
+						lastSortedBy = 0;
+						sortcounter = 0;
+					}
+				}
+				if(headername == "Start") {
+					if(lastSortedBy == 1) sortcounter++;
+					else {
+						lastSortedBy = 1;
+						sortcounter = 0;
+						}
+				}
+				if(headername == "Peak") {
+					if(lastSortedBy == 2) sortcounter++;
+					else {
+						lastSortedBy = 2;
+						sortcounter++;
+					}
+				}
+				if(headername == "Duration") {
+					if(lastSortedBy == 3) sortcounter++;
+					else {
+						lastSortedBy = 3;
+						sortcounter++;
+					}
+				}
+
+		});
+		$(".pages td").click(function() {
+			var npage = parseInt($(this).html());
+			RSvisibility(npage,response.tableData.length);
+		});
+		RSvisibility("initial",response.tableData.length);
+	});
+
+}
+
+function plotRS(phyQuan) {
+	var idlist = '';
+    	jQuery('.ui-selected').each(function(i) {
+	    	var id = $(this).attr('id');
+	    	//var adeigrp = $(this).attr('adei');
+	    	if (idlist != '') {
+			    idlist += ",";
+		}
+	    	idlist += id.substr(2);
+	});
+	if(idlist=='') {
+		idlist='-'
+	}
+
+	
+	var rsquery='./getadeirs.cgi?mode=plot&id='+idlist+'&phyQuan='+phyQuan;
+	element('rsplot').src= rsquery;
+	element('rsplotlink').href = rsquery;
+
+}
+
+
+function load() {
+    getJsonDocument('./getadeidata.cgi', function(response) {
+        adeibaseurl = response.source;
+	update_timestamp = response.timestamp;
+	var date = new Date();
+	date.setTime(Number(1000*update_timestamp));
+        element('timestamp').innerHTML = 'Last data: &nbsp; ' + date.toGMTString();
+	var now = new Date();
+	var nowsec = Math.floor(now.getTime()/1000);
+
+	jQuery('.field').each(function(i) {
+	    var id = parseInt($(this).attr('id'));
+	    var ts = parseInt(response.data[id].Timestamp);
+	    var delay = nowsec - ts;
+            var adeigrp = response.data[id].LogGroup;
+	    var adeimask = response.data[id].Mask;
+	    var value = response.data[id].Value;
+	    var floatvalue = parseFloat(response.data[id].RawValue);
+	    var intvalue = parseInt(response.data[id].RawValue);
+
+	// Defintion of special sensors
+	if (id == 7) { // wind direction
+	      var direction = ["N", "NO", "O", "SO", "S", "SW", "W", "NW", "N"];
+	      var winddir = Math.floor(((intvalue+22.5)%360)/45);
+              value = value + ' ' + direction[winddir];
+	      //value = toString(intvalue+22)%360/45); 
+	}
+
+	if (delay >= 3600) {
+             value = "-";
+	     floatvalue = 0;
+             intvalue = 0;
+        }
+
+/*	
+        // Definition of special sensor treatments 
+	    if ((id >= 2) && (id <= 9)) {
+	        if (floatvalue > 849.5) {
+                value = "OPEN";
+            } else if (floatvalue < -199.5) {
+                value = "SHORT";
+            }            
+	    } else if ((id >= 66) && (id <= 74)) {
+	        if (floatvalue == 0) {
+                value = "---";
+            }
+	    } else if ((id == 59) || (id == 61)) {
+	        var otherside = parseFloat(response.data[id+1].RawValue);
+            var statusSum = floatvalue + otherside;
+            if (statusSum > 1.5) {
+                value = "INVALID";
+            } else if (statusSum < 0.5) {
+                value = "MIDDLE";
+            } else {
+                value = (floatvalue > 0.5) ? "IN" : "OUT";
+            }
+	    } else if ((id == 78) || (id == 82)) {
+                value = (intvalue > 5) ? "DISABLED" : "ENABLED";
+	    } else if ((id == 145) || (id == 146)) {
+	        value = (floatvalue > 0.5) ? "YES" : "NO";
+	    }
+  */      
+	    $(this).html(value);
+        $(this).attr('adei', adeigrp + '__' + adeimask);
+      
+
+	});
+
+	for (var i = 0; i < response.group.length; i++) {
+	    var html = '';
+	    html += '<b class="handle">Sensor list</b><br>'
+	    html += '<table>\n';
+	    html += '<col><col width="10"><col><col width="30">\n';
+	    html += '<tr align="left"><th>No</th><th></th><th>Name</th><th></th><th>Value</th></tr>'
+	    for (var j = 0; j < response.group[i].member.length; j++) {
+	        var index = response.group[i].member[j];
+		var id = response.data[index].ID;
+		var name = response.data[index].Alias;
+		legend_list[id] = name;
+		html += '<tr align="left">';
+		html += '<td>' + id + '</td>';
+		html += '<td></td>';
+		html += '<td>' + name + '</td>';
+		html += '<td></td>';
+		if (response.data[index].Value) {
+		    html += '<td>' + response.data[index].Value + '</td>';
+		}
+		else {
+		    html += '<td>-</td>';
+		}
+		html += '</tr>\n';
+	    }
+	    html += '</table>\n';          
+	    if (response.group[i].name == 'Computer Infrastructure') {
+		var note_html = "" 
+                element('cisensors').innerHTML = html + "<p>" +  note_html;
+	    }
+	    else if (response.group[i].name == 'Vacuum') {
+                element('vacuum').innerHTML = html;
+	    }
+	    else if (response.group[i].name == 'Magnet') {
+                element('magnet').innerHTML = html;
+	    }
+	    else if (response.group[i].name == 'Source & HV') {
+                element('source').innerHTML = html;
+	    }
+	    else if (response.group[i].name == 'Amrel LV') {
+                element('amrel').innerHTML = html;
+	    }
+	    else if (response.group[i].name == 'Veto') {
+                element('veto').innerHTML = html;
+	    }
+	}
+
+
+        var all_html = '';
+        all_html += '<table class="summarytable" width="85%">\n';
+	  all_html += '<colgroup><col width="5%"><col width="50%"><col width="30%"><col width="15%"></colgroup>\n';
+	  all_html += '<tr><th>ID</th><th>Name</th><th>Timestamp</th><th>RawValue</th></tr>\n';
+        for (var i = 0; i < response.data.length; i++) {
+            all_html += '<tr>';
+            all_html += '<td style="text-align:right">' + response.data[i].ID + '</td>';
+            all_html += '<td style="text-align:right">' + response.data[i].Name + '</td>';
+	    all_html += '<td style="text-align:right">' + response.data[i].TimestampString + '</td>';
+            if (response.data[i].RawValue) {
+	        all_html += '<td style="text-align:right">' + response.data[i].RawValue + '</td>';
+            }
+            else {
+                all_html += '<td>-</td>';
+            }
+            all_html += '</tr>\n';
+        }
+        all_html += '</table>\n';
+        element('all').innerHTML = all_html;
+
+	var date = new Date();
+	date.setTime(1000*Number(response.group[1].timestamp));
+	var dateparts = date.toGMTString().split(" ");
+	element('ts-eb1').innerHTML = dateparts[4];
+
+        updateElapse();
+    });
+
+    // Don't know why this is needed here?!
+    sensorlist = '';
+    jQuery('.ui-selected').each(function(i) {
+	var id = $(this).attr('id');
+    var adeigrp = $(this).attr('adei');
+	if (sensorlist != '') {
+        sensorlist += ",";
+	}
+    sensorlist += 'kitcube__hatzenbuehl__' + adeigrp;
+
+    });
+
+    //element('message').innerHTML = ('<pre> load: ' + sensorlist + '</pre>')
+
+}
+
+
+function loadStatus() {
+    getJsonDocument('./getadeistatus.cgi', function(response) {
+        var date = new Date();
+        var all_html = '';
+        all_html += '<table id="tab" class="tablesorter" width="95%">\n';
+        //all_html += '<thead><tr><th colspan="6">Module</th><th colspan="3">Served by application</th></tr>'
+        all_html += '<thead><tr align="right"><th>No</th><th>Name</th><th>Group</th><th>Last data</th><th>Delayed by</th><th>Status</th><th>No</th><th>Name</th><th>Comment</th></tr></head><tbody>';
+        for (var i = 0; i < response.modules.length; i++) {
+            all_html += '<tr align="right">';
+            all_html += '<td>' + response.modules[i].module + '</td>';
+            all_html += '<td>' + response.modules[i].moduleName + '</td>';
+	        all_html += '<td>' + response.modules[i].sensorGroup + '</td>';
+	        all_html += '<td>' + response.modules[i].lastData + '</td>';
+	        all_html += '<td>' + response.modules[i].delayedBy + '</td>';
+	        all_html += '<td>' + response.modules[i].alarmStatus + '</td>';
+	        all_html += '<td>' + response.modules[i].appId + '</td>';
+	        all_html += '<td>' + response.modules[i].appName + '</td>';
+	        all_html += '<td>' + response.modules[i].status + '</td>';
+            all_html += '</tr>\n';
+            
+        }
+        all_html += '</tbody></table>\n';
+        element('modules').innerHTML = all_html;
+        
+        // call the tablesorter plugin
+        $("#tab").tablesorter({
+            // sort on the first column and third column, order asc
+            sortList: [[0,0],[2,0]]
+        });
+        
+
+        // Alarm summmary page
+        var sum_html = '';
+        sum_html += '<table id="alarmtab" class="summarytable" width="95%">\n';
+        sum_html += '<thead><tr><th>No</th><th>Module</th><th>Group</th><th>App</th><th>Last data</th><th>Delayed by</th></tr></thead><tbody>'
+        
+        for (var i = 0; i < response.modules.length; i++) {
+           if (response.modules[i].alarmStatus == "ALARM") {
+            sum_html += '<tr>';
+            sum_html += '<td>' + response.modules[i].module + '</td>';
+            sum_html += '<td>' + response.modules[i].moduleName + '</td>';
+	        sum_html += '<td>' + response.modules[i].sensorGroup + '</td>';
+	        sum_html += '<td>' + response.modules[i].appName + '</td>';
+	        sum_html += '<td>' + response.modules[i].lastData + '</td>';
+	        sum_html += '<td>' + response.modules[i].delayedBy + '</td>';
+            sum_html += '</tr>\n';
+           }     
+        }
+        sum_html += '</tbody></table>\n';
+        element('alarmlist').innerHTML = sum_html;
+        
+    });  
+}
+
+
+function loadGude() {
+	getJsonDocument('./getadeici.cgi', function(response) {
+        	var date = new Date();
+	  	var html = '';
+
+		html += '<b class="handle">Remote power plugs</b><br>'
+     		html += '<table id="gudetab" class="tablesorter" width="95%">\n';
+		html += '<thead><tr align="left"><th>No</th><th>Name</th><th>Status</th></tr><thead><tbody>';
+		for (var i = 0; i < response.ports.length; i++) {
+			html += '<tr align="left">';
+			html += '<td>' + response.ports[i].ID + '</td>';
+			html += '<td>' + response.ports[i].name + '</td>';
+			html += '<td><a href="/' + response.ports[i].host + '" target="gude" >' + response.ports[i].value + '</a></td>';
+			html += '</tr>\n';
+		}
+		html += '<tbody></table>\n'; 
+		html += '<br><b>Note:</b> Do NOT pull the plug of a computer unless it is really necessary. Try to login and reboot manually first!'		
+		element('gude').innerHTML = html;
+
+		// call the tablesorter plugin
+		$("#gudetab").tablesorter({
+			// sort on the first column and third column, order asc
+			sortList: [[0,0],[2,0]]
+	    	});
+
+        });  
+}
+
+
+function plot(newlength, title) {
+    var srctree = '', legend = '', index = 0;
+    length = newlength;
+    idlist = '';
+    sensorlist = ''
+    jQuery('.ui-selected').each(function(i) {
+	var id = $(this).attr('id');
+    var adeigrp = $(this).attr('adei');
+	if (idlist != '') {
+	    idlist += ",";
+	    srctree += ",";
+        sensorlist += ",";
+	}
+	idlist += id;
+    srctree += 'kitcube__hatzenbuehl__Data_120_SysCI_txt__' + id;
+	//srctree += 'mydetector__detector__0__' + id;
+    sensorlist += 'kitcube__hatzenbuehl__' + adeigrp;
+
+	var color = legend_color_table[index++ % legend_color_table.length ];
+	legend += '<font color="' + color + '">';
+	legend += id + ": " + legend_list[id];
+	legend += '</font><br>';
+    
+    });
+    
+    //element('message').innerHTML = ('<pre>' + sensorlist + '</pre>')
+
+
+    updateGraph();
+
+
+    //element('message').innerHTML = ('<pre> ADEI URL ' + window.adeibaseurl + '</pre>')
+
+    var adeihtml = '';
+    var date = new Date();
+    var stop = Math.floor(date.getTime() / 1000);
+    var start = stop - length;
+    //var adeiurl = 'http://clean.phys.washington.edu/adei/#module=graph';
+    //var adeiurl = 'http://192.168.110.67/adei/#module=graph';
+    //var adeiurl = 'http://katrin.kit.edu/adei-detector/#module=graph';
+    // Path for KITcube -- get this from the data file (add in the top level w timestamp!!!)
+    //var adeiurl = 'http://imk-adei1/adei/#module=graph';
+    //var adeiurl = adeibaseurl + '/#module=graph';
+    var adeiurl = '/adei/#module=graph';
+
+    adeiurl += '&db_server=virtual&db_name=srctree';
+    adeiurl += '&db_group=-3&contro_group=-3&db_mask=all&experiment=-';
+    adeiurl += '&window=' + start + '-' + stop;
+    adeiurl += '&module=graph&virtual=srctree&srctree=' + srctree;
+    adeihtml = '<a href="' + adeiurl + '" target="_blank">ADEI Window</a>';
+
+    var csvhtml = '';
+    var getcsvfunc = 'getcsv([' + idlist + '], ' + length + ')';
+    csvhtml += '<a href="#getfile" onclick="' + getcsvfunc + '">CSV File</a>';
+    csvhtml += ' at <input type="text" style="width:80" id="interval"> sec interval';
+    
+    var html = '';
+    html += '[ ' + adeihtml + ' ] - [ ' + csvhtml + ' ]';
+
+    element('inlinegraph').innerHTML = html;
+
+    //$('#popupdialog').html(html);
+    //$('#popupdialog').dialog('option', 'title', title);
+    //$('#popupdialog').dialog('open');
+
+    if (length < 86400) {
+	element('interval').value = '1';
+    }
+    else if (length <= 7*86400) {
+	element('interval').value = '60';
+    }
+    else if (length <= 30*86400) {
+	element('interval').value = '3600';
+    }
+    else {
+	element('interval').value = '86400';
+    }
+    $('#interval').numeric();
+
+    $('#legend').html(legend);
+    
+
+}
+
+function getcsv(idlist, length) {
+    var filename = 'adeidata.csv';
+    var interval = element('interval').value;
+    var query = 'getadeifile.cgi/' + filename;
+    query += '?idlist=' + idlist;
+    query += '&length=' + length + '&interval=' + interval;
+
+    //location.href = query;
+    window.open(query);
+
+    return false;
+}
+
+function showSource() {
+    var source = '  <div>' + $('#summary').html() + '</div>\n';
+    source = source.split("&").join("&amp;");
+    source = source.split('class="field"').join('width="120"');
+    source = source.split(' id=').join(' katrinid=');
+    source = source.split('<dt>').join('<dt><font size="+1"><b>');
+    source = source.split('</dt>').join('</b></font></dt>');
+    source = source.split("<").join("&lt;");
+    source = source.split(">").join("&gt;");
+     
+    $('#popupdialog').html('<pre>' + source + '</pre>');
+    $('#popupdialog').dialog('option', 'title', 'Summary HTML');
+    $('#popupdialog').dialog('open');
+}
+</script>
+
+<script type="text/javascript">
+    $(function() {
+        $("#maintab").tabs();
+        $("#selectibles").selectable({filter:".field"});
+	  $("#rslist").selectable({filter:".rsfield"});
+        $("#sortables").sortable({handle:".handle", containment:"parent"});
+        $("#popupdialog").dialog({
+            width:920, 
+            height:540, 
+            autoOpen:false
+        });
+        
+        load();
+	loadStatus();
+	loadGude();
+	loadCC();
+	loadRS(-1);
+        updateElapse();
+        plot(86400, '24 hours');
+
+	setInterval(function() {
+	    if (updateElapse() > 30) {
+            load();
+	    loadStatus();
+	    loadGude();
+	    loadCC();
+	    loadRS(-1);
+	    }
+        }, 10*1000);
+
+        setInterval(function() {
+	    updateGraph();
+	}, 1000);
+
+	// Timer
+	setInterval(function() {
+	    updateElapse()
+	}, 1000);
+
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+Number of sensors: 9
+         1	height above ground	SOD.SCI.H.AGL.001.AVG	H
+         2	wind speed	SOD.SCI.V.VHOR.001.AVG	V
+         3	wind direction	SOD.SCI.V.WD.001.AVG	A
+         4	wind speed east	SOD.SCI.V.U.001.AVG	V
+         5	wind speed north	SOD.SCI.V.V.001.AVG	V
+         6	vertical wind speed	SOD.SCI.V.W.001.AVG	V
+         7	vertical wind speed, standard deviation	SOD.SCI.V.W.001.STD	V
+         8	back scatter data	SOD.SCI.B.B.001.AVG	NO
+         9	error	SOD.SCI.E.ERR.001.INST	NO

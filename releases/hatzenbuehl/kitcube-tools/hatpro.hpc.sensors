@@ -1,0 +1,5 @@
+Number of sensors: 4
+         1	rain flag	RPG.HATPRO.E.FLAG.004.INST	NO
+         2	measurement height above ground	RPG.HATPRO.H.AH.004.PROF	H
+         3	absolute humidity	RPG.HATPRO.M.AH.004.PROF	MA
+         4	relative humidity 	RPG.HATPRO.M.RH.004.PROF	MR

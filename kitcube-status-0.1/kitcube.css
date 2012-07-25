@@ -1,0 +1,43 @@
+
+table, tr, td, div, body {
+    margin:		0;
+    padding:		0;
+    border:		0;
+}
+
+.header {
+   color:               #000055;
+//   border:              1px solid #002D27;
+   margin-left:         0px;
+   margin-right:        0px;
+   padding:             0px;
+   font-weight:         bold;
+   text-align:          left;
+   height:              50px;
+
+   background:          url(../adei/setups/kitcube/kitcube.jpg) #476c99 no-repeat;
+}
+
+.body {
+    padding: 		10px;
+}
+
+table {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+td  {
+    text-align: right;
+    padding:	1px 4px 1px 4px;
+    border: 1px solid black;
+
+}
+
+th {
+    text-align: right;
+    padding:	1px 4px 1px 4px;
+    background: lightgray;
+    border: 1px solid black;
+}
+

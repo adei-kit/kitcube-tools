@@ -1,0 +1,7 @@
+Number of sensors: 6
+         1	absolute humidity	EB2.LICOR.M.AH.001.INST	MA
+         2	carbon dioxide concentration	EB2.LICOR.D.CD.001.INST	DC
+         3	wind speed east	EB2.SONIC.V.U.001.INST	V
+         4	wind speed north	EB2.SONIC.V.V.001.INST	V
+         5	wind speed vertical	EB2.SONIC.V.W.001.INST	V
+         6	virtual temperature	EB2.SONIC.T.VIR.001.INST	TA

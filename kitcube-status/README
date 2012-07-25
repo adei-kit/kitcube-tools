@@ -1,0 +1,351 @@
+README detectorstatus
+A. Kopmann
+
+
+TODO (30.5.2012):
+-----------------
+- Add group timestamp for every group.
+  Don't display data that is too old !!!
+
+- Globale JSON-Konfiguration einführen für
+     - Server Dienste (z.Z. adeiconfi.py)
+     - Graphische Darstellung der Tabs in kitcube-status.html
+  Prüfen, ob das auch für den KATRIN detectorstatus passt !!!
+  --> Ziel allgemeine ADEI-basierte Application als Life-Display
+
+- Put ADEI-call in a webservice or put URL in the JSON 
+	Update for multiple groups !!! // Same w CSVs
+- Add parser for the "Last data" and "Delay by" columns
+- Sortierung abfragen, bevor die Alarmliste neu geladen wird.
+- Link zwischen den jquery-Tabs?
+- Update der Trend-Graphen in Abhängigkeit der dargetsellten Zeit
+- Auswahl der Zeiten in ein Pull-down Feld
+- Adeiurl aus html-Seite entfernen !!! (siehe Konfiguration unten)
+- Alarm für Sensorwerte berücksichtigen
+
+- Adopt KATRIN status display for KITcube
+  For testing from KIT an ssh-tunnel needs to be established. 
+  ssh  -L 8024:imk-adei1:80 cube@kitcube.dyndns.info
+  Change of the configuration from 
+  server_address = 'http://katrin.kit.edu/adei-detector'
+  to
+  #server_address = 'http://localhost:8024/adei'
+
+- Integrate vertial profile for all mast variables
+- Integrate cloud camera
+  	Resize the images, remove the large black border
+	Display only if the images are not older than several hours
+
+- Re-factoring:
+  Status-display by central JSON-configuration file
+
+- Help / general information page
+- Add Aufstellungsplan, SatteliteImage / Google-Maps from the site?
+- Link to central documentation  
+
+- Control-Funktionen vorbereiten -- Beispiel WC Schnittstelle?!
+	Windcube anschauen, kompression, Datenformat?!
+	Steuerungsschnittstelle?
+
+
+
+ChangeLog:
+----------
+- Added service for GUDE remote power plugs. 
+  The data is retrieved by snmp protocol. Only configured channles are display.
+- Added service for cloud camera. 
+  Due to access problems the images are preared at imk-data1 and copied to the adei
+  server. The script is not include in the poject folder.
+  3.6.12 (ak)
+- Extended ploting to multiple groups by using the virtual server 
+  With the parameter use_virtualserver the eneration of plot can be selected
+  Depending on the axis defintion the virtual server might not show the right lables
+- Added module status and alarm list to the statusdisplay.
+  The status list is sortable by all columns. 
+- Integrated the tabular data and selected graphics at the summary page.
+  Selection of current value and trend with update is working.
+  29.5.12 (ak)
+
+
+
+User Manual
+-----------
+
+>>> Access
+
+Acess to the status display at the KITcube
+  ssh  -L 8024:imk-adei1:80 cube@kitcube.dyndns.info
+
+Afterward access with 
+  http://localhost:8024/~cube/kitcubestatus
+
+is possible.
+
+
+
+>>> Usage
+
+The display contains several pages. The main page is intended to give a general overview.
+It contains blocks for alarm messages, cloud camera (or other relevant complex graphics)
+Selected sensor values and trend of some of these values. All data is updated automtically.
+
+
+To show the trend of some data select the items. Hold <cmd>-key to select more than one value.
+Afterwards press the button with the desired time range (15min to several days).
+
+Details on the module status are show at the according tab.
+The columns here are sortable. Hold <shift>-key to sort by a second column. 
+
+
+
+Installation python module matplotlib
+-------------------------------------
+su
+python setup.py install
+
+Das Verzeichnis /var/lib/wwwrun/.matplotlib wird benötigt
+Schreibrechte von /var/lib/wwwrun ggf. anpassen
+
+Test-Skript:
+#! /usr/bin/env python
+#
+ 
+import sys
+from sys import version_info
+
+content_type = 'text/plain; charset="UTF-8"'
+sys.stdout.write('Content-type: %s\n\n' % content_type)
+
+print "Loading matplotlib..."
+try:	
+	import matplotlib
+	print "Ok"
+except StandardError, e:
+	print "Fehler: ", e
+
+print version_info 
+print sys.path
+
+
+
+>>> Configuration
+
+Definition of the location of the ADEI services.
+
+adeiconf.py:
+# ADEI 
+adei_url = 'http://imk-adei1/adei'
+
+# ADEI access parameters
+adei_server = 'kitcube'
+adei_database = 'hatzenbuehl'
+
+# KITcube database
+kcdb_server = 'imk-db1'
+kcdb_name = 'hatzenbuehl'
+kcdb_user = 'cube'
+kcdb_passwd = 'cube'
+
+
+
+detector_status.html:
+function plot(length, title) {
+...
+    // KATRIN Detector
+    var adeiurl = 'http://katrin.kit.edu/adei-detector/#module=graph';
+    // Path for KITcube
+    //var adeiurl = 'http://localhost:8024/adei/#module=graph';
+
+
+
+Data formats
+------------
+
+Configuration display KITcube (status_html)
+
+        <div>
+          <b class="handle">Computer Infrastructure</b><br>
+          <table class="summarytable" width="95%">
+          <tr>
+            <th>Server room<br>temperature</th><th>Free disk<br>space</th><th>Free disk<br>space</th>
+          </tr><tr>
+            <td class="field ui-selected" id="0" adei="???">-</td><td class="field" id="1" adei="???">-</td><td class="field" id="2" adei="???">-</td>
+          </tr>
+          </table><br>
+        </div>
+        
+        <div>
+        <b class="handle">Temperatures</b><br>
+        <table class="summarytable" width="95%">
+        <tr>
+            <th>Mast 2<br>H 0,5m</th><th>Mast 2<br>H 1m</th><th>Mast 2<br>H 2m</th>
+        </tr><tr>
+            <td class="field" id="3" adei="???">-</td><td class="field" id="4" adei="???">-</td><td class="field" id="5" adei="???">-</td>
+        </tr>
+        </table><br>
+        </div>
+
+
+Configuration KATRIN FPD (status_html)
+
+    <div>
+    <b class="handle">Temperature</b><br>
+    <table class="summarytable">
+      <tr>
+        <th>XHV CP<br>Jacket</th><th>HVac CP<br>Jacket</th><th>PTC<br>Cold Finger</th><th>Cooling Ring<br>Top</th><th>Cooling Ring<br>Bottom</th><th>PAE Bell</th><th>PAE Tube</th><th>Detector Flange</th>
+      </tr><tr>
+        <td class="field" id="2">-</td><td class="field" id="3">-</td><td class="field" id="4">-</td><td class="field" id="5">-</td><td class="field" id="6">-</td><td class="field" id="7">-</td><td class="field" id="8">-</td><td class="field" id="9">-</td>
+      </tr>
+    </table>
+    <p>
+    </div>
+
+    <div>
+    <b class="handle">Vacuum</b><br>
+    <table class="summarytable">
+      <tr>
+        <td></td><th>Ion Gauge</th><th>CCG</th><th>CEP</th><th>CP Temp</th>
+      </tr><tr>
+        <th>XHVac</th><td class="field" id="74">-</td><td class="field" id="66">-</td><td class="field" id="68">-</td><td class="field" id="99">-</td>
+      </tr><tr>
+	<th>HVac</th><td>-</td><td class="field" id="67">-</td><td class="field" id="69">-</td><td class="field" id="100">-</td>
+      </tr>
+    </table>
+    <p>
+    </div>
+
+
+
+
+Global configuration (adeiconfig.py)
+
+# ADEI 
+adei_url = 'http://localhost:8024/adei'
+
+# ADEI access parameters
+adei_server = 'kitcube'
+adei_database = 'hatzenbuehl'
+
+
+
+
+Configuration (getadeidata.cgi)
+
+# Alias names for the loggroups
+g_ci = 'Data_120_SysCI_txt'
+g_mast2 = 'Data_002_T02_DAL'
+
+# List of loggroups (using the alias names above)
+number_of_loggroups = 2
+loggroup_list = number_of_loggroups * [None]
+loggroup_list[0] = g_ci
+loggroup_list[1] = g_mast2
+
+# Defintion of groups of sensors
+# Format of the alias list is 
+#           0,            1,             2,           3,       4,        5 
+# Description, scale factor, format string, alarm limit, db_group, db_mask 
+#
+number_of_items = 6
+alias_list = number_of_items * [None]
+group_list = list()
+
+
+# Computer infrastructure #
+group_list.append(('Computer Infrastructure', [0,1,2]))
+alias_list[0] = ("Temperature server room", 1, "%.2f C", 25, g_ci, 0);
+alias_list[1] = ("Free disk space", 1, "%.0f GB", 0, g_ci, 1);
+alias_list[2] = ("Free disk space", 1, "%.2f %%", 0, g_ci, 2);
+
+group_list.append(('Mast T02', [3]))
+alias_list[3] = ("Air temperature 0,5m", 1, "%.2f C", 0, g_mast2, 0);
+alias_list[4] = ("Air temperature 1m", 1, "%.2f C", 0, g_mast2, 1);
+alias_list[5] = ("Air temperature 2m", 1, "%.2f C", 0, g_mast2, 2);
+
+
+
+
+
+Status data exchange format
+
+{
+    "timestamp": "1338444301",
+    "data": [
+        {"ID": "0", "Name": "SYSCI.SRV.T.SRVROOM.001.AVG TServerRoom", "Alias": "Temperature server room", "Value": "21.40 C", "RawValue": "21.4", "LogGroup": "Data_120_SysCI_txt", "Mask": "0"}, 
+        {"ID": "1", "Name": "SYSCI.SRV.X.DISK.001.AVG DiskSpace (GB)", "Alias": "Free disk space", "Value": "10376 GB", "RawValue": "10376", "LogGroup": "Data_120_SysCI_txt", "Mask": "1"}, 
+        {"ID": "2", "Name": "SYSCI.SRV.X.DISK.002.AVG DiskSpace (%)", "Alias": "Free disk space", "Value": "70.84 %", "RawValue": "70.84", "LogGroup": "Data_120_SysCI_txt", "Mask": "2"}, 
+        {"ID": "3", "Name": "T02.HMP.T.AIR.001.INST air temperature", "Alias": "Air temperature 0,5m", "Value": "22.32 C", "RawValue": "22.318954", "LogGroup": "Data_002_T02_DAL", "Mask": "0"}, 
+        {"ID": "4", "Name": "T02.HMP.T.AIR.002.INST air temperature", "Alias": "Air temperature 1m", "Value": "21.74 C", "RawValue": "21.74201", "LogGroup": "Data_002_T02_DAL", "Mask": "1"}, 
+        {"ID": "5", "Name": "T02.HMP.T.AIR.003.INST air temperature", "Alias": "Air temperature 2m", "Value": "21.14 C", "RawValue": "21.141207", "LogGroup": "Data_002_T02_DAL", "Mask": "2"}
+    ],
+    "group": [
+        {
+            "name": "Computer Infrastructure",
+            "member": ["0", "1", "2"]
+			"timestamp": "1338444301", 
+        },
+        {
+            "name": "Mast T02",
+            "member": ["3"]
+			"timestamp": "1338444301", 
+        }
+    ]
+}
+
+
+
+Unified configuration:
+
+
+{
+    "server": "http://imk-data1/adei",
+
+    "loggroup": [
+	{"ID": "0", "name": "Data_120_SysCI_txt", "database":"hatzenbuehl", "server":"kitcube"},
+	{"ID": "1", "name": "Data_002_T02_DAL", "database":"hatzenbuehl", "server":"kitcube"},	
+	],
+
+    "sensor": [
+        {"ID": "0", "Alias": "Temperature server room", "Scale":"1", "Format":"%.2f C", 
+		"AlarmLimit":"25", "LogGroup": "0", "Mask": "0"}, 
+        {"ID": "1", "Alias": "Free disk space", "Scale":"1", "Format":"%.0f GB", 
+		"AlarmLimit":"0", "LogGroup": "0", "Mask": "1"}, 
+        {"ID": "2", "Alias": "Free disk space", "Scale":"1", "Format":"%.0f %%", 
+		"AlarmLimit":"0", "LogGroup": "0", "Mask": "2"}, 
+        {"ID": "3", "Alias": "Air temperature 0,5m", "Scale":"1", "Format":"%.2f C", 
+		"AlarmLimit":"0", "LogGroup": "1", "Mask": "0"}, 
+        {"ID": "4", "Alias": "Air temperature 1m", "Scale":"1", "Format":"%.2f C", 
+		"AlarmLimit":"0", "LogGroup": "1", "Mask": "1"}, 
+        {"ID": "5", "Alias": "Air temperature 2m", "Scale":"1", "Format":"%.2f C", 
+		"AlarmLimit":"0", "LogGroup": "1", "Mask": "2"}
+    ],
+
+    "statusgroup": [
+        {
+            "name": "Computer Infrastructure",
+            "member": ["0", "1", "2"],
+	    "format": "List"		
+        },
+        {
+            "name": "Mast T02",
+            "member": ["3", "4", "5"],
+	    "format": "Table - organization?? / header of the lines"		
+        }
+    ],
+
+    "format": "Two columns"
+	Col1
+	 Line1: Alarm-List getadeistatus
+	 Line2 +: Sensor array
+	Col2
+	 Line 1: CC / getadeicc ???
+	 Line 2: Sensor trend 
+
+}
+
+
+
+
+
+
+

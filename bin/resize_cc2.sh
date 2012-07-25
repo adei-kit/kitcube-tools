@@ -11,7 +11,15 @@
 #
 ################################################################################
 #
-Version="0.1"
+Version="0.2"
+# 
+# 2012-06-10 Ak
+#
+# - Consider the hierachical file structure
+#
+#
+
+#Version="0.1"
 #
 # 2011-08-19  Norbert Flatinger, IPE
 #
@@ -47,7 +55,7 @@ FINDPROG="/usr/bin/find"
 # define sort command
 SORTPROG="/usr/bin/sort"
 # define convert command
-CONVERTPROG="/usr/local/bin/convert"
+CONVERTPROG="/usr/bin/convert"
 #define dirname command
 DIRNAMEPROG="/usr/bin/dirname"
 # define rm command
@@ -125,7 +133,7 @@ fi
 
 
 ################################################################################
-# resize images to 25%
+# crop center and resize images
 ################################################################################
 # check if destination directory for small images exists and create it if not
 if [ -x $MKDIRPROG ] ; then
@@ -168,13 +176,20 @@ if [ -x $FINDPROG -a -x $SORTPROG -a -x $CONVERTPROG -a -x $DIRNAMEPROG ] ; then
 	if [ $DEBUG = yes ] ; then
 		echo -e "Searching file list for new and unconverted files ..."
 	fi
-	for i in `$FINDPROG "$SRC" -maxdepth 3 -name "$FILES_TO_SYNC" | $SORTPROG` ; do
+	cd $SRC/data
+	#echo `pwd`
+	for i in `$FINDPROG 20* -maxdepth 3 -name "$FILES_TO_SYNC" | $SORTPROG` ; do
 		if [ "$i" \> "$LAST_CONVERTED_FILE" ] ; then
 			if [ $DEBUG = yes ] ; then
 				echo -e "Converting $i ..."
 			fi
-echo "Convert $i"
-#$CONVERTPROG "$i" -resize 25% "$($DIRNAMEPROG "$i")/small/$($BASENAMEPROG "$i")"
+			# Create folder if necessary
+			DIR=`$DIRNAMEPROG $i`
+			if [ ! -d "$SRC/small/$DIR" ] ; then
+				echo "Create dir small/$DIR"
+				$MKDIRPROG -p "$SRC/small/$DIR"
+			fi	
+			$CONVERTPROG "$i" -gravity center -crop "60%x60%+0+0" -resize "480x320" "$SRC/small/$i"
 			RETURN_VALUE=$?
 			if [ $RETURN_VALUE != 0 ] ; then
 				echo -e "Error: converting $i"

@@ -1,0 +1,4 @@
+Number of sensors: 3
+         1	rain flag	RPG.HATPRO.E.FLAG.011.INST	NO
+         2	measurement height above ground	RPG.HATPRO.H.TRO.011.PROF	H
+         3	air temperature	RPG.HATPRO.T.TRO.011.PROF	TA

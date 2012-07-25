@@ -1,0 +1,7 @@
+Number of sensors: 6
+	1	sky picture	CC2.G10.I.VIS.001.IMG	NO
+	2	exposure (1/T)	CC2.G10.J.EXPOSURE.001.INST	J
+	3	apperture (-)	CC2.G10.J.APERTURE.001.INST	J
+	4	brigthness (ADC) 	CC2.G10.J.DAYL.001.AVG	J
+	5	black pixel (%)	CC2.G10.J.BLCK.001.AVG	J
+	6	white pixel (%)	CC2.G10.J.WHT.001.AVG	J
