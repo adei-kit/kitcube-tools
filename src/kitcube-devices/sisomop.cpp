@@ -11,8 +11,11 @@
 #include "sisomop.h"
 
 #include <string>
+#include <algorithm>
+
 using namespace std;
 using std::replace;
+
 
 sisomop::sisomop() {
 }
@@ -67,6 +70,16 @@ int sisomop::readHeader(const char *filename) {
 
 
 void sisomop::setConfigDefaults() {
+}
+
+const char *sisomop::getDataDir() {
+	char line[256];
+	
+	// TODO: Create a single source for the filename convention...
+	sprintf(line, "%s/SISOMOP/", moduleName.c_str());
+	buffer = line;
+	
+	return(buffer.c_str());
 }
 
 

@@ -11,7 +11,9 @@
 
 
 regenwippe::regenwippe(){
-	sensor_value_old = 0;
+	sensor_value_old = -1;
+    timestamp_old = 0;
+    nShowData = 0;
 }
 
 
@@ -76,18 +78,77 @@ int regenwippe::parseData(char *line, struct timeval *l_tData, double *sensorVal
 		return -1;
 	}
 	
+    // get seconds since the Epoch
+	l_tData->tv_sec = timegm(&timestamp);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
+
+        
 	// read sensor values
 	sscanf(puffer, "%d", &sensor_value_new);
-	if (sensor_value_new < sensor_value_old) {	// overflow
-		sensorValue[0] = 999999;
+    // TODO: Check for wrong values?!
+    //      What is the maximal allowed change? 20 digits per interval
+    //      It's not allowed to jump back?!
+    
+ 
+    if (nShowData > 0) {
+        printf ("RGW: %12ld / %6d --> %6d\n", 
+                l_tData->tv_sec, sensor_value_old, sensor_value_new);
+        nShowData -= 1;
+    }
+
+    
+	if (sensor_value_old == -1){
+        // Re-start of the application
+        printf("RGW: %12ld / %6s --> %6d   Loading reference data point \n", 
+               l_tData->tv_sec, "", sensor_value_new); 
+		sensorValue[0] = noData; 
+        sensor_value_old = sensor_value_new;
+        
+        nShowData = 3;
+        
+/*    } else if (sensor_value_new == 32767){ 
+        // MAXINT -- no data ???
+		sensorValue[0] = noData; 
+        // Here the buffer will kept unchanged !!!
+
+        nShowData = 3;
+*/
+    } else if (sensor_value_new < sensor_value_old) {	// overflow
+        printf("RGW: %12ld / %6d --> %6d   Overflow of counter detected\n", 
+               l_tData->tv_sec, sensor_value_old, sensor_value_new); 
+		sensorValue[0] = noData; 
+        sensor_value_old = sensor_value_new;
+        l_tData->tv_sec = 0; // Don't save this data
+        
+        nShowData = 3;
+
+    } else if (sensor_value_new > sensor_value_old + 20) { // error    
+        printf("RGW: %12ld / %6d --> %6d   Error: Jump in counter detector\n", 
+               l_tData->tv_sec, sensor_value_old, sensor_value_new);
+		sensorValue[0] = noData; 
+        
+        // The error detection is impossible with only one old and the
+        // current value -- so better always go over to the new values?!
+        // TODO: Implement read-ahead function?!
+        sensor_value_old = sensor_value_new;        
+
+        nShowData = 10;
+        
 	} else {
+        // Calculate the rain rate
 		sensorValue[0] = (double)(sensor_value_new - sensor_value_old) * 0.2;
+        sensor_value_old = sensor_value_new;
 	}
 	
-	// get seconds since the Epoch
-	l_tData->tv_sec = timegm(&timestamp);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
-	
-	sensor_value_old = sensor_value_new;
+    
+    // Check timestamp
+    if (timestamp_old > l_tData->tv_sec){
+        printf("RGW: %12ld --> %12ld    Error: Timestamp mismatch\n", timestamp_old, l_tData->tv_sec);
+        l_tData->tv_sec = 0; // Don't save this data
+        sensorValue[0] = noData; 
+    } else {
+        timestamp_old = l_tData->tv_sec;
+    }
+ 
 	
 	return 0;
 }

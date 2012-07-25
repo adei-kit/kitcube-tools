@@ -296,15 +296,8 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());	
 	
 #ifdef USE_MYSQL
-	if (db == 0) {
-		openDatabase();
-	} else {
-		// Automatic reconnect
-		if (mysql_ping(db) != 0){
-			printf("Error: Lost connection to database - automatic reconnect failed\n");
-			throw std::invalid_argument("Database unavailable\n");
-		}
-	}
+    if ((db == 0) || (mysql_ping(db) != 0))
+        openDatabase();    
 #endif
 		
 	// Allocate memory for sensor values
@@ -384,7 +377,9 @@ void DAQAsciiDevice::readData(std::string full_filename){
 				printf("\n");
 			}
 #ifdef USE_MYSQL
-			if (db > 0){
+			if (db > 0) {
+              if (timestamp_data.tv_sec > 0){
+
 				// Write dataset to database
 				// Store in the order of appearance	
 				//printf("Write record to database\n");
@@ -467,7 +462,8 @@ void DAQAsciiDevice::readData(std::string full_filename){
 				gettimeofday(&t1, &tz);
 				if (debug >= 5)
 					printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
-			} else {
+              }
+            } else {
 				printf("Error: No database availabe\n");
 				throw std::invalid_argument("No database");
 			}
@@ -496,8 +492,9 @@ void DAQAsciiDevice::readData(std::string full_filename){
 
 	
 	// Write the last valid time stamp / file position
-	saveFilePosition(lastIndex, currPos, timestamp_data);
-	
+    if (timestamp_data.tv_sec > 0){
+	   saveFilePosition(lastIndex, currPos, timestamp_data);
+	}
 	
 	fclose(fd_data_file);
 	free(buf);

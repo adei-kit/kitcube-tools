@@ -28,6 +28,9 @@ public:
 	
 	void setConfigDefaults();
 	
+	/** Returns the path relative to the base path to the data dir */
+	const char *getDataDir();
+
 	int readHeader(const char *filename);
 	
 	int parseData(char *line, struct timeval *l_tData, double *sensorValue);

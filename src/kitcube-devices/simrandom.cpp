@@ -140,7 +140,7 @@ void SimRandom::writeData(){
 	data3 = (float) rand()/RAND_MAX * 10; // random data 0..10
 	fprintf(fdata, "%12ld %06ld %12f %12f %12f\n", t.tv_sec, (long) t.tv_usec, data1, data2, data3);
 	fflush(fdata);
-	if (debug > 1) printf("%12ld %06ld %12f %12f %12f\n", t.tv_sec, (long) t.tv_usec, data1, data2, data3);
+	if (debug > 1) printf("#%03d %12ld %06ld %12f %12f %12f\n", moduleNumber, t.tv_sec, (long) t.tv_usec, data1, data2, data3);
 	
 }
 

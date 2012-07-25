@@ -59,7 +59,7 @@ const char *Ceilometer::getDataDir(){
 	char line[256];
 	
 	// TODO: Create a single source for the filename convention...
-	sprintf(line, "Ceilometer/Daten/");
+	sprintf(line, "%s/data/", moduleName.c_str());
 	buffer = line;
 	return(buffer.c_str());
 }
@@ -191,6 +191,12 @@ int Ceilometer::readHeader(const char *filename) {
 	// Get the sensor names from the configuration file 
 	if (nSensors == 0) getSensorNames(sensorListfile.c_str());
 	
+	// set default value for height
+	for (int i = 0; i < nSensors; i++) {
+		sensor[i].height = 0;
+        sensor[i].size = 1;
+	}    
+    
 	//
 	// TODO: Check compatibility between sensor file and the following names
 	//
@@ -337,6 +343,7 @@ int Ceilometer::readHeader(const char *filename) {
 		
 		if (debug > 2) printf("nSensors: %d\n", nSensors);
 		
+        // Raw data
 		sensor[0].comment = "Cloud level 1";
 		sensor[1].comment = "Cloud level 2";
 		sensor[2].comment = "Cloud level 3";
@@ -345,9 +352,22 @@ int Ceilometer::readHeader(const char *filename) {
 		sensor[5].comment = "Penetration depth 3";
 		sensor[6].comment = "Vertical visibility";
 		sensor[7].comment = "Detection range";
+
+        // Profile data - this is always required !!!
+        sensor[8].comment = "Lidar backscattering";
+        sensor[8].type = "profile";
+        sensor[8].size = 1024;
+/*        
+		sensor[8].data_format = "<profile size=\"1024\"> <height unit=\"m\">";
+		for (i = 1; i < 1024; i++) {	// TODO: read length from file?
+			sprintf(line, "%i ", (i * 15));	// TODO: read values from data file!
+			sensor[18].data_format += line;
+		}
+		sensor[8].data_format += "15360</height> </profile>"; 
+*/
 		
 		for (i = 0; i < nSensors; i++) {
-			sensor[i].height = heightOffset;
+			//sensor[i].height = heightOffset;
 			if (debug > 2) printf("Sensor %3d: %s, %.1f %s\n", i+1, sensor[i].comment.c_str(), sensor[i].height, heightUnit);
 		}
 	}
@@ -370,7 +390,9 @@ int Ceilometer::parseData(char *line, struct timeval *l_tData, double *sensorVal
 	int err;
 	unsigned char* buf;
 	char *sensorString;
+    int max;
 	
+    // Parse the line in the chm format, it contains 8 values !!!
 	
 	buf = (unsigned char*)line;
 	// TODO: Put in a separate function...
@@ -392,9 +414,11 @@ int Ceilometer::parseData(char *line, struct timeval *l_tData, double *sensorVal
 	l_tData->tv_sec = timestamp;
 	l_tData->tv_usec = 0;
 	
-	// Read data values
+	// Read data values -- Read only 8 values !!!
 	//printf("%s\n", buf);
-	for (int j = 0; j < nSensors; j++) {
+    max = 8; // This functions nows only 8 values !
+    if (max > nSensors) max = nSensors;
+	for (int j = 0; j < max; j++) {
 		sensorString = (char *) (buf + sensorPtr[j]);
 		//buf[sensorPtr[1]-1] = 0;
 		sensorValue[j] = noData;
@@ -403,6 +427,105 @@ int Ceilometer::parseData(char *line, struct timeval *l_tData, double *sensorVal
 	
 	return 0;
 }
+
+
+void Ceilometer::readNetcdf(std::string full_filename){
+	struct timeval lastTime;
+	unsigned long lastPos;
+	long lastIndex;
+    
+	std::string filenameData;
+
+    std::string idTime = "time";
+    std::string idProfile = "beta_raw";
+    int iTime;
+    int iProfile;
+    
+    
+    // Get the last time stamp + file pointer from
+    // TODO: Check lastTime - seems not to be used?!
+    loadFilePosition(lastIndex, lastPos, lastTime);
+    
+    
+    //open NetCDF file
+    filenameData = full_filename;
+    if (debug > 2) printf("Open data file %s\n", filenameData.c_str());
+    NcFile dataFile(filenameData.c_str());
+    if (!dataFile.is_valid())
+        printf("Couldn't open NetCDF file!\n");
+
+   
+    // read and print all variables
+    iTime = -1; iProfile = -1;
+    int no_vars = dataFile.num_vars();
+    if (debug > 3) printf("Number of variables: %d\n", no_vars);
+    NcVar* vars[no_vars];
+    for (int i = 0; i < no_vars; i++) {
+        vars[i] = dataFile.get_var(i);
+        if (!vars[i]->is_valid()) printf("Variable not valid!\n");
+        if (debug > 3) printf("Variable name: %s, dimensions: %d, size: %ld, type: %d, attributes: %d\n",
+                              vars[i]->name(), vars[i]->num_dims(), vars[i]->num_vals(), vars[i]->type(), vars[i]->num_atts());
+        
+        if (idTime == vars[i]->name()) iTime=i;
+        if (idProfile == vars[i]->name()) iProfile=i;
+    }
+
+    if (debug > 3) printf("Found variables  %s / %d and %s / %d \n", 
+           idTime.c_str(), iTime, idProfile.c_str(), iProfile);
+    
+    if ((iTime < 0) || (iProfile<0)){
+        printf("Incompatible data format\n");
+        throw std::invalid_argument("Profile data not found");
+    }
+    
+    // Read timestamp and compare with the stored one
+    // There should be only one 
+    int no_vals;
+    no_vals = vars[iTime]->num_vals();
+    printf("Number of timestamps %d\n", no_vals);
+    
+    double* time_stamps;		// pointer to timestamp values of NetCDF file
+    time_stamps = new double[no_vals];
+    vars[iTime]->get(time_stamps, no_vals);
+    
+    delete [] time_stamps;
+    
+    
+    // Read the profile and store 
+    long* dimensions;
+    int num_2d_data;
+    if (vars[iProfile]->num_dims() == 2) {
+        dimensions = vars[iProfile]->edges();
+    }
+    
+    double* values_2d = new double [dimensions[0] * dimensions[1]];
+    vars[iProfile]->get(values_2d, dimensions[0], dimensions[1]);
+
+    
+    // TODO: What's abount the height profile - can this change or not?!
+    //      Store it with the data or in the sensors list?!
+    //      Are the heights alsways equaly spaced?!
+    
+
+
+    // Store the data in the database together with the scalar values?!
+
+
+
+
+
+    delete [] values_2d;    
+    
+    lastPos = 1;	// file read
+    fd_eof = true;
+    
+	
+    // Write the last valid time stamp / file position
+    //saveFilePosition(lastIndex, lastPos, time_stamp_data[no_vals-1]);   
+
+
+}
+
 
 
 // TODO: Move the parsing part to separate functions and move rest to base class
@@ -419,6 +542,9 @@ void Ceilometer::readData(std::string full_filename){
 	long lastIndex;
 	//struct timeval tWrite;
 	
+    std::string cmd;
+    std::string tmpfile;
+    
 #ifdef USE_MYSQL
 	struct timeval t0, t1;
 	struct timezone tz;
@@ -438,8 +564,46 @@ void Ceilometer::readData(std::string full_filename){
 	// If signal strenght is not high enough "NaN"
 	// Negative error codes
 	
+    
 	if (sensorGroup == "chm") {	// read *.chm file here
 		DAQBinaryDevice::readData(full_filename);
+        
+    } else if (sensorGroup == "dat") {
+		if (debug > 2) printf("_____Split online file_____________________\n");
+
+        // Extract only the chm part (first line)
+        tmpfile = full_filename + ".tmp";
+        cmd = "head -n 1 " ;
+        cmd += full_filename;
+        cmd += " > ";
+        cmd += tmpfile;
+        system(cmd.c_str());
+        
+		DAQBinaryDevice::readData(tmpfile);
+        
+        // clean up
+        cmd = "rm ";
+        cmd += tmpfile;
+        system(cmd.c_str());
+        
+        // uncompress the nc-file
+        cmd = "uudecode -o ";
+        cmd += tmpfile + " ";
+        cmd += full_filename;
+        printf("%s\n", cmd.c_str());
+        system(cmd.c_str());
+
+        // Read backscattering
+        readNetcdf(tmpfile);
+        
+        // clean up
+        cmd = "rm ";
+        cmd += tmpfile;
+        system(cmd.c_str());
+        
+        // store data in database ?!
+        // ???
+        
         
 	} else if (sensorGroup == "nc") {	// read NetCDF file here
 		if (debug > 2) printf("_____Reading data_____________________\n");
@@ -454,15 +618,9 @@ void Ceilometer::readData(std::string full_filename){
 			readHeader(filenameData.c_str());
 	
 #ifdef USE_MYSQL
-		if (db == 0) {
-			openDatabase();
-		} else {
-			// Automatic reconnect
-			if (mysql_ping(db) != 0){
-				printf("Error: Lost connection to database - automatic reconnect failed\n");
-				throw std::invalid_argument("Database unavailable\n");
-			}
-		}
+        if ((db == 0) || (mysql_ping(db) != 0))
+            openDatabase();
+
 #endif
 
 		// Get the last time stamp + file pointer from
@@ -694,7 +852,8 @@ void Ceilometer::readData(std::string full_filename){
 			delete [] sensor_values[i];
 		}
 		delete [] sensor_values;
-		
+		delete [] values_2d;
+        
 		if (debug > 3) printf("fertig\n");
 		lastPos = 1;	// file read
 		fd_eof = true;
@@ -709,7 +868,7 @@ void Ceilometer::readData(std::string full_filename){
 			fclose(fmark);
 		}
 */ 
-	}
+	} // end of nc-type
 }
 
 
@@ -731,16 +890,17 @@ void Ceilometer::updateDataSet(unsigned char *buf){
 	
 	// Compile the data set for writing to the data file
 	if (debug > 2) printf("______Ceilometer::updateDataSet()______________________\n");
-	if (debug > 2) printf("Line: %s", buf);
+	if (debug > 3) printf("Line: %s", buf);
 	sprintf((char *) buf+12,"%02d.%02d.%02d;%02d:%02d",
 			time->tm_mday, time->tm_mon+1, time->tm_year-100,
 			time->tm_hour, time->tm_min);
 	buf[26]=';';
 	sprintf((char *) buf+233,"%02d", time->tm_sec);
 	buf[235]=';';
-	if (debug > 2) printf("Line: %s", buf);
 	
-	if (debug > 2) printf("%02d.%02d.%02d  %02d:%02d:%02d\n", 
+	if (debug > 1) printf("#%03d   %02d.%02d.%02d  %02d:%02d:%02d\n", moduleNumber,
 						  time->tm_mday, time->tm_mon+1, time->tm_year-100,
 						  time->tm_hour, time->tm_min, time->tm_sec);
+	if (debug > 2) printf("Line: %s", buf);
+    
 }

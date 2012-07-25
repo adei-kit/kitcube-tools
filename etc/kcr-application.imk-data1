@@ -8,7 +8,7 @@
 # Start reading data file from kitcube modules
 #
 ### BEGIN INIT INFO
-# Provides:       kitcube-reader 
+# Provides:       kitcube-reader <-- replace with real service name
 # Required-Start: $network
 # Required-Stop:
 # Default-Start:  3 5

@@ -54,9 +54,12 @@ public:
 	void writeHeader();
 	
 	void readData(std::string full_filename);
+
+	void readNetcdf(std::string full_filename);
 	
 	int parseData(char *line, struct timeval *l_tData, double *sensorValue);
-	
+    
+    
 	/** Replace time stamp in the data set by the current time */
 	void updateDataSet(unsigned char *buf);
 	

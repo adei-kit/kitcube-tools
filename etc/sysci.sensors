@@ -1,2 +1,4 @@
-Number of sensors: 1	1
-1	TServerRoom	SYSCI.SRV.T.SRVROOM.001.AVG	T
+Number of sensors: 3	3
+1	TServerRoom (C)	SYSCI.SRV.T.SRVROOM.001.AVG	T
+2	DiskSpace (GB)	SYSCI.SRV.X.DISK.001.AVG	XG
+3	DiskSpace (%)	SYSCI.SRV.X.DISK.002.AVG	XP

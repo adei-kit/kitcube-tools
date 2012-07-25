@@ -2,7 +2,7 @@
 #
 #
 
-EXTRA_DIST = kitcube.ini
+EXTRA_DIST = kitcube.ini CC2.py
 
 
 if USE_MYSQL

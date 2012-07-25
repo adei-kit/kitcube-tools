@@ -185,21 +185,28 @@ class DataServer : public SimpleServer  {
         /** Flag to start the server as daemon - without interactive input */
 		bool runDaemon;
 		
+        /** Sampling time (ms) */
+        int tSampleFromInifile;
+
+        /** Number of DAQ modules added to the data server. 
+          * The number is given by the entries in the inifile */
+        int nModules;
+    
 		/** Module name as given in sensor list */
 		std::string moduleName;
 		
 		/** module type describes the implementation, the class */
-		std::string moduleType;
+		std::string *moduleType;
 		
+        /** Module number */
+        int *moduleNumber;
+    
 		/** a group in the *.ini file */
-		std::string iniGroup;
+		std::string *iniGroup;
 		
 		/** */
-		DAQDevice *dev;
-		
-		/** File pointer for the data file */
-		FILE *fdata;	
-		
+		DAQDevice **dev;
+    
 		/** Number of sensor groups */
 		int nGroups;
 		

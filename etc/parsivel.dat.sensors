@@ -6,6 +6,6 @@ Number of sensors: 10
 5	Visibility	PARS.PARS1.L.VIS.001.AVG	L
 6	Signal amplitude laser	PARS.PARS1.P.LASER.001.AVG	NO
 7	Total number of drops	PARS.PARS1.N.NUM.001.SUM	J
-8	Mean velocity as function of diameter	PARS.PARS1.V.SPEC.001.AVG	NS
+8	Mean velocity as function of diameter	PARS.PARS1.V.SPEC.001.PROF	NS
 9	Drop Size Distribution	PARS.PARS1.O.ND1.001.PROF	ND
-10	Number per Size Class and per Velocity Class	PARS.PARS1.O.ND2.001.SUM	J
+10	Number per Size Class and per Velocity Class	PARS.PARS1.O.ND2.001.DIST	J

@@ -196,6 +196,9 @@ private:
 	
 	SysLog *log;
 	
+    /** Number of errors */
+    int nError; 
+    
 	/** File pointer for the data file */
 	//FILE *fdata;
 

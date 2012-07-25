@@ -65,12 +65,15 @@ void DataServer::readInifile(const char *filename, const char *group){
 	akInifile *ini;
 	Inifile::result error;
 	std::string value;
+	float tValue;
+	std::string tUnit;
+	int i;
 	
 	//printf("ReadInifile(%s)\n", filename);
 	
 	this->inifile = filename;
-	this->iniGroup = "Simulation";
-	this->moduleType = "SimRandom";
+	this->tSampleFromInifile = 10000; // ms
+
 	
 	//ini = new akInifile(inifile.c_str(), stdout);
 	ini = new akInifile(inifile.c_str());
@@ -91,24 +94,71 @@ void DataServer::readInifile(const char *filename, const char *group){
   		// Get reader id
 		this->appId = ini->GetFirstValue("id", 0, &error);
         
+        // Read sampling time
+		tValue= ini->GetFirstValue("samplingTime", (float) tSampleFromInifile, &error);
+		tUnit = ini->GetNextString("ms", &error);
+		this->tSampleFromInifile = tValue; 
+		if ((tUnit == "sec") || (tUnit == "s")) this->tSampleFromInifile = tValue * 1000;
+		if (tUnit == "min") this->tSampleFromInifile = tValue * 60000;
+    
+        
 		if ((group == 0) || (group[0] == 0)){
-			//printf("Get group from inifile\n");            
-			this->iniGroup = ini->GetFirstString("module", iniGroup.c_str(), &error);
-			// TODO: Guess type of the module ?!
+            // Get the number of groups from the inifile
+            ini->GetFirstString("module", "", &error);
+            
+            nModules = 0;
+			error = Inifile::kSUCCESS;
+			while (error == Inifile::kSUCCESS){
+				ini->GetNextString("", &error);
+				nModules++;
+			}
+			
+			//printf("Found n = %d modules\n", nModules);
+
+			// Allocate the arrays for all parameters
+			// TODO: Check if space has been allocated before?!
+			this->iniGroup = new std::string [nModules];
+			this->moduleType = new std::string [nModules];
+			this->moduleNumber = new int [nModules];
+			this->dev = new  DAQDevice * [nModules];
+			
+			//printf("Reading the modules again\n");
+			
+			// Read modules names
+			this->iniGroup[0] = ini->GetFirstString("module", "Simulation", &error);
+			for (i=1;i<nModules;i++){
+                // Default values
+                this->iniGroup[i] = "Simulation";
+                this->moduleType[i] = "SimRandom";
+                
+				this->iniGroup[i] = ini->GetNextString("", &error);
+			}
+            
 		} else {
-			iniGroup = group;
-		}
-		
-		error = ini->SpecifyGroup(iniGroup.c_str());
-		if (error == Inifile::kSUCCESS){
-			this->moduleType = ini->GetFirstString("moduleType", moduleType.c_str(), &error);
-		} else {
-			printf("Error: Section [%s] not found in inifile.\n", iniGroup.c_str());
-			printf("\n");
-			throw std::invalid_argument("iniGroup not defined.");
+			// Use the module from the command line - only single module possible
+			nModules = 1;
+            
+			this->iniGroup = new std::string [nModules];
+			this->moduleType = new std::string [nModules];
+			this->moduleNumber = new int [nModules];
+			
+			this->iniGroup[0] = group;
 		}
 
-		
+        
+		// Read type of the modules		
+		for (i=0;i<nModules;i++){
+            error = ini->SpecifyGroup(iniGroup[i].c_str());            
+            if (error == Inifile::kSUCCESS){
+                this->moduleType[i] = ini->GetFirstString("moduleType", moduleType[i].c_str(), &error);
+				this->moduleNumber[i] = ini->GetFirstValue("moduleNumber", 0, &error);
+            } else {
+                printf("Error: Section [%s] not found in inifile.\n", iniGroup[i].c_str());
+                printf("\n");
+                throw std::invalid_argument("Module not defined.");
+            }
+
+		}
 		//ini->SpecifyGroup("Readout");
 		//varianceClosedShutter = ini->GetFirstValue("varlevel", varianceClosedShutter, &error);
 		//varianceOverflow = ini->GetNextValue(varianceOverflow, &error);
@@ -125,7 +175,7 @@ void DataServer::runAsDaemon(bool flag){
 
 
 void DataServer::runReadout(FILE *fout){
-	//int i;
+	int i;
 	//int iSample;
 	struct timeval tWait;
 	struct timeval tStart;
@@ -143,8 +193,10 @@ void DataServer::runReadout(FILE *fout){
 	//  Start run
 	//tWait.tv_sec = 0;
 	//tWait.tv_usec = 250000;
-	tWait.tv_sec = 1;
-	tWait.tv_usec = 500000;
+	//tWait.tv_sec = 1;
+	//tWait.tv_usec = 500000;
+	tWait.tv_sec = tSampleFromInifile / 1000;
+	tWait.tv_usec = (tSampleFromInifile % 1000) * 1000; 
 	
 	// Initialize the QD simulation
 	// Set sampling time
@@ -165,32 +217,48 @@ void DataServer::runReadout(FILE *fout){
 	timingMin = 0;
 	timingMax = 0;
 
+    // For every module one free port is existing
+    // For every reader application a separate port is used
+    // It's buid from the base reader port + application ID
+    servicePort = DATASERVER_PORT + this->appId;
+    setPort(servicePort);
+ 
+    // Display configuration
+	if (debug) {
+		printf("\n");
+		printf("______Starting service for  %d  module(s)_______________________________\n", nModules+1);
+		printf("%-20s : %d ms\n", "Sampling time", tSampleFromInifile);
+		
+		for (i = 0; i < nModules; i++) {
+			printf("Module %2d            : %s,  type  %s\n",
+			       i + 1, iniGroup[i].c_str(), moduleType[i].c_str());
+		}
+        
+		printf("%-20s : %d (for remote monitoring)\n", "Server port", servicePort);
+		printf("\n");
+	}
+    
 	
-
-	printf("Create module %s, type %s\n", iniGroup.c_str(), moduleType.c_str());	
-	dev = (DAQDevice *) createDevice(moduleType.c_str());
-	dev->setDebugLevel(debug);
+	this->dev = new  DAQDevice * [nModules];
+	for (i = 0; i < nModules; i++) {
+        dev[i] = (DAQDevice *) createDevice(moduleType[i].c_str());
+        dev[i]->setDebugLevel(debug);
 	
-	dev->readInifile(inifile.c_str(), iniGroup.c_str());
-	// Get the sensor names from the configuration file 
-	dev->getSensorNames(dev->sensorListfile.c_str());
-	dev->getSamplingTime(&tWait);
+        dev[i]->readInifile(inifile.c_str(), iniGroup[i].c_str());
+        // Get the sensor names from the configuration file 
+        dev[i]->getSensorNames(dev[i]->sensorListfile.c_str());
+        
+        // Select the smallest sampling time ?!
+        //dev[i]->getSamplingTime(&tWait);
 	
-	dev->openFile();
-	fflush(fdata);
-	dev->readHeader(); // Read the reference time from the data
+        dev[i]->openFile();
+        dev[i]->readHeader(); // Read the reference time from the data
+    }
 
-
-	// For every module one free port is existing
-	// For every reader application a separate port is used
-	// It's buid from the base reader port + application ID
-	servicePort = DATASERVER_PORT + this->appId;
-	setPort(servicePort);
-
-	// Display configuration
-	printf("_____Starting service for module %d at port %d_______________________________\n",
-		   dev->getModuleNumber(), servicePort);
-	init();
+	if (debug > 2)
+		init();
+	else
+		init(0); // No server messages
 	
 	// Set reference time and sampling time of the server loop
 	// TODO: Read the start time from configuration
@@ -213,17 +281,20 @@ void DataServer::runReadout(FILE *fout){
 
 	//tRef.setEnd();
 
-	dev->closeFile();
-	delete dev;
+	for (i = 0; i < nModules; i++) {
+        dev[i]->closeFile();
+		delete dev[i];
+	}        
+	delete [] dev;
 }
 
 
 int DataServer::handle_timeout(){
-	//int i;
+	int i;
 	//procDuration t;
 	//int iSample;
 	//struct timeval tWait;
-	struct timeval t;
+	struct timeval t, tNext;
 	struct timezone tz;
 
 
@@ -239,9 +310,17 @@ int DataServer::handle_timeout(){
 
 
 	// TODO: Read data / Simulate data
-	if (debug > 1) printf("=== Writing data at: %10lds %06ldus ===\n", t.tv_sec, (long) t.tv_usec);
-	dev->writeData();
-	
+	if (debug > 2) printf("======= Loop / tSample: %10lds %06ldus =======\n", t.tv_sec, (long) t.tv_usec);
+    for (i = 0; i < nModules; i++) {
+        
+        // Check if the sampling time is met?!
+        dev[i]->getNextTimestamp(&tNext);
+        if (timercmp(&t, &tNext, >)) {
+            dev[i]->setLastTimestamp(&t);
+            dev[i]->writeData();
+        }
+    }
+    
 	fflush(stdout);
 	return(0);
 }
@@ -250,6 +329,7 @@ int DataServer::handle_timeout(){
 
 
 int DataServer::read_from_keyboard(){
+    int i;
 	int err;
 	char buf[256];
 	//char dataName[255];
@@ -276,7 +356,9 @@ int DataServer::read_from_keyboard(){
 		
 		this->debug++;
 		if (this->debug > 2) this->debug = 0;
-		dev->setDebugLevel(debug);
+        for (i = 0; i < nModules; i++) {
+            dev[i]->setDebugLevel(debug);
+        }
 		printf("Switched debug level to %d\n", this->debug);
 		break;
 		
@@ -292,7 +374,9 @@ int DataServer::read_from_keyboard(){
 		
 	case 'n': // force new file
 	case 'N':
-		dev->openNewFile();
+        for (i = 0; i < nModules; i++) {
+            dev[i]->openNewFile();
+        }
 		break;
 		
 	case 'q': // Shutdown server

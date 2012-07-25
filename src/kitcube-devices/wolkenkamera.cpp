@@ -20,7 +20,7 @@ wolkenkamera::wolkenkamera():DAQBinaryDevice(){
 	noData = 99999;
 	
 	// There are non scalar variables to be stored
-	dataTablePrefix = "Profiles";
+	//dataTablePrefix = "Profiles";
 }
 
 
@@ -36,7 +36,7 @@ const char *wolkenkamera::getDataDir(){
 	char line[256];
 	
 	// TODO: evtl. an zu definierende Verzeichnisstruktur anpassen
-	sprintf(line, "%s/small/", moduleName.c_str());
+	sprintf(line, "%s/data/", moduleName.c_str());
 	buffer = line;
 	
 	return(buffer.c_str());
@@ -52,11 +52,6 @@ unsigned int wolkenkamera::getSensorGroup(){
 		number = 1;
 		buffer = "standard";
 	}
-
-	if (sensorGroup == "stat") {
-		number = 2;
-		buffer = "statistic";
-	}
 	
 	return( number);
 }
@@ -71,23 +66,28 @@ int wolkenkamera::readHeader(const char *filename) {
 	
 	if (sensorGroup == "jpg"){	// read jpg file and write file name?!
 	
+        if (nSensors < 4) {
+			printf("Error: Sensor defintion does not match to the implementation\n");
+			throw std::invalid_argument("Sensor definition too short\n");
+        }
+        
 		sensor[0].comment = "sky picture";
 		sensor[0].data_format = "<binary>";
 		sensor[0].type = "profile";
+
+		sensor[1].comment = "mean pixel brightness";
+		sensor[1].data_format = "<scalar>";
 		
+		sensor[2].comment = "number of black pixel";
+		sensor[2].data_format = "<scalar>";
+
+		sensor[3].comment = "number of white pixel";
+		sensor[3].data_format = "<scalar>";
+        
 		profile_length = 0;	// TODO/FIXME: do we need this here? this is done in daqdevice constructor, too
 		
 	}
 	
-	
-	if (sensorGroup == "stat"){	// read jpg file and calculate some statistics
-
-		// TODO: Where should be the master definition ???
-		
-		
-		
-	}
-		
 	for (i = 0; i < nSensors; i++) {
 		sensor[i].height = 4;
 		//printf("Sensor %3d: %s, %.1f\n", i+1, sensor[i].comment.c_str(), sensor[i].height);
@@ -117,6 +117,7 @@ void wolkenkamera::readData(std::string full_filename){
 	long lastIndex;
 	//struct timeval tWrite;
 	struct tm time_stamp_data;
+    double *local_sensorValue;
 	
 #ifdef USE_MYSQL
 	struct timeval t0, t1;
@@ -130,11 +131,10 @@ void wolkenkamera::readData(std::string full_filename){
 	std::string sql;
 	char sData[50];
 #endif
-	
+
+    
 	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
-	
-	
 	
 	
 	// Compile file name
@@ -147,15 +147,9 @@ void wolkenkamera::readData(std::string full_filename){
 		readHeader(filenameData.c_str());
 	
 #ifdef USE_MYSQL
-	if (db == 0) {
-		openDatabase();
-	} else {
-		// Automatic reconnect
-		if (mysql_ping(db) != 0){
-			printf("Error: Lost connection to database - automatic reconnect failed\n");
-			throw std::invalid_argument("Database unavailable\n");
-		}
-	}
+    if ((db == 0) || (mysql_ping(db) != 0))
+        openDatabase();
+
 #endif
 
 	// Get the last time stamp + file pointer from
@@ -186,7 +180,16 @@ void wolkenkamera::readData(std::string full_filename){
 
 	
 	if (sensorGroup == "jpg"){
-	
+
+        local_sensorValue = new double [nSensors];
+        for (int j=0; j<nSensors;j++){
+            local_sensorValue[j] = noData;
+        }        
+        
+        // Calculate the image properties
+        // Stores directly in sensors field
+        readDataWithPython(full_filename.c_str(), local_sensorValue+1);
+        
 	// write data to DB
 #ifdef USE_MYSQL
 	if (db > 0){
@@ -195,18 +198,28 @@ void wolkenkamera::readData(std::string full_filename){
 		//printf("Write record to database\n");
 		sql = "INSERT INTO `";
 		sql += dataTableName + "` (`usec`";
-		for (int j = 0; j < nSensors; j++) {
-			sql += ",`";
-			sql += sensor[j].name;
-			sql += "`";
+        sql += ",`";
+        sql += sensor[0].name;
+        sql += "`";        
+		for (int j = 1; j < nSensors; j++) {
+            if (local_sensorValue[j] != noData){
+			   sql += ",`";
+			   sql += sensor[j].name;
+			   sql += "`";
+            }
 		}
 		sql += ") VALUES (";
 		sprintf(sData, "%ld", timegm(&time_stamp_data) * 1000000);
 		sql += sData;
-		for (int j = 0; j < nSensors; j++) {
-			sql += ",";
-			sprintf(sData, "'%s'", filename.c_str());
-			sql += sData;
+        sql += ",";
+        sprintf(sData, "'%s'", filename.c_str());
+        sql += sData;
+		for (int j = 1; j < nSensors; j++) {
+            if (local_sensorValue[j] != noData){
+  			   sql += ",";
+			   sprintf(sData, "'%f'", local_sensorValue[j]);
+			   sql += sData;
+            }
 		}
 		sql += ")";
 		
@@ -233,13 +246,10 @@ void wolkenkamera::readData(std::string full_filename){
 	}
 #endif // of USE_MYSQL
 	
+        
+        delete [] local_sensorValue;
 	} 
 	
-	
-	if (sensorGroup == "stat"){
-		readDataWithPython(filename.c_str());
-	}
-		
 		
 	// file read
 	fd_eof = true;

@@ -1,8 +1,49 @@
 ChangeLog - kitcube-tools 
 A. Kopmann
 
+TODO:
+- Create project for kitcubestatus (first version in kitcube-tools/php)
+  Second version in ~/Sites
+
+
+Version 0.25:
+ - Added new file format of the radio probes. The header is not avaibale
+   so that the reference time needs to be extracted from the filename.
+   Note: this is only ossible with a hour precision.
+   24.7.12 (ak)
+ - Added script to export the lastest files from the archive folder to 
+   a removable disk for data storage.
+   16.7.12 (ak)
+ - Added multi-module operation for data server kitcube-data 
+ - Added code to create status table in the database also for kitcube-monitor.
+ - Improved semaphores for push_backup.sh. 
+   Started central configuration file for scripts (kitcube_conf.sh)
+   10.7.12 (ak)
+ - Improved sync-script semaphores. The PID of the sync-process is checked 
+   in addition to the existance of the file itself.
+   26.6.12 (ak)
+ - Added group tag to the rsync key in the alarm system.
+   The group key is given by any name extension to the append-filter file
+   25.6.12 (ak) 
+ - Improved error handling of device Regenwippe
+   23.6.12 (ak)
+ - Introduced error counter. Stop after the third try?!
+   22.6.12 (ak)
+ - Added time machine like backup script.
+   The kitcube installation is copied daily to katrin.kit.edu
+   21.6.12 (ak)
+ - Added python evalation for cloud camera images.
+   7.6.12 (ak)
 
 Version 0.24:
+ - kitcube-monitor: Added function to retrieve values from the database
+   6.6.12 (ak)
+ - Fixed bug in the alarm system. If the same value was written twice this was
+   interpretated as key not available and the complete entry with all setting was
+   reseted.
+   7.5.12 (ak)
+ - Added simplified implementation of BSD-like date command
+   23.4.12 (ak)
  - Implementation for Parsivel added. Evaluated benefit of compression 
    for complex (= blob) data in the database. 
  - Implementation for soil moisture probe (sisomop.cpp) added.

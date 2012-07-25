@@ -3,7 +3,7 @@
 ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = foreign 1.4
 
-SUBDIRS = bin etc src 
+SUBDIRS = bin etc src releases 
 
 EXTRA_DIST = kitcube-tools.doxygen.in kitcube-tools.spec.in 
 

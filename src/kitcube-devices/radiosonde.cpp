@@ -41,6 +41,12 @@ int radiosonde::readHeader(const char *filename)
 		return -1;
 	}
 	
+    // TODO: Find out if it's old or new format
+    // The new format does not contain any header the reference time
+    // need to be estimated from the file name
+    // 
+    
+    
 	// read 1st line of header to get start time
 	if (read_ascii_line(&line_of_data, &len, data_file_ptr) == -1) {
 		free(line_of_data);
@@ -53,11 +59,39 @@ int radiosonde::readHeader(const char *filename)
 	// get start date and time
 	puffer = strptime(line_of_data, "Datum : %d.%m.%Y\tStartzeit: %T", &start_time_l);
 	if (puffer == NULL) {
-		printf("Radiosonde: Error reading date and time string!\n");
-		free(line_of_data);
-		return -1;
+        
+        // Check if's the new data format wo header
+        if (strstr(line_of_data, "Zeit") == line_of_data) {
+            // Parse date from filename
+            long int index;
+            char *ptrName; 
+            
+            puffer = NULL;
+            ptrName = strrchr((char *) filename, '/');
+            if (ptrName == NULL) 
+                ptrName = (char *) filename;
+            else 
+                ptrName++;
+            index = getFileNumber(ptrName);
+            
+            char strIndex[20];
+            sprintf(strIndex, "%ld", index);
+            puffer = strptime(strIndex, "%Y%m%d%H", &start_time_l);
+            
+            //printf("%ld --> %02d.%02d.%4d %02d:%02d:%02d \n", index, 
+            //       start_time_l.tm_mday, start_time_l.tm_mon+1, start_time_l.tm_year+1900,
+            //       start_time_l.tm_hour, start_time_l.tm_min, start_time_l.tm_sec);
+        }          
+       
 	}
+
+	if (puffer == NULL) {
+        printf("Radiosonde: Error reading date and time string!\n");
+        free(line_of_data);
+        return -1;
+    }
 	
+    
 	// get seconds since the Epoch
 	start_time.tv_sec = timegm(&start_time_l);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
 	
@@ -115,15 +149,15 @@ int radiosonde::parseData(char *line, struct timeval *l_tData, double *sensorVal
 {
 	char *puffer;
 	int min, sec;
-	int i;
-	
+	int i;	
 	
 	if (debug >= 4)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
 	
 	// save start time to data time stamp variable
-	*l_tData = start_time;
+    l_tData->tv_sec = start_time.tv_sec;
+    l_tData->tv_usec = 0;
 	
 	// read minutes and seconds since the start of the measurement
 	if (sscanf(line, "%d:%d", &min, &sec) != 2)
@@ -134,12 +168,13 @@ int radiosonde::parseData(char *line, struct timeval *l_tData, double *sensorVal
 	
 	
 	// read sensor values
-	puffer = strtok(line + 8, " ");
+	puffer = strtok(line + 8, " \t");
 	i = 0;
 	while (puffer != NULL) {
-		if (sscanf(puffer, "%lf", sensorValue + i) != 1)
-			*(sensorValue + i) = noData;
-		puffer = strtok(NULL, " \r\n");
+		if (sscanf(puffer, "%lf", sensorValue + i) != 1){
+            *(sensorValue + i) = noData;
+        }
+		puffer = strtok(NULL, " \t\r\n");
 		i++;
 	}
 	

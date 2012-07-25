@@ -12,5 +12,7 @@ if len(sys.argv) < 2:
 
 
 image = sys.argv[1]
-CC2.mean(image)
+res = CC2.mean(image)
+
+print "Result : " + str(res)
 

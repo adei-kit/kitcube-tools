@@ -10,7 +10,6 @@
 #ifndef DAQDEVICE_H
 #define DAQDEVICE_H
 
-#define USE_PYTHON
 
 #ifdef USE_PYTHON
 #include <Python.h>
@@ -110,6 +109,15 @@ public:
 	/** Return the samping time of the device */
 	void getSamplingTime(struct timeval *time);
 	
+    /** Get the last sampling time **/
+    void getLastTimestamp(struct timeval *time);
+    
+    /** Get the last sampling time **/
+    void getNextTimestamp(struct timeval *time);
+    
+    /** Set last timestamp */
+    void setLastTimestamp(struct timeval *time);
+    
 	void createDirectories(const char *path);
 	
 	/** Set filename for reading data */
@@ -137,6 +145,9 @@ public:
 	  */
 	virtual void openDatabase();
 	
+    /** Crete status table, if necessary */
+    void openStatusTab();
+    
 	/** Connect to the database "<project>_active". The database is
 	  * created, if not existing. 
 	  * The function is included from openDatabase(). */
@@ -233,12 +244,17 @@ public:
 	  * contains a list a assignments for known parameters. */
 	int setValue(const char *key, const char *assign);
 
+    /** Get a value from the database */
+    int getValue(const char *key, const char *parameter, std::string *value);
+    
 	/** Modify an parameter in the status list. The parameter assign
 	  * contains a list a assignments for known parameters. 
 	  * The function modifies all entries with the specified 
 	  * module number */
 	int setValue(int module, const char *assign);
 #endif		
+    
+    
 	
 protected:
 	/** Use the microsecond ticks when storing the data (default: yes). */
@@ -255,7 +271,10 @@ protected:
 	
 	/** Sampling time of the daq module in milliseconds */
 	int tSample; 
-	
+    
+    /** Timestamp of the last sample writen by the data server */
+    struct timeval tLastData;
+    
 	/** Maximal allowed delay time before an alarm will be generated (sec) */
 	int tAlarm; 
 	
@@ -436,7 +455,7 @@ protected:
 	  * The function is an alternative to the function parseData() 
 	  * Q: How many values?
 	  */
-	void readDataWithPython(const char *filename);
+	void readDataWithPython(const char *filename, double *sensorValue);
 
 	
 	/** Debug level (0 = no debug)*/

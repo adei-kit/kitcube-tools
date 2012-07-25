@@ -30,7 +30,7 @@ void DAQBinaryDevice::openFile(){ // for writing
 	std::string fullFilename;
 	std::string copy_command;
 	
-	printf("_____DAQBinaryDevice::openFile_____\n");
+	if (debug > 2) printf("_____DAQBinaryDevice::openFile_____\n");
 	
 	// Check if template file is existing and contains header + data
 	nameTemplate = configDir + datafileTemplate;
@@ -150,7 +150,7 @@ void DAQBinaryDevice::writeData(){
 		close(fd_templ);
 		
 		// Compile the data set for writing to the data file
-		if (debug >= 1)
+		if (debug > 2)
 			printf("Received %4d bytes\n", n);
 		
 		// Replace time stamp
@@ -215,15 +215,8 @@ void DAQBinaryDevice::readData(std::string full_filename){
 	//printf("<%s> <%s> <%s>\n", dir, filename, filenameData.c_str());	
 	
 #ifdef USE_MYSQL
-	if (db == 0) {
-		openDatabase();
-	} else {
-		// Automatic reconnect
-		if (mysql_ping(db) != 0){
-			printf("Error: Lost connection to database - automatic reconnect failed\n");
-			throw std::invalid_argument("Database unavailable\n");
-		}
-	}
+    if ((db == 0) || (mysql_ping(db) != 0))
+        openDatabase();
 #endif
 	
 	// Allocate memory for one data set
@@ -357,6 +350,8 @@ void DAQBinaryDevice::readData(std::string full_filename){
 						sql += "'";
 					}
 				} else {
+                    // TODO: Add code from ASCIIDev !!
+                    //       Read profile data in class internal buffer and copy in parseData !!!
 					for (i = 0; i < nSensors; i++) {
 						if (local_sensorValue[i] != noData) {
 							sql += ",";

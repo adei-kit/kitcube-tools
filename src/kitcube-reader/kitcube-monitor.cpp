@@ -68,12 +68,18 @@ void displayModules(MYSQL_RES *res, const char *title = "device list"){
 		sscanf(row[2], "%ld", &tdb);
 		tdiff = t.tv_sec - tdb;
 		ts = gmtime( &tdb);
-		printf("%4d:%02d:%02d | ", ts->tm_hour, ts->tm_min, ts->tm_sec);
-		printf("%6ld:%02ld:%02ld |", tdiff/3600, (tdiff/60)%60, tdiff%60);
+        if (tdiff < 172800) { // two days
+            printf("%4d:%02d:%02d | ", ts->tm_hour, ts->tm_min, ts->tm_sec);
+            printf("%6ld:%02ld:%02ld |", tdiff/3600, (tdiff/60)%60, tdiff%60);
+        } else {
+            printf("%02d.%02d.%04d | ", ts->tm_mday, ts->tm_mon+1, ts->tm_year+1900);
+            printf("%7ld days |", tdiff/86400);            
+        }
 		alarm = "";
 		alarmLimit = atoi(row[6]);
 		alarmEnable = atoi(row[8]);
-		if (atoi(row[8]) == 0) alarm = "Disabled"; // Alarm is disabled
+        if (atoi(row[6]) == 0) alarm = "--------"; // No alarm configured
+        else if (atoi(row[8]) == 0) alarm = "disabled"; // Alarm is disabled
 		//secData+alarmLimit < UNIX_TIMESTAMP() && alarmLimit > 0 && alarmEnable = 1"
 		else if ((tdiff > alarmLimit) && (alarmLimit > 0) && alarmEnable) alarm = "ALARM"; // Has alarm
 		printf("%10s || ", alarm.c_str());
@@ -90,6 +96,7 @@ void displayModules(MYSQL_RES *res, const char *title = "device list"){
 	}
 		
 }
+
 
 
 /** Monitoring the kitcube-tools
@@ -113,6 +120,7 @@ int main(int argc, char *argv[]){
 	std::string settings;
 	std::string host = "localhost";
 	std::string cmd = "stat";
+    std::string value;
 
 	bool getAppIdFromName = false;
 	//bool isLinkedApp = false;
@@ -279,9 +287,10 @@ int main(int argc, char *argv[]){
 		printf("\t   alarmEnable <module>\tEnable the alarm handler\n");
 		printf("\t   alarmDisable <module>\tDisable the alarm handler\n");
 		printf("\t<cmd>\tCommands for scripting:\n");	
-		printf("\t   create <key> <assign>\tCreate new entry\n");		
+		printf("\t   create <key> <assign>\tCreate new entry\n");	
+        printf("\t   get <key> <parameter>\tGet a parameter\n");
 		printf("\t   set <key> <assign>\t\tSet parameter\n");		
-		printf("\t   set <module> <assign>\tSet parameter\n");		
+		printf("\t   set <module> <assign>\tSet parameter\n");
 		exit(0);
 	}
 
@@ -348,7 +357,11 @@ int main(int argc, char *argv[]){
 
 		
 		if (debug) printf("Connecting to kitcube status list (%s)\n", inifile.c_str());
-		dev->connectDatabase();	
+		dev->connectDatabase();
+		dev->openStatusTab();	
+        
+        // Check if database is existing?!
+        
 		if (debug) printf("Done\n");
 		accessStatuslist = true;
         
@@ -461,20 +474,20 @@ int main(int argc, char *argv[]){
 				if (!changes) 
 					printf("\n  --- no changes in the alarm status of the modules ---\n");
 			
+            } else if (cmd == "get") {
+                dev->getValue(key.c_str(), settings.c_str(), &value);
+				printf("Entry %s, %s: %s\n", key.c_str(), settings.c_str(), value.c_str());
 				
 			} else if (cmd == "set") {
 				printf("Entry %s: Set %s\n", key.c_str(), settings.c_str());
-				err = dev->setValue(key.c_str(), settings.c_str());
-				if (err) {
-					printf("Error: Failed to set values -- is the key available?\n");
-					rtrn = 1;
-				}
-			
+				dev->setValue(key.c_str(), settings.c_str());			
 				
 			} else if (cmd == "create") {
-				printf("Create entry %s\n", key.c_str());
+				printf("Create entry %s and set %s\n", key.c_str(), settings.c_str());
 				dev->createEntry(key.c_str());
-				
+                if (settings.length() > 0){
+                    dev->setValue(key.c_str(), settings.c_str());
+				}
 				
 			} else { 
 				// Display status (default operation)
@@ -486,7 +499,15 @@ int main(int argc, char *argv[]){
 			
 	} catch (...) {
 		//printf("No access to Statuslist\n");
-	}
+        
+ 		if (cmd == "create") {
+            rtrn = 1;
+        }
+ 		if (cmd == "set") {
+            rtrn = 1;
+        }
+	
+    }
 #endif
 		
 		

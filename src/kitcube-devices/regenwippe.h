@@ -37,7 +37,13 @@ public:
 	unsigned int getSensorGroup();
 
 private:
+    /** Last timestamp */
+    long timestamp_old;
+    /** Last sensor data */
 	int sensor_value_old;
+    
+    /** Counter for lines to show after unclear data */
+    int nShowData;
 
 };
 

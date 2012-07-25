@@ -29,7 +29,8 @@ Reader::Reader(): SimpleServer(READER_PORT){
 	rx = 0;
 	tx = 0;
 	disk_avail_gb = 0;
-	
+    
+    nError = 0; // Error counter
 }
 
 
@@ -181,7 +182,7 @@ void Reader::runReadout(){
 	//struct timeval tStart;
 	//char host[255];
 	int servicePort;
-	
+    
 	if (shutdown) return; // Do not start the server!!!
 	
 	
@@ -420,10 +421,19 @@ int Reader::handle_timeout(){
 			log->storeSensorData();
 			log->saveFilePosition(0,0,t0);
 		}
+        
+        
+        // Clear error flag
+        nError = 0;
 		
 	} catch (std::invalid_argument &err) {
-		shutdown = true;
-		printf("Error: %s\n", err.what());
+        if (nError < 3) {
+            nError +=1;
+            printf("\n==> Waiting for next interval\n");
+        } else {
+		  shutdown = true;
+		  printf("Error: %s\n", err.what());
+        }
 	}
 	
 

@@ -1,4 +1,4 @@
-Number of sensors: 8
+Number of sensors: 9
          1	First Cloud layer	CM.CM.H.CLOUD.001.AVG	H
          2	Cloud level 2	CM.CM.H.CLOUD.002.AVG	H
          3	Cloud level 3	CM.CM.H.CLOUD.003.AVG	H
@@ -7,3 +7,4 @@ Number of sensors: 8
          6	Penetration depth 3	CM.CM.H.PEN.003.AVG	H
          7	Vertical visibility	CM.CM.H.SV.001.AVG	H
          8	Detection range	CM.CM.H.DR.001.AVG	H
+         9	Lidar backscattering	CM.CM.B.BCO.001.PROF	B

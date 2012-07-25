@@ -33,5 +33,6 @@ public:
 	
 private:
 	struct timeval start_time;
+
 };
 #endif

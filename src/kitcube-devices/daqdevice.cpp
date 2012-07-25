@@ -477,16 +477,18 @@ void DAQDevice::loadPython(){
 		// Reload function first 
 		releasePython();
 	}
-	
+
 	Py_Initialize();
 	PyRun_SimpleString("import sys");
 	
-	// TODO: Add the directory of the python scripts here 
-    PyRun_SimpleString("sys.path.append('')");    
-	
+	// Add the directory of the python scripts here 
+    std::string path = "sys.path.append('" + pythonDir + "')";
+    PyRun_SimpleString(path.c_str());
+    //PyRun_SimpleString("sys.path.append('')");    
+    
 	pName = PyString_FromString(pythonModule.c_str());
     // Error checking of pName left out 
-	
+
     pModule = PyImport_Import(pName);
     Py_DECREF(pName);
 	
@@ -540,7 +542,12 @@ void DAQDevice::releasePython(){
 }
 
 
-void DAQDevice::readDataWithPython(const char *filename){
+// Die berechneten Größe sollten in einer Tabelle hinten stehen, 
+// dann kann man weiter ggf. leichter anfügen?!
+
+void DAQDevice::readDataWithPython(const char *filename, double *sensorValue){
+
+#ifdef USE_PYTHON
 	// TODO: Extend the function to revceive more than 
 	// one dataset from  a data file
 	// E.g. handle other complex data files?!
@@ -575,20 +582,30 @@ void DAQDevice::readDataWithPython(const char *filename){
 
 	// Copy the results to the sensors list
 	nRes = PyObject_Length(pResult);
-	if (nRes != nSensors) {
-		throw(std::invalid_argument("Number of results does not match nSensors"));		
+    //printf("Number of results: %d\n", nRes);
+    
+	if (nRes > nSensors) {
+		throw(std::invalid_argument("Number of results does not match sensor defintion"));		
 	}
+    
+    if (debug > 2) printf("Result: [");
 	for (i = 0; i<nRes; i++){
+        //printf("IsList: %d\n", PyList_Check(pResult));
 		pValue = PyList_GetItem(pResult, i);
-		printf("Result of call: %f\n", PyFloat_AsDouble(pValue));
+        if (pValue == NULL){
+            PyErr_Print();
+            throw(std::invalid_argument("PyList_GetItem error?!"));            
+        }
+		if (debug > 2) printf("%f ", PyFloat_AsDouble(pValue));
 		sensorValue[i] = PyFloat_AsDouble(pValue);
-		Py_DECREF(pValue);
+		//Py_DECREF(pValue); // Crashes with this command?! (ak)
 	}
+    if (debug > 2) printf("]\n");
+    
 	Py_DECREF(pResult);
-
-	// Store data 
-	storeSensorData();
-	
+  
+#endif
+    
 }
 
 
@@ -778,10 +795,14 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 			printf("%-20s : disabled\n", "Alarm delay");
 		printf("\n");
 		
+#ifdef USE_PYTHON        
 		if (pModule > 0){
 			printf("%-20s : %s.py, %s()\n", "Python script", 
 				   pythonModule.c_str(), pythonFunction.c_str());
 		}
+#else
+        printf("%-20s : %s\n", "Python script", "Feature disabled");
+#endif
 	}	
 
 }
@@ -888,6 +909,22 @@ void DAQDevice::getSamplingTime(struct timeval *time){
 	time->tv_sec = tSample / 1000;
 	time->tv_usec = (tSample%1000) * 1000;
 }
+
+void DAQDevice::getLastTimestamp(struct timeval *time){
+	time->tv_sec = tLastData.tv_sec;
+	time->tv_usec = tLastData.tv_usec;
+}
+
+void DAQDevice::getNextTimestamp(struct timeval *time){
+	time->tv_sec = tLastData.tv_sec + tSample / 1000;
+	time->tv_usec = tLastData.tv_usec + (tSample%1000) * 1000;
+}
+
+void DAQDevice::setLastTimestamp(struct timeval *time){
+    tLastData.tv_sec = time->tv_sec;
+    tLastData.tv_usec = time->tv_usec;
+}
+
 
 
 unsigned int DAQDevice::getModuleNumber(){
@@ -1027,12 +1064,14 @@ void DAQDevice::connectDatabase() {
 
 	// allocate MYSQL object
 	// TODO: only, if it does not exist yet!
-	db = mysql_init(NULL);
-	if (db == NULL) {
-		printf("Error allocating MYSQL object!\n");
-		// TODO: error handling
+    if (db == 0){
+        db = mysql_init(NULL);
+        if (db == NULL) {
+            printf("Error allocating MYSQL object!\n");
+            // TODO: error handling
+        }
 	}
-	
+    
 	// Enable automatic reconnect
 	my_bool re_conn = 1;
 	mysql_options(db, MYSQL_OPT_RECONNECT, &re_conn);
@@ -1342,8 +1381,34 @@ void DAQDevice::openDatabase() {
 		printf("\n");
 	}
 	
+    res = mysql_store_result(db);
+	mysql_free_result(res);
+
 	
-	// Create status table
+    // Create status table
+    openStatusTab();
+    
+	
+	// Register in the status list
+    registerStatusTab("Starting");
+	
+	
+#endif // USE_MYSQL
+}
+
+
+void DAQDevice::openStatusTab() {
+#ifdef USE_MYSQL
+	std::string cmd;
+	MYSQL_RES *res;
+	std::string sql;
+	
+	
+	if (debug > 2)
+		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
+	    
+    
+    // Create status table
 	// Get list of cols in data table
 	sql ="SHOW COLUMNS FROM " + statusTableName;
 	if (mysql_query(db, sql.c_str())) {
@@ -1363,16 +1428,16 @@ void DAQDevice::openDatabase() {
 		cmd += "`moduleName` text, ";				// name of the module
 		cmd += "`sensorGroup` text, ";				// sensor group of the module
 		cmd += "`sensorName` text, ";				// sensor name 
-
+        
 		cmd += "`secData` bigint default '0', ";	// ts of last data
 		cmd += "`valueData` double, ";				// value last data
-
+        
 		cmd += "`alarmEnable` int(10) default '1', "; // enable / disable alarm handling
 		cmd += "`alarmLimit` int(10) default '0', ";  // delay of alarm
 		cmd += "`alarmLow` double, ";				// lower alarm limit
 		cmd += "`alarmHigh` double, ";				// upper alarm limit
 		cmd += "`alarmTime` int(10) default '0', ";	// limit
-
+        
 		cmd += "`secAlarm` bigint default '0', ";	// ts of alarm condition (report after alarmTime)
 		cmd += "`alarm` int(10) default '0', ";		// flag: alarm has been reported 
 		cmd += "`status` text, ";					// ???			
@@ -1397,14 +1462,11 @@ void DAQDevice::openDatabase() {
 	}
 	res = mysql_store_result(db);
 	mysql_free_result(res);
-	
-	
-	// Register in the status list
-	registerStatusTab("Starting");
-	
+
+    
 #endif // USE_MYSQL
 }
-
+    
 
 int DAQDevice::create_data_table() {
 	/***********************************************************************
@@ -1519,7 +1581,7 @@ void DAQDevice::registerStatusTab(const char *status, const char *comment){
 	sql += "` WHERE `skey` = '";
 	sql += statusTableKey;
 	sql += "' ";
-	
+        
 	if (mysql_query(db, sql.c_str())){
 		fprintf(stderr, "%s\n", sql.c_str());
 		fprintf(stderr, "%s\n", mysql_error(db));
@@ -1575,7 +1637,7 @@ void DAQDevice::registerStatusTab(const char *status, const char *comment){
 	sql += ",`moduleName`= '";
 	sql += moduleName;
 	sql += "'";
-	sql += ", `appName` = 'Reader'";
+	sql += ", `appName` = 'reader'";
 	sql += ", `appId` = ";
 	sprintf(sData, "%d", appId);
 	sql += sData;
@@ -1626,6 +1688,10 @@ void DAQDevice::storeSensorData(){
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 			
 #ifdef USE_MYSQL
+    if ((db == 0) || (mysql_ping(db) != 0))
+        openDatabase();
+    
+/*    
 	if (db == 0) {
 		openDatabase();
 	} else {
@@ -1635,6 +1701,7 @@ void DAQDevice::storeSensorData(){
 			throw std::invalid_argument("Database unavailable\n");
 		}
 	}
+ */
 #endif
 
 	
@@ -2225,26 +2292,26 @@ void DAQDevice::createEntry(const char *key){
 		mysql_free_result(res);
 	}
 	
+    if (rows > 0){
+		printf("Error: Entry already exists\n");
+		throw std::invalid_argument("Entry already exisits");        
+    }
+    
 	// Create entry if not existing
-	// TODO: Use unique key!?
-	if (rows == 0){
-
-		sql = "INSERT INTO `";
-		sql += statusTableName;
-		sql += "` ( `skey` ) VALUES ('";
-		sql += key;
-		sql += "') ";
+    sql = "INSERT INTO `";
+    sql += statusTableName;
+    sql += "` ( `skey` ) VALUES ('";
+    sql += key;
+    sql += "') ";
 		
-		if (mysql_query(db, sql.c_str())){
+    if (mysql_query(db, sql.c_str())){
 			fprintf(stderr, "%s\n", sql.c_str());
 			fprintf(stderr, "%s\n", mysql_error(db));
 			
 			// If this operation fails do not proceed in the file?!
 			printf("Error: Unable to access database\n");
 			throw std::invalid_argument("Create entry failed");
-		}	 		
-		
-	}
+    }	 		
 	
 	return;
 }
@@ -2255,6 +2322,34 @@ int DAQDevice::setValue(const char *key, const char *assign){
 	std::string sql;
 	int rows;
 
+    
+  	sql = "SELECT * FROM `";
+	sql += statusTableName;
+	sql += "` WHERE `skey` = '";
+	sql += key;
+	sql += "'";
+	
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to access database\n");
+		throw std::invalid_argument("Set parameters failed");
+	}	 
+	
+	MYSQL_RES *res;
+	res = mysql_store_result(db);
+	rows = 0;
+	if (res != NULL) {
+		rows = mysql_num_rows(res);
+		mysql_free_result(res);
+	}
+	
+    if (rows == 0){
+		printf("Error: Entry does not exist\n");
+		throw std::invalid_argument("Entry does not exisit");        
+    }
 	
 	sql = "UPDATE `";
 	sql += statusTableName + "` SET ";
@@ -2274,19 +2369,98 @@ int DAQDevice::setValue(const char *key, const char *assign){
 		throw std::invalid_argument("Set parameter failed");
 	}	 
 			
-	rows = mysql_affected_rows(db);
-	if (debug > 3) printf("Affected rows = %d\n", rows);
+	if (debug > 3) {
+        rows = mysql_affected_rows(db);
+        printf("Affected rows = %d\n", rows);
 
-	if (rows == 0) return 1;	
+        if (rows == 0) 	
+            printf("Data has not been changed\n");
+    }
 		
 	return 0;
 }
+
+
+int DAQDevice::getValue(const char *key, const char *parameter, std::string *value){
+	std::string sql;
+	int rows;
+    
+    *value = "";
+    
+  	sql = "SELECT ";
+    sql += parameter; 
+    sql += " FROM `";
+	sql += statusTableName;
+	sql += "` WHERE `skey` = '";
+	sql += key;
+	sql += "'";
+	
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to access database\n");
+		throw std::invalid_argument("Get parameter failed");
+	}	 
+ 
+	MYSQL_RES *res;
+    MYSQL_ROW row;
+	res = mysql_store_result(db);
+	rows = 0;
+	if (res != NULL) {
+        rows = mysql_num_rows(res);
+        if (rows == 0){
+            printf("Error: Key does not exist\n");
+            throw std::invalid_argument("Key does not exisit");        
+        }
+        
+        while ((row = mysql_fetch_row(res)) != NULL) {
+            if (row[0] == 0)
+                *value = "NULL";
+            else
+                *value = row[0];
+        }
+		mysql_free_result(res);
+	}
+	   
+	return 0;    
+    
+}
+
 
 int DAQDevice::setValue(int module, const char *assign){
 	std::string sql;
 	char sValue[10];
 	int rows;
 
+    sql = "SELECT * FROM `";
+	sql += statusTableName;
+	sql += "` WHERE `module` = ";
+	sprintf(sValue, "%d", module);
+	sql += sValue;
+	
+	if (mysql_query(db, sql.c_str())){
+		fprintf(stderr, "%s\n", sql.c_str());
+		fprintf(stderr, "%s\n", mysql_error(db));
+		
+		// If this operation fails do not proceed in the file?!
+		printf("Error: Unable to access database\n");
+		throw std::invalid_argument("Set parameters failed");
+	}	 
+	
+	MYSQL_RES *res;
+	res = mysql_store_result(db);
+	rows = 0;
+	if (res != NULL) {
+		rows = mysql_num_rows(res);
+		mysql_free_result(res);
+	}
+	
+    if (rows == 0){
+		printf("Error: Entry does not exist\n");
+		throw std::invalid_argument("Entry does not exisit");        
+    }
 	
 	sql = "UPDATE `";
 	sql += statusTableName + "` SET ";
@@ -2304,11 +2478,15 @@ int DAQDevice::setValue(int module, const char *assign){
 		throw std::invalid_argument("Set parameter failed");
 	}	 
 	
-	rows = mysql_affected_rows(db);
-	if (debug > 3) printf("Affected rows = %d\n", rows);
+	if (debug > 3) {
+        rows = mysql_affected_rows(db);
+        
+        printf("Affected rows = %d\n", rows);
 
-	if (rows == 0) return 1;	
-			
+        if (rows == 0) 	
+            printf("Data has not been changed\n");
+    }
+    
 	return 0;
 }
 

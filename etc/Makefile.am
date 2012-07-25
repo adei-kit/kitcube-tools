@@ -1,10 +1,10 @@
 # Makefile.am
 #
 
-SUBDIRS = rsync
+SUBDIRS = cron rsync
 
 EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
-	kitcube.ini.ipepdvadei2 \
+	kitcube.ini.ipepdvadei2 kitcube_conf.sh \
 	Makefile.backup.imk-data1 \
 	kitcube-data.ipepdvadei kitcube-reader.ipepdvadei \
 	kcr-sim kcr-cm \
@@ -23,6 +23,7 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	EB1.DAS.sensors EB1.DAL.sensors EB1.DAR.sensors EB1.DAX.sensors SM11.txt.sensors \
 	EB2.DAS.sensors EB2.DAL.sensors EB2.DAR.sensors EB2.DAX.sensors SM12.txt.sensors \
 	PT20.DAL.sensors PT20.DAR.sensors \
+	#M11_01.DAS.template M11_01.DAL.template M11_01.DAX.template M11_01.DAR.template \
 	3M1.data.sensors data.csv.template \
 	3M1.gps.sensors gps.csv.template \
 	3M1.sonic.sensors sonic.csv.template \
@@ -46,8 +47,9 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	regenwippe.dat.sensors w20090826.dat.template \
 	20090625.chm.sensors 20090625.chm.template \
 	wolkenkamera.jpg.sensors \
+	parsivel.dat.sensors \
 	SimRandom.txt.sensors \
-	SysLog.sensors \
+	SysLog.sensors sysci.sensors \
 	norbert.dat.sensors norbert.dat.template
 
 

@@ -254,15 +254,9 @@ void windcube::readData(std::string full_filename){
 	
 	
 #ifdef USE_MYSQL
-	if (db == 0) {
-		openDatabase();
-	} else {
-		// Automatic reconnect
-		if (mysql_ping(db) != 0){
-			printf("Error: Lost connection to database - automatic reconnect failed\n");
-			throw std::invalid_argument("Database unavailable\n");
-		}
-	}
+    if ((db == 0) || (mysql_ping(db) != 0))
+        openDatabase();
+
 #endif
 	
 	if (sensorGroup == "sta") {
