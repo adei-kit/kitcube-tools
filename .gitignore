@@ -25,6 +25,7 @@ src/kitcube-devices/test-device
 src/kitcube-data/kitcube-data
 src/kitcube-reader/kitcube-reader
 src/kitcube-reader/kitcube-reader-mysql
+src/bsddate/bsddate
 #
 # Sample data files
 #
