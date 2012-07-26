@@ -103,58 +103,5 @@ AC_CHECK_HEADERS(IOKit/firewire/IOFirewireLib.h)
 
 
 
-
-
-dnl
-dnl Find path to gps header files
-dnl The path is used to generate the documentation
-dnl
-
-GPSONCORE="SorryNoGpsServerHeaderFound"
-if test -x "/opt/auger/fdhwlib/include/gpsoncore" ; then
-  GPSONCORE=/opt/auger/fdhwlib/include/gpsoncore
-fi
-if test -x "$HOME/include/fdhwlib/gpsoncore" ; then
-  GPSONCORE=$HOME/include/fdhwlib/gpsoncore
-fi
-if test -x "$HOME/src/fdhwlib/fdhwlib/gpsoncore" ; then
-  GPSONCORE=$HOME/src/fdhwlib/fdhwlib/gpsoncore
-fi
-
-AC_SUBST(GPSONCORE)
-
-
-dnl
-dnl Find path to gps header files
-dnl The path is used to generate the documentation
-dnl
-
-FEDATA="SorryNoFEdataHeaderFound"
-if test -x "/opt/auger/fdhwlib/include/FEdata" ; then
-  FEDATA=/opt/auger/fdhwlib/include/FEdata
-fi
-if test -x "$HOME/include/fdhwlib/FEdata" ; then
-  FEDATA=$HOME/include/fdhwlib/FEdata
-fi
-if test -x "$HOME/src/fdhwlib/fdhwlib/FEdata" ; then
-  FEDATA=$HOME/src/fdhwlib/fdhwlib/FEdata
-fi
-
-AC_SUBST(FEDATA)
-
-
-dnl
-dnl Get version of fdhwlib package
-dnl
-FDHWLIB_VERSION="`fdhwlib -v`"
-FDHWLIB_RELEASE="`fdhwlib -r`"
-FDHWLIB_BUILDDATE="`fdhwlib -b`"
-
-AC_SUBST(FDHWLIB_VERSION)
-AC_SUBST(FDHWLIB_RELEASE)
-AC_SUBST(FDHWLIB_BUILDDATE)
-
-
-
 AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile bin/Makefile etc/Makefile etc/rsync/Makefile src/Makefile src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile src/bsddate/Makefile releases/Makefile releases/ipecube/Makefile releases/hatzenbuehl/Makefile releases/corte/Makefile releases/inra/Makefile)
 
