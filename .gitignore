@@ -26,6 +26,11 @@ src/kitcube-data/kitcube-data
 src/kitcube-reader/kitcube-reader
 src/kitcube-reader/kitcube-reader-mysql
 #
+# Sample data files
+#
+etc/*.template
+releases/*/kitcube-tools/*.template
+#
 # Package tar-balls
 *.tar.gz
 #
@@ -51,6 +56,6 @@ old/*
 #
 # Links from other packages
 akutil
-fdhwlib.h
+#fdhwlib.h
 fdhwlib
 
