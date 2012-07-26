@@ -6,8 +6,9 @@ AM_INIT_AUTOMAKE(kitcube-tools, 0.25)
 
 
 AC_LANG_CPLUSPLUS
-AM_PROG_LIBTOOL
-
+# LIBTOOL sometimes produces no binary files on OSX
+#AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 
 dnl
 dnl Add the base include directory
@@ -73,33 +74,6 @@ AC_SUBST(PYTHON)
 AC_SUBST(PYTHON_LIBS)
 AC_SUBST(USE_PYTHON_DEFINE)
 AM_CONDITIONAL(USE_PYTHON, test "x$ac_cv_header_Python_h" = "xyes")
-
-
-
-dnl
-dnl Check DAQ File Format
-dnl
-dnl AC_CHECK_HEADERS(MiEvent.hh)
-AC_MSG_CHECKING(for FD DAQ file format)
-if test -x "`echo $FD_ROOT`"; then
-  FDDAS="FD DAQ support"
-  AC_MSG_RESULT(yes)
-else
-  FDDAS="FD DAQ support  disabled"
-  AC_MSG_RESULT(no)
-fi
-AC_SUBST(FDDAS)
-AC_DEFINE(HAVE_FDDAS, 1, [FD DAQ file format])
-AM_CONDITIONAL(USE_FDDAS, test -x "`echo $FD_ROOT`")
-
-
-dnl
-dnl Check other packages
-dnl TODO: Add optional also the microenable access
-dnl
-AC_CHECK_HEADERS(fdhwlib.h)
-AC_CHECK_HEADERS(libraw1394/raw1394.h)
-AC_CHECK_HEADERS(IOKit/firewire/IOFirewireLib.h)
 
 
 

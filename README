@@ -20,6 +20,7 @@ run "make" in directory akutil
 # aclocal
 # autoheader  --> config.h.in
 # (libtoolize --copy --force)  --> config.sub, config.guess, ltmain.sh
+# (cp /usr/local/bin/libtool .)
 # automake    --> Makefile.in
 # (automake --add-missing)
 # autoconf    --> configure

@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <time.h>
 
-main(int argc, char ** argv){
+int main(int argc, char ** argv){
 
 	const char *inFormat;
 	const char *outFormat;
