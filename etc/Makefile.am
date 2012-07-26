@@ -1,7 +1,7 @@
 # Makefile.am
 #
 
-SUBDIRS = cron rsync
+SUBDIRS = rsync
 
 EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	kitcube.ini.ipepdvadei2 kitcube_conf.sh \

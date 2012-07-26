@@ -156,5 +156,5 @@ AC_SUBST(FDHWLIB_BUILDDATE)
 
 
 
-AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile bin/Makefile etc/Makefile etc/cron/Makefile etc/rsync/Makefile src/Makefile src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile src/bsddate/Makefile releases/Makefile releases/ipecube/Makefile releases/hatzenbuehl/Makefile releases/corte/Makefile releases/inra/Makefile)
+AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile bin/Makefile etc/Makefile etc/rsync/Makefile src/Makefile src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile src/bsddate/Makefile releases/Makefile releases/ipecube/Makefile releases/hatzenbuehl/Makefile releases/corte/Makefile releases/inra/Makefile)
 

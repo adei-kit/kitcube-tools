@@ -1,0 +1,39 @@
+# Crontab Corsica, location INRA
+
+# Backup
+0 1 * * * /home/cube/bin/push_backup.sh > /home/cube/push_backup.log 2>&1
+
+# 121 Status computer infrastructure
+*/5 * * * * /home/cube/bin/acq_cistatus.sh /home/cube/archive/121/SysCI > /dev/null 2>&1
+
+# Data acquisition
+# T03
+* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast03/DATA/ /home/cube/archive/003/T03/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# T04
+* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast04/ /home/cube/archive/004/T04 /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# EB2
+* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast12/DATA/ /home/cube/archive/012/EB2/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+* * * * * /home/cube/bin/sync_append.sh pc-bfs:/cygdrive/d/Bodenfeuchte/ /home/cube/archive/012/EB2/SISOMOP /home/cube/etc/rsync/eb2-append-filter-sm > /dev/null 2>&1
+
+# PT20
+* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast13/DATA/ /home/cube/archive/013/PT20/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# CC1
+1-59/2 * * * * /home/cube/bin/sync_flat.sh imk-wk2:/home/cube/CC1-pics/ /home/cube/archive/045/CC1 /home/cube/etc/rsync/cc-append-filter CC > /dev/null 2>&1
+0-58/2 * * * * /home/cube/bin/resize_cc2.sh /home/cube/archive/045/CC1 kitcube_cc1_*.jpg >> /home/cube/CC1-resize.log 2>&1
+0 6 * * * /home/cube/bin/compress_files.sh CC > /dev/null 2>&1
+
+# SOD
+#3,33 * * * * /home/cube/bin/sync_append.sh pc-sodar:/cygdrive/c/APRun/workspace_MFAS_test/data/ /home/cube/archive/070/SOD /home/cube/etc/rsync/sod-append-filter > /dev/null 2>&1
+#3,33 * * * * /home/cube/bin/sync_files.sh pc-sodar:/cygdrive/c/APRun/workspace_MFAS_test/data/ /home/cube/archive/070/SOD /home/cube/etc/rsync/sod-sync-filter > /dev/null 2>&1
+
+# HYB
+*/5 * * * * /home/cube/bin/sync_append.sh hyb:/data/lidar/data/KITcube_HYB/ /home/cube/archive/060/HYB /home/cube/etc/rsync/wtx-append-filter > /dev/null 2>&1
+
+# HATPRO
+*/15 * * * * /home/cube/bin/sync_flat.sh hatpropc:/cygdrive/c/RPG-HATPRO/Data/ /home/cube/archive/081/RPG /home/cube/etc/rsync/rpg-append-filter RPG > /dev/null 2>&1
+
+# X-band radar
+*/5 * * * * /home/cube/bin/sync_files.sh 10.20.12.2:/usr/local/Rainbow5/rainbow/rawdata/143DEX /home/cube/archive/037/XR /home/cube/etc/rsync/xr-append-filter > /dev/null 2>&1
