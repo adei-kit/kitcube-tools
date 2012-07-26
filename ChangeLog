@@ -1,10 +1,80 @@
 ChangeLog - kitcube-tools 
 A. Kopmann
 
-TODO:
-- Create project for kitcubestatus (first version in kitcube-tools/php)
-  Second version in ~/Sites
 
+
+
+Roadmap
+--------------------------------------------------------------------------------------------
+
+V0.25 -- current
+- Interpretation status:
+	Ok: T, EB, SM, PT20, 3M, RGW, CC, RS (laufen oder sind gelaufen)
+	Dev: GPS, JWD, PARS, CM, WC, SCI, WT, SOD, MWR/HATPRO (Implementationen vorhanden)
+		gerade komplexe Daten müssen geprüft werden !!!
+  	Open: MRR, CR, XR
+
+
+V0.3x -- Korsika
+- Backup
+- Synchronization of all modules
+  Alle Skripte lassen sich aus den config-files konfigurieren
+- Flache Verzeichnis-Strukturen werden automatisch aufgeteilt
+- Auswertung der Wolkenkamera-Bilder
+- Serverraum-Überwchung durch Temp.-Sensor
+- Erste Version Kitcube-status integiriert, Alarmsystem, EB1, CI Sensoren, CI Gude Links, RS
+- Distributed file servers and data transport by disk
+  Offline-Datentransfer über USB-Disks
+- Handbuch (OO)
+
+
+V0.4x -- Synchronization fertig -- hoffentlich immer noch Korsika 
+- check of data files by check sum - prove that transport is sucessful and complete  
+- md5 sum - Checks
+- Efficient data storage -- gz + tar  
+  Automatische Erkennung wann kompression Sinn macht
+	Open: CM, PARS (alle Handwerkergeräte)  
+- kitcube-tools, Umstellung auf rekursive Bearbeitung in kitcube-tools
+  Verarbeitung von gz und tar-files anstatt der Daten
+- Erweiterung Alarmsystem auf Sensorwerte
+  Was kann man aus Surens neuen Monitoringtools ableiten?!
+- Profiling Framework, Welcher Prozess braucht welche Resourcen.
+  Festplatte, Netz, Rechenzeit, ...
+- ELOG installiert (PSI)
+  Einbindung in kitcube-status
+
+
+V0.5x -- Speicherung für komplexe Daten fertig 
+- Speicherung in Datenbank
+- access to time series / complex data
+- aggregation time series / complex data
+- ADEI Achsen eingerichtet
+- Darstellung von Scatterplots o.ä. in ADEI 
+- Charakteristische Plots in kitcube-status
+- Handbuch auf LaTeX umstellen.
+
+
+V0.6x -- Konfigurations-Management
+- Graphische Konfiguration (Web/Stand-along, Python?)
+  Automatische Erstellung der Konfiguration aus einem Masterfile.
+  Evt. Konfiguration in der Datenbank hinterlegen, statt der vielen Files !!!
+- Verallgemeinerung kitcube-status, so das die gesamte Applikation
+  über JSON / XML konfiguriert werden kann!!!!
+
+V1.0 -- Alle Datenformate eingebunden (geht das, da sich doch immer wieder was ändert)
+- interpretation of all data formats
+
+
+Later:
+- conversion to netcdf, dfintion of general data format
+
+
+
+
+
+
+Release notes
+--------------------------------------------------------------------------------------------
 
 Version 0.25:
  - Added new file format of the radio probes. The header is not avaibale
