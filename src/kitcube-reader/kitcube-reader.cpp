@@ -10,7 +10,6 @@
 #include "reader.h"
 
 
-
 int main(int argc, char *argv[]){
 	Reader *data;
 	int err;
@@ -122,6 +121,11 @@ int main(int argc, char *argv[]){
 		printf("\t-i <inifile>\tSelect the inifile\n");
 		printf("\t-m <iniGroup>\tSelect the iniGroup name as used in the inifile\n");
 		printf("\t-v <level>\tSet level of verbosity\n");	
+#ifdef HAVE_PYTHON_H
+        printf("\tPython interface active\n");
+#else           
+        printf("\tPython interface disabled\n");
+#endif          
 		exit(0);
 	}
 

@@ -56,7 +56,7 @@ DAQDevice::DAQDevice(){
 	db = 0;
 #endif
 	
-#ifdef USE_PYTHON
+#ifdef HAVE_PYTHON_H
 	pModule = 0;
 	pFunc = 0;
 #endif
@@ -465,7 +465,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 
 void DAQDevice::loadPython(){
 
-#ifdef USE_PYTHON
+#ifdef HAVE_PYTHON_H
 	// Load the python script?!
 	// What happens if the script does not work???
 	// In priciple this class will quit, because to processing fails?!
@@ -526,7 +526,7 @@ void DAQDevice::loadPython(){
 
 void DAQDevice::releasePython(){
 
-#ifdef USE_PYTHON
+#ifdef HAVE_PYTHON_H
 	if (pModule > 0){
 		if (debug > 2) printf("Release Pyhton script\n");
 		
@@ -547,7 +547,7 @@ void DAQDevice::releasePython(){
 
 void DAQDevice::readDataWithPython(const char *filename, double *sensorValue){
 
-#ifdef USE_PYTHON
+#ifdef HAVE_PYTHON_H
 	// TODO: Extend the function to revceive more than 
 	// one dataset from  a data file
 	// E.g. handle other complex data files?!
@@ -795,7 +795,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 			printf("%-20s : disabled\n", "Alarm delay");
 		printf("\n");
 		
-#ifdef USE_PYTHON        
+#ifdef HAVE_PYTHON_H        
 		if (pModule > 0){
 			printf("%-20s : %s.py, %s()\n", "Python script", 
 				   pythonModule.c_str(), pythonFunction.c_str());

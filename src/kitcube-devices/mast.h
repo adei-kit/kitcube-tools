@@ -15,7 +15,7 @@
 #include <errno.h>
 
 #ifdef HAVE_ICONV_H
-#error Compiling ICONV_OVER // ???
+//#error Compiling ICONV_OVER // ???
 #include <iconv.h>
 #endif
 

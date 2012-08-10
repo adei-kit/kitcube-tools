@@ -66,9 +66,12 @@ do
         	# Skip prefix separated by underscore
         	# Take the first 6 characters
         	DATESTRING=${DATESTRING#*_}
+		if [ ${#DATESTRING} -lt 6 ]; then
+			DATESTRING=$FILENAME
+		fi
         	DATESTRING=${DATESTRING:0:6}
         
-		#echo "RPG filename processing result: $FILENAME --> $DATESTRING"
+		echo "RPG filename processing result: $FILENAME --> $DATESTRING"
 	fi 
 
 	# Get the target folder name
@@ -78,7 +81,7 @@ do
 	else
 		TARGETDIR=`date -j -u -f "$FORMAT" $DATESTRING "+%Y/%m/%d" 2>/dev/null` 
 	fi 
-	#echo "<TARGET>=$TARGETDIR"	
+	echo "<TARGET>=$TARGETDIR"	
  
 	if [ "$TARGETDIR" != "" ]; then
 

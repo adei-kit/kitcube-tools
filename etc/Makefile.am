@@ -1,6 +1,5 @@
 # Makefile.am
 #
-
 SUBDIRS = rsync
 
 EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
@@ -23,34 +22,21 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	EB1.DAS.sensors EB1.DAL.sensors EB1.DAR.sensors EB1.DAX.sensors SM11.txt.sensors \
 	EB2.DAS.sensors EB2.DAL.sensors EB2.DAR.sensors EB2.DAX.sensors SM12.txt.sensors \
 	PT20.DAL.sensors PT20.DAR.sensors \
-	#M11_01.DAS.template M11_01.DAL.template M11_01.DAX.template M11_01.DAR.template \
-	3M1.data.sensors data.csv.template \
-	3M1.gps.sensors gps.csv.template \
-	3M1.sonic.sensors sonic.csv.template \
 	3M2.data.sensors 3M2.gps.sensors 3M2.sonic.sensors \
 	3M3.data.sensors 3M3.gps.sensors 3M3.sonic.sensors \
 	3M4.data.sensors 3M4.gps.sensors 3M4.sonic.sensors \
-	scintillometer.RES.sensors 100727.RES.template \
 	WTH.sensors \
 	WTX.sensors \
 	windcube.sta.sensors windcube.rtd.sensors \
-	gps.tro.sensors kitk16230.tro.template \
-	sodar.mnd.sensors 110222.mnd.template \
-	rs1.txt.sensors rs2.txt.sensors CN010211.txt.template \
 	hatpro.cbh.sensors hatpro.cmp.sensors hatpro.hkd.sensors hatpro.hpc.sensors \
 	hatpro.iwv.ppi.sensors hatpro.iwv.rhi.sensors hatpro.iwv.ver.sensors hatpro.iwv.vol.sensors \
 	hatpro.lpr.sensors \
 	hatpro.lwp.ppi.sensors hatpro.lwp.rhi.sensors hatpro.lwp.ver.sensors hatpro.lwp.vol.sensors \
 	hatpro.met.sensors hatpro.sta.sensors hatpro.tpb.sensors hatpro.tpc.sensors \
-	jwd.dd.sensors dd090826.template \
-	jwd.rd.sensors rd090826.template \
-	regenwippe.dat.sensors w20090826.dat.template \
-	20090625.chm.sensors 20090625.chm.template \
 	wolkenkamera.jpg.sensors \
 	parsivel.dat.sensors \
 	SimRandom.txt.sensors \
-	SysLog.sensors sysci.sensors \
-	norbert.dat.sensors norbert.dat.template
+	SysLog.sensors sysci.sensors 
 
 
 

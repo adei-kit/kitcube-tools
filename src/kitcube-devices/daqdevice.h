@@ -10,10 +10,13 @@
 #ifndef DAQDEVICE_H
 #define DAQDEVICE_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif // HAVE_CONFIG_H
 
-#ifdef USE_PYTHON
+#ifdef HAVE_PYTHON_H
 #include <Python.h>
-#endif // of USE_PYTHON
+#endif // 
 
 #include <cstdlib>
 #include <dirent.h>
@@ -433,7 +436,7 @@ protected:
 	std::string statusTableKey;
 	
 	
-#ifdef USE_PYTHON	
+#ifdef HAVE_PYTHON_H	
 	PyObject *pModule;
 	
 	PyObject *pFunc;

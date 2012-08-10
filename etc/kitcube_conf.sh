@@ -10,3 +10,6 @@ BACKUPDIR=backup/$HOST
 BACKUPEXCL=/home/cube/etc/rsync/backup-exclude
 
 
+# Sync_files.sh
+SYNCUSEALARM="no"
+

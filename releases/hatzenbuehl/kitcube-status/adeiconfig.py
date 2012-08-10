@@ -4,7 +4,6 @@
 
 # ADEI 
 adei_url = 'http://imk-adei1/adei'
-#adei_url = 'http://localhost:8024/adei'
 
 # ADEI access parameters
 adei_server = 'kitcube'
@@ -31,6 +30,8 @@ kcdb_file = 'data/modstat.json.sample'
 # 045 Cloud camera
 cc2_lastimage = 'data/CC2-latest.jpg'
 
+# 075 Radiosonde
+rs_g_rs = "Data_075_RS1_txt"
 
 # 120 Computer infrastructure
 ci_hostlist = ("gude-1","gude-2")

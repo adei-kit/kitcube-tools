@@ -1,8 +1,8 @@
 AC_INIT(configure.in)
 
-AC_CONFIG_MACRO_DIR([m4])
+#AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(kitcube-tools, 0.25)
+AM_INIT_AUTOMAKE(kitcube-tools, 0.30)
 
 
 AC_LANG_CPLUSPLUS
@@ -49,12 +49,12 @@ AM_CONDITIONAL(USE_MYSQL, test "x$ac_cv_header_mysql_mysql_h" = "xyes")
 dnl
 dnl Check iconv support
 dnl
-AC_CHECK_HEADERS(iconv.h)
+dnl AC_CHECK_HEADERS(iconv.h)
 dnl if test "x$ac_cv_header_iconv_h" = "xyes"; then
-dnl  ICONV_LIBS="-liconv"
+dnl   ICONV_LIBS="-liconv"
 dnl fi
-AC_SUBST(ICONV_LIBS)
-AM_CONDITIONAL(USE_ICONV, test "x$ac_cv_header_iconv_h" = "xyes")
+dnl AC_SUBST(ICONV_LIBS)
+dnl AM_CONDITIONAL(USE_ICONV, test "x$ac_cv_header_iconv_h" = "xyes")
 
 
 dnl 
@@ -77,5 +77,5 @@ AM_CONDITIONAL(USE_PYTHON, test "x$ac_cv_header_Python_h" = "xyes")
 
 
 
-AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile bin/Makefile etc/Makefile etc/rsync/Makefile src/Makefile src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile src/bsddate/Makefile releases/Makefile releases/ipecube/Makefile releases/hatzenbuehl/Makefile releases/corte/Makefile releases/inra/Makefile)
+AC_OUTPUT(kitcube-tools.spec kitcube-tools.doxygen Makefile bin/Makefile etc/Makefile etc/rsync/Makefile src/Makefile src/akutil/Makefile src/kitcube-devices/Makefile src/kitcube-data/Makefile src/kitcube-reader/Makefile src/bsddate/Makefile releases/Makefile releases/ipecube/Makefile releases/hatzenbuehl/Makefile releases/hatzenbuehl/adei/Makefile releases/hatzenbuehl/kitcube-status/Makefile releases/hatzenbuehl/kitcube-tools/Makefile releases/hatzenbuehl/rsync/Makefile releases/corte/Makefile releases/corte/adei/Makefile releases/corte/kitcube-status/Makefile releases/corte/kitcube-tools/Makefile releases/corte/rsync/Makefile releases/inra/Makefile releases/inra/rsync/Makefile)
 

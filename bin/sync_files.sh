@@ -57,6 +57,10 @@ Version="0.4"
 # DEBUG=yes|no
 DEBUG=yes
 
+# Default configurations
+SYNCUSEALARM="yes"
+
+
 source ~/.bashrc
 #echo "Env: KITCUBEDIR=$KITCUBEDIR"
 if [ "x$KITCUBEDIR" = "x" ] ; then
@@ -84,6 +88,11 @@ ALARMPROG="$KITCUBEDIR/bin/report_alarm.sh"
 SPLITPROG="$KITCUBEDIR/bin/split_flatdir.sh"
 
 
+# Load host specific configuration 
+CONF="/home/cube/kitcube_conf.sh"
+if [ -f $CONF ] ; then
+        source $CONF
+fi
 
 
 
@@ -194,8 +203,8 @@ if [ $MODE = "flat" ] ; then
     FLATDIR="$DEST/flat"
     DEST="$DEST/incoming"
 
-    echo -e "Using flat folder mode: The second directory <DEST>/$FLATDIR will also compared by rsync"
-    echo -e "Make sure the flat folder mode is also enabled in kitcube-reader"
+    echo -e "Using flat folder mode: The second directory $FLATDIR will also be compared by rsync"
+    echo -e "Make sure the flat-folder-mode is also enabled in kitcube-reader"
     echo -e " "
     echo -e "$FLATOPTS"
     echo -e "$DEST"
@@ -338,10 +347,11 @@ if [ -x $RSYNCPROG ] ; then
 	
     # Report the rsync progress to the alarm system - if defined
     # TODO: Add the key already here
-    if [ -x $ALARMPROG ]; then
-        $ALARMPROG "$DEST" "$APPEND_FILTER_FILE"
+    if [ "$SYNCUSEALARM" == "yes" ] ; then
+    	if [ -x $ALARMPROG ]; then
+        	$ALARMPROG "$DEST" "$APPEND_FILTER_FILE"
+    	fi
     fi
-
 
     # split the files by date
     if [ $MODE = "flat" ] ; then

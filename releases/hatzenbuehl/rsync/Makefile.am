@@ -1,10 +1,10 @@
-# Makefile.am
-#
+# not a GNU package. You can remove this line, if
+# have all needed files, that a GNU package needs
+ACLOCAL_AMFLAGS = -I m4
+AUTOMAKE_OPTIONS = foreign 1.4
 
+SUBDIRS =  
 
-EXTRA_DIST = mast-append-filter cc-append-filter \
-	sci-append-filter \
-	sod-append-filter sod-sync-filter \
-	wtx-append-filter wc-append-filter \
-	rpg-append-filter wippe-append-filter \
-	backup-exclude crontab
+EXTRA_DIST = update-hatzenbuehl.txt 
+	
+

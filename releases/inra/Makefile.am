@@ -3,9 +3,9 @@
 ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = foreign 1.4
 
-SUBDIRS =  
+SUBDIRS = rsync
 
-#EXTRA_DIST = kitcube.ini kitcube_conf.sh 
+EXTRA_DIST = kitcube.ini kitcube_conf.sh  
 
 	
 
