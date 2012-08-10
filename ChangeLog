@@ -76,6 +76,15 @@ Later:
 Release notes
 --------------------------------------------------------------------------------------------
 
+Version 0.31:
+ - Added time interval as option for export_archive.sh
+   10.8.12 (ak)
+
+
+Version 0.30:
+ - Added folder release/ with specific configuration files for Corsica campaign. 
+   3.8.12 (k) 
+
 Version 0.25:
  - Added new file format of the radio probes. The header is not avaibale
    so that the reference time needs to be extracted from the filename.
