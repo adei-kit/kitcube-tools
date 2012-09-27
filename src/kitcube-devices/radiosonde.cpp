@@ -28,7 +28,7 @@ int radiosonde::readHeader(const char *filename)
 	size_t len = 0;
 	struct tm start_time_l = {0};
 	char* puffer;
-	
+	int i;
 	
 	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
@@ -53,8 +53,6 @@ int radiosonde::readHeader(const char *filename)
 		return -1;
 	}
 	
-	// close data file
-	fclose(data_file_ptr);
 	
 	// get start date and time
 	puffer = strptime(line_of_data, "Datum : %d.%m.%Y\tStartzeit: %T", &start_time_l);
@@ -81,10 +79,12 @@ int radiosonde::readHeader(const char *filename)
             //printf("%ld --> %02d.%02d.%4d %02d:%02d:%02d \n", index, 
             //       start_time_l.tm_mday, start_time_l.tm_mon+1, start_time_l.tm_year+1900,
             //       start_time_l.tm_hour, start_time_l.tm_min, start_time_l.tm_sec);
-        }          
+            
+            
+        }         
        
 	}
-
+    
 	if (puffer == NULL) {
         printf("Radiosonde: Error reading date and time string!\n");
         free(line_of_data);
@@ -95,10 +95,37 @@ int radiosonde::readHeader(const char *filename)
 	// get seconds since the Epoch
 	start_time.tv_sec = timegm(&start_time_l);	// FIXME: this function is a non-standard GNU extension, try to avoid it!
 	
-	
+
+    //printf("First line = %s\n", line_of_data);
+    
+    // Find end of header
+    i = 0;
+    lenHeader = 0;
+    while ((strstr(line_of_data, "Zeit") != line_of_data)  && (i<15)) {  
+        read_ascii_line(&line_of_data, &len, data_file_ptr);
+        //printf("line = %s\n", line_of_data);
+        i++;
+    }
+    
+    // Save the length of the header
+    if (i<15) {
+        lenHeader = ftell(data_file_ptr);
+    }
+    //printf("Header lenHeader = %d (errno %d)\n", lenHeader, errno);
+    
+  	// close data file
+	fclose(data_file_ptr);
+    
+    
+    // Check data format
+    if (strstr(line_of_data, "[min:sec]") == 0){  
+        free(line_of_data);	
+        throw std::invalid_argument("Data format does not match");
+    }
+    
 	noData = 99999;
 	
-	lenHeader = 0x1a1;	// CAUTION: header contains 11 lines
+	//lenHeader = 0x1a1;	// CAUTION: header contains 11 lines
 	
 	lenDataSet = 199;	// 198 bytes + 1 for '\0' in fgets();
 				// this is only one line of data,
@@ -113,8 +140,8 @@ int radiosonde::readHeader(const char *filename)
         sensor[i].size = 1;
 	}
 	
-	free(line_of_data);
-	
+
+	free(line_of_data);	
 	return 0;
 }
 
@@ -150,6 +177,7 @@ int radiosonde::parseData(char *line, struct timeval *l_tData, double *sensorVal
 	char *puffer;
 	int min, sec;
 	int i;	
+    int n;
 	
 	if (debug >= 4)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
@@ -160,27 +188,37 @@ int radiosonde::parseData(char *line, struct timeval *l_tData, double *sensorVal
     l_tData->tv_usec = 0;
 	
 	// read minutes and seconds since the start of the measurement
-	if (sscanf(line, "%d:%d", &min, &sec) != 2)
-		return -1;
+	if (sscanf(line, "%d:%d", &min, &sec) != 2){
+        
+        // Is this a header line?!
+        //printf("Error: Data format does not match\n");
+        //throw std::invalid_argument("Data format does not match");
+        return -1;
+    }
 	
 	// add to start time
 	l_tData->tv_sec += min * 60 + sec;
 	
-	
+    for (i=0;i<nSensors;i++) sensorValue[i]=i;
+    
+    
 	// read sensor values
 	puffer = strtok(line + 8, " \t");
 	i = 0;
-	while (puffer != NULL) {
-		if (sscanf(puffer, "%lf", sensorValue + i) != 1){
-            *(sensorValue + i) = noData;
+	while ((puffer != NULL) && (i<nSensors)) {
+        n = sscanf(puffer, "%lf", sensorValue+i);
+		if (n < 1){
+            sensorValue[i] = noData;
         }
+        // Read next value
 		puffer = strtok(NULL, " \t\r\n");
 		i++;
 	}
 	
 	// check if all sensor values could be read
-	/*if (i != nSensors)
-		return -1;*/
+	//if (i != nSensors)
+	//	return -1;
 	
+    
 	return 0;
 }

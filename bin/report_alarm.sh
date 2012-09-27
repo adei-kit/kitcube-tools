@@ -47,6 +47,20 @@ if [ "$MODNO" == "" -o "$MODID" == "" -o "${MODNO//[^0-9]/}" != "$MODNO" ] ; the
     exit 1
 fi 
 
+# Detector push operation 
+# Check if the DEST name contains a host name separated by a colon
+HOST=${DEST%:*}
+if [ $HOST != $DEST ] ; then
+	PUSH="yes"
+	SYNCLOG="$DEST/rsync-push.txt"
+	echo -e "Push data to host $HOST"
+else
+	PUSH="no"
+	SYNCLOG="$DEST/rsync-res.txt"
+fi
+
+
+
 # Parse append file 
 FILTER="$2"
 GROUP=${FILTER#*append-filter}
@@ -62,11 +76,15 @@ fi
 # Key for status table
 shopt -s extglob
 KEY="$APPNAME.${MODNO##+(0)}$GROUPKEY"
+#echo "Module identification key: $KEY"
+
+
+
 
 # Find the latest processed file
 NEWEST="$DEST/compareTo"
 touch -t 197001010000 $DEST
-NEWEST=`cat $DEST/rsync-res.txt | ( while read f; do
+NEWEST=`cat $SYNCLOG | ( while read f; do
 if [ "$f" != "" -a "$f" != "./" ] ; then
 FILE="$1/$f"
 if [ -f "$FILE" -a "$FILE" -nt "$NEWEST" ] ; then	

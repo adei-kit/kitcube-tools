@@ -306,12 +306,13 @@ void DAQAsciiDevice::readData(std::string full_filename){
     //       e.g. cloud camera -- link to data file?
     //       Native e.g. netcdf formats?!
 	if (profile_length != 0) {
-		local_sensorValue = new double [nSensors * profile_length];
+		nSensorElements = nSensors * profile_length;
 	} else {
         nSensorElements = 0;
         for (i=0;i<nSensors;i++) nSensorElements += sensor[i].size;
-		local_sensorValue = new double [nSensorElements];
-	}
+    }
+    
+    local_sensorValue = new double [nSensorElements];        
 	
 	
 	if (debug > 1)
@@ -346,6 +347,10 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	while ((n == 0) && (iLoop < 1000000)) {
 		// read one or more line of ASCII data
         newline = 1;
+        // Clear the sensor array before reading new data
+        for (i=0;i<nSensorElements;i++){
+            local_sensorValue[i]=noData;
+        }
         while ((n == 0) && (newline == 1)){
             n = read_ascii_line(&buf, &len, fd_data_file);
 		    if (n == 0) 

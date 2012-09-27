@@ -167,8 +167,28 @@ void wolkenkamera::readData(std::string full_filename){
 		
 	// extract timestamp from filename
 	// Strip path
+    
+    // Get the pattern from the inifile
+    size_t pos; 
+    size_t len;
+    std::string mask;
+    
+    pos = this->datafileMask.find("<index>");
+    len = 7;
+    //printf("Template: %s (pos = %d)\n", datafileMask.c_str(), pos);
+    
+    if (pos == std::string::npos) {
+        printf("Error: <index> not found\n");
+        throw std::invalid_argument("Tag <index> is missing in datafile mask\n");
+    }
+    mask = this->datafileMask;
+    mask.replace(pos, len, "%Y-%m-%d-%H-%M-%S");
+    //printf("Mask = %s\n", mask.c_str());
+    
+    
     filename = basename((char*)full_filename.c_str());		
-	strptime(filename.c_str(), "kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg", &time_stamp_data);
+	//strptime(filename.c_str(), "kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg", &time_stamp_data);
+	strptime(filename.c_str(), mask.c_str(), &time_stamp_data);
 	
 	if (debug > 3){	
 	    printf("Filename  : %s\n", filename.c_str());

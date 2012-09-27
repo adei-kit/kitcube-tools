@@ -2,13 +2,13 @@ AC_INIT(configure.in)
 
 AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(kitcube-tools, 0.31)
+AM_INIT_AUTOMAKE(kitcube-tools, 0.33)
 
 
 AC_LANG_CPLUSPLUS
 # LIBTOOL sometimes produces no binary files on OSX
-AM_PROG_LIBTOOL
-#AC_PROG_RANLIB
+#AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 
 dnl
 dnl Add the base include directory

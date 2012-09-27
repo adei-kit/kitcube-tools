@@ -84,7 +84,8 @@
             <li> <a href="#summary">Summary</a>
             <li> <a href="#modules">Module List</a>
             <li> <a href="#computer">Computer Infrastructure</a>
-		<li> <a href="#radiosonde">Radiosonde</a></li>
+            <li> <a href="#xr">X-band Radar</a></li>
+            <li> <a href="#radiosonde">RS Corte</a></li>
             <li> <a href="#all">All (Raw Data)</a>
         </ul>
 
@@ -186,6 +187,9 @@
   <div id="all" class="ui-widget-content">
     <p>Waiting for data</p>
   </div><!-- all -->
+  <div id="xr" class="ui-widget-content">
+     <div><img id="xrImage"></div>
+  </div>
   <div id="radiosonde" class="ui-widget-content">
 	  <table width="100%"><tr valign="top">
 	  <td>
@@ -293,10 +297,23 @@ function updateGraph() {
     var plotquery = 'getadeiplot.cgi/adeiplot.png?idlist=' + sensorlist + '&length=' + length + '&date=' + escape(Date()) + '&width=480&height=320';
     var zoomquery = 'getadeiplot.cgi/adeiplot.png?idlist=' + sensorlist + '&length=' + length + '&date=' + escape(Date()) + '&width=1024&height=768';
     var ccquery = 'getadeicc.cgi/ccplot.jpg?' + escape(Date()) + '&width=480&height=320';
+    var xrquery = 'getadeixr.cgi/xrplot.jpg?' + escape(Date()) + '&width=480&height=320';
 
     element('trend').src = plotquery;
-    element('ccImage').src = ccquery;
+//    element('ccImage').src = ccquery;
     element('zoomPlot').href = zoomquery;
+//   element('xrImage').src = xrquery;
+
+}
+
+
+function updateImages() {
+
+    var ccquery = 'getadeicc.cgi/ccplot.jpg?' + escape(Date()) + '&width=480&height=320';
+    var xrquery = 'getadeixr.cgi/xrplot.jpg?' + escape(Date()) + '&width=480&height=320';
+
+    element('ccImage').src = ccquery;
+    element('xrImage').src = xrquery;
 
 }
 
@@ -409,6 +426,14 @@ function loadRS(page) {
 		}
 	
 		rshtml = '<table id="rstable" class="summarytable"><thead><tr><th width="10%">ID</th><th width="40%">Start</th><th>Duration</th><th>Peak</th></tr></thead>';
+		
+		if(response.tableData.length==0)
+		{
+			rshtml += '<tr><td width="10%">No</td><td width="40%">Data</td><td>Available</td><td>-</td>';
+			element('rslist').innerHTML = rshtml;
+			return;
+		}
+
 		for(var i=0; i<response.tableData.length; i++)
 		{
 		rshtml += '<tr class="rsfield" id="rs'+i+'" style="display:none"><td width="10%" style="text-align:right">'+response.tableData[i].ID+'</td><td width="40%" style="text-align:right">'+response.tableData[i].Starttime+'</td><td style="text-align:right">'+response.tableData[i].Duration+'</td><td style="text-align:right">'+response.tableData[i].maxheight+'</td></tr>';
@@ -888,6 +913,7 @@ function showSource() {
 	loadRS(-1);
         updateElapse();
         plot(86400, '24 hours');
+        updateImages();
 
 	setInterval(function() {
 	    if (updateElapse() > 30) {
@@ -902,6 +928,10 @@ function showSource() {
         setInterval(function() {
 	    updateGraph();
 	}, 1000);
+
+        setInterval(function() {
+            updateImages();
+        }, 30*1000);
 
 	// Timer
 	setInterval(function() {

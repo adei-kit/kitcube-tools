@@ -76,10 +76,26 @@ Later:
 Release notes
 --------------------------------------------------------------------------------------------
 
+Version 0.33: 
+ - Added detection of errors in the radio probe data format.
+   BUT it is obvious that there are more things that can go wrong and are not detected.
+   27.9.12 (ak)
+ - Generalized cloud camera reader. Remove hardcoded "cc2" tag in the code.
+   21.9.12 (ak)
+ - Improved SISOMOP reader. It is now possible that the data file starts with any sensor line. 
+   Before only the order 1,2,3 have been allowed. 
+   Continued reading after illeagal characters - found on in the EB2 data file.
+   18.9.12 (ak)
+
+Version 0.32: 
+ - Added port number to the database configuration. Parameter name dbPort in the inifile
+   7.9.12 (ak) 
+ - Fixed bug in parseData for module radio probe.
+   4.9.12 (ak)
+
 Version 0.31:
  - Added time interval as option for export_archive.sh
    10.8.12 (ak)
-
 
 Version 0.30:
  - Added folder release/ with specific configuration files for Corsica campaign. 

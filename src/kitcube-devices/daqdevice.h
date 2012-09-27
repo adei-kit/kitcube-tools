@@ -410,6 +410,8 @@ protected:
 #endif
 	
 	std::string dbHost;
+    
+    int dbPort;
 	
 	std::string dbName;
 	

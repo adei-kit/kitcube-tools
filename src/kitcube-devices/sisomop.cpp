@@ -123,7 +123,7 @@ int sisomop::parseData(char *line, struct timeval *l_tData, double *sensorValue)
     i = 0; // Tag count
     pos0 = 0;
     pos1 = 0;
-    pos1 = buf.find_first_of("\t\n", pos0);
+    pos1 = buf.find_first_of("\t\n\r", pos0);
 
     //buf = "20.03.2012\t20:23\tSensor 2\t\t123\n";
     while (pos1 != string::npos){
@@ -137,7 +137,7 @@ int sisomop::parseData(char *line, struct timeval *l_tData, double *sensorValue)
             if (n < 1) return -1; // No valid sensor id found
         }
         
-        if (i > 2) {
+        if ((i > 2) && (i < 6)) {
             // Replace decimal point
             replace(sValue.begin(), sValue.end(), ',', '.');
             
@@ -151,7 +151,7 @@ int sisomop::parseData(char *line, struct timeval *l_tData, double *sensorValue)
         // Read next tag, if available
         i++;
         pos0 = pos1+1;
-        pos1 = buf.find_first_of("\t\n", pos0); // Linux?!
+        pos1 = buf.find_first_of("\t\n\r", pos0); // Linux?!
         //pos1 = buf.find_first_of("\t\r", pos0); // OSX ??
         
     }

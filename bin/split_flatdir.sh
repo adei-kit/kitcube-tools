@@ -19,11 +19,14 @@ DIR="$1"
 FORMAT="$2"   
 
 # Predefined formats
-FORMAT_CC="kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg"
+FORMAT_CC1="kitcube_cc1_%Y-%m-%d-%H-%M-%S.jpg"
+FORMAT_CC2="kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg"
 FORMAT_CM="chm%Y%m%d_%H%M%S.dat"
 FORMAT_RPG="%y%m%d"
 
-if [ "$FORMAT" == "CC" ] ; then FORMAT=$FORMAT_CC; fi
+if [ "$FORMAT" == "CC" ] ; then FORMAT=$FORMAT_CC2; fi
+if [ "$FORMAT" == "CC1" ] ; then FORMAT=$FORMAT_CC1; fi
+if [ "$FORMAT" == "CC2" ] ; then FORMAT=$FORMAT_CC2; fi
 if [ "$FORMAT" == "CM" ] ; then FORMAT=$FORMAT_CM; fi
 if [ "$FORMAT" == "RPG" ] ; then FORMAT=$FORMAT_RPG; fi
 

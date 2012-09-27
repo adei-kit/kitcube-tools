@@ -150,6 +150,7 @@ void DAQDevice::readInifileCommon(const char *filename){
 	//
 	this->project = "kitcube";
 	this->dbHost = "localhost";
+    this->dbPort = 0;
 	this->dbUser = "root";
 	this->dbPassword = "";
 	//this->dbName = project + "_active"; // s. below
@@ -181,6 +182,7 @@ void DAQDevice::readInifileCommon(const char *filename){
 		ini->SpecifyGroup("Common");
 		this->project = ini->GetFirstString("project", project.c_str(), &error);
 		this->dbHost = ini->GetFirstString("dbHost", dbHost.c_str(), &error);
+		this->dbPort = ini->GetFirstValue("dbPort", dbPort, &error);
 		
 		this->dbName = project + "_active";
 		this->dbName = ini->GetFirstString("dbName", dbName.c_str(), &error);
@@ -820,8 +822,7 @@ void DAQDevice::saveFilePosition(long lastIndex, unsigned long currPos, struct t
 		fprintf(fmark, "%ld %ld %ld %ld\n", lastIndex, timestamp.tv_sec, (long) timestamp.tv_usec, currPos);
 		fclose(fmark);
 	}
-
-	
+    
 #ifdef USE_MYSQL
 	// Update the status table in the database	
 	struct timeval t;
@@ -831,7 +832,7 @@ void DAQDevice::saveFilePosition(long lastIndex, unsigned long currPos, struct t
 
 	// Get curent time
 	gettimeofday(&t, &tz);	
-	
+
 	// TODO: UPDATE ...
 	// UPDATE SET usec = current time, usecData = timestamp WHERE module = this->moduleNumber
 	sql = "UPDATE `";
@@ -845,8 +846,7 @@ void DAQDevice::saveFilePosition(long lastIndex, unsigned long currPos, struct t
 	sql += " WHERE `skey` = '";
 	sql += statusTableKey;
 	sql += "' "; 
-	
-	
+	   
 	if (mysql_query(db, sql.c_str())){
 		fprintf(stderr, "%s\n", sql.c_str());
 		fprintf(stderr, "%s\n", mysql_error(db));
@@ -892,12 +892,40 @@ void DAQDevice::loadFilePosition(long &lastIndex, unsigned long &lastPos, struct
 
 
 int DAQDevice::read_ascii_line(char **buffer, size_t *length, FILE *file_ptr) {
-	if (getline(buffer, length, file_ptr) == -1) {
+    int n;
+    unsigned long currPos;
+    *length = 0;
+    int nDroped;
+    
+	if (n = getline(buffer, length, file_ptr) < 0) {
 		if (debug > 3) printf("Error reading from file or EOF reached\n");
 		return -1;
 	}
+    if (*length >= 0x400000){ // illeagal character
+		printf("Error reading from file - possible illeagal character?!\n");
+        // Try to move the file point forward?!
+
+        nDroped = 0;
+        while (n==0){
+            // Possible that there are only a few characters that are illegal?!
+            // Jump over these?
+            // For safety drop the dataset with the corruct character!
+            currPos = ftell(file_ptr);
+            fseek(file_ptr, currPos+1, SEEK_SET);
+            n=getline(buffer, length, file_ptr);
+            //printf("currPos=%d, n=%d, length=%d\n", currPos, n, *length);
+            nDroped++;
+        }
+		//if (debug > 3) printf("   n= %d, length=%d last char=??\n", n, *length);
+        
+        printf("Droped %d characters. Rest of line with %d characters skipped.\n", nDroped, n);
+        
+        return read_ascii_line(buffer, length, file_ptr);
+    }        
 	if (strchr(*buffer, '\n') == NULL) {
 		if (debug > 3) printf("Error: line read from file is not complete\n");
+		//if (debug > 3) printf("   length=%d last char=%d\n", *length, *buffer[*length-1]);
+		if (debug > 3) printf("   n= %d, length=%d last char=??\n", n, *length);
 		return -1;
 	}
 	
@@ -1078,7 +1106,7 @@ void DAQDevice::connectDatabase() {
 	
 	// connect to database
 	//printf("Database: \t\t%s@%s\n", dbUser.c_str(), dbHost.c_str());
-	if (!mysql_real_connect(db, dbHost.c_str(), dbUser.c_str(), dbPassword.c_str(), NULL, 0, NULL, 0)) {
+	if (!mysql_real_connect(db, dbHost.c_str(), dbUser.c_str(), dbPassword.c_str(), NULL, dbPort, NULL, 0)) {
 		printf("Failed to connect to database: %s\n", mysql_error(db));
 		// TODO: error handling
         throw std::invalid_argument("Failed to connect to database");

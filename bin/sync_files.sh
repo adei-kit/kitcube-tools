@@ -37,13 +37,13 @@ Version="0.1"
 #
 ################################################################################
 #
-Version="0.3"
+#Version="0.3"
 # 2012-02-01 ak
 # 
 # - Added interface to KITcube alarm notification
 # - Added support for flat directory structures
 #   
-Version="0.4"
+#Version="0.4"
 # 2012-07-09 ak
 #
 # - Added version to import data from a remote disk. This might be necessary if the 
@@ -51,6 +51,11 @@ Version="0.4"
 # - The script is acomplished by a script that collects the calls of all 
 #   remotely managed devices 
 #
+Version="0.5"
+# 2012-09-27 ak
+#
+# - Added support for pushing data from the local machine to a remote server
+
 
 
 
@@ -177,10 +182,25 @@ SRC="$1"
 # destination directory
 DEST="$2"
 
-# define semaphore
-#SEMFILE="$0".semaphore
-SEMFILE="sync.semaphore"
+# Detector push operation 
+# Check if the DEST name contains a host name separated by a colon
+HOST=${DEST%:*}
+if [ $HOST != $DEST ] ; then
+	PUSH="yes"
+	echo -e "Push data to host $HOST"
+else
+	PUSH="no"
+fi
 
+
+# define semaphore and log file
+if [ $PUSH == "yes" ] ; then 
+	SEMFILE="$SRC/push.semaphore"
+	SYNCLOG="$SRC/rsync-push.txt"
+else
+	SEMFILE="$DEST/sync.semaphore"
+	SYNCLOG="$DEST/rsync-res.txt"
+fi
 
 
 
@@ -218,6 +238,7 @@ fi
 ################################################################################
 # check if destination directory exists and create it if not
 ################################################################################
+if [ $PUSH != "yes" ] ; then
 if [ -x $MKDIRPROG ] ; then
     if [ ! -d "$DEST" ] ; then
 		if [ $DEBUG = yes ] ; then
@@ -237,7 +258,7 @@ else
 	echo -e "Aborting execution...\n"
 	exit 1
 fi
-
+fi
 
 ################################################################################
 # check if <append-filter-file> exists
@@ -272,22 +293,22 @@ fi
 ################################################################################
 if [ -x $DATEPROG ] ; then
 	# check if semaphore file exists
-	if [ -e "$DEST/$SEMFILE" ] ; then
+	if [ -e "$SEMFILE" ] ; then
                 # Get PID
-                RES=`cat $DEST/$SEMFILE | grep PID | tr -d '"' `
+                RES=`cat $SEMFILE | grep PID | tr -d '"' `
                 PID=${RES#*:}
                 PID=${PID%*,}
                 PIDQUERY=`ps -p $PID | wc -l`
                 if [ $PIDQUERY == 2 ] ; then
-                        echo -e "\nSemaphore file $DEST/$SEMFILE exists. Either due to errors of previous instance"
+                        echo -e "\nSemaphore file $SEMFILE exists. Either due to errors of previous instance"
                         echo -e "or because there is another session running in parallel."
                         echo -e "Aborting execution...\n "
                         exit 2
                 fi
 	else
 		TIMESTAMP=`$DATEPROG -u +%Y-%m-%d-%H-%M-%S`
-		echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/$SEMFILE"
-		echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/sync_files.log"
+		echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$SEMFILE"
+		#echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/sync_files.log"
 	fi
 else
 	echo -e "\nError: cannot find or execute $DATEPROG."
@@ -297,16 +318,16 @@ fi
 
 # Create semaphore file
 TIMESTAMP=`$DATEPROG -u +%Y-%m-%d-%H-%M-%S`
-#echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/$SEMFILE"
-echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/sync_files.log"
+#echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$SEMFILE"
+#echo "$($BASENAMEPROG "$0"): last start at $TIMESTAMP" > "$DEST/sync_files.log"
 
 TS=`$DATEPROG +"%s"`
-echo "{"                                > $DEST/$SEMFILE
-echo "  \"Date\": \"`date`\","          >> $DEST/$SEMFILE
-echo "  \"Timestamp\": \"$TS\","        >> $DEST/$SEMFILE
-echo "  \"PID\": \"$$\","               >> $DEST/$SEMFILE
-echo "  \"Destination\": \"$DEST\""     >> $DEST/$SEMFILE
-echo "}"                                >> $DEST/$SEMFILE
+echo "{"                                >  $SEMFILE
+echo "  \"Date\": \"`date`\","          >> $SEMFILE
+echo "  \"Timestamp\": \"$TS\","        >> $SEMFILE
+echo "  \"PID\": \"$$\","               >> $SEMFILE
+echo "  \"Destination\": \"$DEST\""     >> $SEMFILE
+echo "}"                                >> $SEMFILE
 
 
 
@@ -329,14 +350,14 @@ if [ -x $RSYNCPROG ] ; then
 	# sync data
     if [ $MODE = "flat" ] ; then
         # Warming the compare-dest option seems to work only with absolute path
-        $RSYNCPROG -avh --compare-dest="$FLATDIR" --append -f "merge $APPEND_FILTER_FILE"  "$SRC" "$DEST" > "$DEST/rsync-res.txt"
+        $RSYNCPROG -avh --compare-dest="$FLATDIR" --append -f "merge $APPEND_FILTER_FILE"  "$SRC" "$DEST" > "$SYNCLOG"
     elif [ $MODE = "append" ] ; then 
-        $RSYNCPROG -avh  --append -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$DEST/rsync-res.txt"
+        $RSYNCPROG -avh  --append -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$SYNCLOG"
     elif [ $MODE = "offline" ] ; then
         # Do NOT overwrite newer files !!!
-        $RSYNCPROG -avh --update -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$DEST/rsync-res.txt"
+        $RSYNCPROG -avh --update -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$SYNCLOG"
     else
-        $RSYNCPROG -avh  -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$DEST/rsync-res.txt"
+        $RSYNCPROG -avh  -f "merge $APPEND_FILTER_FILE" "$SRC" "$DEST" > "$SYNCLOG"
     fi
 	RETURN_VALUE=$?
 	if [ $RETURN_VALUE != 0 ] ; then
@@ -349,7 +370,11 @@ if [ -x $RSYNCPROG ] ; then
     # TODO: Add the key already here
     if [ "$SYNCUSEALARM" == "yes" ] ; then
     	if [ -x $ALARMPROG ]; then
-        	$ALARMPROG "$DEST" "$APPEND_FILTER_FILE"
+		if [ $PUSH == "yes" ] ; then
+			$ALARMPROG "$SRC" "$APPEND_FILTER_FILE"
+		else
+        		$ALARMPROG "$DEST" "$APPEND_FILTER_FILE"
+		fi
     	fi
     fi
 
@@ -376,7 +401,7 @@ fi
 ################################################################################
 # delete semaphore file
 if [ -x $RMPROG ] ; then
-	$RMPROG "$DEST/$SEMFILE"
+	$RMPROG "$SEMFILE"
 else
 	echo -e "\nError: cannot find or execute $RMPROG."
 	echo -e "Aborting execution...\n"
