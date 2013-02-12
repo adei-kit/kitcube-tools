@@ -29,9 +29,13 @@ SERVICE_START="yes"
 SERVICE_USER="cube"
 SERVICE_GROUP="users"
 SERVICE_TITLE="KITcube Reader"
+SERVICE_CAMPAIGN="$KITCUBE_CAMPAIGN"
 SERVICE_NAME=$READER
 SERVICE=/home/cube/kitcube-tools/src/kitcube-reader/$SERVICE_NAME
 SERVICE_INI=/home/cube/kitcube.ini
+if [ $SERVICE_CAMPAIGN != "" ]; then
+SERVICE_INI=$SERVICE_INI.$SERVICE_CAMPAIGN
+fi
 SERVICE_ARGS="-d -v 1 -i $SERVICE_INI"
 SERVICE_PROCESS=${SERVICE_NAME:0:15}
 SERVICE_MONITOR=/home/cube/kitcube-tools/src/kitcube-reader/kitcube-monitor

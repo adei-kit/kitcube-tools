@@ -3,6 +3,13 @@ A. Kopmann
 
 
 
+TODO
+- daqdevice, get_file_list doesnot work for XFS file system
+  Improve implementation
+- daqdevice, add module number in the function getDataDir()
+  Advantage: the whole convention can be skipped by using the ini-statement dataSubDir.
+  Needed for reading ORCA files from arbitrary folders.
+
 
 Roadmap
 --------------------------------------------------------------------------------------------
@@ -76,7 +83,19 @@ Later:
 Release notes
 --------------------------------------------------------------------------------------------
 
+
 Version 0.33: 
+ - Added export of the data archive to remote computers. (export_archive.sh)
+   The manual has also been updated.
+   12.2.13 (ak)
+ - Fixed detection of file types with some file systems (e.g. XFS)
+ - Removed numbering of directories for non-kitcube projects
+ - Updated the build system files. Automake shold work now agian on linux + mac!
+   4.2.13 (ak) 
+ - Added missing definition of sensor length in 3M and Orca_process.
+ - Added new parameter for format of the index field to rank files (datafileIndexFormat)
+   The format is based on strftime format.
+   11.9.12 (ak)
  - Added push mode to rsync-scripts. Reporting required different handling of log files. 
  - Added detection of errors in the radio probe data format.
    BUT it is obvious that there are more things that can go wrong and are not detected.

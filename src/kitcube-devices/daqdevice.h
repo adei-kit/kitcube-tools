@@ -389,6 +389,9 @@ protected:
 	
 	/** Mask used to identify the data files in getNewFiles() */
 	std::string datafileMask;
+    
+    /** Mask to parse the date in the index filed */
+    std::string datafileIndexFormat;
 	
 	/** The template file is used to generate an appropriate header and
 	 * the data is used to have some realistic simulation when writing data */

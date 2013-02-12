@@ -47,19 +47,6 @@ if [ "$MODNO" == "" -o "$MODID" == "" -o "${MODNO//[^0-9]/}" != "$MODNO" ] ; the
     exit 1
 fi 
 
-# Detector push operation 
-# Check if the DEST name contains a host name separated by a colon
-HOST=${DEST%:*}
-if [ $HOST != $DEST ] ; then
-	PUSH="yes"
-	SYNCLOG="$DEST/rsync-push.txt"
-	echo -e "Push data to host $HOST"
-else
-	PUSH="no"
-	SYNCLOG="$DEST/rsync-res.txt"
-fi
-
-
 
 # Parse append file 
 FILTER="$2"
@@ -72,6 +59,12 @@ if [ "$GROUP" != ""  ] ; then
     GROUPKEY=".$GROUP"
 fi
 
+# Get name of rsync logfile
+if [ "$3" == "" ] ; then 
+	SYNCLOG="$DEST/rsync-res.txt"
+else
+	SYNCLOG="$3"
+fi
 
 # Key for status table
 shopt -s extglob

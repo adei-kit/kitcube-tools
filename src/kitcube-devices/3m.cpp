@@ -26,7 +26,8 @@ int dreim::readHeader(const char *filename) {
 	noData = 999999;
 	
 	if (sensorGroup == "data") {
-		lenHeader = 0x7f;	// 127 bytes
+        lenHeader = 0; // Actually it's one line.
+		//lenHeader = 0x7f;	// 127 bytes
 		
 		lenDataSet = 55;	// 54 bytes + 1 for '\0' in fgets()
 		
@@ -36,6 +37,7 @@ int dreim::readHeader(const char *filename) {
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 5;
 			sensor[i].data_format = "<scalar>";
+            sensor[i].size = 1;        
 		}
 		
 	} else if (sensorGroup == "gps") {
@@ -49,6 +51,7 @@ int dreim::readHeader(const char *filename) {
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 5;
 			sensor[i].data_format = "<scalar>";
+            sensor[i].size = 1;        
 		}
 		
 	} else if (sensorGroup == "sonic") {
@@ -62,6 +65,7 @@ int dreim::readHeader(const char *filename) {
 		for (int i = 0; i < nSensors; i++) {
 			sensor[i].height = 5;
 			sensor[i].data_format = "<scalar>";
+            sensor[i].size = 1;        
 		}
 		
 	} else {
@@ -77,19 +81,30 @@ void dreim::setConfigDefaults(){
 
 
 int dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
-	struct tm timestamp, gps_timestamp;
+	struct tm timestamp = {0};
+    struct tm gps_timestamp;
 	char *puffer, *saveptr;
 	int msec;
+    int err;
 	
 	
 	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+    // TODO: Automatically detect how many sensors should be read
+    //printf("%s // nSensors = %d\n", line, nSensors);
+    
 	// TODO/FIXME: are data timestamps in UTC or local time?
 	
 	// read date and time
 	puffer = strptime(line, "%Y-%m-%d,%T", &timestamp);
-	
+	if (puffer == NULL) {
+		//printf("3M: Error reading date and time string in line %s!\n", line);
+		printf("3M: Skip line %s\n", line);
+		return -1;
+	}	
+    
+    
 	// get ms part of time stamp, if there is one
 	if (*puffer == '.') {
 		// read ms part of time stamp
@@ -105,6 +120,10 @@ int dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		printf("Error: unknown data format!\n");
 	}
 	
+   	// get seconds since the Epoch
+	l_tData->tv_sec = timegm(&timestamp);	// FIXME: function is non-standard GNU extension
+ 
+    
 	// read dummy value "period"
 	puffer = strtok_r(puffer, ",", &saveptr);
 	
@@ -112,10 +131,13 @@ int dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		// read the 5 sensor values
 		for (int i = 0; i < 5; i++) {
 			puffer = strtok_r(NULL, ",\r\n", &saveptr);
+            //printf("Buffer: %s\n", puffer);
 			if (strcmp(puffer, "nan") == 0) {
 				sensorValue[i] = noData;
 			} else {
-				sscanf(puffer, "%lf", &sensorValue[i]);
+				err = sscanf(puffer, "%lf", &(sensorValue[i]));
+                //printf ("Value = %lf \n", sensorValue[i]);
+                
 			}
 		}
 	} else if (sensorGroup == "gps") {
@@ -174,8 +196,6 @@ int dreim::parseData(char *line, struct timeval *l_tData, double *sensorValue){
 		}
 	}
 	
-	// get seconds since the Epoch
-	l_tData->tv_sec = timegm(&timestamp);	// FIXME: function is non-standard GNU extension
 	
 	return 0;
 }

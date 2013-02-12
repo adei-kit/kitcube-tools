@@ -303,7 +303,8 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	sprintf(line, "Data_<index>.%s", sensorGroup.c_str());
 	this->datafileMask = line;
 	//printf("datafileMask = %s\n", datafileMask.c_str());
-	
+	this->datafileIndexFormat = "";
+    
 	sprintf(line, "Generic.%s.sensors", sensorGroup.c_str());
 	this->sensorListfile = line;
 	
@@ -397,6 +398,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->remoteDir = ini->GetFirstString("remoteDir", remoteDir.c_str(), &error);
 		this->archiveDir = ini->GetFirstString("archiveDir", archiveDir.c_str(), &error);
 		this->datafileMask = ini->GetFirstString("datafileMask", datafileMask.c_str(), &error);
+		this->datafileIndexFormat = ini->GetFirstString("datafileIndexFormat", datafileIndexFormat.c_str(), &error);
 		this->sensorListfile = ini->GetFirstString("sensorList", sensorListfile.c_str(), &error);
 		
 		
@@ -404,10 +406,13 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		if (dataDir.at(dataDir.length()-1) != '/') dataDir += "/";
 		if (archiveDir.at(archiveDir.length()-1) != '/') archiveDir += "/";
 		if (remoteDir.at(remoteDir.length()-1) != '/') remoteDir += "/";
-		sprintf(line, "%03d/", moduleNumber);
-		this->dataDir += line;
-		this->remoteDir += line;
-		this->archiveDir += line;
+        
+        if (this->project == "kitcube"){
+            sprintf(line, "%03d/", moduleNumber);
+            this->dataDir += line;
+            this->remoteDir += line;
+            this->archiveDir += line;
+        }
 		
 		// Read the names of the Python analysis scripts
 		this->pythonDir = ini->GetFirstString("pythonDir", this->pythonDir.c_str(), &error);
@@ -897,7 +902,7 @@ int DAQDevice::read_ascii_line(char **buffer, size_t *length, FILE *file_ptr) {
     *length = 0;
     int nDroped;
     
-	if (n = getline(buffer, length, file_ptr) < 0) {
+	if ((n = getline(buffer, length, file_ptr)) < 0) {
 		if (debug > 3) printf("Error reading from file or EOF reached\n");
 		return -1;
 	}
@@ -925,7 +930,7 @@ int DAQDevice::read_ascii_line(char **buffer, size_t *length, FILE *file_ptr) {
 	if (strchr(*buffer, '\n') == NULL) {
 		if (debug > 3) printf("Error: line read from file is not complete\n");
 		//if (debug > 3) printf("   length=%d last char=%d\n", *length, *buffer[*length-1]);
-		if (debug > 3) printf("   n= %d, length=%d last char=??\n", n, *length);
+		if (debug > 3) printf("   n= %d, length=%ld last char=??\n", n, *length);
 		return -1;
 	}
 	
@@ -1031,6 +1036,8 @@ void DAQDevice::closeFile(){
 const char *DAQDevice::getDataDir(){
 	char line[256];
 	
+    // TODO: Move the moduleNumber also to this function !!!
+	// sprintf(line, "%03d/%s/", moduleNumber, moduleName.c_str());
 	sprintf(line, "%s/", moduleName.c_str());
 	buffer = line;
 	
@@ -1820,7 +1827,8 @@ long DAQDevice::getFileNumber(char* filename) {
 	std::string filename_string;
 	size_t pos_index, pos_prefix, pos_suffix, length_prefix, length_suffix, filename_length, pos;
 	long index;
-	
+    struct tm timestamp = {0};
+	char *puffer;
 	
 	if (debug > 2) {
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
@@ -1901,8 +1909,25 @@ long DAQDevice::getFileNumber(char* filename) {
 	
 	// we assume, that after the removal of prefix and suffix, there are only numbers left
 	// FIXME/TODO: check, if this is really only a number
-	index = atol(filename_string.c_str());
-	
+    
+    // TODO: Use format to get the file number here
+    //      Add a new ini-variable to parse time strings
+    if (datafileIndexFormat.length() == 0){
+        index = atol(filename_string.c_str());
+	} else {
+        // read date and time
+        //printf("Format string is //%s//\n", datafileIndexFormat.c_str());
+        puffer = strptime(filename_string.c_str(), datafileIndexFormat.c_str(), &timestamp);
+        //puffer = strptime(filename_string.c_str(), "%Y-%m-%d", &timestamp);
+        if (puffer == NULL) {
+            printf("getFileNumber: Error reading date and time string in file %s / index %s\n", 
+                   filename, filename_string.c_str());
+            index = 0; // skip this file ?!
+        }	
+        //printf("Timestamp %d %d %d (err=%ld)\n", timestamp.tm_mday, timestamp.tm_mon, timestamp.tm_year, puffer);
+        index = timegm(&timestamp);
+    }
+    
 	if (debug >= 3)
 		printf("File number is: %ld\n", index);
 	
@@ -1915,8 +1940,10 @@ int DAQDevice::get_file_list(std::string directory)
 	DIR *dir;
 	struct dirent *dir_entry;
 	long index;
-
-	
+    struct stat file_prop;
+	int err;
+    std::string file_name;
+    
 	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
@@ -1929,11 +1956,42 @@ int DAQDevice::get_file_list(std::string directory)
 	if (dir == 0){
 		printf("Directory %s is not existing\n", directory.c_str());
 		throw(std::invalid_argument("Opendir failed"));
+        
+        // TODO: Hier zusätzlich stat verwenden???
+        // Anderenfalls gibt es Probleme mit XFS
 	}
 	
+    // TODO: Test the stat results here !!!
+    // display dir_entry-properties
+    // stat
+    
+    
 	// read all directory entries
+    //
+    // TODO: The file type is not supported by all file systems (e.g. XFS seems
+    // not to work here - replacement needs to be found here !!!!
+    // Compare: "man readdir"
+    // 
 	while ((dir_entry = readdir(dir)) != NULL) {
-		if (dir_entry->d_type == DT_DIR) {
+        
+        if (directory.rfind('/') == (directory.size() - 1) )
+            file_name = directory + dir_entry->d_name;
+        else
+            file_name = directory + "/" + dir_entry->d_name;
+        
+        
+        //printf("==== %s\n", file_name.c_str());
+        //printf("==== %d %d \n", dir_entry->d_type, DT_DIR);
+    
+        err = stat(file_name.c_str(), &file_prop);
+
+        //printf("==== Stat --> %d\n", err);
+        //printf("==== Type: %08x dir %08x reg %08x \n", file_prop.st_mode, file_prop.st_mode & S_IFDIR,
+        //                                file_prop.st_mode & S_IFREG);
+        
+        
+		//if (dir_entry->d_type == DT_DIR) { // not working in some FS
+        if (file_prop.st_mode & S_IFDIR > 0) {
 			//
 			// if we have a real directory (not "." or ".."), call this function recursively
 			//
@@ -1944,7 +2002,8 @@ int DAQDevice::get_file_list(std::string directory)
 				else
 					get_file_list(directory + "/" + dir_entry->d_name);
 			}
-		} else if (dir_entry->d_type == DT_REG) {
+		//} else if (dir_entry->d_type == DT_REG) { // not working in some FS
+        } else if (file_prop.st_mode & S_IFREG) {
 			//
 			// if we have a file, get its number and, if it's the right on, save name and number
 			//

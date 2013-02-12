@@ -37,13 +37,13 @@ Version="0.1"
 #
 ################################################################################
 #
-#Version="0.3"
+Version="0.3"
 # 2012-02-01 ak
 # 
 # - Added interface to KITcube alarm notification
 # - Added support for flat directory structures
 #   
-#Version="0.4"
+Version="0.4"
 # 2012-07-09 ak
 #
 # - Added version to import data from a remote disk. This might be necessary if the 
@@ -51,11 +51,6 @@ Version="0.1"
 # - The script is acomplished by a script that collects the calls of all 
 #   remotely managed devices 
 #
-Version="0.5"
-# 2012-09-27 ak
-#
-# - Added support for pushing data from the local machine to a remote server
-
 
 
 
@@ -371,9 +366,9 @@ if [ -x $RSYNCPROG ] ; then
     if [ "$SYNCUSEALARM" == "yes" ] ; then
     	if [ -x $ALARMPROG ]; then
 		if [ $PUSH == "yes" ] ; then
-			$ALARMPROG "$SRC" "$APPEND_FILTER_FILE"
+			$ALARMPROG "$SRC" "$APPEND_FILTER_FILE" "$SYNCLOG"
 		else
-        		$ALARMPROG "$DEST" "$APPEND_FILTER_FILE"
+        		$ALARMPROG "$DEST" "$APPEND_FILTER_FILE" "$SYNCLOG"
 		fi
     	fi
     fi

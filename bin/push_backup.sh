@@ -2,6 +2,9 @@
 # Make an incremental backup of the system configuration
 #
 
+# Use the full hostname 
+#HOSTNAME=`/bin/hostname -f`
+
 # Default configurations
 BACKUPHOST="cube@katrin.kit.edu"
 BACKUPDIR=backup/$HOSTNAME

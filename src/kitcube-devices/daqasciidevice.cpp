@@ -504,4 +504,5 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	fclose(fd_data_file);
 	free(buf);
 	delete[] local_sensorValue;
+    
 }
