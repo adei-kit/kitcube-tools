@@ -103,7 +103,6 @@ void wolkenkamera::writeHeader(){
 
 
 
-
 // TODO: Move the parsing part to separate functions and move rest to base class
 void wolkenkamera::readData(std::string full_filename){
 	//int j;
@@ -182,7 +181,11 @@ void wolkenkamera::readData(std::string full_filename){
         throw std::invalid_argument("Tag <index> is missing in datafile mask\n");
     }
     mask = this->datafileMask;
-    mask.replace(pos, len, "%Y-%m-%d-%H-%M-%S");
+    
+    // Read the timestamp of the data file - only available in the file name !!!
+    // TODO: get the formt from the vaiable this->datafileIndexFormat !!!
+    //mask.replace(pos, len, "%Y-%m-%d-%H-%M-%S");
+    mask.replace(pos, len, datafileIndexFormat.c_str());
     //printf("Mask = %s\n", mask.c_str());
     
     
@@ -285,6 +288,8 @@ void wolkenkamera::readData(std::string full_filename){
 	
 }
 
+
+ 
 
 void wolkenkamera::updateDataSet(unsigned char *buf){
 	struct timeval t;
@@ -390,8 +395,25 @@ long wolkenkamera::getFileNumber(char* filename){
 	
 	// we assume, that after the removal of prefix and suffix, there are only numbers left
 	// FIXME/TODO: check, if this is really only a number
-	index = atol(filename_string.c_str());
+	//index = atol(filename_string.c_str());
 	
+    // TODO: Replace by code from DAQdevice 
+    // 
+    struct tm timestamp = {0};
+    char *puffer;
+    printf("Format string is //%s//\n", datafileIndexFormat.c_str());
+    puffer = strptime(filename_string.c_str(), datafileIndexFormat.c_str(), &timestamp);
+    //puffer = strptime(filename_string.c_str(), "%Y-%m-%d", &timestamp);
+    if (puffer == NULL) {
+        printf("getFileNumber: Error reading date and time string in file %s / index %s\n",
+               filename, filename_string.c_str());
+        index = 0; // skip this file ?!
+    }
+    //printf("Timestamp %d %d %d (err=%ld)\n", timestamp.tm_mday, timestamp.tm_mon, timestamp.tm_year, puffer);
+    index = timegm(&timestamp);
+
+    
+    
 	if (debug > 2)
 		printf("Index is: %ld\n", index);
 	

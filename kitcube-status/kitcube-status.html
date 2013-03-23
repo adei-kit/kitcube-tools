@@ -82,10 +82,10 @@
     <div id="maintab">
         <ul>
             <li> <a href="#summary">Summary</a>
+            <!-- <li> <a href="#xr">X-band Radar</a></li> -->
+            <li> <a href="#radiosonde">RS</a></li>
             <li> <a href="#modules">Module List</a>
             <li> <a href="#computer">Computer Infrastructure</a>
-            <li> <a href="#xr">X-band Radar</a></li>
-            <li> <a href="#radiosonde">RS Corte</a></li>
             <li> <a href="#all">All (Raw Data)</a>
         </ul>
 
@@ -187,9 +187,10 @@
   <div id="all" class="ui-widget-content">
     <p>Waiting for data</p>
   </div><!-- all -->
+  <!--
   <div id="xr" class="ui-widget-content">
      <div><img id="xrImage"></div>
-  </div>
+  </div> -->
   <div id="radiosonde" class="ui-widget-content">
 	  <table width="100%"><tr valign="top">
 	  <td>
@@ -267,7 +268,7 @@ function updateSensorlist() {
                 if (sensorlist != '') {
                         sensorlist += ",";
                 }
-                sensorlist += 'kitcube__hatzenbuehl__' + adeigrp;
+                sensorlist += 'kitcube__HDCP2__' + adeigrp;
         });
 }
 
@@ -287,8 +288,9 @@ function updateElapse() {
     return elapse;
 }
 
-
 function updateGraph() {
+    var now = new Date();
+
     //element('message').innerHTML = ('<pre>' + sensorlist + '</pre>')
 
     // Re-read sensorlist
@@ -297,13 +299,16 @@ function updateGraph() {
     var plotquery = 'getadeiplot.cgi/adeiplot.png?idlist=' + sensorlist + '&length=' + length + '&date=' + escape(Date()) + '&width=480&height=320';
     var zoomquery = 'getadeiplot.cgi/adeiplot.png?idlist=' + sensorlist + '&length=' + length + '&date=' + escape(Date()) + '&width=1024&height=768';
     var ccquery = 'getadeicc.cgi/ccplot.jpg?' + escape(Date()) + '&width=480&height=320';
-    var xrquery = 'getadeixr.cgi/xrplot.jpg?' + escape(Date()) + '&width=480&height=320';
+    //var xrquery = 'getadeixr.cgi/xrplot.jpg?' + escape(Date()) + '&width=480&height=320';
 
     element('trend').src = plotquery;
 //    element('ccImage').src = ccquery;
     element('zoomPlot').href = zoomquery;
 //   element('xrImage').src = xrquery;
 
+    var later = new Date();
+    var elapse = later.getTime() - now.getTime();
+    //element('message').innerHTML = ('<pre> updateGraph: ' + elapse + ' ms, time:  ' + later.getTime()/1000 + ' (ak)</pre>')
 }
 
 
@@ -313,7 +318,7 @@ function updateImages() {
     var xrquery = 'getadeixr.cgi/xrplot.jpg?' + escape(Date()) + '&width=480&height=320';
 
     element('ccImage').src = ccquery;
-    element('xrImage').src = xrquery;
+    //element('xrImage').src = xrquery;
 
 }
 
@@ -660,7 +665,7 @@ function load() {
             all_html += '<tr>';
             all_html += '<td style="text-align:right">' + response.data[i].ID + '</td>';
             all_html += '<td style="text-align:right">' + response.data[i].Name + '</td>';
-	    all_html += '<td style="text-align:right">' + response.data[i].TimestampString + '</td>';
+	    all_html += '<td style="text-align:right">' + response.data[i].Timestamp + '</td>';
             if (response.data[i].RawValue) {
 	        all_html += '<td style="text-align:right">' + response.data[i].RawValue + '</td>';
             }
@@ -688,7 +693,7 @@ function load() {
 	if (sensorlist != '') {
         sensorlist += ",";
 	}
-    sensorlist += 'kitcube__hatzenbuehl__' + adeigrp;
+    sensorlist += 'kitcube__HDCP2__' + adeigrp;
 
     });
 
@@ -795,9 +800,9 @@ function plot(newlength, title) {
         sensorlist += ",";
 	}
 	idlist += id;
-    srctree += 'kitcube__hatzenbuehl__Data_120_SysCI_txt__' + id;
+    srctree += 'kitcube__HDCP2__Data_120_SysCI_txt__' + id;
 	//srctree += 'mydetector__detector__0__' + id;
-    sensorlist += 'kitcube__hatzenbuehl__' + adeigrp;
+    sensorlist += 'kitcube__HXMEX__' + adeigrp;
 
 	var color = legend_color_table[index++ % legend_color_table.length ];
 	legend += '<font color="' + color + '">';
@@ -917,11 +922,11 @@ function showSource() {
 
 	setInterval(function() {
 	    if (updateElapse() > 30) {
-            load();
-	    loadStatus();
-	    loadGude();
-	    loadCC();
-	    loadRS(-1);
+              load();
+	      loadStatus();
+	      loadGude();
+	      loadCC();
+	      loadRS(-1);
 	    }
         }, 10*1000);
 
@@ -937,6 +942,7 @@ function showSource() {
 	setInterval(function() {
 	    updateElapse()
 	}, 1000);
+
 
 
     });

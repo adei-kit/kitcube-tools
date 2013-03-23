@@ -133,11 +133,7 @@ OPTS=""
 if [ $MODE = "flat" ] ; then
     NARGS=4
     OPTS="<filemask>"
-
-    FORMAT_CC="kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg"
-    FORMAT_CM="chm%Y%m%d_%H%M%S.dat"
-
-fi 
+fi
 
 if [ $# -lt $NARGS -o $# -gt $NARGS ] ; then
 	echo -e "Usage:	$($BASENAMEPROG "$0") <SRC> <DEST> <rsync-filter-file> $OPTS"
@@ -158,13 +154,11 @@ if [ $MODE = "offline" ] ; then
 fi
 
 if [ $MODE = "flat" ] ; then
-    echo -e "     $OPTS              - pattern for detecting date from filename by strptime"
-    echo -e "                               Known pattern are:"
-    echo -e "                                  CC -  cloud cameras ($FORMAT_CC)"
-    echo -e "                                  CM -  Ceilometer ($FORMAT_CM)"
-    echo -e "                                  RPG - for several HATPRO files" 
-    echo -e " "
-fi 
+    echo -e "     $OPTS              - pattern for detecting date from filename by strptime."
+    echo -e "                               The pattern is transfered to split_flatdir.sh"
+
+    $SPLITPROG
+fi
 
     #echo -e "Basedir: $KITCUBEDIR"
 

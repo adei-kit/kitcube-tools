@@ -567,8 +567,10 @@ void DAQDevice::readDataWithPython(const char *filename, double *sensorValue){
 	
 	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
-		
 	
+    // No Phython call defined
+	if (pythonModule.length() == 0 ) return;
+    
 	// Convert the argument list to python
 	pArgs = PyTuple_New(nArgs);
 	pValue = PyString_FromString(filename);
@@ -1157,10 +1159,14 @@ void DAQDevice::openDatabase() {
 	int nNewSensors;
 	int nNewAxis;
 	
+    
 	
 	if (debug > 2)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
+    
+    // TODO: There is a modification for ORCAProcess when writing the sensorlist?!
+    //      No idea how to configure this feature?!
 	
 	// TODO: error handling	
 	// TODO:  Check if the data is available in the class?!
@@ -1394,6 +1400,7 @@ void DAQDevice::openDatabase() {
 		sprintf(line, "'%d', ", moduleNumber);
 		cmd += line;
 		cmd += "'" + sensor[i].name + " " + sensor[i].comment + "', ";
+        //cmd += "'" + sensor[i].comment + " [" + sensor[i].name + "]', "; // modified for OrcaProcess, ak !!!
 		sprintf(line, "'%d', '%f', ", axis[sensor[i].axis].id, sensor[i].height);
 		cmd += line;
 		cmd += "'" + sensor[i].data_format + "')";

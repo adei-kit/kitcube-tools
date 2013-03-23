@@ -19,14 +19,23 @@ DIR="$1"
 FORMAT="$2"   
 
 # Predefined formats
-FORMAT_CC1="kitcube_cc1_%Y-%m-%d-%H-%M-%S.jpg"
-FORMAT_CC2="kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg"
+FORMAT_CC="kitcube_cc2_%Y-%m-%d-%H-%M-%S.jpg"
+FORMAT_CCSKY="%Y-%m-%d_%H-%M-%S_skypic.jpg"
+FORMAT_CCLAND="%Y-%m-%d_%H-%M-%S_landpic.jpg"
 FORMAT_CM="chm%Y%m%d_%H%M%S.dat"
 FORMAT_RPG="%y%m%d"
 
-if [ "$FORMAT" == "CC" ] ; then FORMAT=$FORMAT_CC2; fi
-if [ "$FORMAT" == "CC1" ] ; then FORMAT=$FORMAT_CC1; fi
-if [ "$FORMAT" == "CC2" ] ; then FORMAT=$FORMAT_CC2; fi
+
+# Load host specific configuration
+CONF="/home/cube/kitcube_conf.sh"
+if [ -f $CONF ] ; then
+source $CONF
+fi
+
+
+if [ "$FORMAT" == "CC" ] ; then FORMAT=$FORMAT_CC; fi
+if [ "$FORMAT" == "CCSKY" ] ; then FORMAT=$FORMAT_CCSKY; fi
+if [ "$FORMAT" == "CCLAND" ] ; then FORMAT=$FORMAT_CCLAND; fi
 if [ "$FORMAT" == "CM" ] ; then FORMAT=$FORMAT_CM; fi
 if [ "$FORMAT" == "RPG" ] ; then FORMAT=$FORMAT_RPG; fi
 
@@ -40,6 +49,8 @@ echo
     echo " FORMAT  Format that allows the command date to parse the filename"
 	echo "         Know formats"
 	echo "            Cloud camera: CC = $FORMAT_CC"
+	echo "            New cloud camera: CCSKY = $FORMAT_CCSKY"
+	echo "            New cloud camera: CCLAND = $FORMAT_CCLAND"
   	echo "            Ceilometer:   CM = $FORMAT_CM" 
     echo "            HATPRO:       RPG= (<prefix>_$FORMAT_RPG|$FORMAT_RPG<hour>).<ext1>[.<ext2>].ASC"
     echo ""  
@@ -69,12 +80,9 @@ do
         	# Skip prefix separated by underscore
         	# Take the first 6 characters
         	DATESTRING=${DATESTRING#*_}
-		if [ ${#DATESTRING} -lt 6 ]; then
-			DATESTRING=$FILENAME
-		fi
         	DATESTRING=${DATESTRING:0:6}
         
-		echo "RPG filename processing result: $FILENAME --> $DATESTRING"
+		#echo "RPG filename processing result: $FILENAME --> $DATESTRING"
 	fi 
 
 	# Get the target folder name
@@ -84,7 +92,7 @@ do
 	else
 		TARGETDIR=`date -j -u -f "$FORMAT" $DATESTRING "+%Y/%m/%d" 2>/dev/null` 
 	fi 
-	echo "<TARGET>=$TARGETDIR"	
+	#echo "<TARGET>=$TARGETDIR"	
  
 	if [ "$TARGETDIR" != "" ]; then
 

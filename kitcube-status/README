@@ -2,6 +2,12 @@ README detectorstatus
 A. Kopmann
 
 
+TODO (1.3.13):
+--------------
+- getadeidata.cgi: If not all groups are available then no data is transfered instead
+	of the data of the available groups !!! 
+
+
 TODO (30.5.2012):
 -----------------
 - Add group timestamp for every group.

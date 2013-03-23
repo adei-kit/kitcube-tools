@@ -10,7 +10,7 @@ FILES = Makefile \
 	bin/send_heartbeat.sh \
 	bin/sync_files.sh \
 	bin/wget_files.sh \
-	bin/resize_cc2.sh \
+	bin/resize_cc.sh \
 	bin/kcr-mast \
 	bin/kcr-3M \
 	bin/kcr-cc \

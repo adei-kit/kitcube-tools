@@ -52,7 +52,7 @@ alias_list[7] = ("Wind direction 4m", 1, "%.0f &deg;", 0, g_eb1_dax, 1);
 # Global lists for the ADEI query results
 timestamp_list = number_of_loggroups * [0]
 name_list = number_of_items * ["???"]
-data_list = number_of_items * [""]
+data_list = number_of_items * [("-", 0)]
 
 
 def getdata(loggroup_id):
@@ -106,6 +106,7 @@ def getdata(loggroup_id):
         return
 
     # Copy all data to a results field 
+    timestamp = 0;   
     for rowindex, rowdata in enumerate(csvreader):
         for columnindex, data in enumerate(rowdata):
             if rowindex == 0:
@@ -125,7 +126,7 @@ def getdata(loggroup_id):
     #    print 'Sensor ' + str(target_id) + ' ' + name_list[target_id] + ' ' + str(data_list[target_id]) 
 
     timestamp_list[loggroup_id] = timestamp
-    #print "Timestamp = " + str(timestamp)
+    #print "Timestamp(" + str(loggroup_id) + ") = " + str(timestamp)
 
  
 
@@ -139,7 +140,8 @@ def printjson():
     for ts in timestamp_list:
         if ts > timestamp: 
             timestamp = ts
-    
+   
+    #print data_list; 
 
 
     sys.stdout.write('{\n');

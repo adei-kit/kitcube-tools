@@ -4,13 +4,22 @@
 
 import sys, os, urllib, time
 import cgi, cgitb
+import Image
+import ImageDraw
+import ImageFont
 
 from adeiconfig import *
 
 
 def getplot(timestamp, idlist, length, width=640, height=480):
-       
-    if use_virtualserver == '1':
+    if width == None: 
+      width = 640;
+    if height == None:
+      height = 480;
+   
+    try: 
+ 
+      if use_virtualserver == '1':
         query = '%(server_address)s/services/getimage.php?'\
         'db_server=%(db_server)s&db_name=%(db_name)s&db_group=-3&db_mask=all'\
         '&experiment=0'\
@@ -28,7 +37,7 @@ def getplot(timestamp, idlist, length, width=640, height=480):
         param['width'] = width
         param['height'] = height
 
-    else:
+      else:
 
         # Get db_group and according ids
         sensorlist = idlist.split(',')
@@ -63,18 +72,27 @@ def getplot(timestamp, idlist, length, width=640, height=480):
         param['width'] = width
         param['height'] = height
 
-    url = query % param
+      url = query % param
 
-    #print "URL = " + url
-    #return
+      #print "URL = " + url
+      #return
 
-    try:
-        f = urllib.urlopen(url)
+    
+      f = urllib.urlopen(url)
+      sys.stdout.write(f.read())
+
     except:
-        sys.stdout.write('{"error": "%s"}\n' % 'unable to connect ADEI server');
-        return
+      im = Image.new( "RGB", (int(width),int(height)), "#ddd"); 
+      #sys.stdout.write('{"error": "%s"}\n' % 'unable to connect ADEI server');
+      font = ImageFont.truetype("/usr/share/fonts/truetype/verdana.ttf",12);
 
-    sys.stdout.write(f.read())
+      draw = ImageDraw.Draw(im);
+      draw.text((10, 0), idlist, (0,0,0), font=font);
+      im.save(sys.stdout, "PNG");
+
+    return
+
+
 
 
 def main():

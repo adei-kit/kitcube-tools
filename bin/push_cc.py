@@ -18,7 +18,7 @@ import ImageFont
 DAQDIR = "/home/cube/archive/045/CC2/data/20*"
 
 # Target dir
-LATESTFILE = "CC2-latest.jpg"
+LATESTFILE = "CC-latest.jpg"
 REMOTEDIR = "public_html/kitcubestatus/data"
 WEBSERVER = "imk-adei1"
 
@@ -38,7 +38,7 @@ centercrop = 0.65
 print "Searching for the latest file of a certain device"
 
 FILEMASK = "*.jpg"
-TMP = "/home/cube/tmp/CC2-latest.txt"
+TMP = "/home/cube/tmp/CC-latest.txt"
 
 # TODO: Try to improve performance with the newer flag
 #       Problem newer or equal is the required function !!!

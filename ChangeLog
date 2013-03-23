@@ -3,12 +3,13 @@ A. Kopmann
 
 
 
-TODO
-- daqdevice, get_file_list doesnot work for XFS file system
-  Improve implementation
+TODO:
 - daqdevice, add module number in the function getDataDir()
   Advantage: the whole convention can be skipped by using the ini-statement dataSubDir.
   Needed for reading ORCA files from arbitrary folders.
+- Remove getFilenumber from wolkenkamera.cpp the new implementation of daqdevice should be 
+  flexiible enough - test required
+
 
 
 Roadmap
@@ -85,6 +86,12 @@ Release notes
 
 
 Version 0.33: 
+ - Improved error handling of kitcube-status display. The function getadeidata and getadeiplot now
+   deliver also in an error case the expected data format. 
+   23.3.13 (ak)
+ - Using the new inifile parameter datafileIndexFormat for parsing the cloud camera date.
+   There should be no hardcoded dependancy in wolkenkamera.cpp
+   1.3.13 (ak)
  - Added export of the data archive to remote computers. (export_archive.sh)
    The manual has also been updated.
    12.2.13 (ak)
