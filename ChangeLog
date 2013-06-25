@@ -86,6 +86,8 @@ Release notes
 
 
 Version 0.33: 
+ - Added campaign name to script configuration file.
+   26.6.13 (ak)
  - Improved error handling of kitcube-status display. The function getadeidata and getadeiplot now
    deliver also in an error case the expected data format. 
    23.3.13 (ak)
