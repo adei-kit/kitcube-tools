@@ -3,6 +3,8 @@
 # A. Kopmann (ak)
 #
 
+# Start script
+#SERVICE_CAMPAIGN="HDCP2" 
 
 # Backup
 BACKUPHOST="katrin.kit.edu"

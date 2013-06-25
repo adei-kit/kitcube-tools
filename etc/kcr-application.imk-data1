@@ -24,6 +24,12 @@ SCRIPT=`/usr/bin/basename "$0"`
 READER=${SCRIPT%.*}
 #echo "Module name: $READER\n"
 
+# Read configuration file
+CONF="/home/cube/kitcube_conf.sh"
+# Load host specific configuration
+if [ -f $CONF ] ; then
+        source $CONF
+fi
 
 SERVICE_START="yes"
 SERVICE_USER="cube"
