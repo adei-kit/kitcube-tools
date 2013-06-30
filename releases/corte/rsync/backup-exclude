@@ -1,0 +1,12 @@
+# push_backup.sh exclude list
+- hatzenbuehl
+- archive
+- data
+#- *.log
+- .mozilla
+- .ooo3
+- .thumbnails
++ releases/kitcube-tools/conf
+- releases
+- old
+- tmp

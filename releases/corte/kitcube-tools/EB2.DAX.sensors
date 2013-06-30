@@ -1,0 +1,19 @@
+Number of sensors: 18
+         1	wind speed	EB2.SONIC.V.VHOR.001.AVG	V
+         2	wind direction	EB2.SONIC.V.WD.001.AVG	A
+         3	covariance east and vertical	EB2.SONIC.F.CUW.001.AVG	FV
+         4	covariance south and vertical	EB2.SONIC.F.CVW.001.AVG	FV
+         5	kinematic heat flux	EB2.SONIC.F.CWT.001.AVG	FH
+         6	total soil heat flux	EB2.SHF.F.SHF.000.AVG	R
+         7	kinematic moisture flux	EB2.LICOR.F.CWAH.001.AVG	FM
+         8	water vapour pressure	EB2.HMP.M.E.001.AVG	PA
+         9	specific humidity	EB2.HMP.M.SH.001.AVG	MS
+        10	virtual temperature	EB2.HMP.T.VIR.001.AVG	TA
+        11	air density	EB2.HMP.D.AIR.001.AVG	DA
+        12	absolute humidity	EB2.HMP.M.AH.001.AVG	MA
+        13	sensible heat flux	EB2.SONIC.F.HSUR.001.AVG	R
+        14	latent heat flux	EB2.SONIC.F.LSUR.001.AVG	R
+        15	carbon dioxide flux	EB2.LICOR.F.CD.001.AVG	FC
+        16	longwave incoming radiation flux	EB2.PYG.R.LWDR.001.AVG	R
+        17	longwave outgoing radiation flux	EB2.PYG.R.LWUR.001.AVG	R
+        18	net radiation	EB2.PYG.R.QSUR.001.AVG	R

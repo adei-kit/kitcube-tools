@@ -1,0 +1,11 @@
+Number of sensors: 10
+         1	height above ground	WC.CUB.H.AGL.001.PROF	H
+         2	wind speed retrieval elevation angle	WC.CUB.A.ELV.001.INST	A
+         3	horizontal wind speed	WC.CUB.V.HOR.001.PROF	V
+         4	variance of horizontal wind speed	WC.CUB.V.VAR.001.PROF	VAR
+         5	wind from direction	WC.CUB.V.WD.001.PROF	A
+         6	eastward wind from VAD	WC.CUB.V.U.001.PROF	V
+         7	northward wind from VAD	WC.CUB.V.V.001.PROF	V
+         8	upward air velocity	WC.CUB.V.W.001.PROF	V
+         9	variance of upward air velocity	WC.CUB.V.VARW.001.PROF	VAR
+        10	carrier to noise ratio	WC.CUB.S.CNR.001.PROF	SNR
