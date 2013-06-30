@@ -1,0 +1,8 @@
+# rsync filter rules merge file for sodar (SOD)
+# the following files need to be synchronized the ordinary way
++ *.sta
++ *.set
++ *.smi
++ *.tst
++ */
+- *

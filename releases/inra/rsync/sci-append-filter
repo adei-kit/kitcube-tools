@@ -1,0 +1,6 @@
+# rsync filter rules merge file for scintillometer (SCI)
+# the following files append new data
++ *.RES
++ *.DGN
++ */
+- *
