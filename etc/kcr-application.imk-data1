@@ -28,6 +28,7 @@ READER=${SCRIPT%.*}
 CONF="/home/cube/kitcube_conf.sh"
 # Load host specific configuration
 if [ -f $CONF ] ; then
+	echo "Loading configuration from $CONF"
         source $CONF
 fi
 
@@ -39,7 +40,7 @@ SERVICE_CAMPAIGN="$KITCUBE_CAMPAIGN"
 SERVICE_NAME=$READER
 SERVICE=/home/cube/kitcube-tools/src/kitcube-reader/$SERVICE_NAME
 SERVICE_INI=/home/cube/kitcube.ini
-if [ $SERVICE_CAMPAIGN != "" ]; then
+if [ "$SERVICE_CAMPAIGN" != "" ]; then
 SERVICE_INI=$SERVICE_INI.$SERVICE_CAMPAIGN
 fi
 SERVICE_ARGS="-d -v 1 -i $SERVICE_INI"
@@ -52,7 +53,7 @@ SERVICE_MONITOR=/home/cube/kitcube-tools/src/kitcube-reader/kitcube-monitor
 #  . /etc/eye.config
 #fi
 
-
+echo "CONF = $CONF, Campaign = $SERVICE_CAMPAIGN"
 
 if [ -d /home/$SERVICE_USER ] ; then
   SERVICE_LOGFILE=/home/$SERVICE_USER/$SERVICE_NAME.$HOSTNAME.log
