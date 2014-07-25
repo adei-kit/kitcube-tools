@@ -18,12 +18,14 @@ DAQAsciiDevice::DAQAsciiDevice():DAQDevice(){
 	// Clear counters for writing in a loop
 	nSamples = 0;
 	nTemplate = 0;
-	
-	nMap = 0; // No channels defined
+    
+    nMap = 0;
+    dynMap = 0;
 }
 
 
 DAQAsciiDevice::~DAQAsciiDevice(){
+    if (dynMap > 0) delete [] dynMap;
 }
 
 
@@ -141,29 +143,49 @@ int DAQAsciiDevice::readHeader(const char *filename){
 	char *pChRes;
 	char buffer[256];
 	
-	// TODO: Allocate map dynamically (currently it's 32) !!!
-	
+    // TODO: Allocate map dynamically (currently it's 256) !!!
+    //printf("nSensors = %d\n", nSensors);
+    if (dynMap != 0) delete [] dynMap;
+    dynMap = new int[nSensors];
+    
+    
 	i = 0;
 	pCh = strtok(line_of_data, dataSep.c_str());
 	if (pCh) pCh = strtok(NULL, dataSep.c_str());
-	while (pCh && (i < nSensors) && (i<32)){
+	while (pCh && (i < nSensors)){
 		
 		// Strip the trailing "sampletime"
-		strcpy(buffer, pCh);
-		if (debug > 3) printf("Searching for column: %s\n", buffer);
-		
-		map[i] = -1;
+        // Remove quotes if available, alternative add quote to the dataSep-List
+        int k = 0;
+        while ((isspace(pCh[k]) || (pCh[k] == '"')) && (k < strlen(pCh))){
+            k++;
+        }
+        strcpy(buffer, pCh+k);
+
+        k = strlen(buffer)-1;
+        while ((isspace(buffer[k]) || (buffer[k] == '"')) && (k>=0)){
+            k--;
+        }
+        buffer[k+1] = 0;
+               
+		if (debug > 3) printf("Searching for column %s in sensor configuration\n", buffer);
+               
+		//map[i] = -1;
+        dynMap[i] = -1;
 		for (j=0;j<nSensors;j++){
 			pChRes = strstr(buffer, sensor[j].comment.c_str());
-			if (pChRes == buffer) map[i] = j;
+			if (pChRes == buffer) {
+                //map[i] = j;
+                dynMap[i] = j;
+            }
 		}
 		
-		if (debug) 
-			printf("Channel %d: %s --> %d\n", i, buffer, map[i]);
+		if (debug > 2)
+			printf("Channel %d: %s --> %d\n", i, buffer, dynMap[i]);
 		
-		if (map[i] == -1) {
-			printf("OrcaProcess: Error reading sensor configuration!\n");
-			printf("             Sensor name %s not found in sensor definition file", buffer);
+		if (dynMap[i] == -1) {
+			printf("DAQAsciiDevice: Error reading sensor configuration!\n");
+			printf("                Sensor name %s not found in sensor definition file", buffer);
 			free(line_of_data);
 			
 			throw(std::invalid_argument("Sensor name not found in definition file"));
@@ -177,7 +199,15 @@ int DAQAsciiDevice::readHeader(const char *filename){
 	}
 	nMap = i;
 	
-	
+    if (debug>5){
+        printf("Map (n=%d): ", nMap);
+        for (i=0;i<nMap;i++){
+            printf(" %d", dynMap[i]);
+        }
+        printf("\n");
+    }
+    
+    
 	// Other settings ?!
 	noData = 99999;
 	
@@ -196,7 +226,7 @@ int DAQAsciiDevice::readHeader(const char *filename){
 		sensor[i].data_format = "<scalar>";
         sensor[i].size = 1;
 	}
-	
+    
 	free(line_of_data);
 	
 	return 0;
@@ -210,10 +240,11 @@ int DAQAsciiDevice::parseData(char* line, struct timeval* l_tData, double *senso
 	// Reading data from a generic CSV file
 
 	int i;
-	char *puffer;
+	char *puffer, *pSubsec, *pRes;
 	double value;
 	int err;	
-	
+	struct tm time_stamp_data;
+    
 	if (debug >= 4)
 		printf("\033[34m_____%s_____\033[0m\n", __PRETTY_FUNCTION__);
 	
@@ -235,10 +266,50 @@ int DAQAsciiDevice::parseData(char* line, struct timeval* l_tData, double *senso
 	// Read timestamp
 	puffer = strtok(line, dataSep.c_str());
 	if (puffer) {
-		err = sscanf(puffer, "%ld", &l_tData->tv_sec);
-		if (err == 1) {
-			if (debug > 2) printf("Timestamp %ld\n", l_tData->tv_sec);
-		}
+        // Remove quotes if available
+        if (puffer[0] == '"') puffer = puffer +1;
+        if (puffer[strlen(puffer)-1] == '"') puffer[strlen(puffer)-1] = 0;
+        
+        if (debug > 5)
+            printf("Timestamp %s (format: %s)\n", puffer, timestampFormat.c_str());
+        
+        if (timestampFormat.length() == 0){
+            // Read timestamp in seconds
+            err = sscanf(puffer, "%ld", &l_tData->tv_sec);
+            if (err == 1) {
+                if (debug > 3) printf("Timestamp %ld\n", l_tData->tv_sec);
+            }
+        } else {
+            // Parse time stamp format
+            memset(&time_stamp_data, 0, sizeof(time_stamp_data));
+            pRes = strptime(puffer, timestampFormat.c_str(), &time_stamp_data);
+            if (pRes == 0){
+                if (debug > 5) printf("Error: Conversion of timestamp %s failed\n", puffer);
+                return -1; // No data found
+            }
+                
+                
+            if (debug > 3) printf("Date      : %02d.%02d.%4d  %02d:%02d:%02d\n",
+                   time_stamp_data.tm_mday, time_stamp_data.tm_mon+1, time_stamp_data.tm_year+1900,
+                   time_stamp_data.tm_hour, time_stamp_data.tm_min, time_stamp_data.tm_sec);
+            
+            l_tData->tv_sec = timegm(&time_stamp_data);
+            l_tData->tv_usec = 0;
+
+            // Check if there are usecs given and add them !!!
+            pSubsec = strchr(puffer, '.');
+            if ( pSubsec > 0){
+                err = sscanf(pSubsec, "%lf", &value);
+                if (err == 1){
+                    l_tData->tv_usec = value * 1000000;
+                    if (debug > 3) printf("Subsec string: %s / %lf / %06d\n", pSubsec, value, l_tData->tv_usec);
+                }
+            }
+            
+            if (debug > 3) printf("Timestamp %ld.%06d\n", l_tData->tv_sec, l_tData->tv_usec);
+        }
+            
+            
 		
 		puffer = strtok(NULL, dataSep.c_str());
 	}
@@ -246,10 +317,10 @@ int DAQAsciiDevice::parseData(char* line, struct timeval* l_tData, double *senso
 		err = sscanf(puffer, "%lf", &value);
 		
 		if (err == 1) {
-			sensorValue[map[i]] = value;
+			sensorValue[dynMap[i]] = value;
 		}
 		
-		if (debug > 2) printf("Sensor %d: %f\n", map[i], value);
+		if (debug > 3) printf("Sensor %3d: %20.9f\n", dynMap[i], value);
 		
 		// Get next value
 		puffer = strtok(NULL, dataSep.c_str());
@@ -327,8 +398,14 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	// Get the last time stamp + file pointer from
 	loadFilePosition(lastIndex, lastPos, timestamp_data);
  
-	if (lastPos == 0)
-		lastPos = lenHeader; // Move to the the first data
+    // Skip the header
+	if ((lastPos == 0) && (lenHeader > 0)){
+        // The header is given in bytes
+		lastPos = lenHeader;
+        
+        if (debug > 4) printf("Skip header of %d bytes\n", lenHeader);
+        
+    }
 	currPos = lastPos;
 	
 	// Find the beginning of the new data
@@ -337,6 +414,20 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	
 	fseek(fd_data_file, lastPos, SEEK_SET);
 	
+    
+    // Skip the header, the header is given in lines
+	if ((lastPos == 0) && (lenHeaderLines > 0)){
+        if (debug > 4) printf("Skip header of %d lines\n", lenHeaderLines);
+        
+        n = 0;
+        i = 0;
+        while((n==0) && (i<lenHeaderLines)){
+            n = read_ascii_line(&buf, &len, fd_data_file);
+            i++;
+        }
+        
+    }
+    
 #ifdef USE_MYSQL
 	sql = "LOCK TABLES " + dataTableName + " WRITE";
 	mysql_query(db, sql.c_str());
@@ -344,7 +435,9 @@ void DAQAsciiDevice::readData(std::string full_filename){
 	
 	n = 0;
 	int iLoop = 0;
-	while ((n == 0) && (iLoop < 1000000)) {
+    int maxLoop = 1000000;
+    if (debug > 2) maxLoop = 10;
+	while ((n == 0) && (iLoop < maxLoop)) {
 		// read one or more line of ASCII data
         newline = 1;
         // Clear the sensor array before reading new data
@@ -363,7 +456,7 @@ void DAQAsciiDevice::readData(std::string full_filename){
 			
 			// print sensor values
             // TODO: Use the size field of the sensor array to decode the data
-			if (debug >= 4) {
+			if (debug >= 3) {
 				printf("%4d: Received %4d bytes --- ", iLoop, (int) strlen(buf));
 				printf("%lds %6ldus --- ", timestamp_data.tv_sec, (long) timestamp_data.tv_usec);
 				if (profile_length != 0) {

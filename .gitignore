@@ -34,6 +34,7 @@ releases/*/kitcube-tools/*.template
 #
 # Package tar-balls
 *.tar.gz
+*.tgz
 #
 # Documentation created automatically for the package
 kitcube-tools-api
@@ -59,4 +60,11 @@ old/*
 #akutil
 #fdhwlib.h
 fdhwlib
-
+#
+# Files from Mac OS
+._*
+.DS_Store
+#
+# Files from Linux
+.#*
+.*.swp

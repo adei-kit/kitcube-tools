@@ -30,6 +30,7 @@
 #include "orcaprocess.h"
 #include "sisomop.h"
 #include "daqasciidevice.h"
+#include "campbelltoa5.h"
 
 
 extern "C" void *createDevice(const char *devType) {
@@ -80,6 +81,9 @@ extern "C" void *createDevice(const char *devType) {
 	
 	if (strcasestr(devType, "CSV") != NULL)
 		return( new (DAQAsciiDevice));
+    if (strcasestr(devType, "CampbellTOA5") != NULL)
+		return( new (CampbellTOA5));
+    
 
 	
 	// Device type is unknown

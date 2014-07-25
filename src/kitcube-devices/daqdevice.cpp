@@ -24,12 +24,14 @@ DAQDevice::DAQDevice(){
 	sensorGroupNumber = 0;
 	headerLine = 1;
 	dataSep = "\t\n";
+    timestampFormat = "";
 	commentChar = "#";
 	
 	this->iniGroup = "DAQDevice";
 	this->tAlarm = 0; // No alarm limits
 	
 	lenHeader = 0;
+    lenHeaderLines = 0;
 	lenDataSet = 0;
 	profile_length = 0;
 	
@@ -173,6 +175,7 @@ void DAQDevice::readInifileCommon(const char *filename){
 	} else {
 		ini = new akInifile(inifile.c_str()); // Skip output
 	}
+    ini->setDebugLevel(debug-2);
 	if (ini->Status()==Inifile::kSUCCESS){
 		
 		// Read global parameters
@@ -254,6 +257,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	
 	//ini = new akInifile(inifile.c_str(), stdout);
 	ini = new akInifile(inifile.c_str()); // No output ?!
+    ini->setDebugLevel(debug-2);
 	if (ini->Status()==Inifile::kSUCCESS){
 		error = ini->SpecifyGroup(iniGroup.c_str());
 		if (error == Inifile::kSUCCESS){
@@ -261,8 +265,10 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 			this->sensorGroup = ini->GetFirstString("sensorGroup", sensorGroup.c_str(), &error);
 			this->sensorGroupNumber = getSensorGroup();
 			this->headerLine = ini->GetFirstValue("headerLine", (int) headerLine, &error);
-			this->dataSep = ini->GetFirstString("dataSep", dataSep.c_str(), &error);
+			this->lenHeaderLines = ini->GetFirstValue("lenHeaderLines", (int) lenHeaderLines, &error);
+			this->dataSep = ini->GetFullString("dataSep", dataSep.c_str(), &error);
 			this->commentChar = ini->GetFirstString("commentChar", commentChar.c_str(), &error);
+			this->timestampFormat = ini->GetFullString("timestampFormat", timestampFormat.c_str(), &error);
             value = ini->GetFirstString("flatFolder", "no", &error);
             if (value == "yes") {
                 isFlatFolder = true;
@@ -325,6 +331,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	} else {
 		ini = new akInifile(inifile.c_str()); // Skip output
 	}
+    ini->setDebugLevel(debug-2);
 	if (ini->Status()==Inifile::kSUCCESS){
 	
 		
@@ -434,7 +441,7 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 	
 	// Check integrity of data fields
 	if (datafileMask.find("<index>") == std::string::npos){
-		printf("There is no tag <index> in datafileMask=%s specified in inifile %s\n",
+		printf("Warning: There is no tag <index> in datafileMask=%s specified in inifile %s\n",
 			   datafileMask.c_str(), inifile.c_str());
 		//throw std::invalid_argument("Missing <index> in datafileMask");
 	}
@@ -632,6 +639,7 @@ void DAQDevice::readAxis(const char *inifile){
 	
 	//ini = new akInifile(inifile, stdout);
 	ini = new akInifile(inifile);
+    ini->setDebugLevel(debug-2);
 	if (ini->Status()==Inifile::kSUCCESS){
 		
 		error = ini->SpecifyGroup("Axis");
@@ -711,11 +719,19 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 		printf("\033[31mError: Configuration file with sensor list is missing\033[0m\n");
 		printf("Creating template file: %s\n", full_sensorlist_filename.c_str());
 		
+        
+        // TODO: Create class to create sensor template file
+        // Should be implemented by each routing itself - probaly reading the header !!!
+        //
+        // Is read header and writing generic information possible ???
+        // Where to get the name of one file???
+        //
+        
 		sensor_list_file = fopen(full_sensorlist_filename.c_str(), "w");
 		if (sensor_list_file == NULL) {
 			throw std::invalid_argument("Error creating template file");
 		}
-		
+        
 		fprintf(sensor_list_file, "Number of sensors: <n>\n");
 		fprintf(sensor_list_file, "<sensor number>\t<comment>\t<sensor name>\t<axis>\n");
 		
@@ -1998,7 +2014,7 @@ int DAQDevice::get_file_list(std::string directory)
         
         
 		//if (dir_entry->d_type == DT_DIR) { // not working in some FS
-        if (file_prop.st_mode & S_IFDIR > 0) {
+        if (file_prop.st_mode & (S_IFDIR > 0)) {
 			//
 			// if we have a real directory (not "." or ".."), call this function recursively
 			//

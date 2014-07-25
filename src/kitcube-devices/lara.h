@@ -47,7 +47,7 @@ public:
 	//void closeFile();
 	
 	/** Get time until next sample and it's id */
-	int readHeader(char *filename);
+	int readHeader(const char *filename);
 	
 	int parseData(char *line, struct timeval *l_tData, double *sensorValue);	
 	

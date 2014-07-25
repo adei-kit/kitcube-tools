@@ -9,7 +9,10 @@ TODO:
   Needed for reading ORCA files from arbitrary folders.
 - Remove getFilenumber from wolkenkamera.cpp the new implementation of daqdevice should be 
   flexiible enough - test required
-
+- Implement a own class for the Campbell data logger file format. It should read
+  furhter information from the header and define the appropriate timestamp format.
+  Also a data reader for the Campbell should be added.
+- Decode the binary data format?!
 
 
 Roadmap
@@ -86,6 +89,13 @@ Release notes
 
 
 Version 0.33: 
+ - Enhanced the CSV-Reader in DAQAsciiDevice in order to read the Campbell DataLogger-format A05.
+   The header of this format is not detectable by comment characters and a human readable timestamp
+   is used. 
+ - Added the function akInifile:readFullString() in order to read the complete line without
+   splitting it in tags. This is necessary if timestamp formats used by strptime should be read from 
+   the inifile.
+   14.1.14 (ak)
  - Added campaign name to script configuration file.
    26.6.13 (ak)
  - Improved error handling of kitcube-status display. The function getadeidata and getadeiplot now

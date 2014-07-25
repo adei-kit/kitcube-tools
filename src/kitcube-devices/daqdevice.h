@@ -21,7 +21,8 @@
 #include <cstdlib>
 #include <dirent.h>
 #include <fcntl.h>
-#include <cstring>
+//#include <cstring>
+#include <string>
 #include <stdexcept>
 #include <sys/time.h>
 #include <map>
@@ -266,6 +267,11 @@ protected:
 	/** Length of the header block in the data file */
 	int lenHeader;
 	
+    /** Length of the header block in number of lines 
+      * The number of lines can be given alternatively to the size
+      * of the header in Bytes (lenHeader) */
+    int lenHeaderLines;
+    
 	/** Length of one data set in the data file */
 	int lenDataSet;
 	
@@ -373,7 +379,10 @@ protected:
 	/** Comment character (default "#") */
 	std::string commentChar;
 	
-	
+    /** Format of the timestamp (in ASCII data files) */
+    std::string timestampFormat;
+    
+    
 	/** Folder where all the configurations are stored */
 	std::string configDir; 
 	
@@ -488,13 +497,13 @@ private:
 	std::string basedirTmpl;
 	
 	/** Location Id */
-	int locationId;
+	//int locationId;
 	
 	/** Name of the location */
 	std::string location;
 	
 	/** Flag to switch between unique and relative telescope id's */
-	int uniqueId;
+	//int uniqueId;
 	
 	std::map<long, std::string> dateien;
 	

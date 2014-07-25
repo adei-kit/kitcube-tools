@@ -46,7 +46,12 @@ public:
   char * GetFirstString(const char *entry, const char *defString, result *error);
 
   char * GetNextString(const char *defString, result *error);
+    
+  /** Read the full string in a line. */
+  char * GetFullString(const char *entry, const char *defString, result *error);
 
+  char * GetFullString(const char *entry);
+  
   double GetFirstValue(const char *entry, double defValue, result *error);
 
   double GetNextValue(double defValue, result *error);
@@ -57,6 +62,10 @@ public:
 
   double GetNextDouble(result *error);
 
+    /** Set the debug level - 0 means no debug output */
+    void setDebugLevel(int value);
+
+    
 protected:
   /** Try to open another file */
   int open(char *filename);
@@ -73,6 +82,9 @@ private:
 
   /** Flag set if logging output is required */
   bool writeLog;
+    
+    /** Debug level */
+    int debug;
 
 };
 

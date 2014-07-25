@@ -213,7 +213,7 @@ void Lara::closeFile(){
 */
 
 
-int Lara::readHeader(char *filename) {
+int Lara::readHeader(const char *filename) {
 	std::string dir; 
 	std::string fileString;
 	std::string numString;

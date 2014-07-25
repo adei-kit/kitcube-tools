@@ -55,7 +55,7 @@ protected:
 	int nMap;
 	
 	/** Mapping of the sensors */
-	int map[32];	
+    int * dynMap;
 	
 };
 
