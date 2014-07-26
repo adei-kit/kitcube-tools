@@ -16,6 +16,7 @@ config.status
 configure
 libtool
 stamp-h1
+*.m4
 #
 # Objects and libraries and applications
 *.o
@@ -23,9 +24,13 @@ stamp-h1
 .deps/
 src/kitcube-devices/test-device
 src/kitcube-data/kitcube-data
+src/kitcube-data/kcd-*
 src/kitcube-reader/kitcube-reader
 src/kitcube-reader/kitcube-reader-mysql
+src/kitcube-reader/kitcube-monitor
+src/kitcube-reader/kcr-*
 src/bsddate/bsddate
+etc/kcr-*
 #
 # Sample data files
 #
@@ -68,3 +73,12 @@ fdhwlib
 # Files from Linux
 .#*
 .*.swp
+#
+# Python
+*.pyc
+#
+# bin log files
+bin/*txt
+bin/*log
+bin/*.1
+bin/tmp/
