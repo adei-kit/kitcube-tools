@@ -17,6 +17,13 @@ configure
 libtool
 stamp-h1
 *.m4
+depcomp
+install-sh
+missing
+mkinstalldirs
+config.guess
+config.sub
+ltmain.sh
 #
 # Objects and libraries and applications
 *.o
