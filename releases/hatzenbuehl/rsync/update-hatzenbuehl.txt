@@ -1,0 +1,122 @@
+# List of sync_files.sh calls for cronjobs 
+# Setup: hatzenbuehl 2012
+#
+
+
+#
+# Liste of available devices
+#
+# 001/T01
+* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast01/DATA/ /home/cube/archive/001/T01/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# 002/T02
+* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast02/DATA/ /home/cube/archive/002/T02/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# 003/T03
+#* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast03/DATA/ /home/cube/archive/003/T03/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# 004/T04
+#* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast04/ /home/cube/archive/004/T04 /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# 005/T05
+#* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast05/DATA/ /home/cube/archive/005/T05/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# 006/T06
+#* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast06/DATA/ /home/cube/archive/006/T06/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# 007/T07
+#* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast07/DATA/ /home/cube/archive/007/T07/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# 011/EB1
+* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast11/DATA/ /home/cube/archive/011/EB1/DATA /home/cube/etc/rsync/mast-append-filter >> /dev/null  2>&1
+* * * * * /home/cube/bin/sync_append.sh pc-bfs:/cygdrive/d/Bodenfeuchte/ /home/cube/archive/011/EB1/SISOMOP /home/cube/etc/rsync/eb1-append-filter-sm >> /dev/null  2>&1
+
+# 012/EB2
+#* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast12/DATA/ /home/cube/archive/012/EB2/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+#* * * * * /home/cube/bin/sync_append.sh pc-bfs:/cygdrive/d/Bodenfeuchte/ /home/cube/archive/012/EB2/SISOMOP /home/cube/etc/rsync/eb2-append-filter-sm > /dev/null 2>&1
+
+# 013/PT20
+* * * * * /home/cube/bin/sync_append.sh pc-lr:/cygdrive/d/Mast13/DATA/ /home/cube/archive/013/PT20/DATA /home/cube/etc/rsync/mast-append-filter > /dev/null 2>&1
+
+# 020/CM Ceilometer
+* * * * * /home/cube/bin/sync_flat.sh kc-wora:/home/cube/Ceilometer/Daten/ /home/cube/archive/020/CM /home/cube/etc/rsync/cm-append-filter CM > /dev/null 2>&1
+0 2 * * * /home/cube/bin/sync_files.sh kc-wora:/home/cube/Ceilometer/Daten/ /home/cube/archive/020/CM/extra /home/cube/etc/rsync/cm-append-filter-chm > /dev/null 2>&1
+
+# 025/JWD 
+* * * * * /home/cube/bin/sync_files.sh kc-wora:/home/cube/Ceilometer/Daten/ /home/cube/archive/025/JWD /home/cube/etc/rsync/jwd-append-filter-chm > /dev/null 2>&1
+
+# 030/PARS Parsivel
+* * * * * /home/cube/bin/sync_append.sh kc-wora:/home/cube/Parsivel/Daten/ /home/cube/archive/030/PARS /home/cube/etc/rsync/pars-append-filter > /dev/null 2>&1
+
+# 035/MRR Radar
+* * * * * /home/cube/bin/sync_append.sh kc-wora:/home/cube/MRR/Daten/ /home/cube/archive/035/MRR /home/cube/etc/rsync/mrr-append-filter > /dev/null 2>&1
+
+# 036/CR Cloud radar (MIRA36-S)
+*/15 * * * * /home/cube/bin/sync_files.sh kc-wora:/home/cube/MIRA36-S/mom/ /home/cube/archive/036/CR /home/cube/etc/rsync/cr-append-filter > /dev/null 2>&1 
+
+# 037/XR X-band radar
+*/5 * * * * /home/cube/bin/sync_files.sh 10.20.12.2:/usr/local/Rainbow5/rainbow/rawdata/143DEX /home/cube/archive/037/XR /home/cube/etc/rsync/xr-append-filter > /dev/null 2>&1
+
+# 040/RWP Regenwippe
+* * * * * /home/cube/bin/sync_append.sh kc-wora:/home/cube/Wippe/Daten/ /home/cube/archive/040/RGW /home/cube/etc/rsync/wippe-append-filter > /dev/null 2>&1
+
+# 045/CC2
+#1-59/2 * * * * /home/cube/bin/sync_files.sh imk-wk1:/home/cube/CC2-pics/ /home/cube/archive/045/CC2 /home/cube/etc/rsync/cc-append-filter > /dev/null 2>&1
+1-59/2 * * * * /home/cube/bin/sync_flat.sh imk-wk1:/home/cube/CC2-pics/ /home/cube/archive/045/CC2 /home/cube/etc/rsync/cc-append-filter CC > /dev/null 2>&1
+0-58/2 * * * * /home/cube/bin/resize_cc2.sh /home/cube/archive/045/CC2 kitcube_cc2_*.jpg >> /home/cube/CC2-resize.log 2>&1
+1-59/2 * * * * /home/cube/bin/push_cc2.py > /dev/null 2>&1
+0 6 * * * /home/cube/bin/compress_files.sh CC > /dev/null 2>&1
+
+# 046/CC1
+#1-59/2 * * * * /home/cube/bin/sync_files.sh imk-wk1:/home/cube/CC2-pics/ /home/cube/archive/046/CC1 /home/cube/etc/rsync/cc-append-filter > /dev/null 2>&1
+#1-59/2 * * * * /home/cube/bin/sync_flat.sh imk-wk1:/home/cube/CC2-pics/ /home/cube/archive/046/CC1 /home/cube/etc/rsync/cc-append-filter CC > /dev/null 2>&1
+#0-58/2 * * * * /home/cube/bin/resize_cc2.sh /home/cube/archive/046/CC1 kitcube_cc2_*.jpg >> /home/cube/CC2-resize.log 2>&1
+#1-59/2 * * * * /home/cube/bin/push_cc2.py > /dev/null 2>&1
+#0 6 * * * /home/cube/bin/compress_files.sh CC > /dev/null 2>&1
+
+# 050/SCI
+#* * * * * /home/cube/bin/sync_append.sh pc-szint:/cygdrive/c/SCI/ /home/ cube/archive/050/SCI /home/cube/etc/rsync/sci-append-filter > /dev/null 2>&1
+
+# 060/HYB
+*/5 * * * * /home/cube/bin/sync_append.sh hyb:/data/lidar/data/KITcube_HYB/ /home/cube/archive/060/HYB /home/cube/etc/rsync/wtx-append-filter > /dev/null 2>&1
+
+# 061/WTX
+*/5 * * * * /home/cube/bin/sync_files.sh wtx:/data/lidar/data/KITcube_WTX/ /home/cube/archive/061/WTX /home/cube/etc/rsync/wtx-append-filter > /dev/null 2>&1
+
+# 062/WC (before update)
+#*/5 * * * * /home/cube/bin/sync_append.sh "wcube-router:/cygdrive/d/DATA\ EOLID/" /home/cube/archive/062/WC /home/cube/etc/rsync/wc-append-filter > /dev/null 2>&1
+
+# 063/WC2 (after update in Jan 2012)
+*/5 * * * * /home/cube/bin/sync_append.sh "wcube:/cygdrive/d/DATA/" /home/cube/archive/063/WC /home/cube/etc/rsync/wc-append-filter > /dev/null 2>&1
+
+# 065/GPS
+30 * * * * /home/cube/bin/wget_files.sh ftp://ftp.gfz-potsdam.de/pub/nrttrop/user_ext/kit_gp/ /home/cube/archive/065/GPS > /dev/null 2>&1
+
+# 070/SOD
+#3,33 * * * * /home/cube/bin/sync_append.sh pc-sodar:/cygdrive/c/APRun/workspace_MFAS_test/data/ /home/cube/archive/070/SOD /home/cube/etc/rsync/sod-append-filter > /dev/null 2>&1
+#3,33 * * * * /home/cube/bin/sync_files.sh pc-sodar:/cygdrive/c/APRun/workspace_MFAS_test/data/ /home/cube/archive/070/SOD /home/cube/etc/rsync/sod-sync-filter > /dev/null 2>&1
+
+# 080/HATPRO
+*/15 * * * * /home/cube/bin/sync_flat.sh hatpropc:/cygdrive/c/RPG-HATPRO/Data/ /home/cube/archive/080/RPG /home/cube/etc/rsync/rpg-append-filter RPG > /dev/null 2>&1
+
+# 081/HATPRO
+#*/15 * * * * /home/cube/bin/sync_flat.sh hatpropc:/cygdrive/c/RPG-HATPRO/Data/ /home/cube/archive/081/RPG /home/cube/etc/rsync/rpg-append-filter RPG > /dev/null 2>&1
+
+# 120/SysCI Status computer infrastructure
+*/5 * * * * /home/cube/bin/acq_cistatus.sh /home/cube/archive/120/SysCI > /dev/null 2>&1
+
+
+#
+# Additional services
+#
+
+# Alarm monitor + heartbeat   
+*/5 * * * * /home/cube/bin/chk_alarm.sh > /dev/null 2>&1
+0 6 * * * /home/cube/bin/send_heartbeat.sh > /dev/null 2>&1
+
+# Backup
+0 1 * * * /home/cube/bin/push_backup.sh > /home/cube/backup-$HOSTNAME-push_backup.log 2>&1
+
+
+
+
