@@ -1,0 +1,6 @@
+# rsync filter rules merge file for HATPRO (RPG)
+# the following files append new data
++ 20*.csv
++ 20*.txt
++ */
+- *

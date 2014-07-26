@@ -1,0 +1,15 @@
+Number of sensors: 13
+1	RECORD	RECORD.INST	NO
+2	Ux	Ux.INST	V
+3	Uy	Uy.INST	V
+4	Uz	Uz.INST	V
+5	Ts	Ts.INST	T
+6	diag_sonic	diag_sonic.INST	NO
+7	CO2	CO2.INST	DC
+8	H2O	H2O.INST	MA
+9	diag_irga	diag_irga.INST	NO
+10	amb_tmpr	amb_tmpr.INST	T
+11	amb_press	amb_press.INST	PK
+12	CO2_sig_strgth	CO2_sig_strgth.INST	QR
+13	H2O_sig_strgth	H2O_sig_strgth.INST	QR
+
