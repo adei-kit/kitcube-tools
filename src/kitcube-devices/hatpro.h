@@ -11,39 +11,28 @@
 #ifndef HATPRO_H
 #define HATPRO_H
 
-#include "daqasciidevice.h"
+#include "daqbinarydevice.h"
+
+#include <netcdf.h>
+#include <netcdfcpp.h>
 
 
-class hatpro: public DAQAsciiDevice {
+class hatpro: public DAQBinaryDevice {
 public:
 	/**  */
 	hatpro();
 	/**  */
 	~hatpro();
 	
-	void setConfigDefaults();
-	
-	int readHeader(const char *filename);
-	
-	void readData(std::string full_filename);
-	
-	int parseData(char *line, struct timeval *l_tData, double *sensorValue);
-	
-	/** Define a sensor group number for all the availble sensor group files */
-	unsigned int getSensorGroup();
+    void openDatabase();
+	int create_data_table();
+    unsigned int getSensorGroup();
+    int readHeader(const char *filename);
+    void readData(std::string filename);
 
-private:
-	long getFileNumber(char* filename);
-	
-	int number_of_samples;
-	
-	double *altitudes;
-	
-	int pos_hpc_data;
-	
-	bool first_half;
-	
-	int create_data_table_name(std::string & data_table_name);
+protected:
+    int nVars;
+    int nSensorFlat;
 };
 
 #endif
