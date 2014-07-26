@@ -21,7 +21,8 @@
 #include <cstdlib>
 #include <dirent.h>
 #include <fcntl.h>
-//#include <cstring>
+#include <unistd.h>
+#include <cstring>
 #include <string>
 #include <stdexcept>
 #include <sys/time.h>
