@@ -243,7 +243,7 @@ int Lara::readHeader(const char *filename) {
 	// Read reference time
 	// Get date from filename	
 	try {
-		pFilename = strrchr(filename, '/');
+		pFilename = const_cast<char *>(strrchr(filename, '/'));
 		if (pFilename == 0) pFilename = (char *) filename;
 		else pFilename = pFilename +1;
 		fileString = pFilename;	
