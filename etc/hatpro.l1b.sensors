@@ -1,0 +1,5 @@
+Number of sensors: 4
+	1	azimuth_angle			L1B.AZIMUTH.ANGLE	A
+	2	elevation_angle			L1B.ELEVATION.ANGLE	A
+	3	brightness_temperature		L1B.BRIGHT.TEMP		TA	frequencies	FQ
+	4	brightness_temperature_ir	L1B.BRIGHT.TEMP.IR	T	irt_wavelengths	WL6
