@@ -283,7 +283,13 @@ void Reader::runReadout(){
 		
 		dev[i]->readInifile(this->inifile.c_str(), iniGroup[i].c_str());	
 		dev[i]->readAxis(this->inifile.c_str());
-		dev[i]->getSensorNames(dev[i]->sensorListfile.c_str());
+		try {
+			dev[i]->getSensorNames(dev[i]->sensorListfile.c_str());
+		} catch (std::invalid_argument &err) {
+			// Show the header of the first file if available
+			dev[i]->getNewFiles();
+			throw std::invalid_argument("Configuration missing");			
+		}
 	}
 	
 	

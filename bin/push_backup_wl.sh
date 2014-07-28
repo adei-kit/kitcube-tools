@@ -7,6 +7,7 @@ HOSTNAME=`/bin/hostname -f`
 # Default configurations
 BACKUPHOST="cube@katrin.kit.edu"
 BACKUPDIR=backup/$HOSTNAME
+BACKUPINCL=/home/cube/etc/rsync/backup-include
 BACKUPEXCL=/home/cube/etc/rsync/backup-exclude
 SEMFILE="/home/cube/backup.semaphore"
 SRC=/home/cube/
@@ -74,7 +75,8 @@ date=`date "+%Y-%m-%d__%H_%M_%S"`
 rsync -azP \
   --delete \
   --delete-excluded \
-  --exclude-from=$BACKUPEXCL \
+  --include-from=$BACKUPINCL \
+  --exclude='*' \
   --link-dest=../current \
   $SRC $BACKUPHOST:$BACKUPDIR/incomplete_back-$date 
 ssh $BACKUPHOST \
@@ -85,5 +87,6 @@ ssh $BACKUPHOST \
 
 # Clean up
 rm "$SEMFILE"
+
 
 

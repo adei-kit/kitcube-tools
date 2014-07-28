@@ -2,7 +2,7 @@ AC_INIT(configure.in)
 
 AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(kitcube-tools, 0.33)
+AM_INIT_AUTOMAKE(kitcube-tools, 0.34)
 
 
 AC_LANG_CPLUSPLUS

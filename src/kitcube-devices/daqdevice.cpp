@@ -1994,7 +1994,7 @@ int DAQDevice::get_file_list(std::string directory)
     // TODO: The file type is not supported by all file systems (e.g. XFS seems
     // not to work here - replacement needs to be found here !!!!
     // Compare: "man readdir"
-    // 
+    //
 	while ((dir_entry = readdir(dir)) != NULL) {
         
         if (directory.rfind('/') == (directory.size() - 1) )
@@ -2111,7 +2111,39 @@ void DAQDevice::getNewFiles(const char *dir) {
 			printf("%6d %19ld %s\n", i, dateien_pos->first, dateien_pos->second.c_str());
 			dateien_pos++;
 		}
+		
+		// Check if there was no datafile found !!!
+		if (dateien.size() == 0) {
+			printf("\n");
+			printf("Warning: No data file found. Check dataFilemask = %s\n\n", datafileMask.c_str());
+			
+			throw std::invalid_argument("No data file found");
+		}
+		
 		printf("\n");
+	}
+	
+	
+	// Check for vaild configuration
+	if (nSensors == 0){
+		printf("\n");
+		printf("Error: No sensors defined. Check sensorList = %s\n", sensorListfile.c_str());
+		printf("       Compare with the header configuration below\n");
+		printf("\n");
+		
+		// Read header of the first file
+		// TODO: Howto force printing of the configuration?!
+		debug = 5;
+		dateien_pos = dateien.begin();
+		currentFilename = dateien_pos->second;
+		readHeader(currentFilename.c_str());
+
+		printf("\n");
+		printf("Error: No sensors defined. Check sensorList = %s\n", sensorListfile.c_str());
+		printf("\n");
+		
+		// Stop befor processing
+		throw std::invalid_argument("Configuration not available");
 	}
 	
 	
