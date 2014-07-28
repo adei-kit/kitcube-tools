@@ -23,6 +23,7 @@
 Reader::Reader(): SimpleServer(READER_PORT){
 
 	appId = 0;
+	reset = false;
 	appName = "Reader";
 	nModules = 0;
 	
@@ -50,6 +51,10 @@ void Reader::setAppName(const char *name){
 
 int Reader::getAppId(){
 	return (this->appId);
+}
+
+void Reader::setReset(){
+	reset = true;
 }
 
 
@@ -283,6 +288,7 @@ void Reader::runReadout(){
 		
 		dev[i]->readInifile(this->inifile.c_str(), iniGroup[i].c_str());	
 		dev[i]->readAxis(this->inifile.c_str());
+		if (reset) dev[i]->resetFilePosition();
 		try {
 			dev[i]->getSensorNames(dev[i]->sensorListfile.c_str());
 		} catch (std::invalid_argument &err) {

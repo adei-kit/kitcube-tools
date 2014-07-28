@@ -89,8 +89,7 @@ Release notes
 
 Version 0.34:
  - Added latest changed to the repository at GITHUB 
- - Modufied the script push_backup.sh to work with a whitelist instead of the exclude configuration.
-   (working name: push_backup_wl.sh)
+ - Modified the script push_backup.sh to work with a whitelist and blacklist alternatively 
  - Added sensorGroup support for new EBM masts and first set of sensor definitions
  - Added sensorGroup support for campbell loggers (flux, slow, rainwind)
  - Reading header of a data file, if configuration file is missing.

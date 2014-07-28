@@ -15,6 +15,7 @@
 DAQDevice::DAQDevice(){
 	
 	debug = 0;
+	reset = false;
 	
 	appId = 0;
     isFlatFolder = 0;
@@ -912,6 +913,12 @@ void DAQDevice::loadFilePosition(long &lastIndex, unsigned long &lastPos, struct
 
 	return;
 }
+
+
+void DAQDevice::resetFilePosition(){
+	reset = true;
+}
+
 
 
 int DAQDevice::read_ascii_line(char **buffer, size_t *length, FILE *file_ptr) {
@@ -2150,9 +2157,14 @@ void DAQDevice::getNewFiles(const char *dir) {
 	// Read the last file from the last time the directory was processed
 	err = 0;
 	lastIndex = 1;
+	lastTime.tv_sec = 0;
+	lastTime.tv_usec = 0;
+	lastPos = 0;
+
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dataDir.c_str(), moduleNumber, sensorGroupNumber);
 	filenameMarker = line;
 	fmark = fopen(filenameMarker.c_str(), "r");
+		
 	if (fmark != NULL) {
 		err = fscanf(fmark, "%ld %ld %ld %d", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
@@ -2160,16 +2172,33 @@ void DAQDevice::getNewFiles(const char *dir) {
 		// Create new marker file
 		if (debug)
 			printf("No marker file found -- try to create a new one  %s\n", filenameMarker.c_str());
+		
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark != NULL) {
 			fprintf(fmark, "%ld %d %d %d\n", lastIndex, 0, 0, 0);
 			fclose(fmark);
 		}	
 		
+	}
+
+	if (reset){
+		printf("Reset file pointers in %s\n", filenameMarker.c_str());
+		
+		lastIndex = 1;
 		lastTime.tv_sec = 0;
 		lastTime.tv_usec = 0;
 		lastPos = 0;
-	}	
+
+		fmark = fopen(filenameMarker.c_str(), "w");
+		if (fmark != NULL) {
+			fprintf(fmark, "%ld %d %d %d\n", lastIndex, 0, 0, 0);
+			fclose(fmark);
+		}
+	}
+	
+	
+	
+	
 	//printf("Marker %s (err=%d, errno=%d): %d\n", filenameMarker.c_str(), err, errno, lastIndex);
 	
 	// Read the data from the files

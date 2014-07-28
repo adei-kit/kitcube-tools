@@ -7,7 +7,9 @@ HOSTNAME=`/bin/hostname -f`
 # Default configurations
 BACKUPHOST="cube@katrin.kit.edu"
 BACKUPDIR=backup/$HOSTNAME
+BACKUPINCL=/home/cube/etc/rsync/backup-include
 BACKUPEXCL=/home/cube/etc/rsync/backup-exclude
+BACKUPMODE="whitelist"
 SEMFILE="/home/cube/backup.semaphore"
 SRC=/home/cube/
 
@@ -69,12 +71,21 @@ ssh $BACKUPHOST "if [ ! -d $BACKUPDIR ] ; then mkdir -p $BACKUPDIR; fi"
 # Save configuration
 cd /home/cube; make backup
 
+# Backup mode
+if [ "$BACKUPMODE" == "whitelist" ] ; then
+        echo "Use white list"
+        RSYNCFILTER="--include-from=$BACKUPINCL --exclude=*"
+else
+        echo "Use black list"
+        RSYNCFILTER="--exclude-from=$BACKUPEXCL"
+fi
+
 date=`date "+%Y-%m-%d__%H_%M_%S"`
 
 rsync -azP \
   --delete \
   --delete-excluded \
-  --exclude-from=$BACKUPEXCL \
+  $RSYNCFILTER \
   --link-dest=../current \
   $SRC $BACKUPHOST:$BACKUPDIR/incomplete_back-$date 
 ssh $BACKUPHOST \
