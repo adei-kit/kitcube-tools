@@ -88,6 +88,8 @@ Release notes
 --------------------------------------------------------------------------------------------
 
 Version 0.34:
+ - Fixed a bad bug when printing header of first data file after incomplete or not exisiting 
+   configuration file (access to not exisiting field elements in senors array).
  - Added latest changed to the repository at GITHUB 
  - Modified the script push_backup.sh to work with a whitelist and blacklist alternatively 
  - Added sensorGroup support for new EBM masts and first set of sensor definitions

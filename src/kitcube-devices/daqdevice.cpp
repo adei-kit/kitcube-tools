@@ -801,6 +801,8 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 		
 		if (sensor[i].axis == -1){
 			printf("Analysing sensor %s, axis type %s \n", sensor[i].name.c_str(), axisName.c_str());
+			
+			nSensors = i; // Rest of the sensor definitions is missing 
 			throw std::invalid_argument("Axis type is not defined in the inifile");
 		}
 		
