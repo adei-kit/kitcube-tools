@@ -10,6 +10,10 @@
 BACKUPHOST="katrin.kit.edu"
 #BACKUPDIR=backup/$HOSTNAME
 BACKUPEXCL=/home/cube/etc/rsync/backup-exclude
+BACKUPINCL=/home/cube/etc/rsync/backup-inlcude
+BACKUPMODE="whitelist"
+#BACKUPMODE="blacklist"
+
 
 # Alarm system
 ALARMRELAY=cube@katrin.kit.edu

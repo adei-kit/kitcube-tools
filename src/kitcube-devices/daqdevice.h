@@ -242,6 +242,10 @@ public:
 	/** Restore the file pointers from the marker file */
 	void loadFilePosition(long &lastIndex, unsigned long &lastPos, struct timeval &timestamp);
 	
+	/** Reset the file pointers in the marker file */
+	void resetFilePosition();
+	
+	
 #ifdef USE_MYSQL	
 	/** Get all modules from the status list */
 	MYSQL_RES * getStatusList(const char *param, const char *cond = 0);
@@ -266,6 +270,9 @@ public:
     
 	
 protected:
+	/** Reset file pointer in marker file */
+	bool reset;
+	
 	/** Use the microsecond ticks when storing the data (default: yes). */
 	bool useTicks;
 	

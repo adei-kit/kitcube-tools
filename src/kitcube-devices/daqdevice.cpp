@@ -15,6 +15,7 @@
 DAQDevice::DAQDevice(){
 	
 	debug = 0;
+	reset = false;
 	
 	appId = 0;
     isFlatFolder = 0;
@@ -857,6 +858,8 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 		
 		if (sensor[i].axis == -1){
 			printf("Analysing sensor %s, axis type %s \n", sensor[i].name.c_str(), axisName.c_str());
+			
+			nSensors = i; // Rest of the sensor definitions is missing 
 			throw std::invalid_argument("Axis type is not defined in the inifile");
 		}
 		
@@ -969,6 +972,12 @@ void DAQDevice::loadFilePosition(long &lastIndex, unsigned long &lastPos, struct
 
 	return;
 }
+
+
+void DAQDevice::resetFilePosition(){
+	reset = true;
+}
+
 
 
 int DAQDevice::read_ascii_line(char **buffer, size_t *length, FILE *file_ptr) {
@@ -2051,7 +2060,7 @@ int DAQDevice::get_file_list(std::string directory)
     // TODO: The file type is not supported by all file systems (e.g. XFS seems
     // not to work here - replacement needs to be found here !!!!
     // Compare: "man readdir"
-    // 
+    //
 	while ((dir_entry = readdir(dir)) != NULL) {
         
         if (directory.rfind('/') == (directory.size() - 1) )
@@ -2168,16 +2177,53 @@ void DAQDevice::getNewFiles(const char *dir) {
 			printf("%6d %19ld %s\n", i, dateien_pos->first, dateien_pos->second.c_str());
 			dateien_pos++;
 		}
+		
+		// Check if there was no datafile found !!!
+		if (dateien.size() == 0) {
+			printf("\n");
+			printf("Warning: No data file found. Check dataFilemask = %s\n\n", datafileMask.c_str());
+			
+			throw std::invalid_argument("No data file found");
+		}
+		
 		printf("\n");
+	}
+	
+	
+	// Check for vaild configuration
+	if (nSensors == 0){
+		printf("\n");
+		printf("Error: No sensors defined. Check sensorList = %s\n", sensorListfile.c_str());
+		printf("       Compare with the header configuration below\n");
+		printf("\n");
+		
+		// Read header of the first file
+		// TODO: Howto force printing of the configuration?!
+		debug = 5;
+		dateien_pos = dateien.begin();
+		currentFilename = dateien_pos->second;
+		readHeader(currentFilename.c_str());
+
+		printf("\n");
+		printf("Error: No sensors defined. Check sensorList = %s\n", sensorListfile.c_str());
+		printf("\n");
+		
+		// Stop befor processing
+		throw std::invalid_argument("Configuration not available");
 	}
 	
 	
 	// Read the last file from the last time the directory was processed
 	err = 0;
 	lastIndex = 1;
+	lastTime.tv_sec = 0;
+	lastTime.tv_usec = 0;
+	lastPos = 0;
+
 	sprintf(line, "%s.kitcube-reader.marker.%03d.%d", dataDir.c_str(), moduleNumber, sensorGroupNumber);
 	filenameMarker = line;
 	fmark = fopen(filenameMarker.c_str(), "r");
+		
 	if (fmark != NULL) {
 		err = fscanf(fmark, "%ld %ld %ld %d", &lastIndex,  &lastTime.tv_sec, (long *) &lastTime.tv_usec, &lastPos);
 		fclose(fmark);
@@ -2185,16 +2231,33 @@ void DAQDevice::getNewFiles(const char *dir) {
 		// Create new marker file
 		if (debug)
 			printf("No marker file found -- try to create a new one  %s\n", filenameMarker.c_str());
+		
 		fmark = fopen(filenameMarker.c_str(), "w");
 		if (fmark != NULL) {
 			fprintf(fmark, "%ld %d %d %d\n", lastIndex, 0, 0, 0);
 			fclose(fmark);
 		}	
 		
+	}
+
+	if (reset){
+		printf("Reset file pointers in %s\n", filenameMarker.c_str());
+		
+		lastIndex = 1;
 		lastTime.tv_sec = 0;
 		lastTime.tv_usec = 0;
 		lastPos = 0;
-	}	
+
+		fmark = fopen(filenameMarker.c_str(), "w");
+		if (fmark != NULL) {
+			fprintf(fmark, "%ld %d %d %d\n", lastIndex, 0, 0, 0);
+			fclose(fmark);
+		}
+	}
+	
+	
+	
+	
 	//printf("Marker %s (err=%d, errno=%d): %d\n", filenameMarker.c_str(), err, errno, lastIndex);
 	
 	// Read the data from the files

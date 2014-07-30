@@ -1,0 +1,8 @@
+# push_backup.sh include list
+# don't inlcude the logs - they can get quite large !!!
++ kitcube.ini*
++ kitcube_conf.sh*
++ Makefile*
++ bin/***
++ doc/***
++ etc/***

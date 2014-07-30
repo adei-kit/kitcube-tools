@@ -109,6 +109,9 @@ public:
 	/** Get the number of the application */
 	int getAppId();
 	
+	/** Activate reset of file pointers */
+	void setReset();
+	
 	/** Read parameter from inifile.
 	  * The module definition will be read from the argument list, afterwards
 	  * from the reader section in the inifile and at last the default name (Simulation)
@@ -163,7 +166,11 @@ public:
 	
 private:
 	/** Every reader application has it's own ID */
-	int appId; 
+	int appId;
+	
+	/** Flag that indicates that the file count should be reset before 
+	    starting the run */
+	bool reset;
 	
 	/** Name of the application. Used to select the application ini group.
 	  * Default: Reader */

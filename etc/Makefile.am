@@ -22,6 +22,8 @@ EXTRA_DIST = kitcube.ini kitcube.ini.kitcube kitcube.ini.hatpro \
 	EB1.DAS.sensors EB1.DAL.sensors EB1.DAR.sensors EB1.DAX.sensors SM11.txt.sensors \
 	EB2.DAS.sensors EB2.DAL.sensors EB2.DAR.sensors EB2.DAX.sensors SM12.txt.sensors \
 	PT20.DAL.sensors PT20.DAR.sensors \
+ 	BD_EB_flux.sensors BD_MET_slow.sensors BD_MET_rainwind.sensors \
+ 	EBM_DAS1.sensors EBM_DAS2.sensors EBM_DAS3.sensors EBM_DAR.sensors EBM_DAX.sensors \
 	3M2.data.sensors 3M2.gps.sensors 3M2.sonic.sensors \
 	3M3.data.sensors 3M3.gps.sensors 3M3.sonic.sensors \
 	3M4.data.sensors 3M4.gps.sensors 3M4.sonic.sensors \

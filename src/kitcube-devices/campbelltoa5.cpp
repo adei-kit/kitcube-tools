@@ -33,6 +33,55 @@ CampbellTOA5::~CampbellTOA5(){
 }
 
 
+unsigned int CampbellTOA5::getSensorGroup() {
+	unsigned int number;
+	
+	// BD masts
+	if (sensorGroup == "flux") {
+		number = 1;
+		buffer = "flux";
+		
+	} else if (sensorGroup == "slow") {
+		number = 2;
+		buffer = "slow";
+
+	} else if (sensorGroup == "rainwind") {
+		number = 3;
+		buffer = "rainwind";
+		
+		
+	// EBM masts
+	} else if (sensorGroup == "DAL") { // slow / 1Hz data
+		number = 1;
+		buffer = "slow sensors (1Hz)";
+
+	} else if (sensorGroup == "DAS1") { // fast / 20Hz data - split in 1 to 3
+		number = 2;
+		buffer = "fast sensors (20Hz)";
+	} else if (sensorGroup == "DAS2") { // fast / 20Hz data - split in 1 to 3
+		number = 3;
+		buffer = "fast sensors (20Hz)";
+	} else if (sensorGroup == "DAS3") { // fast / 20Hz data - split in 1 to 3
+		number = 4;
+		buffer = "fast sensors (20Hz)";
+		
+	} else if (sensorGroup == "DAR") { // 10min mean data (contains groups l + s)
+		number = 5;
+		buffer = "10min mean values";
+	} else if (sensorGroup == "DAX") { // 10min mean calculated data (based on r data)
+		number = 6;
+		buffer = "10min calculates values";
+		
+	} else { // default
+		number = 0;
+	}
+	
+	//printf("SensorGroup = %s -> %d\n", sensorGroup.c_str(), number);
+
+	return( number);
+}
+
+
 int CampbellTOA5::readHeader(const char * filename){
 	int err;
 

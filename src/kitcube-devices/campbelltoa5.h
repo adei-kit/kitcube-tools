@@ -27,6 +27,8 @@ public:
 	/**  */
 	~CampbellTOA5();
 
+	unsigned int getSensorGroup();
+
 	/** Read Campbell specific header information */
 	int readHeader(const char *header);
 

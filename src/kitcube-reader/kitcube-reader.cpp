@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
 	struct timeval t0,t1;
 	struct timezone tz;
 	struct tm *t;
+	bool reset;
 	
 	
 	gettimeofday(&t0, &tz);
@@ -40,6 +41,7 @@ int main(int argc, char *argv[]){
 	printHelp = false;
 	debug = 2;
 	isLinkedApp = false;
+	reset = false;
 	
 	//
 	// Parse command line
@@ -71,7 +73,7 @@ int main(int argc, char *argv[]){
 */
 	
 	
-	while ((err = getopt(argc, argv, "dhi:m:v:")) > -1){
+	while ((err = getopt(argc, argv, "dhi:m:rv:")) > -1){
 		// Use a colon to specify these option that require an argument
 		
 		//if (err > 0) printf("Option: %c %d\n", err, optind);
@@ -90,6 +92,9 @@ int main(int argc, char *argv[]){
 			break;
 		case 'm': // run in console
 			if (optarg > 0) iniGroup = optarg;
+			break;
+		case 'r': // reset file pointer (in *.marker files)
+			reset = true;
 			break;
 		case 'v': // set debug level (verbosity)
 			if (optarg > 0) debug = atoi(optarg);
@@ -120,6 +125,7 @@ int main(int argc, char *argv[]){
 		printf("\t-d\t\tRun as daemon without input from keyboard\n");
 		printf("\t-i <inifile>\tSelect the inifile\n");
 		printf("\t-m <iniGroup>\tSelect the iniGroup name as used in the inifile\n");
+		printf("\t-r\t\tReset file pointer before starting\n");
 		printf("\t-v <level>\tSet level of verbosity\n");	
 #ifdef HAVE_PYTHON_H
         printf("\tPython interface active\n");
@@ -138,6 +144,17 @@ int main(int argc, char *argv[]){
 	}
 
 	
+	// Only allow reset mode if a certain module by iniGroup is given
+	if (reset) {
+		if (iniGroup.length() > 0){
+			printf("Reset file pointer\n");
+		} else {
+			reset = false;
+			printf("Warning: Reset of file pointer is not supported when no device is selected with -m switch\n");
+		}
+	}
+	
+	
 	try {
 		// Create the reader process
 		data = new Reader();
@@ -146,6 +163,7 @@ int main(int argc, char *argv[]){
 		data->setAppName(applicationName.c_str());
 		data->readInifile(inifile.c_str(), iniGroup.c_str());
 		data->runAsDaemon(runDaemon);
+		if (reset) data->setReset();
 		
 		// Start reading data file
 		data->runReadout();

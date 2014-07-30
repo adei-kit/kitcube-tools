@@ -157,7 +157,7 @@ int DAQAsciiDevice::readHeader(const char *filename){
 		// Strip the trailing "sampletime"
         // Remove quotes if available, alternative add quote to the dataSep-List
         int k = 0;
-        while ((isspace(pCh[k]) || (pCh[k] == '"')) && (k < strlen(pCh))){
+        while ((isspace(pCh[k]) || (pCh[k] == '"')) && (k < (int) strlen(pCh))){
             k++;
         }
         strcpy(buffer, pCh+k);
@@ -173,9 +173,9 @@ int DAQAsciiDevice::readHeader(const char *filename){
 		//map[i] = -1;
         dynMap[i] = -1;
 		for (j=0;j<nSensors;j++){
+			
 			pChRes = strstr(buffer, sensor[j].comment.c_str());
 			if (pChRes == buffer) {
-                //map[i] = j;
                 dynMap[i] = j;
             }
 		}
@@ -302,11 +302,11 @@ int DAQAsciiDevice::parseData(char* line, struct timeval* l_tData, double *senso
                 err = sscanf(pSubsec, "%lf", &value);
                 if (err == 1){
                     l_tData->tv_usec = value * 1000000;
-                    if (debug > 3) printf("Subsec string: %s / %lf / %06d\n", pSubsec, value, l_tData->tv_usec);
+                    if (debug > 3) printf("Subsec string: %s / %lf / %06ld\n", pSubsec, value, l_tData->tv_usec);
                 }
             }
             
-            if (debug > 3) printf("Timestamp %ld.%06d\n", l_tData->tv_sec, l_tData->tv_usec);
+            if (debug > 3) printf("Timestamp %ld.%06ld\n", l_tData->tv_sec, l_tData->tv_usec);
         }
             
             

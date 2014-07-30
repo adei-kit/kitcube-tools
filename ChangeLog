@@ -87,8 +87,17 @@ Later:
 Release notes
 --------------------------------------------------------------------------------------------
 
-
-Version 0.33: 
+Version 0.34:
+ - Fixed a bad bug when printing header of first data file after incomplete or not exisiting 
+   configuration file (access to not exisiting field elements in senors array).
+ - Added latest changed to the repository at GITHUB 
+ - Modified the script push_backup.sh to work with a whitelist and blacklist alternatively 
+ - Added sensorGroup support for new EBM masts and first set of sensor definitions
+ - Added sensorGroup support for campbell loggers (flux, slow, rainwind)
+ - Reading header of a data file, if configuration file is missing.
+ - Added error handling if no data file are found
+   25.7.14 (ak)
+ 
  - Enhanced the CSV-Reader in DAQAsciiDevice in order to read the Campbell DataLogger-format A05.
    The header of this format is not detectable by comment characters and a human readable timestamp
    is used. 
@@ -96,6 +105,8 @@ Version 0.33:
    splitting it in tags. This is necessary if timestamp formats used by strptime should be read from 
    the inifile.
    14.1.14 (ak)
+
+Version 0.33:
  - Added campaign name to script configuration file.
    26.6.13 (ak)
  - Improved error handling of kitcube-status display. The function getadeidata and getadeiplot now
