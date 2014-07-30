@@ -24,7 +24,8 @@ libkitcube_devices_a_SOURCES = daqdevice.h daqdevice.cpp createdevice.h createde
 	hatpro.cpp hatpro.h \
 	syslog.h syslog.cpp lara.h lara.cpp \
 	orcaprocess.h orcaprocess.cpp \
-	campbelltoa5.h campbelltoa5.cpp \
+	campbelltoa5.h campbelltoa5.cpp \ 
+	hatpro.h hatpro.cpp \
 	endian-osx.h 
 
 

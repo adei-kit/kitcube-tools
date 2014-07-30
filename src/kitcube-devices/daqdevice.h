@@ -54,6 +54,10 @@ struct sensorType {
 	std::string type;		// Estimated axis type -- not used
 	int aggregation;		// type of aggregation
 	int axis;			// Number of axis used for the sensor (from axis definition in kitcube.ini)
+    std::string axis2_name;
+    int axis2;          // Number of the second axis (2d data)
+    int axis2_idx;           // index on second dimension /* CM */
+    float axis2_val;    // value of second dimension /* CM */
 	float height;			// Postion of the sensor (height in meters)
 	std::string data_format;	// <scalar>, <profile>, <2D>, <3D>
     int size;           // Number of element for the sensor (skalar = 1, ...)

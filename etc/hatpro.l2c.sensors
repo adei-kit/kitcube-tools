@@ -1,0 +1,6 @@
+Number of sensors: 5
+	1	air_temperature				L2C.AIR.TEM		TA
+	2	air_pressure				L2C.AIR.PRS		PA
+	3	relative_humidity			L2C.REL.HUM		MR
+	4	relative_humidity_profile		L2C.REL.HUM.PRF		MR	z	H
+	5	air_potential_temperature_profile	L2C.AIR.POT.TEM.PRF	TA	z	H
