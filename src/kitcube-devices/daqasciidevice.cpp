@@ -141,7 +141,8 @@ int DAQAsciiDevice::readHeader(const char *filename){
 	int j;
 	char *pCh;
 	char *pChRes;
-	char buffer[256];
+	char *buffer = new char [strlen(line_of_data)+1];
+	//char buffer[256]; // increased to 1024?!
 	
     // TODO: Allocate map dynamically (currently it's 256) !!!
     //printf("nSensors = %d\n", nSensors);
@@ -187,6 +188,7 @@ int DAQAsciiDevice::readHeader(const char *filename){
 			printf("DAQAsciiDevice: Error reading sensor configuration!\n");
 			printf("                Sensor name %s not found in sensor definition file", buffer);
 			free(line_of_data);
+			delete [] buffer;
 			
 			throw(std::invalid_argument("Sensor name not found in definition file"));
 			return(1); // TODO: Howto stop the application here???
@@ -228,6 +230,7 @@ int DAQAsciiDevice::readHeader(const char *filename){
 	}
     
 	free(line_of_data);
+	delete [] buffer;
 	
 	return 0;
 	

@@ -115,7 +115,6 @@ int CampbellTOA5::readHeader(const char * filename){
     int j;
 	char *pCh;
 	char *pChRes;
-	char buffer[256];
     std::string headerParam[8];
     std::string *sensorNames;
     std::string *sensorUnits;
@@ -162,8 +161,10 @@ int CampbellTOA5::readHeader(const char * filename){
 		free(line_of_data);
 		return(-1);
     }
+	if (debug > 3) printf("Length of header line %d / %d\n", len, strlen(line_of_data));
+	
 	if (debug > 3) printf("Sensors: %s", line_of_data);
-    char * lineOfSensors = new char [strlen(line_of_data)];
+    char * lineOfSensors = new char [strlen(line_of_data)+1];
     strcpy(lineOfSensors, line_of_data);
     
     // Count the numer of sensors
