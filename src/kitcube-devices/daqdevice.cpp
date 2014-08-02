@@ -690,8 +690,9 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 	int i, j;
 	char *line = NULL;
 	size_t len = 0;
-	char *tmp;
-	std::string axisName;
+	char *tmp, field[6][100];
+    size_t p, p0, p1;
+	std::string axisName, axisName2;
 	std::string full_sensorlist_filename;
 	int n;
 	
@@ -776,8 +777,64 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
         if (debug > 4) printf("Line: %s\n", line);
 		
 		// TODO: check for missing entries in line
+	    tmp = line;
+
+        for (int k = 0; k < 6; k++) {
+            p0  = strspn(tmp, "\t");     
+            p1  = strcspn(tmp+p0, "\t\n");
+            strncpy(field[k], tmp+p0, p1);
+            tmp += p0+p1;
+
+            field[k][p1] = '\0';
+            //printf("\033[31m%d %d %s\033[0m\n", p0, p1, field[k]);
+        }
+
+        sensor[i].comment       = field[1];
+        sensor[i].name          = field[2];
+        axisName                = field[3];
+        sensor[i].axis2_name    = field[4];
+        axisName2               = field[5];
+
+			// Find the name of the axis in the axis list
+		sensor[i].axis = -1;
+        sensor[i].axis2 = -1;
+
+		for (j = 0; j < nAxis; j++) {
+			if (axis[j].name == axisName)  sensor[i].axis  = j;
+            if (axis[j].name == axisName2) sensor[i].axis2 = j;
+		}
 		
-		// get number
+		if (sensor[i].axis == -1) {
+			printf("Analysing sensor %s, axis type %s \n", sensor[i].name.c_str(), axisName.c_str());
+			throw std::invalid_argument("Axis type is not defined in the inifile");
+		}
+
+        if (sensor[i].axis2 == -1 && axisName2.length() != 0) {
+            printf("Analysing sensor %s, axis type %s \n", sensor[i].name.c_str(), axisName2.c_str());
+            throw std::invalid_argument("Axis type is not defined in the inifile");
+        }
+            
+		if (debug >= 1) {
+            if (sensor[i].axis2 != -1) 
+                printf("Sensor %3d           : %s (%s) \t\t%s (%s) \t%s %s (%s)\n",
+                        i + 1, 
+                        sensor[i].name.c_str(), 
+                        sensor[i].comment.c_str(),
+                        axis[sensor[i].axis].name.c_str(), 
+                        axis[sensor[i].axis].unit.c_str(), 
+                        sensor[i].axis2_name.c_str(),
+                        axis[sensor[i].axis2].name.c_str(), 
+                        axis[sensor[i].axis2].unit.c_str());
+            else
+                printf("Sensor %3d           : %s (%s) \t\t%s (%s)\n",
+                        i + 1, 
+                        sensor[i].name.c_str(), 
+                        sensor[i].comment.c_str(),
+                        axis[sensor[i].axis].name.c_str(), 
+                        axis[sensor[i].axis].unit.c_str());
+		}
+	}	
+/*		// get number
 		tmp = strtok(line, "\t");
 		
 		// get comment
@@ -810,7 +867,7 @@ void DAQDevice::getSensorNames(const char *sensor_list_file_name) {
 			printf("Sensor %3d           : %s\t%s (%s)\t%s\n",
 			       i + 1, sensor[i].name.c_str(), axis[sensor[i].axis].name.c_str(), axis[sensor[i].axis].unit.c_str(), sensor[i].comment.c_str());
 		}
-	}	
+	}	*/
 	
 	fclose(sensor_list_file);
 	free(line);

@@ -1,0 +1,5 @@
+Number of sensors: 4
+	1	azimuth_angle			L2A.AZIMUTH.ANGLE	A
+	2	elevation_angle			L2A.ELEVATION.ANGLE	A
+	3	atmosphere_water_vapor_content	L2A.ATM.WAT.VAP.CNT	WC
+	4	atmosphere_liquid_water_content	L2A.ATM.LIQ.WAT.CNT	WC
