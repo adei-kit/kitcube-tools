@@ -81,11 +81,15 @@ Later:
 
 
 
-
-
-
 Release notes
 --------------------------------------------------------------------------------------------
+Version 0.35:
+ - Added implementation for the processed HATPRO files. The implementation of the raw 
+   become obsolete by this.
+   1.8.14 (chuan)
+ - Fixed severy bug in campbell reader. Size of a allocated array was by one character too 
+   small. Added dynamic allocation of temporary memory also to daqacscii reader.
+   1.8.14 (ak)    
 
 Version 0.34:
  - Fixed a bad bug when printing header of first data file after incomplete or not exisiting 
