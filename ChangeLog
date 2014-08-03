@@ -84,6 +84,8 @@ Later:
 Release notes
 --------------------------------------------------------------------------------------------
 Version 0.35:
+ - Updated kitcube-status page for new masts and HATPRO
+   3.8.14 (ak+chuan)
  - Added implementation for the processed HATPRO files. The implementation of the raw 
    become obsolete by this.
    1.8.14 (chuan)

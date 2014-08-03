@@ -16,8 +16,8 @@ from adeiconfig import *
 # Alias names for the loggroups
 g_ci = 'Data_120_SysCI_txt'
 g_mast2 = 'Data_002_T02_DAL'
-g_eb1_dar = 'Data_011_EB1_DAR'
-g_eb1_dax = 'Data_011_EB1_DAX'
+g_eb1_dar = 'Data_011_EBM1_DAR'
+g_eb1_dax = 'Data_011_EBM1_DAX'
 
 # List of loggroups (using the alias names above)
 number_of_loggroups = 3
@@ -43,11 +43,11 @@ alias_list[1] = ("Free disk space", 1, "%.0f GB", 0, g_ci, 1);
 alias_list[2] = ("Free disk space", 1, "%.2f %%", 0, g_ci, 2);
 
 group_list.append(('Energy balance 1', [3,4,5,6,7]))
-alias_list[3] = ("Air pressure 0.1m", 1, "%.1f hPa", 0, g_eb1_dar, 12);
-alias_list[4] = ("Temp 3m", 1, "%.2f C", 0, g_eb1_dar, 36);
-alias_list[5] = ("Rel humidity 3m", 1, "%.1f %%", 0, g_eb1_dar, 52);
-alias_list[6] = ("Wind speed 4m", 1, "%.2f m/s", 0, g_eb1_dax, 0);
-alias_list[7] = ("Wind direction 4m", 1, "%.0f &deg;", 0, g_eb1_dax, 1);
+alias_list[3] = ("Air pressure 0.1m", 1, "%.1f hPa", 0, g_eb1_dar, 0);  # BARO_P_SUR_AVG
+alias_list[4] = ("Rel humidity 3m", 1, "%.1f %%", 0, g_eb1_dar, 1);     # HMP_M_RH_AVG
+alias_list[5] = ("Temp 3m", 1, "%.2f C", 0, g_eb1_dar, 2);     # HMP_T_AIR_AVG
+alias_list[6] = ("Wind speed 4m", 1, "%.2f m/s", 0, g_eb1_dax, 16);     # SONIC_V_VHOR_AVG
+alias_list[7] = ("Wind direction 4m", 1, "%.0f &deg;", 0, g_eb1_dax, 17);# SONIC_V_WD_AVG
 
 # Global lists for the ADEI query results
 timestamp_list = number_of_loggroups * [0]
@@ -203,6 +203,8 @@ def printjson():
 
 
 def main():
+    #time.sleep(2);
+
     content_type = 'text/plain; charset="UTF-8"'
     sys.stdout.write('Content-type: %s\n\n' % content_type)
     #getdata(time.time())

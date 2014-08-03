@@ -62,13 +62,71 @@
     #popupdialog a:visited {
         color: blue; !important
     }
+    .leftcol{
+	 float: left; 
+	 position: relative; 
+	 left: -10px; 
+	 width:220px; 
+	 margin-top: 50px;
+    }
+    .rightcol{
+	 float: left; 
+	 position: relative;
+	 left: 50px;
+	 padding:0px; 
+	 width:700px;
+    }
+    .navmenu {
+	 margin-bottom:30px;
+	 background:#ddd;
+	 padding:3px 0px 1px 0px;
+	 font-size: 85%;
+    }
+    .navmenu ul{ 
+	 list-style-type:none;
+	 margin:0;
+	 padding:0;
+    }
+    .navmenu li{ 
+	 font-size: smaller;
+	 margin:1px 1px 0px 1px;
+    }
+    .navmenu li a{
+	 text-decoration:none;
+	 display: block;
+	 padding:8px 0px 8px 20px ;
+	 background:#eee;
+    }
+    .navmenu li a:hover {
+ 	background: #fff;
+    }
+    .navmenu li.highlight a {
+	 font-weight:bold;
+	 color:#ff0084;
+	 background:#fff;
+    }
+    .xaxisLabel{
+    	margin-bottom: 10px;
+    }
  </style>
-  <link rel="stylesheet" type="text/css" href="js/jqueryui/css/smoothness/jquery-ui-1.8.8.custom.css">
-
+<!--
+    <link rel="stylesheet" type="text/css" href="js/jqueryui/css/smoothness/jquery-ui-1.8.8.custom.css">
     <script type="text/javascript" src="js/jqueryui/js/jquery-1.4.4.min.js"></script>
     <script type="text/javascript" src="js/jqueryui/js/jquery-ui-1.8.8.custom.min.js"></script>
-    <script type="text/javascript" src="js/jquery.alphanumeric.js"></script>
-	<script type="text/javascript" src="js/jqueryui/js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="js/jqueryui/js/jquery.tablesorter.min.js"></script>
+-->
+    <link rel="stylesheet" type="text/css" href="js/jqueryui/css/smoothness/jquery-ui-1.8.8.custom.css">
+    <script type="text/javascript" src="js/jqueryui-new/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="js/jqueryui-new/jquery-ui-1.10.3.custom.min.js"></script>
+	<script type="text/javascript" src="js/jqueryui-new/jquery.tablesorter.min.js"></script>
+	<script type="text/javascript" src="js/jquery.alphanumeric.js"></script>
+    <script type='text/javascript' src='js/flot/jquery.flot.js'></script>
+    <script type='text/javascript' src='js/flot/jquery.flot.time.js'></script>
+    <script type='text/javascript' src='js/flot/jquery.flot.canvas.js'></script>
+    <script type='text/javascript' src='js/flot/jquery.flot.axislabels.js'></script>
+    <script type='text/javascript' src='js/flot/jquery.flot.fillbetween.js'></script>
+    <script type='text/javascript' src='js/date.js'></script>
+    <script type='text/javascript' src='js/kitcube.js'></script>
 </head>
 
 <body>
@@ -86,6 +144,7 @@
             <li> <a href="#radiosonde">RS</a></li>
             <li> <a href="#modules">Module List</a>
             <li> <a href="#computer">Computer Infrastructure</a>
+            <li> <a href="#HATPRO">HATPRO</a>
             <li> <a href="#all">All (Raw Data)</a>
         </ul>
 
@@ -96,15 +155,14 @@
   
    <div id="selectibles">
    <div id="sortables">
-         
         
         <div>
-		<table width="95%"><tr><td><b class="handle">Energy balance station EB1</b></td><td align="right""><span id="ts-eb1"> ...</span></td></tr></table>
+		<table width="95%"><tr><td><b class="handle">Energy balance station EB1</b></td><td align="right"><span id="ts-eb1"> ...</span></td></tr></table>
 	<table class="summarytable" width="95%">
         <tr>
             <th>Temperature 3m</th><th>Humidity 3m</th><th>Air pressure 0.1m</th>
         </tr><tr>
-            <td class="field ui-selected" id="4" adei="???">-</td><td class="field" id="5" adei="???">-</td><td class="field" id="3" adei="???">-</td>
+            <td class="field ui-selected" id="5" adei="???">-</td><td class="field" id="4" adei="???">-</td><td class="field" id="3" adei="???">-</td>
         </tr>
         <tr>
 	    <th>Wind direction 4m</th><th>Wind speed 4m</th><th></th>
@@ -163,6 +221,44 @@
    </div> <!--summary -->
 
   
+	<!-- HATPRO @ Chuan Miao -->
+	<div class="ui-widget-content" id="HATPRO">
+	<div class="container" style="height: 700px;">
+	<div class="leftcol">
+	<div class="navmenu" id="timeseries">
+	<b>&nbsp;Time Series</b>
+	<ul></ul>
+	</div>
+
+<!--
+	<div class="navmenu" id="profile">
+	<b>&nbsp;Profiling</b>
+	<ul>
+	</ul>
+	</div>
+ -->
+	</div>
+
+	<div class="rightcol">
+	 <form>
+	   <div style="font-size: .70em; float: right; margin: -2px 0 0 30px;"><button type='button' class='printbutton'>print</button></div>
+	   <div id="radiotime" style="font-size: .7em; float: right">
+	     <input type="radio" id="radio4" name='trange' value="2d"><label for="radio4">Day -2</label>
+	     <input type="radio" id="radio3" name='trange' value="1d"><label for="radio3">Day -1</label>
+	     <input type="radio" id="radio2" name='trange' value="0d" checked><label for="radio2">Day &nbsp;0</label>
+	   </div>
+	 </form>
+	 <div class="print_area">
+	   <div style="margin-top: 15px; width: 620px; height: 320px; float: left;" id="HATPRO_1D"></div>
+	   <div style="margin-top: 15px; width: 620px; height: 320px; float: left;" id="plot2d"></div>
+	   <div style="margin: 15px 0 0 15px; width: 60px; height: 320px; float: left;" id="plotColorBar"></div>
+	 </div>
+	 <div id="result"></div>
+	</div>
+	</div>
+	</div>
+	<!-- HATPRO ends -->
+
 
   <div id="modules" class="ui-widget-content">
     <p>Loading module status list ...</p>
@@ -210,10 +306,12 @@
 <div id="popupdialog"></div>
 
 
+<!--
 <script type="text/javascript" src="js/jqueryui/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="js/jqueryui/js/jquery-ui-1.8.8.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.alphanumeric.js"></script>
 <script type="text/javascript" src="js/jqueryui/js/jquery.tablesorter.min.js"></script>
+-->
 
 
 <script type="text/javascript">
@@ -268,7 +366,7 @@ function updateSensorlist() {
                 if (sensorlist != '') {
                         sensorlist += ",";
                 }
-                sensorlist += 'kitcube__HDCP2__' + adeigrp;
+                sensorlist += 'kitcube__HEADS__' + adeigrp;
         });
 }
 
@@ -542,7 +640,9 @@ function plotRS(phyQuan) {
 }
 
 
+var tstart = new Date(); 
 function load() {
+    tstart = new Date(); // get timestamp before requesting new document
     getJsonDocument('./getadeidata.cgi', function(response) {
         adeibaseurl = response.source;
 	update_timestamp = response.timestamp;
@@ -570,7 +670,7 @@ function load() {
 	      //value = toString(intvalue+22)%360/45); 
 	}
 
-	if (delay >= 3600) {
+	if (delay >= 7200) {
              value = "-";
 	     floatvalue = 0;
              intvalue = 0;
@@ -693,11 +793,15 @@ function load() {
 	if (sensorlist != '') {
         sensorlist += ",";
 	}
-    sensorlist += 'kitcube__HDCP2__' + adeigrp;
+    sensorlist += 'kitcube__HEADS__' + adeigrp;
 
     });
 
     //element('message').innerHTML = ('<pre> load: ' + sensorlist + '</pre>')
+    //var tend = new Date();
+    //var tload = tend.getTime() - tstart.getTime();
+    //element('message').innerHTML = ('<pre> getadeidata = ' + tload + ' ms </pre>') 
+    //tstart = tend; // save the last time stamp
 
 }
 
@@ -731,7 +835,6 @@ function loadStatus() {
             // sort on the first column and third column, order asc
             sortList: [[0,0],[2,0]]
         });
-        
 
         // Alarm summmary page
         var sum_html = '';
@@ -751,7 +854,7 @@ function loadStatus() {
            }     
         }
         sum_html += '</tbody></table>\n';
-        element('alarmlist').innerHTML = sum_html;
+        element('alarmlist').innerHTML =  sum_html;
         
     });  
 }
@@ -800,9 +903,9 @@ function plot(newlength, title) {
         sensorlist += ",";
 	}
 	idlist += id;
-    srctree += 'kitcube__HDCP2__Data_120_SysCI_txt__' + id;
+    srctree += 'kitcube__HEADS__Data_120_SysCI_txt__' + id;
 	//srctree += 'mydetector__detector__0__' + id;
-    sensorlist += 'kitcube__HXMEX__' + adeigrp;
+    sensorlist += 'kitcube__HEADS__' + adeigrp;
 
 	var color = legend_color_table[index++ % legend_color_table.length ];
 	legend += '<font color="' + color + '">';
@@ -926,7 +1029,7 @@ function showSource() {
 	      loadStatus();
 	      loadGude();
 	      loadCC();
-	      loadRS(-1);
+	      //loadRS(-1); // activate when data available, ak 3.8.14
 	    }
         }, 10*1000);
 
@@ -944,7 +1047,69 @@ function showSource() {
 	}, 1000);
 
 
+	// HATPRO
+	$('#HATPRO #timeseries ul').append(sensor('L2A.ATM.WAT.VAP.CNT', 'water-vapor content', 'kg m-2').outerHTML);
+	$('#HATPRO #timeseries ul').append(sensor('L2A.ATM.LIQ.WAT.CNT', 'liquid-water content', 'g m-2').outerHTML);
+	$('#HATPRO #timeseries ul').append(sensor('L1B.BRIGHT.TEMP', 'brightness temperature', 'K').outerHTML);
+	$('#HATPRO #timeseries ul').append(sensor('L1B.BRIGHT.TEMP.IR', 'brightness temperature IR', 'C').outerHTML);
+	$('#HATPRO #timeseries ul li').first().addClass('highlight');
+/* $('#HATPRO #profile ul').append(sensor('L2C.AIR.POT.TEM.PRF', 'air potential temperature', 'm', 'K').outerHTML);
+	$('#HATPRO #profile ul').append(sensor('L2C.REL.HUM.PRF', 'relative humidty profiling', 'm', '%').outerHTML);
+	$('#HATPRO #profile ul').append(sensor('L2A.ATM.WAT.VAP.CNT.PRF', 'water-vapor content', 'azimuth angle', 'kg m-2').outerHTML);
+	$('#HATPRO #profile ul').append(sensor('L2A.ATM.LIQ.WAT.CNT.PRF', 'liquid-water content', 'azimuth angle', 'g m-2').outerHTML);
+	$('#HATPRO #profile ul li').first().addClass('highlight'); */
 
+	$( "#radiotime" ).buttonset();
+
+	$(".navmenu#timeseries li").each(function(index) {
+	    $(this).on("click", switchHighlight);
+	    $(this).on("click", {target: '#HATPRO_1D'}, makePlotD1);
+	});
+
+/*
+	$(".navmenu#profile li").each(function(index) {
+	    $(this).on("click", switchHighlight);
+	    $(this).on("click", makePlotD2);
+	});
+*/
+
+	$(".navmenu li a").each(function() {
+	    $(this).attr('title', $(this).parent().attr('id'));
+	});
+
+	$("#radiotime input").click(function(){ 
+	    var panelname = $(this).parents("div .ui-widget-content").attr('id');
+	    $(".highlight").click();
+	}); 
+
+	$('.printbutton').button();
+	$('.printbutton').click(function()  {
+	    var img1 = $(this).parents("div .ui-widget-content").data('img1');
+	    var img2 = $(this).parents("div .ui-widget-content").data('img2');
+	    var title1 = $(this).parents("div .ui-widget-content").data('title1');
+	    var title2 = $(this).parents("div .ui-widget-content").data('title2');
+
+	    w = window.open();
+	    w.document.write("<div style='text-align: center'><b>");
+	    w.document.write(title1);
+	    w.document.write("</b></div>");
+	    w.document.write("<img src='"+img1+"'/>");
+	    w.document.write("<br><br><div style='text-align: center'><b>");
+	    w.document.write(title2);
+	    w.document.write("</b></div>");
+	    w.document.write("<img src='"+img2+"'/>");
+	    w.print();
+	    w.close();
+	});
+
+    $(".highlight").click();
+
+	setInterval(function() {
+        $.ajax({
+            url: 'scripts2/hatpro_time.cgi',
+            method: 'post',
+        });
+    }, 300*1000);
     });
 </script>
 
