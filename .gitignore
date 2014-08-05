@@ -89,3 +89,6 @@ bin/*txt
 bin/*log
 bin/*.1
 bin/tmp/
+#
+kitcube-status/
+kitcube-status-0.1/
