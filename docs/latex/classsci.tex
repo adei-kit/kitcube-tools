@@ -1,0 +1,107 @@
+\hypertarget{classsci}{\section{sci Class Reference}
+\label{classsci}\index{sci@{sci}}
+}
+
+
+{\ttfamily \#include $<$scintillometer.\-h$>$}
+
+Inheritance diagram for sci\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classsci}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classsci_a174afce65f9b9189f2deab5b03538065}{sci} ()
+\item 
+\hyperlink{classsci_a38001383ffb08170088809b0b271f3f7}{$\sim$sci} ()
+\item 
+void \hyperlink{classsci_a0f0a2b8d161af6f539e202ff5357c56f}{set\-Config\-Defaults} ()
+\item 
+int \hyperlink{classsci_acf9c29e3fe47d89795dd4160525c008f}{read\-Header} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+int \hyperlink{classsci_abb8bd3f6f3861a95e4977614fd9cea70}{parse\-Data} (char $\ast$line, struct timeval $\ast$l\-\_\-t\-Data, double $\ast$\hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value})
+\item 
+unsigned int \hyperlink{classsci_a54872e325b018dabbd6f60e0443f864c}{get\-Sensor\-Group} ()
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Implementation for the scintillometer 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classsci_a174afce65f9b9189f2deab5b03538065}{\index{sci@{sci}!sci@{sci}}
+\index{sci@{sci}!sci@{sci}}
+\subsubsection[{sci}]{\setlength{\rightskip}{0pt plus 5cm}sci\-::sci (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classsci_a174afce65f9b9189f2deab5b03538065}
+\hypertarget{classsci_a38001383ffb08170088809b0b271f3f7}{\index{sci@{sci}!$\sim$sci@{$\sim$sci}}
+\index{$\sim$sci@{$\sim$sci}!sci@{sci}}
+\subsubsection[{$\sim$sci}]{\setlength{\rightskip}{0pt plus 5cm}sci\-::$\sim$sci (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classsci_a38001383ffb08170088809b0b271f3f7}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classsci_a54872e325b018dabbd6f60e0443f864c}{\index{sci@{sci}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!sci@{sci}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int sci\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classsci_a54872e325b018dabbd6f60e0443f864c}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classsci_abb8bd3f6f3861a95e4977614fd9cea70}{\index{sci@{sci}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!sci@{sci}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int sci\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{line, }
+\item[{struct timeval $\ast$}]{l\-\_\-t\-Data, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classsci_abb8bd3f6f3861a95e4977614fd9cea70}
+Read the data from the current line of the data file. \begin{DoxyReturn}{Returns}
+-\/1 no data found, skip storage 0 sucess, store data, 1 read another line 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a9c20d9d69af4ba1641dbc82dd5be2aa5}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classsci_acf9c29e3fe47d89795dd4160525c008f}{\index{sci@{sci}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!sci@{sci}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int sci\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classsci_acf9c29e3fe47d89795dd4160525c008f}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classsci_a0f0a2b8d161af6f539e202ff5357c56f}{\index{sci@{sci}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!sci@{sci}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void sci\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classsci_a0f0a2b8d161af6f539e202ff5357c56f}
+The function is called before reading the configuration from the inifile. Use this fucntion in the module specific implementation to override the standard defaults 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{scintillometer_8h}{scintillometer.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{scintillometer_8cpp}{scintillometer.\-cpp}\end{DoxyCompactItemize}

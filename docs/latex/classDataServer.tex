@@ -1,0 +1,429 @@
+\hypertarget{classDataServer}{\section{Data\-Server Class Reference}
+\label{classDataServer}\index{Data\-Server@{Data\-Server}}
+}
+
+
+{\ttfamily \#include $<$dataserver.\-h$>$}
+
+Inheritance diagram for Data\-Server\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classDataServer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classDataServer_acf71809c4ac2e7eb13d1ad0c6c139b15}{Data\-Server} ()
+\item 
+\hyperlink{classDataServer_ab4f08bb5349b6b9e021da97db65f1928}{$\sim$\-Data\-Server} ()
+\item 
+void \hyperlink{classDataServer_aca0d13b666d0a9d17f06b028a4a0f3f6}{set\-App\-Name} (const char $\ast$name)
+\item 
+int \hyperlink{classDataServer_a9e4b2229d17ab4d8653da5633f243a74}{get\-App\-Id} ()
+\item 
+void \hyperlink{classDataServer_ab701f76c95c4960824b7c9b587bdcae3}{read\-Inifile} (const char $\ast$\hyperlink{classDataServer_adb52183f12445a883b10c7081fa828a3}{inifile}, const char $\ast$module=0)
+\item 
+void \hyperlink{classDataServer_a89f7c5443aca4a3f7ed0860d00b0300c}{run\-As\-Daemon} (bool flag=true)
+\item 
+void \hyperlink{classDataServer_aa625ea002a9ab9b4cfdbb90807a1d67d}{get\-Next\-Sample} (int $\ast$i\-Sample, double $\ast$t\-Wait)
+\item 
+void \hyperlink{classDataServer_ab9b3333d6a5f872fd5f1e0d8010086a2}{get\-Next\-Sample} (int $\ast$i\-Sample, struct timeval $\ast$t\-Wait)
+\item 
+int \hyperlink{classDataServer_ac45cfcc0fca260f2283bd563281b4efa}{handle\-\_\-timeout} ()
+\item 
+int \hyperlink{classDataServer_a0b951c305048d917262e1017b6f7db24}{read\-\_\-from\-\_\-keyboard} ()
+\item 
+void \hyperlink{classDataServer_a726b0971e705894e243726640ecb7db0}{execute\-Cmd} (int client, short cmd, unsigned int $\ast$arg, short n)
+\item 
+void \hyperlink{classDataServer_a3977ab6cd0fde850d17c8b04885ad088}{run\-Readout} (F\-I\-L\-E $\ast$\hyperlink{classBaseServer_a9ad43261a042fbeeafee33ca4c0b3fd3}{fout})
+\item 
+void \hyperlink{classDataServer_a4de71f44e04b81e8d054462e94b087aa}{analyse\-Timing} (struct timeval $\ast$t)
+\item 
+void \hyperlink{classDataServer_afa17781b543e10b8ecc6f07ab77851f1}{display\-Status} (F\-I\-L\-E $\ast$\hyperlink{classBaseServer_a9ad43261a042fbeeafee33ca4c0b3fd3}{fout})
+\item 
+void \hyperlink{classDataServer_a0a5c1420e056418d02473db5ca5ec6ba}{simulate} ()
+\item 
+void \hyperlink{classDataServer_a6d3ab96ddbcf7bf5cff1565dc081b960}{sim\-Q\-D\-Data} (struct timeval t)
+\item 
+void \hyperlink{classDataServer_aa1e7d4724bbedec466f7c76f549b243b}{qd} (double $\ast$analog, int n)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{classDataServer_a85f6bfc815d5da78904704e04f58de4a}{sim\-Data\-Index}
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{classDataServer_a2336dffa57e35c69c5ae0927d5e9e052}{app\-Id}
+\item 
+std\-::string \hyperlink{classDataServer_a8a26d65b11f0160c99cc00ab4a700a37}{app\-Name}
+\item 
+bool \hyperlink{classDataServer_a6dec7e960603680e4114abc5b91a8457}{run\-Daemon}
+\item 
+int \hyperlink{classDataServer_a0b926a7dc0e5ddcf958abedd937c362b}{t\-Sample\-From\-Inifile}
+\item 
+int \hyperlink{classDataServer_a099becd424d2c231270d8bf7682f86f7}{n\-Modules}
+\item 
+std\-::string \hyperlink{classDataServer_a38e8fd47db320927a4e7fe20226dc23d}{module\-Name}
+\item 
+std\-::string $\ast$ \hyperlink{classDataServer_ac2f86dedb120b60f6da583a3931f48a7}{module\-Type}
+\item 
+int $\ast$ \hyperlink{classDataServer_a4f01751e8d4a8d1ca9fd0e8cbb1240bb}{module\-Number}
+\item 
+std\-::string $\ast$ \hyperlink{classDataServer_a746d543bae3ea60b7c617413951c8e3c}{ini\-Group}
+\item 
+\hyperlink{classDAQDevice}{D\-A\-Q\-Device} $\ast$$\ast$ \hyperlink{classDataServer_a633e024ceb49f38f68a3f2cff5303cb4}{dev}
+\item 
+int \hyperlink{classDataServer_a6ef6ff1d012d3d199bd2d4ea2889e1fc}{n\-Groups}
+\item 
+unsigned long \hyperlink{classDataServer_a607273a35cc1cd03b19d548503ad7831}{samples\-N}
+\item 
+long long \hyperlink{classDataServer_abc58efaf6db25b7e8160a3adf62590af}{timing\-N}
+\item 
+long long \hyperlink{classDataServer_af821fc16f79698b3986813f7fce05cc1}{timing\-Sum}
+\item 
+long long \hyperlink{classDataServer_a4179f96aea793a3f9d4b4269c91af858}{timing\-Sum2}
+\item 
+long long \hyperlink{classDataServer_a271a282c615df76055fa1c2e83dbd3ab}{timing\-Min}
+\item 
+long long \hyperlink{classDataServer_ad02c5071511d4abd77be83a3bd74284f}{timing\-Max}
+\item 
+int \hyperlink{classDataServer_a63d42e1d7442a10dfcb4416b22e3cd94}{n\-Samples\-Skipped}
+\item 
+std\-::string \hyperlink{classDataServer_adb52183f12445a883b10c7081fa828a3}{inifile}
+\item 
+std\-::string \hyperlink{classDataServer_a7c825f2bc5af741b549dfd9b85d75bd3}{filename}
+\item 
+std\-::string \hyperlink{classDataServer_ae852f154e0a58505271bbcc9f2e23e28}{filename\-Tmpl}
+\item 
+std\-::string \hyperlink{classDataServer_a06a82d3d332afe39f6e56c9521abf5b1}{basedir}
+\item 
+std\-::string \hyperlink{classDataServer_afdc8023d653417275c503ceef21d5b35}{basedir\-Tmpl}
+\item 
+F\-I\-L\-E $\ast$ \hyperlink{classDataServer_a9b3b01c8057f00335cc4d81afb8d177a}{flog}
+\item 
+std\-::string \hyperlink{classDataServer_ad9f401ae56859aeb3518ca595a9849ad}{logfile}
+\item 
+std\-::string \hyperlink{classDataServer_adbd30fd13ec1fec779c48b942446f205}{qd\-Path}
+\item 
+std\-::string \hyperlink{classDataServer_a66169555f6156b14a11d88110660189d}{qd\-Config}
+\item 
+int \hyperlink{classDataServer_a69f0486314e244364a297310559446d7}{qd\-T\-Sample}
+\item 
+int \hyperlink{classDataServer_a61cfe7444488df95ed8a89bbb34823a1}{qd\-N\-Sensors}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}Recorder process for background data.
+The background data is collected at the
+telescopes and transfered to the central
+data collection point (this class).
+
+The background data is collected using a client server concept. At every
+connected telescope a readout process is started that afterwards autonomuosly
+sends the data to the server running at the eyePC writing the data to the file.
+
+The background data is stored in text format. The data of every parameter
+introduced by a header line containing certain parmeters necessary to
+interprete the data. There is a master header for a complete set of background
+data.
+
+The following box shows a sample call of the background recorder.
+\end{DoxyVerb}
+ \begin{DoxyVerb}  TsBackgroundLoop *bgrec;
+  Pbus *thePbus;
+
+  Pbus::init(inifile.c_str());
+
+
+  // Create recorder
+  bgrec = new TsBackgroundLoop();
+  bgrec->readInifile(inifile.c_str());
+
+  bgrec->setLogfile(stdout);
+
+  // Set parameter: Period length, selected parameter, file, ....
+  bgrec->setParameter(name, tSample, 0, selRecord, selDisplay, runType.c_str());  // no output to file, take data every 5s
+
+  // Run background recorder
+  // The readout process is started at all connected telescopes
+  bgrec->runReadout(stdout);
+
+  delete bgrec;
+\end{DoxyVerb}
+
+
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000013}{Todo}]Streamer methoden einfhren, es erscheint unsauber, die Methoden mit zu kopieren !!! 
+
+Wie kann man eine verlorene Verbindung erkennen? Wie kann der Server-\/\-Verbindungen l�en?
+\begin{DoxyItemize}
+\item Bleiben immer so viele Verbindungen liegen? Tw. wird eine weiterer Aufruf hierdurch sogar blockiert?!
+\item Zeitnahmedaten mit in die Daten aufnehmen!!! �erarbeiten der display-\/\-Funktionen.
+\item Definition des Befehlssatzen in einer Struktur, die von beiden Seiten verwendet wird!
+\item Verwenden von R\-O\-O\-T-\/\-Trees zum Abspeichern der Daten
+\item Integration in Pbusdaemon / oder ein separates Programm, das vom Pbusdaemon aufgerufen wird?!
+\item Display-\/\-Programm, das sich ebenfalls an den Server ankoppelt.
+\end{DoxyItemize}\end{DoxyRefDesc}
+\begin{DoxyVerb}- Test mit echter Hardware: Werden die Daten korrekt bertragen
+- Test mit mehreren Teleskopen
+- Test mit automatischem Start ber Pbusdaemon
+- Erweiterung des TsBackground-Formates fr die neuen Variablen
+- Dokumentation der Background-Loop (Konzept / Start / Konfiguration / ...)
+- Speichern im Root-Format, Aufteilung in Branches
+- Beispielhaftes Display-Modul (ncurses) entwerfen
+- Histogramming-Modul / Stern-Monitor ankoppeln
+\end{DoxyVerb}
+
+
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000014}{Todo}]The recorder does not work with a connection started via ssh tunnel. The readout process at the mirrorpc's seem to have problems to connect to the proper recorder server?!\end{DoxyRefDesc}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classDataServer_acf71809c4ac2e7eb13d1ad0c6c139b15}{\index{Data\-Server@{Data\-Server}!Data\-Server@{Data\-Server}}
+\index{Data\-Server@{Data\-Server}!DataServer@{Data\-Server}}
+\subsubsection[{Data\-Server}]{\setlength{\rightskip}{0pt plus 5cm}Data\-Server\-::\-Data\-Server (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_acf71809c4ac2e7eb13d1ad0c6c139b15}
+\hypertarget{classDataServer_ab4f08bb5349b6b9e021da97db65f1928}{\index{Data\-Server@{Data\-Server}!$\sim$\-Data\-Server@{$\sim$\-Data\-Server}}
+\index{$\sim$\-Data\-Server@{$\sim$\-Data\-Server}!DataServer@{Data\-Server}}
+\subsubsection[{$\sim$\-Data\-Server}]{\setlength{\rightskip}{0pt plus 5cm}Data\-Server\-::$\sim$\-Data\-Server (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_ab4f08bb5349b6b9e021da97db65f1928}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classDataServer_a4de71f44e04b81e8d054462e94b087aa}{\index{Data\-Server@{Data\-Server}!analyse\-Timing@{analyse\-Timing}}
+\index{analyse\-Timing@{analyse\-Timing}!DataServer@{Data\-Server}}
+\subsubsection[{analyse\-Timing}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::analyse\-Timing (
+\begin{DoxyParamCaption}
+\item[{struct timeval $\ast$}]{t}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_a4de71f44e04b81e8d054462e94b087aa}
+Analyse timing \hypertarget{classDataServer_afa17781b543e10b8ecc6f07ab77851f1}{\index{Data\-Server@{Data\-Server}!display\-Status@{display\-Status}}
+\index{display\-Status@{display\-Status}!DataServer@{Data\-Server}}
+\subsubsection[{display\-Status}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::display\-Status (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_afa17781b543e10b8ecc6f07ab77851f1}
+Display status of readout process \hypertarget{classDataServer_a726b0971e705894e243726640ecb7db0}{\index{Data\-Server@{Data\-Server}!execute\-Cmd@{execute\-Cmd}}
+\index{execute\-Cmd@{execute\-Cmd}!DataServer@{Data\-Server}}
+\subsubsection[{execute\-Cmd}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::execute\-Cmd (
+\begin{DoxyParamCaption}
+\item[{int}]{client, }
+\item[{short}]{cmd, }
+\item[{unsigned int $\ast$}]{arg, }
+\item[{short}]{n}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDataServer_a726b0971e705894e243726640ecb7db0}
+Execute the command 
+
+Reimplemented from \hyperlink{classSimpleServer_ad8244094d9e1806edaa166093c94bd24}{Simple\-Server}.
+
+\hypertarget{classDataServer_a9e4b2229d17ab4d8653da5633f243a74}{\index{Data\-Server@{Data\-Server}!get\-App\-Id@{get\-App\-Id}}
+\index{get\-App\-Id@{get\-App\-Id}!DataServer@{Data\-Server}}
+\subsubsection[{get\-App\-Id}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::get\-App\-Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_a9e4b2229d17ab4d8653da5633f243a74}
+Get the number of the application \hypertarget{classDataServer_aa625ea002a9ab9b4cfdbb90807a1d67d}{\index{Data\-Server@{Data\-Server}!get\-Next\-Sample@{get\-Next\-Sample}}
+\index{get\-Next\-Sample@{get\-Next\-Sample}!DataServer@{Data\-Server}}
+\subsubsection[{get\-Next\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::get\-Next\-Sample (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{i\-Sample, }
+\item[{double $\ast$}]{t\-Wait}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_aa625ea002a9ab9b4cfdbb90807a1d67d}
+Get time until next sample and it's id \hypertarget{classDataServer_ab9b3333d6a5f872fd5f1e0d8010086a2}{\index{Data\-Server@{Data\-Server}!get\-Next\-Sample@{get\-Next\-Sample}}
+\index{get\-Next\-Sample@{get\-Next\-Sample}!DataServer@{Data\-Server}}
+\subsubsection[{get\-Next\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::get\-Next\-Sample (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{i\-Sample, }
+\item[{struct timeval $\ast$}]{t\-Wait}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_ab9b3333d6a5f872fd5f1e0d8010086a2}
+\hypertarget{classDataServer_ac45cfcc0fca260f2283bd563281b4efa}{\index{Data\-Server@{Data\-Server}!handle\-\_\-timeout@{handle\-\_\-timeout}}
+\index{handle\-\_\-timeout@{handle\-\_\-timeout}!DataServer@{Data\-Server}}
+\subsubsection[{handle\-\_\-timeout}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::handle\-\_\-timeout (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDataServer_ac45cfcc0fca260f2283bd563281b4efa}
+Handler for the timeout 
+
+Reimplemented from \hyperlink{classBaseServer_a892cf59b889f59d73031108cfab07772}{Base\-Server}.
+
+\hypertarget{classDataServer_aa1e7d4724bbedec466f7c76f549b243b}{\index{Data\-Server@{Data\-Server}!qd@{qd}}
+\index{qd@{qd}!DataServer@{Data\-Server}}
+\subsubsection[{qd}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::qd (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{analog, }
+\item[{int}]{n}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_aa1e7d4724bbedec466f7c76f549b243b}
+Generate analog data input
+
+Simulate Q\-D signal matrix. Use P\-C time to calculate a sinus wave plus some noise. \hypertarget{classDataServer_a0b951c305048d917262e1017b6f7db24}{\index{Data\-Server@{Data\-Server}!read\-\_\-from\-\_\-keyboard@{read\-\_\-from\-\_\-keyboard}}
+\index{read\-\_\-from\-\_\-keyboard@{read\-\_\-from\-\_\-keyboard}!DataServer@{Data\-Server}}
+\subsubsection[{read\-\_\-from\-\_\-keyboard}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::read\-\_\-from\-\_\-keyboard (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDataServer_a0b951c305048d917262e1017b6f7db24}
+Keyboard interface for interactive control (only for compatibility reasons 
+
+Reimplemented from \hyperlink{classBaseServer_a2c5a73b3bd9950a7809ac2a353061960}{Base\-Server}.
+
+\hypertarget{classDataServer_ab701f76c95c4960824b7c9b587bdcae3}{\index{Data\-Server@{Data\-Server}!read\-Inifile@{read\-Inifile}}
+\index{read\-Inifile@{read\-Inifile}!DataServer@{Data\-Server}}
+\subsubsection[{read\-Inifile}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::read\-Inifile (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{inifile, }
+\item[{const char $\ast$}]{module = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_ab701f76c95c4960824b7c9b587bdcae3}
+Read parameter from inifile \hypertarget{classDataServer_a89f7c5443aca4a3f7ed0860d00b0300c}{\index{Data\-Server@{Data\-Server}!run\-As\-Daemon@{run\-As\-Daemon}}
+\index{run\-As\-Daemon@{run\-As\-Daemon}!DataServer@{Data\-Server}}
+\subsubsection[{run\-As\-Daemon}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::run\-As\-Daemon (
+\begin{DoxyParamCaption}
+\item[{bool}]{flag = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_a89f7c5443aca4a3f7ed0860d00b0300c}
+Set operation without interactive inputs \hypertarget{classDataServer_a3977ab6cd0fde850d17c8b04885ad088}{\index{Data\-Server@{Data\-Server}!run\-Readout@{run\-Readout}}
+\index{run\-Readout@{run\-Readout}!DataServer@{Data\-Server}}
+\subsubsection[{run\-Readout}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::run\-Readout (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_a3977ab6cd0fde850d17c8b04885ad088}
+Start the server and all the client recording the telescopes background data. \hypertarget{classDataServer_aca0d13b666d0a9d17f06b028a4a0f3f6}{\index{Data\-Server@{Data\-Server}!set\-App\-Name@{set\-App\-Name}}
+\index{set\-App\-Name@{set\-App\-Name}!DataServer@{Data\-Server}}
+\subsubsection[{set\-App\-Name}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::set\-App\-Name (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{name}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_aca0d13b666d0a9d17f06b028a4a0f3f6}
+Change the default name of the application used to figure out the right inifile section \hypertarget{classDataServer_a6d3ab96ddbcf7bf5cff1565dc081b960}{\index{Data\-Server@{Data\-Server}!sim\-Q\-D\-Data@{sim\-Q\-D\-Data}}
+\index{sim\-Q\-D\-Data@{sim\-Q\-D\-Data}!DataServer@{Data\-Server}}
+\subsubsection[{sim\-Q\-D\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::sim\-Q\-D\-Data (
+\begin{DoxyParamCaption}
+\item[{struct timeval}]{t}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_a6d3ab96ddbcf7bf5cff1565dc081b960}
+Simulate data of the quench detection unit \hypertarget{classDataServer_a0a5c1420e056418d02473db5ca5ec6ba}{\index{Data\-Server@{Data\-Server}!simulate@{simulate}}
+\index{simulate@{simulate}!DataServer@{Data\-Server}}
+\subsubsection[{simulate}]{\setlength{\rightskip}{0pt plus 5cm}void Data\-Server\-::simulate (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDataServer_a0a5c1420e056418d02473db5ca5ec6ba}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classDataServer_a2336dffa57e35c69c5ae0927d5e9e052}{\index{Data\-Server@{Data\-Server}!app\-Id@{app\-Id}}
+\index{app\-Id@{app\-Id}!DataServer@{Data\-Server}}
+\subsubsection[{app\-Id}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::app\-Id\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a2336dffa57e35c69c5ae0927d5e9e052}
+Every reader application has it's own I\-D \hypertarget{classDataServer_a8a26d65b11f0160c99cc00ab4a700a37}{\index{Data\-Server@{Data\-Server}!app\-Name@{app\-Name}}
+\index{app\-Name@{app\-Name}!DataServer@{Data\-Server}}
+\subsubsection[{app\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::app\-Name\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a8a26d65b11f0160c99cc00ab4a700a37}
+Name of the application. Used to select the application ini group. Default\-: \hyperlink{classReader}{Reader} \hypertarget{classDataServer_a06a82d3d332afe39f6e56c9521abf5b1}{\index{Data\-Server@{Data\-Server}!basedir@{basedir}}
+\index{basedir@{basedir}!DataServer@{Data\-Server}}
+\subsubsection[{basedir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::basedir\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a06a82d3d332afe39f6e56c9521abf5b1}
+Basedir of the auger file \hypertarget{classDataServer_afdc8023d653417275c503ceef21d5b35}{\index{Data\-Server@{Data\-Server}!basedir\-Tmpl@{basedir\-Tmpl}}
+\index{basedir\-Tmpl@{basedir\-Tmpl}!DataServer@{Data\-Server}}
+\subsubsection[{basedir\-Tmpl}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::basedir\-Tmpl\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_afdc8023d653417275c503ceef21d5b35}
+Template for the basedir of the auger file \hypertarget{classDataServer_a633e024ceb49f38f68a3f2cff5303cb4}{\index{Data\-Server@{Data\-Server}!dev@{dev}}
+\index{dev@{dev}!DataServer@{Data\-Server}}
+\subsubsection[{dev}]{\setlength{\rightskip}{0pt plus 5cm}{\bf D\-A\-Q\-Device}$\ast$$\ast$ Data\-Server\-::dev\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a633e024ceb49f38f68a3f2cff5303cb4}
+\hypertarget{classDataServer_a7c825f2bc5af741b549dfd9b85d75bd3}{\index{Data\-Server@{Data\-Server}!filename@{filename}}
+\index{filename@{filename}!DataServer@{Data\-Server}}
+\subsubsection[{filename}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::filename\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a7c825f2bc5af741b549dfd9b85d75bd3}
+Record filename \hypertarget{classDataServer_ae852f154e0a58505271bbcc9f2e23e28}{\index{Data\-Server@{Data\-Server}!filename\-Tmpl@{filename\-Tmpl}}
+\index{filename\-Tmpl@{filename\-Tmpl}!DataServer@{Data\-Server}}
+\subsubsection[{filename\-Tmpl}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::filename\-Tmpl\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_ae852f154e0a58505271bbcc9f2e23e28}
+Template for the record filename \hypertarget{classDataServer_a9b3b01c8057f00335cc4d81afb8d177a}{\index{Data\-Server@{Data\-Server}!flog@{flog}}
+\index{flog@{flog}!DataServer@{Data\-Server}}
+\subsubsection[{flog}]{\setlength{\rightskip}{0pt plus 5cm}F\-I\-L\-E$\ast$ Data\-Server\-::flog\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a9b3b01c8057f00335cc4d81afb8d177a}
+F\-Ealarm log file name \hypertarget{classDataServer_adb52183f12445a883b10c7081fa828a3}{\index{Data\-Server@{Data\-Server}!inifile@{inifile}}
+\index{inifile@{inifile}!DataServer@{Data\-Server}}
+\subsubsection[{inifile}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::inifile\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_adb52183f12445a883b10c7081fa828a3}
+\hypertarget{classDataServer_a746d543bae3ea60b7c617413951c8e3c}{\index{Data\-Server@{Data\-Server}!ini\-Group@{ini\-Group}}
+\index{ini\-Group@{ini\-Group}!DataServer@{Data\-Server}}
+\subsubsection[{ini\-Group}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string$\ast$ Data\-Server\-::ini\-Group\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a746d543bae3ea60b7c617413951c8e3c}
+a group in the $\ast$.ini file \hypertarget{classDataServer_ad9f401ae56859aeb3518ca595a9849ad}{\index{Data\-Server@{Data\-Server}!logfile@{logfile}}
+\index{logfile@{logfile}!DataServer@{Data\-Server}}
+\subsubsection[{logfile}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::logfile\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_ad9f401ae56859aeb3518ca595a9849ad}
+Name of the logfile \hypertarget{classDataServer_a38e8fd47db320927a4e7fe20226dc23d}{\index{Data\-Server@{Data\-Server}!module\-Name@{module\-Name}}
+\index{module\-Name@{module\-Name}!DataServer@{Data\-Server}}
+\subsubsection[{module\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::module\-Name\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a38e8fd47db320927a4e7fe20226dc23d}
+Module name as given in sensor list \hypertarget{classDataServer_a4f01751e8d4a8d1ca9fd0e8cbb1240bb}{\index{Data\-Server@{Data\-Server}!module\-Number@{module\-Number}}
+\index{module\-Number@{module\-Number}!DataServer@{Data\-Server}}
+\subsubsection[{module\-Number}]{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ Data\-Server\-::module\-Number\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a4f01751e8d4a8d1ca9fd0e8cbb1240bb}
+Module number \hypertarget{classDataServer_ac2f86dedb120b60f6da583a3931f48a7}{\index{Data\-Server@{Data\-Server}!module\-Type@{module\-Type}}
+\index{module\-Type@{module\-Type}!DataServer@{Data\-Server}}
+\subsubsection[{module\-Type}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string$\ast$ Data\-Server\-::module\-Type\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_ac2f86dedb120b60f6da583a3931f48a7}
+module type describes the implementation, the class \hypertarget{classDataServer_a6ef6ff1d012d3d199bd2d4ea2889e1fc}{\index{Data\-Server@{Data\-Server}!n\-Groups@{n\-Groups}}
+\index{n\-Groups@{n\-Groups}!DataServer@{Data\-Server}}
+\subsubsection[{n\-Groups}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::n\-Groups\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a6ef6ff1d012d3d199bd2d4ea2889e1fc}
+Number of sensor groups \hypertarget{classDataServer_a099becd424d2c231270d8bf7682f86f7}{\index{Data\-Server@{Data\-Server}!n\-Modules@{n\-Modules}}
+\index{n\-Modules@{n\-Modules}!DataServer@{Data\-Server}}
+\subsubsection[{n\-Modules}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::n\-Modules\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a099becd424d2c231270d8bf7682f86f7}
+Number of D\-A\-Q modules added to the data server. The number is given by the entries in the inifile \hypertarget{classDataServer_a63d42e1d7442a10dfcb4416b22e3cd94}{\index{Data\-Server@{Data\-Server}!n\-Samples\-Skipped@{n\-Samples\-Skipped}}
+\index{n\-Samples\-Skipped@{n\-Samples\-Skipped}!DataServer@{Data\-Server}}
+\subsubsection[{n\-Samples\-Skipped}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::n\-Samples\-Skipped\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a63d42e1d7442a10dfcb4416b22e3cd94}
+Number of last samples skipped, because there was no vaild data / timestamp \hypertarget{classDataServer_a66169555f6156b14a11d88110660189d}{\index{Data\-Server@{Data\-Server}!qd\-Config@{qd\-Config}}
+\index{qd\-Config@{qd\-Config}!DataServer@{Data\-Server}}
+\subsubsection[{qd\-Config}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::qd\-Config\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a66169555f6156b14a11d88110660189d}
+Name of configuration file \hypertarget{classDataServer_a61cfe7444488df95ed8a89bbb34823a1}{\index{Data\-Server@{Data\-Server}!qd\-N\-Sensors@{qd\-N\-Sensors}}
+\index{qd\-N\-Sensors@{qd\-N\-Sensors}!DataServer@{Data\-Server}}
+\subsubsection[{qd\-N\-Sensors}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::qd\-N\-Sensors\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a61cfe7444488df95ed8a89bbb34823a1}
+Number of values (max 24) \hypertarget{classDataServer_adbd30fd13ec1fec779c48b942446f205}{\index{Data\-Server@{Data\-Server}!qd\-Path@{qd\-Path}}
+\index{qd\-Path@{qd\-Path}!DataServer@{Data\-Server}}
+\subsubsection[{qd\-Path}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Data\-Server\-::qd\-Path\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_adbd30fd13ec1fec779c48b942446f205}
+Path to the Q\-D data \hypertarget{classDataServer_a69f0486314e244364a297310559446d7}{\index{Data\-Server@{Data\-Server}!qd\-T\-Sample@{qd\-T\-Sample}}
+\index{qd\-T\-Sample@{qd\-T\-Sample}!DataServer@{Data\-Server}}
+\subsubsection[{qd\-T\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::qd\-T\-Sample\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a69f0486314e244364a297310559446d7}
+Sampling time (ms) \hypertarget{classDataServer_a6dec7e960603680e4114abc5b91a8457}{\index{Data\-Server@{Data\-Server}!run\-Daemon@{run\-Daemon}}
+\index{run\-Daemon@{run\-Daemon}!DataServer@{Data\-Server}}
+\subsubsection[{run\-Daemon}]{\setlength{\rightskip}{0pt plus 5cm}bool Data\-Server\-::run\-Daemon\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a6dec7e960603680e4114abc5b91a8457}
+Flag to start the server as daemon -\/ without interactive input \hypertarget{classDataServer_a607273a35cc1cd03b19d548503ad7831}{\index{Data\-Server@{Data\-Server}!samples\-N@{samples\-N}}
+\index{samples\-N@{samples\-N}!DataServer@{Data\-Server}}
+\subsubsection[{samples\-N}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Data\-Server\-::samples\-N\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a607273a35cc1cd03b19d548503ad7831}
+Number of samples (of timeout loop) \hypertarget{classDataServer_a85f6bfc815d5da78904704e04f58de4a}{\index{Data\-Server@{Data\-Server}!sim\-Data\-Index@{sim\-Data\-Index}}
+\index{sim\-Data\-Index@{sim\-Data\-Index}!DataServer@{Data\-Server}}
+\subsubsection[{sim\-Data\-Index}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::sim\-Data\-Index}}\label{classDataServer_a85f6bfc815d5da78904704e04f58de4a}
+Write one long data file Index of the data files \hypertarget{classDataServer_ad02c5071511d4abd77be83a3bd74284f}{\index{Data\-Server@{Data\-Server}!timing\-Max@{timing\-Max}}
+\index{timing\-Max@{timing\-Max}!DataServer@{Data\-Server}}
+\subsubsection[{timing\-Max}]{\setlength{\rightskip}{0pt plus 5cm}long long Data\-Server\-::timing\-Max\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_ad02c5071511d4abd77be83a3bd74284f}
+Maximal deviation \hypertarget{classDataServer_a271a282c615df76055fa1c2e83dbd3ab}{\index{Data\-Server@{Data\-Server}!timing\-Min@{timing\-Min}}
+\index{timing\-Min@{timing\-Min}!DataServer@{Data\-Server}}
+\subsubsection[{timing\-Min}]{\setlength{\rightskip}{0pt plus 5cm}long long Data\-Server\-::timing\-Min\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a271a282c615df76055fa1c2e83dbd3ab}
+Minimal deviation \hypertarget{classDataServer_abc58efaf6db25b7e8160a3adf62590af}{\index{Data\-Server@{Data\-Server}!timing\-N@{timing\-N}}
+\index{timing\-N@{timing\-N}!DataServer@{Data\-Server}}
+\subsubsection[{timing\-N}]{\setlength{\rightskip}{0pt plus 5cm}long long Data\-Server\-::timing\-N\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_abc58efaf6db25b7e8160a3adf62590af}
+Number of analysed samples \hypertarget{classDataServer_af821fc16f79698b3986813f7fce05cc1}{\index{Data\-Server@{Data\-Server}!timing\-Sum@{timing\-Sum}}
+\index{timing\-Sum@{timing\-Sum}!DataServer@{Data\-Server}}
+\subsubsection[{timing\-Sum}]{\setlength{\rightskip}{0pt plus 5cm}long long Data\-Server\-::timing\-Sum\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_af821fc16f79698b3986813f7fce05cc1}
+Sum of all deviations from the planned sample time \hypertarget{classDataServer_a4179f96aea793a3f9d4b4269c91af858}{\index{Data\-Server@{Data\-Server}!timing\-Sum2@{timing\-Sum2}}
+\index{timing\-Sum2@{timing\-Sum2}!DataServer@{Data\-Server}}
+\subsubsection[{timing\-Sum2}]{\setlength{\rightskip}{0pt plus 5cm}long long Data\-Server\-::timing\-Sum2\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a4179f96aea793a3f9d4b4269c91af858}
+Sum of squares from the the planned sample time \hypertarget{classDataServer_a0b926a7dc0e5ddcf958abedd937c362b}{\index{Data\-Server@{Data\-Server}!t\-Sample\-From\-Inifile@{t\-Sample\-From\-Inifile}}
+\index{t\-Sample\-From\-Inifile@{t\-Sample\-From\-Inifile}!DataServer@{Data\-Server}}
+\subsubsection[{t\-Sample\-From\-Inifile}]{\setlength{\rightskip}{0pt plus 5cm}int Data\-Server\-::t\-Sample\-From\-Inifile\hspace{0.3cm}{\ttfamily [private]}}}\label{classDataServer_a0b926a7dc0e5ddcf958abedd937c362b}
+Sampling time (ms) 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/data/\hyperlink{dataserver_8h}{dataserver.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/data/\hyperlink{dataserver_8cpp}{dataserver.\-cpp}\end{DoxyCompactItemize}

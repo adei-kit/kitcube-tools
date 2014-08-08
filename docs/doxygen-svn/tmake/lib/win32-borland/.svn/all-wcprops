@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/82/trunk/tmake/lib/win32-borland
+END
+subdirs.t
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/doxygen/code/!svn/ver/28/trunk/tmake/lib/win32-borland/subdirs.t
+END
+generic.t
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/doxygen/code/!svn/ver/28/trunk/tmake/lib/win32-borland/generic.t
+END
+app.t
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/win32-borland/app.t
+END
+tmake.conf
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/p/doxygen/code/!svn/ver/82/trunk/tmake/lib/win32-borland/tmake.conf
+END
+lib.t
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/win32-borland/lib.t
+END

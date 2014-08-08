@@ -1,0 +1,99 @@
+\hypertarget{classkeyboard}{\section{keyboard Class Reference}
+\label{classkeyboard}\index{keyboard@{keyboard}}
+}
+
+
+{\ttfamily \#include $<$keyboard.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classkeyboard_ac8a026376e79f204ebccd4a0e0eef2f9}{keyboard} ()
+\item 
+\hyperlink{classkeyboard_a6ee90db5c7b4d44b37724711b6048c34}{$\sim$keyboard} ()
+\item 
+bool \hyperlink{classkeyboard_acafcfa9baee58ec7f2d5b37995f739f0}{hit} ()
+\item 
+bool \hyperlink{classkeyboard_a9fc7aa1041b37981a784a9fb750bd355}{hit} (char \hyperlink{classkeyboard_aa38f064c4a946810840ec389c4df81d6}{key})
+\item 
+char \hyperlink{classkeyboard_a14c52ad4acba6c5b4637ebb8ba2d57fc}{getchar} ()
+\item 
+char $\ast$ \hyperlink{classkeyboard_ab1be3946c44e55ea5177f077b9f745d6}{getpasswd} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+char \hyperlink{classkeyboard_aacee1ab06d08c89eae28515ac52d4333}{passwd} \mbox{[}20\mbox{]}
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+char \hyperlink{classkeyboard_aa38f064c4a946810840ec389c4df81d6}{key}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Emulates the kbhit() function known from
+
+the windows world 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classkeyboard_ac8a026376e79f204ebccd4a0e0eef2f9}{\index{keyboard@{keyboard}!keyboard@{keyboard}}
+\index{keyboard@{keyboard}!keyboard@{keyboard}}
+\subsubsection[{keyboard}]{\setlength{\rightskip}{0pt plus 5cm}keyboard\-::keyboard (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classkeyboard_ac8a026376e79f204ebccd4a0e0eef2f9}
+\hypertarget{classkeyboard_a6ee90db5c7b4d44b37724711b6048c34}{\index{keyboard@{keyboard}!$\sim$keyboard@{$\sim$keyboard}}
+\index{$\sim$keyboard@{$\sim$keyboard}!keyboard@{keyboard}}
+\subsubsection[{$\sim$keyboard}]{\setlength{\rightskip}{0pt plus 5cm}keyboard\-::$\sim$keyboard (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classkeyboard_a6ee90db5c7b4d44b37724711b6048c34}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classkeyboard_a14c52ad4acba6c5b4637ebb8ba2d57fc}{\index{keyboard@{keyboard}!getchar@{getchar}}
+\index{getchar@{getchar}!keyboard@{keyboard}}
+\subsubsection[{getchar}]{\setlength{\rightskip}{0pt plus 5cm}char keyboard\-::getchar (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classkeyboard_a14c52ad4acba6c5b4637ebb8ba2d57fc}
+\hypertarget{classkeyboard_ab1be3946c44e55ea5177f077b9f745d6}{\index{keyboard@{keyboard}!getpasswd@{getpasswd}}
+\index{getpasswd@{getpasswd}!keyboard@{keyboard}}
+\subsubsection[{getpasswd}]{\setlength{\rightskip}{0pt plus 5cm}char $\ast$ keyboard\-::getpasswd (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classkeyboard_ab1be3946c44e55ea5177f077b9f745d6}
+Read a password from the terminal \hypertarget{classkeyboard_acafcfa9baee58ec7f2d5b37995f739f0}{\index{keyboard@{keyboard}!hit@{hit}}
+\index{hit@{hit}!keyboard@{keyboard}}
+\subsubsection[{hit}]{\setlength{\rightskip}{0pt plus 5cm}bool keyboard\-::hit (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classkeyboard_acafcfa9baee58ec7f2d5b37995f739f0}
+\hypertarget{classkeyboard_a9fc7aa1041b37981a784a9fb750bd355}{\index{keyboard@{keyboard}!hit@{hit}}
+\index{hit@{hit}!keyboard@{keyboard}}
+\subsubsection[{hit}]{\setlength{\rightskip}{0pt plus 5cm}bool keyboard\-::hit (
+\begin{DoxyParamCaption}
+\item[{char}]{key}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classkeyboard_a9fc7aa1041b37981a784a9fb750bd355}
+Returns true if the right key 
+
+\subsection{Member Data Documentation}
+\hypertarget{classkeyboard_aa38f064c4a946810840ec389c4df81d6}{\index{keyboard@{keyboard}!key@{key}}
+\index{key@{key}!keyboard@{keyboard}}
+\subsubsection[{key}]{\setlength{\rightskip}{0pt plus 5cm}char keyboard\-::key\hspace{0.3cm}{\ttfamily [private]}}}\label{classkeyboard_aa38f064c4a946810840ec389c4df81d6}
+\hypertarget{classkeyboard_aacee1ab06d08c89eae28515ac52d4333}{\index{keyboard@{keyboard}!passwd@{passwd}}
+\index{passwd@{passwd}!keyboard@{keyboard}}
+\subsubsection[{passwd}]{\setlength{\rightskip}{0pt plus 5cm}char keyboard\-::passwd\mbox{[}20\mbox{]}}}\label{classkeyboard_aacee1ab06d08c89eae28515ac52d4333}
+Character string that contains the last password entered 
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/akutil/\hyperlink{keyboard_8h}{keyboard.\-h}\end{DoxyCompactItemize}

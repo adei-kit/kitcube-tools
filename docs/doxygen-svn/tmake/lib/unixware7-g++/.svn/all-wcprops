@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/doxygen/code/!svn/ver/434/trunk/tmake/lib/unixware7-g++
+END
+tmake.conf
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/doxygen/code/!svn/ver/434/trunk/tmake/lib/unixware7-g++/tmake.conf
+END
+lib.t
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/28/trunk/tmake/lib/unixware7-g++/lib.t
+END
+subdirs.t
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/doxygen/code/!svn/ver/28/trunk/tmake/lib/unixware7-g++/subdirs.t
+END
+app.t
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/28/trunk/tmake/lib/unixware7-g++/app.t
+END

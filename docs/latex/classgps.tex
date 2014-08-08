@@ -1,0 +1,107 @@
+\hypertarget{classgps}{\section{gps Class Reference}
+\label{classgps}\index{gps@{gps}}
+}
+
+
+{\ttfamily \#include $<$gps.\-h$>$}
+
+Inheritance diagram for gps\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classgps}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classgps_a13b491233eeef0a9934e8d86db776949}{gps} ()
+\item 
+\hyperlink{classgps_a2a5bb1cd2bb43b8d2a1cacc7ab34f46e}{$\sim$gps} ()
+\item 
+void \hyperlink{classgps_a55f655de8f378da212ec92fd3283bb83}{set\-Config\-Defaults} ()
+\item 
+int \hyperlink{classgps_a37400cebc4929e7b30305c1b361f6309}{read\-Header} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+int \hyperlink{classgps_a8dc22ee8632e62c0547a782708b0238a}{parse\-Data} (char $\ast$line, struct timeval $\ast$l\-\_\-t\-Data, double $\ast$\hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value})
+\item 
+unsigned int \hyperlink{classgps_a3735ebac4b699c531c8ec24015bc9c89}{get\-Sensor\-Group} ()
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Implementation for the gps 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classgps_a13b491233eeef0a9934e8d86db776949}{\index{gps@{gps}!gps@{gps}}
+\index{gps@{gps}!gps@{gps}}
+\subsubsection[{gps}]{\setlength{\rightskip}{0pt plus 5cm}gps\-::gps (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classgps_a13b491233eeef0a9934e8d86db776949}
+\hypertarget{classgps_a2a5bb1cd2bb43b8d2a1cacc7ab34f46e}{\index{gps@{gps}!$\sim$gps@{$\sim$gps}}
+\index{$\sim$gps@{$\sim$gps}!gps@{gps}}
+\subsubsection[{$\sim$gps}]{\setlength{\rightskip}{0pt plus 5cm}gps\-::$\sim$gps (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classgps_a2a5bb1cd2bb43b8d2a1cacc7ab34f46e}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classgps_a3735ebac4b699c531c8ec24015bc9c89}{\index{gps@{gps}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!gps@{gps}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int gps\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classgps_a3735ebac4b699c531c8ec24015bc9c89}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classgps_a8dc22ee8632e62c0547a782708b0238a}{\index{gps@{gps}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!gps@{gps}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int gps\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{line, }
+\item[{struct timeval $\ast$}]{l\-\_\-t\-Data, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classgps_a8dc22ee8632e62c0547a782708b0238a}
+Read the data from the current line of the data file. \begin{DoxyReturn}{Returns}
+-\/1 no data found, skip storage 0 sucess, store data, 1 read another line 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a9c20d9d69af4ba1641dbc82dd5be2aa5}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classgps_a37400cebc4929e7b30305c1b361f6309}{\index{gps@{gps}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!gps@{gps}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int gps\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classgps_a37400cebc4929e7b30305c1b361f6309}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classgps_a55f655de8f378da212ec92fd3283bb83}{\index{gps@{gps}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!gps@{gps}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void gps\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classgps_a55f655de8f378da212ec92fd3283bb83}
+The function is called before reading the configuration from the inifile. Use this fucntion in the module specific implementation to override the standard defaults 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{gps_8h}{gps.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{gps_8cpp}{gps.\-cpp}\end{DoxyCompactItemize}

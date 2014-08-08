@@ -1,0 +1,446 @@
+\hypertarget{classprocDuration}{\section{proc\-Duration Class Reference}
+\label{classprocDuration}\index{proc\-Duration@{proc\-Duration}}
+}
+
+
+{\ttfamily \#include $<$proc\-Duration.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classprocDuration_a350e96d176d438001311caa6b41391de}{proc\-Duration} ()
+\item 
+void \hyperlink{classprocDuration_aaad4302e83bbccc35b0906de8c0ab531}{set\-Start} ()
+\item 
+void \hyperlink{classprocDuration_ae0c09d3d0a81c78064e170ee02c38ee3}{set\-Start} (unsigned long time)
+\item 
+void \hyperlink{classprocDuration_a2baf0a30733d0045318d00ffc8020830}{set\-End} ()
+\item 
+void \hyperlink{classprocDuration_ae3c5853166d5c2983b1a508a3d783aae}{set\-End\-From\-Start} (\hyperlink{classprocDuration}{proc\-Duration} $\ast$dur)
+\item 
+double \hyperlink{classprocDuration_aca8f2bc01920b0bc85fcc8001b85854e}{get\-Duration\-C\-P\-U} ()
+\item 
+double \hyperlink{classprocDuration_a46a4097bb56d4d0694f3a9f39ff4047d}{get\-Duration\-R\-T} ()
+\item 
+void \hyperlink{classprocDuration_a31422e9f157639271e18d6fcc971418b}{display\-Duration} ()
+\item 
+void \hyperlink{classprocDuration_a2421fcd5372f2820f3d647b0b9ea7b5b}{display\-Duration} (F\-I\-L\-E $\ast$fout)
+\item 
+void \hyperlink{classprocDuration_a57e1c97ac11a00b4a752bfae1f13da51}{display\-Transfer\-Rate} (double blocksize)
+\item 
+void \hyperlink{classprocDuration_a6bc2cd76bfb9e29955c97a67d38767c9}{display\-Transfer\-Rate} (F\-I\-L\-E $\ast$fout, double blocksize)
+\item 
+void \hyperlink{classprocDuration_accfd22f8d3d3f564b933303cac3034d6}{display\-Start\-Time} (F\-I\-L\-E $\ast$fout)
+\item 
+void \hyperlink{classprocDuration_a683e15d56ba6c794fa24c2e23f2decb1}{display\-Start\-Date} (F\-I\-L\-E $\ast$fout)
+\item 
+const char $\ast$ \hyperlink{classprocDuration_ac005d66386a1dbb62e3d44dc06bab413}{c\-Start\-Time} ()
+\item 
+const char $\ast$ \hyperlink{classprocDuration_a1d0dab0ad00cd0adaec2beeb4754f2c1}{c\-Start\-Date} ()
+\item 
+const char $\ast$ \hyperlink{classprocDuration_aa6205795755ce1afdc3bc21dc96626e6}{c\-Start\-Zone} ()
+\item 
+const char $\ast$ \hyperlink{classprocDuration_a1aaa4d88d842e25ecbd3100c243796b6}{c\-End\-Time} ()
+\item 
+const char $\ast$ \hyperlink{classprocDuration_a45a2a3f05abad948d0a0e02e8e701ee3}{c\-End\-Date} ()
+\item 
+const char $\ast$ \hyperlink{classprocDuration_a28dc26f35d7e65394ee4758e2f9ab4c2}{c\-End\-Zone} ()
+\item 
+const char $\ast$ \hyperlink{classprocDuration_a1931042a18fac844d42cddf44101ef1e}{c\-Time} (time\-\_\-t $\ast$t)
+\item 
+const char $\ast$ \hyperlink{classprocDuration_a14c8907362b99a94d58f728ef024cd11}{c\-Gps\-Time} (unsigned long t)
+\item 
+const char $\ast$ \hyperlink{classprocDuration_a2b2ae30be812cb87c4dddeeefa9b78ad}{c\-Date} (time\-\_\-t $\ast$t)
+\item 
+const char $\ast$ \hyperlink{classprocDuration_a36b4b38f8275d9f5ecaf0a014d76f270}{c\-Gps\-Date} (unsigned long t)
+\item 
+const char $\ast$ \hyperlink{classprocDuration_afb0f7f2e14396c267acb338ba9ca597c}{c\-Zone} (time\-\_\-t $\ast$t)
+\item 
+unsigned long \hyperlink{classprocDuration_a760b8c8e6a76d51d22a8324920decadd}{get\-Start\-Sec} ()
+\item 
+unsigned long \hyperlink{classprocDuration_ae3358cdbb46bb778c4d0ccc000dab225}{get\-End\-Sec} ()
+\item 
+int \hyperlink{classprocDuration_ad15610a1b1998ef5d8923b041b3db153}{get\-Start\-Mili\-Sec} ()
+\item 
+int \hyperlink{classprocDuration_a66f7237d8ed5b63bd55964de89ebe5a6}{get\-End\-Mili\-Sec} ()
+\item 
+int \hyperlink{classprocDuration_ac1078f747a8c57360139962a6078fa2d}{get\-Start\-Micro\-Sec} ()
+\item 
+int \hyperlink{classprocDuration_abfb741c499aaa8e0a12f86ebb82df652}{get\-End\-Micro\-Sec} ()
+\item 
+int \hyperlink{classprocDuration_aff2364afd00b3c12e6143cf0dfb6980f}{get\-Start\-Nano\-Sec} ()
+\item 
+int \hyperlink{classprocDuration_a70a14db14b30e3b07af65554686e7d00}{get\-End\-Nano\-Sec} ()
+\item 
+void \hyperlink{classprocDuration_acf1c2d3c7fbc0cffa3513696c7f73c5a}{mean\-Time} (\hyperlink{classprocDuration}{proc\-Duration} \&dur)
+\item 
+void \hyperlink{classprocDuration_a4ada382bf6e2dbdca71fc941611fa5cd}{get\-Duration\-R\-T} (int $\ast$sign, unsigned long $\ast$sec, unsigned long $\ast$usec)
+\item 
+\hyperlink{classprocDuration}{proc\-Duration} \hyperlink{classprocDuration_a9da545dc00a5a8222b6731a62a44c3c5}{operator=} (\hyperlink{classprocDuration}{proc\-Duration} \&dur)
+\item 
+void \hyperlink{classprocDuration_a875e4c92cca07739eae35e0a7674c90f}{set} (\hyperlink{classprocDuration}{proc\-Duration} dur)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+clock\-\_\-t \hyperlink{classprocDuration_a6305985898bc3c56d96bbbd315dce3d2}{start\-Tick}
+\item 
+clock\-\_\-t \hyperlink{classprocDuration_afb5dcb82095eed3ed2c16146c19cf448}{end\-Tick}
+\item 
+struct timeval \hyperlink{classprocDuration_a1f7a4f39023ba5f5786644e91f03ab7d}{start\-Time}
+\item 
+struct timezone \hyperlink{classprocDuration_a3a5ebfdf4aaaa8dacefefab93ef1ce40}{start\-Zone}
+\item 
+struct timeval \hyperlink{classprocDuration_aec55f4ad78f358669b7880083ac355a5}{end\-Time}
+\item 
+struct timezone \hyperlink{classprocDuration_a3f2c2451dc709af15bd6bf65b3308be4}{end\-Zone}
+\item 
+double \hyperlink{classprocDuration_a982ff57adecc307bf8daf6c3c5902414}{duration\-C\-P\-U}
+\item 
+double \hyperlink{classprocDuration_a1e3016ca8a92332b6f1427a9d008aeef}{duration\-R\-T}
+\item 
+int \hyperlink{classprocDuration_a72be56dcf2e5d2867b20e690f2796ef0}{diff\-Time\-Sign}
+\item 
+unsigned long \hyperlink{classprocDuration_ac9241af8f9ea5efa568e636683c22446}{diff\-Time\-Sec}
+\item 
+unsigned long \hyperlink{classprocDuration_a51854eb886bc5a872d2b930de46132e5}{diff\-Time\-Micro\-Sec}
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const char \hyperlink{classprocDuration_ae772881f1be51f9863b988e7fc7bfcf1}{dateformat} \mbox{[}$\,$\mbox{]} = \char`\"{}\%02d.\%02d.\%04d\char`\"{}
+\item 
+static const char \hyperlink{classprocDuration_a4f6bdff03e812b65c2c68e4d33f55d8c}{timeformat} \mbox{[}$\,$\mbox{]} = \char`\"{}\%02d\-:\%02d\-:\%02d\char`\"{}
+\item 
+static const char \hyperlink{classprocDuration_ac49a8c3058ed4ee10c2a61f03efafd96}{zoneformat} \mbox{[}$\,$\mbox{]} = \char`\"{}\%s\char`\"{}
+\item 
+static char \hyperlink{classprocDuration_acb961644d3635fca50247316e4888ff7}{datestring} \mbox{[}$\,$\mbox{]} = \char`\"{}dd.\-mm.\-jjjj\char`\"{}
+\item 
+static char \hyperlink{classprocDuration_ade868d17a31ee89d3453e8a32bf70c07}{timestring} \mbox{[}$\,$\mbox{]} = \char`\"{}hh\-:mm\-:ss\char`\"{}
+\item 
+static char \hyperlink{classprocDuration_a17e137b5abce3b50940a058c3b30f7e5}{zonestring} \mbox{[}$\,$\mbox{]} = \char`\"{} \char`\"{}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The class provide a timer like function to measure the real-\/time and the C\-P\-U time elapsed by a certain block of code. The time is used by setting start and stop point in the code. Afterwards the elapsed time can be displayed. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classprocDuration_a350e96d176d438001311caa6b41391de}{\index{proc\-Duration@{proc\-Duration}!proc\-Duration@{proc\-Duration}}
+\index{proc\-Duration@{proc\-Duration}!procDuration@{proc\-Duration}}
+\subsubsection[{proc\-Duration}]{\setlength{\rightskip}{0pt plus 5cm}proc\-Duration\-::proc\-Duration (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a350e96d176d438001311caa6b41391de}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classprocDuration_a2b2ae30be812cb87c4dddeeefa9b78ad}{\index{proc\-Duration@{proc\-Duration}!c\-Date@{c\-Date}}
+\index{c\-Date@{c\-Date}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-Date}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-Date (
+\begin{DoxyParamCaption}
+\item[{time\-\_\-t $\ast$}]{t}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a2b2ae30be812cb87c4dddeeefa9b78ad}
+Display the date of a given U\-T\-C time \hypertarget{classprocDuration_a45a2a3f05abad948d0a0e02e8e701ee3}{\index{proc\-Duration@{proc\-Duration}!c\-End\-Date@{c\-End\-Date}}
+\index{c\-End\-Date@{c\-End\-Date}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-End\-Date}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-End\-Date (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a45a2a3f05abad948d0a0e02e8e701ee3}
+Display the end date \hypertarget{classprocDuration_a1aaa4d88d842e25ecbd3100c243796b6}{\index{proc\-Duration@{proc\-Duration}!c\-End\-Time@{c\-End\-Time}}
+\index{c\-End\-Time@{c\-End\-Time}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-End\-Time}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-End\-Time (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a1aaa4d88d842e25ecbd3100c243796b6}
+Display the end time \hypertarget{classprocDuration_a28dc26f35d7e65394ee4758e2f9ab4c2}{\index{proc\-Duration@{proc\-Duration}!c\-End\-Zone@{c\-End\-Zone}}
+\index{c\-End\-Zone@{c\-End\-Zone}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-End\-Zone}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-End\-Zone (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a28dc26f35d7e65394ee4758e2f9ab4c2}
+Display the end timezone \hypertarget{classprocDuration_a36b4b38f8275d9f5ecaf0a014d76f270}{\index{proc\-Duration@{proc\-Duration}!c\-Gps\-Date@{c\-Gps\-Date}}
+\index{c\-Gps\-Date@{c\-Gps\-Date}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-Gps\-Date}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-Gps\-Date (
+\begin{DoxyParamCaption}
+\item[{unsigned long}]{t}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a36b4b38f8275d9f5ecaf0a014d76f270}
+Display the date of a given G\-P\-S time \hypertarget{classprocDuration_a14c8907362b99a94d58f728ef024cd11}{\index{proc\-Duration@{proc\-Duration}!c\-Gps\-Time@{c\-Gps\-Time}}
+\index{c\-Gps\-Time@{c\-Gps\-Time}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-Gps\-Time}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-Gps\-Time (
+\begin{DoxyParamCaption}
+\item[{unsigned long}]{t}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a14c8907362b99a94d58f728ef024cd11}
+Display the time of a given G\-P\-S time \hypertarget{classprocDuration_a1d0dab0ad00cd0adaec2beeb4754f2c1}{\index{proc\-Duration@{proc\-Duration}!c\-Start\-Date@{c\-Start\-Date}}
+\index{c\-Start\-Date@{c\-Start\-Date}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-Start\-Date}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-Start\-Date (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a1d0dab0ad00cd0adaec2beeb4754f2c1}
+Display the start date \hypertarget{classprocDuration_ac005d66386a1dbb62e3d44dc06bab413}{\index{proc\-Duration@{proc\-Duration}!c\-Start\-Time@{c\-Start\-Time}}
+\index{c\-Start\-Time@{c\-Start\-Time}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-Start\-Time}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-Start\-Time (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_ac005d66386a1dbb62e3d44dc06bab413}
+Display the start time \hypertarget{classprocDuration_aa6205795755ce1afdc3bc21dc96626e6}{\index{proc\-Duration@{proc\-Duration}!c\-Start\-Zone@{c\-Start\-Zone}}
+\index{c\-Start\-Zone@{c\-Start\-Zone}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-Start\-Zone}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-Start\-Zone (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_aa6205795755ce1afdc3bc21dc96626e6}
+Display the start timezone \hypertarget{classprocDuration_a1931042a18fac844d42cddf44101ef1e}{\index{proc\-Duration@{proc\-Duration}!c\-Time@{c\-Time}}
+\index{c\-Time@{c\-Time}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-Time}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-Time (
+\begin{DoxyParamCaption}
+\item[{time\-\_\-t $\ast$}]{t}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a1931042a18fac844d42cddf44101ef1e}
+Display the time of a given U\-T\-C time \hypertarget{classprocDuration_afb0f7f2e14396c267acb338ba9ca597c}{\index{proc\-Duration@{proc\-Duration}!c\-Zone@{c\-Zone}}
+\index{c\-Zone@{c\-Zone}!procDuration@{proc\-Duration}}
+\subsubsection[{c\-Zone}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ proc\-Duration\-::c\-Zone (
+\begin{DoxyParamCaption}
+\item[{time\-\_\-t $\ast$}]{t}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_afb0f7f2e14396c267acb338ba9ca597c}
+Display the timezone of a give U\-T\-C time \hypertarget{classprocDuration_a31422e9f157639271e18d6fcc971418b}{\index{proc\-Duration@{proc\-Duration}!display\-Duration@{display\-Duration}}
+\index{display\-Duration@{display\-Duration}!procDuration@{proc\-Duration}}
+\subsubsection[{display\-Duration}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::display\-Duration (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a31422e9f157639271e18d6fcc971418b}
+\hypertarget{classprocDuration_a2421fcd5372f2820f3d647b0b9ea7b5b}{\index{proc\-Duration@{proc\-Duration}!display\-Duration@{display\-Duration}}
+\index{display\-Duration@{display\-Duration}!procDuration@{proc\-Duration}}
+\subsubsection[{display\-Duration}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::display\-Duration (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a2421fcd5372f2820f3d647b0b9ea7b5b}
+\hypertarget{classprocDuration_a683e15d56ba6c794fa24c2e23f2decb1}{\index{proc\-Duration@{proc\-Duration}!display\-Start\-Date@{display\-Start\-Date}}
+\index{display\-Start\-Date@{display\-Start\-Date}!procDuration@{proc\-Duration}}
+\subsubsection[{display\-Start\-Date}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::display\-Start\-Date (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a683e15d56ba6c794fa24c2e23f2decb1}
+\hypertarget{classprocDuration_accfd22f8d3d3f564b933303cac3034d6}{\index{proc\-Duration@{proc\-Duration}!display\-Start\-Time@{display\-Start\-Time}}
+\index{display\-Start\-Time@{display\-Start\-Time}!procDuration@{proc\-Duration}}
+\subsubsection[{display\-Start\-Time}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::display\-Start\-Time (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_accfd22f8d3d3f564b933303cac3034d6}
+\hypertarget{classprocDuration_a57e1c97ac11a00b4a752bfae1f13da51}{\index{proc\-Duration@{proc\-Duration}!display\-Transfer\-Rate@{display\-Transfer\-Rate}}
+\index{display\-Transfer\-Rate@{display\-Transfer\-Rate}!procDuration@{proc\-Duration}}
+\subsubsection[{display\-Transfer\-Rate}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::display\-Transfer\-Rate (
+\begin{DoxyParamCaption}
+\item[{double}]{blocksize}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a57e1c97ac11a00b4a752bfae1f13da51}
+\hypertarget{classprocDuration_a6bc2cd76bfb9e29955c97a67d38767c9}{\index{proc\-Duration@{proc\-Duration}!display\-Transfer\-Rate@{display\-Transfer\-Rate}}
+\index{display\-Transfer\-Rate@{display\-Transfer\-Rate}!procDuration@{proc\-Duration}}
+\subsubsection[{display\-Transfer\-Rate}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::display\-Transfer\-Rate (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout, }
+\item[{double}]{blocksize}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a6bc2cd76bfb9e29955c97a67d38767c9}
+\hypertarget{classprocDuration_aca8f2bc01920b0bc85fcc8001b85854e}{\index{proc\-Duration@{proc\-Duration}!get\-Duration\-C\-P\-U@{get\-Duration\-C\-P\-U}}
+\index{get\-Duration\-C\-P\-U@{get\-Duration\-C\-P\-U}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-Duration\-C\-P\-U}]{\setlength{\rightskip}{0pt plus 5cm}double proc\-Duration\-::get\-Duration\-C\-P\-U (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_aca8f2bc01920b0bc85fcc8001b85854e}
+Used C\-P\-U time between start end end time in second, precision given by C\-L\-O\-C\-K\-S\-\_\-\-P\-E\-R\-\_\-\-S\-E\-C \hypertarget{classprocDuration_a46a4097bb56d4d0694f3a9f39ff4047d}{\index{proc\-Duration@{proc\-Duration}!get\-Duration\-R\-T@{get\-Duration\-R\-T}}
+\index{get\-Duration\-R\-T@{get\-Duration\-R\-T}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-Duration\-R\-T}]{\setlength{\rightskip}{0pt plus 5cm}double proc\-Duration\-::get\-Duration\-R\-T (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a46a4097bb56d4d0694f3a9f39ff4047d}
+Duration between start end end time in second, precision miliseconds. \hypertarget{classprocDuration_a4ada382bf6e2dbdca71fc941611fa5cd}{\index{proc\-Duration@{proc\-Duration}!get\-Duration\-R\-T@{get\-Duration\-R\-T}}
+\index{get\-Duration\-R\-T@{get\-Duration\-R\-T}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-Duration\-R\-T}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::get\-Duration\-R\-T (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{sign, }
+\item[{unsigned long $\ast$}]{sec, }
+\item[{unsigned long $\ast$}]{usec}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a4ada382bf6e2dbdca71fc941611fa5cd}
+Get the difference time \hypertarget{classprocDuration_abfb741c499aaa8e0a12f86ebb82df652}{\index{proc\-Duration@{proc\-Duration}!get\-End\-Micro\-Sec@{get\-End\-Micro\-Sec}}
+\index{get\-End\-Micro\-Sec@{get\-End\-Micro\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-End\-Micro\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}int proc\-Duration\-::get\-End\-Micro\-Sec (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_abfb741c499aaa8e0a12f86ebb82df652}
+Returns the micro seconds of the end time \hypertarget{classprocDuration_a66f7237d8ed5b63bd55964de89ebe5a6}{\index{proc\-Duration@{proc\-Duration}!get\-End\-Mili\-Sec@{get\-End\-Mili\-Sec}}
+\index{get\-End\-Mili\-Sec@{get\-End\-Mili\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-End\-Mili\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}int proc\-Duration\-::get\-End\-Mili\-Sec (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a66f7237d8ed5b63bd55964de89ebe5a6}
+Returns the mili seconds of the end time \hypertarget{classprocDuration_a70a14db14b30e3b07af65554686e7d00}{\index{proc\-Duration@{proc\-Duration}!get\-End\-Nano\-Sec@{get\-End\-Nano\-Sec}}
+\index{get\-End\-Nano\-Sec@{get\-End\-Nano\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-End\-Nano\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}int proc\-Duration\-::get\-End\-Nano\-Sec (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a70a14db14b30e3b07af65554686e7d00}
+Returns the nano second of the end time \hypertarget{classprocDuration_ae3358cdbb46bb778c4d0ccc000dab225}{\index{proc\-Duration@{proc\-Duration}!get\-End\-Sec@{get\-End\-Sec}}
+\index{get\-End\-Sec@{get\-End\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-End\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long proc\-Duration\-::get\-End\-Sec (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_ae3358cdbb46bb778c4d0ccc000dab225}
+Returns the number of the second of the end time \hypertarget{classprocDuration_ac1078f747a8c57360139962a6078fa2d}{\index{proc\-Duration@{proc\-Duration}!get\-Start\-Micro\-Sec@{get\-Start\-Micro\-Sec}}
+\index{get\-Start\-Micro\-Sec@{get\-Start\-Micro\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-Start\-Micro\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}int proc\-Duration\-::get\-Start\-Micro\-Sec (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_ac1078f747a8c57360139962a6078fa2d}
+Returns the micro seconds of the start time \hypertarget{classprocDuration_ad15610a1b1998ef5d8923b041b3db153}{\index{proc\-Duration@{proc\-Duration}!get\-Start\-Mili\-Sec@{get\-Start\-Mili\-Sec}}
+\index{get\-Start\-Mili\-Sec@{get\-Start\-Mili\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-Start\-Mili\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}int proc\-Duration\-::get\-Start\-Mili\-Sec (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_ad15610a1b1998ef5d8923b041b3db153}
+Returns the mili seconds of the start time \hypertarget{classprocDuration_aff2364afd00b3c12e6143cf0dfb6980f}{\index{proc\-Duration@{proc\-Duration}!get\-Start\-Nano\-Sec@{get\-Start\-Nano\-Sec}}
+\index{get\-Start\-Nano\-Sec@{get\-Start\-Nano\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-Start\-Nano\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}int proc\-Duration\-::get\-Start\-Nano\-Sec (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_aff2364afd00b3c12e6143cf0dfb6980f}
+Returns the nano second of the start time \hypertarget{classprocDuration_a760b8c8e6a76d51d22a8324920decadd}{\index{proc\-Duration@{proc\-Duration}!get\-Start\-Sec@{get\-Start\-Sec}}
+\index{get\-Start\-Sec@{get\-Start\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{get\-Start\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long proc\-Duration\-::get\-Start\-Sec (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a760b8c8e6a76d51d22a8324920decadd}
+Returns the number of second of the start time \hypertarget{classprocDuration_acf1c2d3c7fbc0cffa3513696c7f73c5a}{\index{proc\-Duration@{proc\-Duration}!mean\-Time@{mean\-Time}}
+\index{mean\-Time@{mean\-Time}!procDuration@{proc\-Duration}}
+\subsubsection[{mean\-Time}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::mean\-Time (
+\begin{DoxyParamCaption}
+\item[{{\bf proc\-Duration} \&}]{dur}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_acf1c2d3c7fbc0cffa3513696c7f73c5a}
+Get the mean time the given interval and set it as new start time \hypertarget{classprocDuration_a9da545dc00a5a8222b6731a62a44c3c5}{\index{proc\-Duration@{proc\-Duration}!operator=@{operator=}}
+\index{operator=@{operator=}!procDuration@{proc\-Duration}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf proc\-Duration} proc\-Duration\-::operator= (
+\begin{DoxyParamCaption}
+\item[{{\bf proc\-Duration} \&}]{dur}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a9da545dc00a5a8222b6731a62a44c3c5}
+Copy \hypertarget{classprocDuration_a875e4c92cca07739eae35e0a7674c90f}{\index{proc\-Duration@{proc\-Duration}!set@{set}}
+\index{set@{set}!procDuration@{proc\-Duration}}
+\subsubsection[{set}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::set (
+\begin{DoxyParamCaption}
+\item[{{\bf proc\-Duration}}]{dur}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a875e4c92cca07739eae35e0a7674c90f}
+Copy \hypertarget{classprocDuration_a2baf0a30733d0045318d00ffc8020830}{\index{proc\-Duration@{proc\-Duration}!set\-End@{set\-End}}
+\index{set\-End@{set\-End}!procDuration@{proc\-Duration}}
+\subsubsection[{set\-End}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::set\-End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_a2baf0a30733d0045318d00ffc8020830}
+\hypertarget{classprocDuration_ae3c5853166d5c2983b1a508a3d783aae}{\index{proc\-Duration@{proc\-Duration}!set\-End\-From\-Start@{set\-End\-From\-Start}}
+\index{set\-End\-From\-Start@{set\-End\-From\-Start}!procDuration@{proc\-Duration}}
+\subsubsection[{set\-End\-From\-Start}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::set\-End\-From\-Start (
+\begin{DoxyParamCaption}
+\item[{{\bf proc\-Duration} $\ast$}]{dur}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_ae3c5853166d5c2983b1a508a3d783aae}
+Set end time from another start time \hypertarget{classprocDuration_aaad4302e83bbccc35b0906de8c0ab531}{\index{proc\-Duration@{proc\-Duration}!set\-Start@{set\-Start}}
+\index{set\-Start@{set\-Start}!procDuration@{proc\-Duration}}
+\subsubsection[{set\-Start}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::set\-Start (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_aaad4302e83bbccc35b0906de8c0ab531}
+\hypertarget{classprocDuration_ae0c09d3d0a81c78064e170ee02c38ee3}{\index{proc\-Duration@{proc\-Duration}!set\-Start@{set\-Start}}
+\index{set\-Start@{set\-Start}!procDuration@{proc\-Duration}}
+\subsubsection[{set\-Start}]{\setlength{\rightskip}{0pt plus 5cm}void proc\-Duration\-::set\-Start (
+\begin{DoxyParamCaption}
+\item[{unsigned long}]{time}
+\end{DoxyParamCaption}
+)}}\label{classprocDuration_ae0c09d3d0a81c78064e170ee02c38ee3}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classprocDuration_ae772881f1be51f9863b988e7fc7bfcf1}{\index{proc\-Duration@{proc\-Duration}!dateformat@{dateformat}}
+\index{dateformat@{dateformat}!procDuration@{proc\-Duration}}
+\subsubsection[{dateformat}]{\setlength{\rightskip}{0pt plus 5cm}const char proc\-Duration\-::dateformat = \char`\"{}\%02d.\%02d.\%04d\char`\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classprocDuration_ae772881f1be51f9863b988e7fc7bfcf1}
+\hypertarget{classprocDuration_acb961644d3635fca50247316e4888ff7}{\index{proc\-Duration@{proc\-Duration}!datestring@{datestring}}
+\index{datestring@{datestring}!procDuration@{proc\-Duration}}
+\subsubsection[{datestring}]{\setlength{\rightskip}{0pt plus 5cm}char proc\-Duration\-::datestring = \char`\"{}dd.\-mm.\-jjjj\char`\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classprocDuration_acb961644d3635fca50247316e4888ff7}
+\hypertarget{classprocDuration_a51854eb886bc5a872d2b930de46132e5}{\index{proc\-Duration@{proc\-Duration}!diff\-Time\-Micro\-Sec@{diff\-Time\-Micro\-Sec}}
+\index{diff\-Time\-Micro\-Sec@{diff\-Time\-Micro\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{diff\-Time\-Micro\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long proc\-Duration\-::diff\-Time\-Micro\-Sec\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_a51854eb886bc5a872d2b930de46132e5}
+\hypertarget{classprocDuration_ac9241af8f9ea5efa568e636683c22446}{\index{proc\-Duration@{proc\-Duration}!diff\-Time\-Sec@{diff\-Time\-Sec}}
+\index{diff\-Time\-Sec@{diff\-Time\-Sec}!procDuration@{proc\-Duration}}
+\subsubsection[{diff\-Time\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long proc\-Duration\-::diff\-Time\-Sec\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_ac9241af8f9ea5efa568e636683c22446}
+\hypertarget{classprocDuration_a72be56dcf2e5d2867b20e690f2796ef0}{\index{proc\-Duration@{proc\-Duration}!diff\-Time\-Sign@{diff\-Time\-Sign}}
+\index{diff\-Time\-Sign@{diff\-Time\-Sign}!procDuration@{proc\-Duration}}
+\subsubsection[{diff\-Time\-Sign}]{\setlength{\rightskip}{0pt plus 5cm}int proc\-Duration\-::diff\-Time\-Sign\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_a72be56dcf2e5d2867b20e690f2796ef0}
+\hypertarget{classprocDuration_a982ff57adecc307bf8daf6c3c5902414}{\index{proc\-Duration@{proc\-Duration}!duration\-C\-P\-U@{duration\-C\-P\-U}}
+\index{duration\-C\-P\-U@{duration\-C\-P\-U}!procDuration@{proc\-Duration}}
+\subsubsection[{duration\-C\-P\-U}]{\setlength{\rightskip}{0pt plus 5cm}double proc\-Duration\-::duration\-C\-P\-U\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_a982ff57adecc307bf8daf6c3c5902414}
+\hypertarget{classprocDuration_a1e3016ca8a92332b6f1427a9d008aeef}{\index{proc\-Duration@{proc\-Duration}!duration\-R\-T@{duration\-R\-T}}
+\index{duration\-R\-T@{duration\-R\-T}!procDuration@{proc\-Duration}}
+\subsubsection[{duration\-R\-T}]{\setlength{\rightskip}{0pt plus 5cm}double proc\-Duration\-::duration\-R\-T\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_a1e3016ca8a92332b6f1427a9d008aeef}
+\hypertarget{classprocDuration_afb5dcb82095eed3ed2c16146c19cf448}{\index{proc\-Duration@{proc\-Duration}!end\-Tick@{end\-Tick}}
+\index{end\-Tick@{end\-Tick}!procDuration@{proc\-Duration}}
+\subsubsection[{end\-Tick}]{\setlength{\rightskip}{0pt plus 5cm}clock\-\_\-t proc\-Duration\-::end\-Tick\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_afb5dcb82095eed3ed2c16146c19cf448}
+\hypertarget{classprocDuration_aec55f4ad78f358669b7880083ac355a5}{\index{proc\-Duration@{proc\-Duration}!end\-Time@{end\-Time}}
+\index{end\-Time@{end\-Time}!procDuration@{proc\-Duration}}
+\subsubsection[{end\-Time}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval proc\-Duration\-::end\-Time\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_aec55f4ad78f358669b7880083ac355a5}
+\hypertarget{classprocDuration_a3f2c2451dc709af15bd6bf65b3308be4}{\index{proc\-Duration@{proc\-Duration}!end\-Zone@{end\-Zone}}
+\index{end\-Zone@{end\-Zone}!procDuration@{proc\-Duration}}
+\subsubsection[{end\-Zone}]{\setlength{\rightskip}{0pt plus 5cm}struct timezone proc\-Duration\-::end\-Zone\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_a3f2c2451dc709af15bd6bf65b3308be4}
+\hypertarget{classprocDuration_a6305985898bc3c56d96bbbd315dce3d2}{\index{proc\-Duration@{proc\-Duration}!start\-Tick@{start\-Tick}}
+\index{start\-Tick@{start\-Tick}!procDuration@{proc\-Duration}}
+\subsubsection[{start\-Tick}]{\setlength{\rightskip}{0pt plus 5cm}clock\-\_\-t proc\-Duration\-::start\-Tick\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_a6305985898bc3c56d96bbbd315dce3d2}
+\hypertarget{classprocDuration_a1f7a4f39023ba5f5786644e91f03ab7d}{\index{proc\-Duration@{proc\-Duration}!start\-Time@{start\-Time}}
+\index{start\-Time@{start\-Time}!procDuration@{proc\-Duration}}
+\subsubsection[{start\-Time}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval proc\-Duration\-::start\-Time\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_a1f7a4f39023ba5f5786644e91f03ab7d}
+\hypertarget{classprocDuration_a3a5ebfdf4aaaa8dacefefab93ef1ce40}{\index{proc\-Duration@{proc\-Duration}!start\-Zone@{start\-Zone}}
+\index{start\-Zone@{start\-Zone}!procDuration@{proc\-Duration}}
+\subsubsection[{start\-Zone}]{\setlength{\rightskip}{0pt plus 5cm}struct timezone proc\-Duration\-::start\-Zone\hspace{0.3cm}{\ttfamily [protected]}}}\label{classprocDuration_a3a5ebfdf4aaaa8dacefefab93ef1ce40}
+\hypertarget{classprocDuration_a4f6bdff03e812b65c2c68e4d33f55d8c}{\index{proc\-Duration@{proc\-Duration}!timeformat@{timeformat}}
+\index{timeformat@{timeformat}!procDuration@{proc\-Duration}}
+\subsubsection[{timeformat}]{\setlength{\rightskip}{0pt plus 5cm}const char proc\-Duration\-::timeformat = \char`\"{}\%02d\-:\%02d\-:\%02d\char`\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classprocDuration_a4f6bdff03e812b65c2c68e4d33f55d8c}
+\hypertarget{classprocDuration_ade868d17a31ee89d3453e8a32bf70c07}{\index{proc\-Duration@{proc\-Duration}!timestring@{timestring}}
+\index{timestring@{timestring}!procDuration@{proc\-Duration}}
+\subsubsection[{timestring}]{\setlength{\rightskip}{0pt plus 5cm}char proc\-Duration\-::timestring = \char`\"{}hh\-:mm\-:ss\char`\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classprocDuration_ade868d17a31ee89d3453e8a32bf70c07}
+\hypertarget{classprocDuration_ac49a8c3058ed4ee10c2a61f03efafd96}{\index{proc\-Duration@{proc\-Duration}!zoneformat@{zoneformat}}
+\index{zoneformat@{zoneformat}!procDuration@{proc\-Duration}}
+\subsubsection[{zoneformat}]{\setlength{\rightskip}{0pt plus 5cm}const char proc\-Duration\-::zoneformat = \char`\"{}\%s\char`\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classprocDuration_ac49a8c3058ed4ee10c2a61f03efafd96}
+\hypertarget{classprocDuration_a17e137b5abce3b50940a058c3b30f7e5}{\index{proc\-Duration@{proc\-Duration}!zonestring@{zonestring}}
+\index{zonestring@{zonestring}!procDuration@{proc\-Duration}}
+\subsubsection[{zonestring}]{\setlength{\rightskip}{0pt plus 5cm}char proc\-Duration\-::zonestring = \char`\"{} \char`\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classprocDuration_a17e137b5abce3b50940a058c3b30f7e5}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/akutil/\hyperlink{procDuration_8h}{proc\-Duration.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/akutil/\hyperlink{procDuration_8cpp}{proc\-Duration.\-cpp}\end{DoxyCompactItemize}

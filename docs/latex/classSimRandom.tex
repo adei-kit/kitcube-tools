@@ -1,0 +1,146 @@
+\hypertarget{classSimRandom}{\section{Sim\-Random Class Reference}
+\label{classSimRandom}\index{Sim\-Random@{Sim\-Random}}
+}
+
+
+{\ttfamily \#include $<$simrandom.\-h$>$}
+
+Inheritance diagram for Sim\-Random\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classSimRandom}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classSimRandom_a734a95f856d89911c75d83e464fa2579}{Sim\-Random} ()
+\item 
+\hyperlink{classSimRandom_ae5a11688acf03196c76b5b6774bc2a75}{$\sim$\-Sim\-Random} ()
+\item 
+void \hyperlink{classSimRandom_a48019bace7da9b182ef482e135b6736e}{set\-Config\-Defaults} ()
+\item 
+const char $\ast$ \hyperlink{classSimRandom_a5d4693d599a13efe8a75cf72dd55d8f3}{get\-Data\-Dir} ()
+\item 
+int \hyperlink{classSimRandom_a2a652b85ec23f610491f5f838664f152}{read\-Header} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+void \hyperlink{classSimRandom_a5119c39c479a46a691fe63b3b388c3fc}{write\-Header} ()
+\item 
+int \hyperlink{classSimRandom_a239bacabadccabc3c6d32278ab357ac1}{parse\-Data} (char $\ast$line, struct timeval $\ast$l\-\_\-t\-Data, double $\ast$\hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value})
+\item 
+void \hyperlink{classSimRandom_a8ef2df7e35047cee952340901a96aba4}{write\-Data} ()
+\item 
+const char $\ast$ \hyperlink{classSimRandom_ae456d364f9f6eda82fa7947cb3ccd813}{get\-Data\-Filename} ()
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Implementation for the weather mast D\-A\-Q devices that are used for turbulence, energy balance and 20m mast. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classSimRandom_a734a95f856d89911c75d83e464fa2579}{\index{Sim\-Random@{Sim\-Random}!Sim\-Random@{Sim\-Random}}
+\index{Sim\-Random@{Sim\-Random}!SimRandom@{Sim\-Random}}
+\subsubsection[{Sim\-Random}]{\setlength{\rightskip}{0pt plus 5cm}Sim\-Random\-::\-Sim\-Random (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classSimRandom_a734a95f856d89911c75d83e464fa2579}
+\hypertarget{classSimRandom_ae5a11688acf03196c76b5b6774bc2a75}{\index{Sim\-Random@{Sim\-Random}!$\sim$\-Sim\-Random@{$\sim$\-Sim\-Random}}
+\index{$\sim$\-Sim\-Random@{$\sim$\-Sim\-Random}!SimRandom@{Sim\-Random}}
+\subsubsection[{$\sim$\-Sim\-Random}]{\setlength{\rightskip}{0pt plus 5cm}Sim\-Random\-::$\sim$\-Sim\-Random (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classSimRandom_ae5a11688acf03196c76b5b6774bc2a75}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classSimRandom_a5d4693d599a13efe8a75cf72dd55d8f3}{\index{Sim\-Random@{Sim\-Random}!get\-Data\-Dir@{get\-Data\-Dir}}
+\index{get\-Data\-Dir@{get\-Data\-Dir}!SimRandom@{Sim\-Random}}
+\subsubsection[{get\-Data\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ Sim\-Random\-::get\-Data\-Dir (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classSimRandom_a5d4693d599a13efe8a75cf72dd55d8f3}
+
+
+Reimplemented from \hyperlink{classDAQDevice_a7d7d41f0c1496221e589d84b38d1c865}{D\-A\-Q\-Device}.
+
+\hypertarget{classSimRandom_ae456d364f9f6eda82fa7947cb3ccd813}{\index{Sim\-Random@{Sim\-Random}!get\-Data\-Filename@{get\-Data\-Filename}}
+\index{get\-Data\-Filename@{get\-Data\-Filename}!SimRandom@{Sim\-Random}}
+\subsubsection[{get\-Data\-Filename}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ Sim\-Random\-::get\-Data\-Filename (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classSimRandom_ae456d364f9f6eda82fa7947cb3ccd813}
+Implements the data filename convention of the D\-A\-Q module. 
+
+Reimplemented from \hyperlink{classDAQDevice_af4734900eb86417b3160a723a077f8f5}{D\-A\-Q\-Device}.
+
+\hypertarget{classSimRandom_a239bacabadccabc3c6d32278ab357ac1}{\index{Sim\-Random@{Sim\-Random}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!SimRandom@{Sim\-Random}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int Sim\-Random\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{line, }
+\item[{struct timeval $\ast$}]{l\-\_\-t\-Data, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classSimRandom_a239bacabadccabc3c6d32278ab357ac1}
+Read the data from the current line of the data file. \begin{DoxyReturn}{Returns}
+-\/1 no data found, skip storage 0 sucess, store data, 1 read another line 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a9c20d9d69af4ba1641dbc82dd5be2aa5}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classSimRandom_a2a652b85ec23f610491f5f838664f152}{\index{Sim\-Random@{Sim\-Random}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!SimRandom@{Sim\-Random}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int Sim\-Random\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classSimRandom_a2a652b85ec23f610491f5f838664f152}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classSimRandom_a48019bace7da9b182ef482e135b6736e}{\index{Sim\-Random@{Sim\-Random}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!SimRandom@{Sim\-Random}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void Sim\-Random\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classSimRandom_a48019bace7da9b182ef482e135b6736e}
+The function is called before reading the configuration from the inifile. Use this fucntion in the module specific implementation to override the standard defaults 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+\hypertarget{classSimRandom_a8ef2df7e35047cee952340901a96aba4}{\index{Sim\-Random@{Sim\-Random}!write\-Data@{write\-Data}}
+\index{write\-Data@{write\-Data}!SimRandom@{Sim\-Random}}
+\subsubsection[{write\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void Sim\-Random\-::write\-Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classSimRandom_a8ef2df7e35047cee952340901a96aba4}
+
+
+Reimplemented from \hyperlink{classDAQDevice_acdc9d3765b1dfd845f99ec9c93071811}{D\-A\-Q\-Device}.
+
+\hypertarget{classSimRandom_a5119c39c479a46a691fe63b3b388c3fc}{\index{Sim\-Random@{Sim\-Random}!write\-Header@{write\-Header}}
+\index{write\-Header@{write\-Header}!SimRandom@{Sim\-Random}}
+\subsubsection[{write\-Header}]{\setlength{\rightskip}{0pt plus 5cm}void Sim\-Random\-::write\-Header (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classSimRandom_a5119c39c479a46a691fe63b3b388c3fc}
+
+
+Reimplemented from \hyperlink{classDAQDevice_aad39c13f039abd6e6a9b0aa21a7c8a4d}{D\-A\-Q\-Device}.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{simrandom_8h}{simrandom.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{simrandom_8cpp}{simrandom.\-cpp}\end{DoxyCompactItemize}

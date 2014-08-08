@@ -1,0 +1,133 @@
+\hypertarget{classjwd}{\section{jwd Class Reference}
+\label{classjwd}\index{jwd@{jwd}}
+}
+
+
+{\ttfamily \#include $<$jwd.\-h$>$}
+
+Inheritance diagram for jwd\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classjwd}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classjwd_a028e5c3cf5dfae165269e8d2afb1930b}{jwd} ()
+\item 
+\hyperlink{classjwd_a161d08673674ab70d208c78a61bc4b16}{$\sim$jwd} ()
+\item 
+void \hyperlink{classjwd_ae1e9dc000396fc7078c6300f92f1012e}{set\-Config\-Defaults} ()
+\item 
+int \hyperlink{classjwd_afb8c407ba5ff5f9c712b11a9bd4a6657}{read\-Header} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+void \hyperlink{classjwd_a51681be8332cc4c174f07e27f5abe594}{write\-Header} ()
+\item 
+int \hyperlink{classjwd_ae3124d496889e0e756cc9688c4a9a5d7}{parse\-Data} (char $\ast$line, struct timeval $\ast$l\-\_\-t\-Data, double $\ast$\hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value})
+\item 
+void \hyperlink{classjwd_a1476f415afb8ec97f0a5c1dfecf13fc3}{write\-Data} ()
+\item 
+unsigned int \hyperlink{classjwd_aad72b312ba156e4cd3459121abbf89ef}{get\-Sensor\-Group} ()
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Implementation for the weather mast D\-A\-Q devices that are used for turbulence, energy balance and 20m mast. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classjwd_a028e5c3cf5dfae165269e8d2afb1930b}{\index{jwd@{jwd}!jwd@{jwd}}
+\index{jwd@{jwd}!jwd@{jwd}}
+\subsubsection[{jwd}]{\setlength{\rightskip}{0pt plus 5cm}jwd\-::jwd (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classjwd_a028e5c3cf5dfae165269e8d2afb1930b}
+\hypertarget{classjwd_a161d08673674ab70d208c78a61bc4b16}{\index{jwd@{jwd}!$\sim$jwd@{$\sim$jwd}}
+\index{$\sim$jwd@{$\sim$jwd}!jwd@{jwd}}
+\subsubsection[{$\sim$jwd}]{\setlength{\rightskip}{0pt plus 5cm}jwd\-::$\sim$jwd (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classjwd_a161d08673674ab70d208c78a61bc4b16}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classjwd_aad72b312ba156e4cd3459121abbf89ef}{\index{jwd@{jwd}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!jwd@{jwd}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int jwd\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classjwd_aad72b312ba156e4cd3459121abbf89ef}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classjwd_ae3124d496889e0e756cc9688c4a9a5d7}{\index{jwd@{jwd}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!jwd@{jwd}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int jwd\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{line, }
+\item[{struct timeval $\ast$}]{l\-\_\-t\-Data, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classjwd_ae3124d496889e0e756cc9688c4a9a5d7}
+Read the data from the current line of the data file. \begin{DoxyReturn}{Returns}
+-\/1 no data found, skip storage 0 sucess, store data, 1 read another line 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a9c20d9d69af4ba1641dbc82dd5be2aa5}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classjwd_afb8c407ba5ff5f9c712b11a9bd4a6657}{\index{jwd@{jwd}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!jwd@{jwd}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int jwd\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classjwd_afb8c407ba5ff5f9c712b11a9bd4a6657}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classjwd_ae1e9dc000396fc7078c6300f92f1012e}{\index{jwd@{jwd}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!jwd@{jwd}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void jwd\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classjwd_ae1e9dc000396fc7078c6300f92f1012e}
+The function is called before reading the configuration from the inifile. Use this fucntion in the module specific implementation to override the standard defaults 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+\hypertarget{classjwd_a1476f415afb8ec97f0a5c1dfecf13fc3}{\index{jwd@{jwd}!write\-Data@{write\-Data}}
+\index{write\-Data@{write\-Data}!jwd@{jwd}}
+\subsubsection[{write\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void jwd\-::write\-Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classjwd_a1476f415afb8ec97f0a5c1dfecf13fc3}
+
+
+Reimplemented from \hyperlink{classDAQDevice_acdc9d3765b1dfd845f99ec9c93071811}{D\-A\-Q\-Device}.
+
+\hypertarget{classjwd_a51681be8332cc4c174f07e27f5abe594}{\index{jwd@{jwd}!write\-Header@{write\-Header}}
+\index{write\-Header@{write\-Header}!jwd@{jwd}}
+\subsubsection[{write\-Header}]{\setlength{\rightskip}{0pt plus 5cm}void jwd\-::write\-Header (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classjwd_a51681be8332cc4c174f07e27f5abe594}
+
+
+Reimplemented from \hyperlink{classDAQDevice_aad39c13f039abd6e6a9b0aa21a7c8a4d}{D\-A\-Q\-Device}.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{jwd_8h}{jwd.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{jwd_8cpp}{jwd.\-cpp}\end{DoxyCompactItemize}

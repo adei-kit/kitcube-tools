@@ -1,0 +1,13 @@
+K 10
+svn:ignore
+V 81
+Makefile
+doxywizard.pro
+Makefile.doxywizard
+config.cpp
+config.h
+config.l
+moc
+obj
+
+END

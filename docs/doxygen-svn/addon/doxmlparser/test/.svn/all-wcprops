@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/602/trunk/addon/doxmlparser/test
+END
+xmlparse.pro.in
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/p/doxygen/code/!svn/ver/261/trunk/addon/doxmlparser/test/xmlparse.pro.in
+END
+Makefile.in
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/doxygen/code/!svn/ver/242/trunk/addon/doxmlparser/test/Makefile.in
+END
+main.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/doxygen/code/!svn/ver/597/trunk/addon/doxmlparser/test/main.cpp
+END

@@ -1,0 +1,115 @@
+\hypertarget{classradiosonde}{\section{radiosonde Class Reference}
+\label{classradiosonde}\index{radiosonde@{radiosonde}}
+}
+
+
+{\ttfamily \#include $<$radiosonde.\-h$>$}
+
+Inheritance diagram for radiosonde\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classradiosonde}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classradiosonde_aeee339fb1fefca43181050022a115950}{radiosonde} ()
+\item 
+\hyperlink{classradiosonde_a215f03d8d6d94f97989770f703549dc7}{$\sim$radiosonde} ()
+\item 
+void \hyperlink{classradiosonde_a8c1c1be9e950d6c3b70df6bc13f8cbca}{set\-Config\-Defaults} ()
+\item 
+int \hyperlink{classradiosonde_ad8974221a2a65698387b7c6552f6903a}{read\-Header} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+int \hyperlink{classradiosonde_af31298e5aa292b7d8113116ae112db01}{parse\-Data} (char $\ast$line, struct timeval $\ast$l\-\_\-t\-Data, double $\ast$\hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value})
+\item 
+unsigned int \hyperlink{classradiosonde_ad7e2421821dca49851d8fc8c5f9f3177}{get\-Sensor\-Group} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+struct timeval \hyperlink{classradiosonde_a3a7487275417bf085aed3f7e8bb9efdd}{start\-\_\-time}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classradiosonde_aeee339fb1fefca43181050022a115950}{\index{radiosonde@{radiosonde}!radiosonde@{radiosonde}}
+\index{radiosonde@{radiosonde}!radiosonde@{radiosonde}}
+\subsubsection[{radiosonde}]{\setlength{\rightskip}{0pt plus 5cm}radiosonde\-::radiosonde (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classradiosonde_aeee339fb1fefca43181050022a115950}
+\hypertarget{classradiosonde_a215f03d8d6d94f97989770f703549dc7}{\index{radiosonde@{radiosonde}!$\sim$radiosonde@{$\sim$radiosonde}}
+\index{$\sim$radiosonde@{$\sim$radiosonde}!radiosonde@{radiosonde}}
+\subsubsection[{$\sim$radiosonde}]{\setlength{\rightskip}{0pt plus 5cm}radiosonde\-::$\sim$radiosonde (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classradiosonde_a215f03d8d6d94f97989770f703549dc7}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classradiosonde_ad7e2421821dca49851d8fc8c5f9f3177}{\index{radiosonde@{radiosonde}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!radiosonde@{radiosonde}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int radiosonde\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classradiosonde_ad7e2421821dca49851d8fc8c5f9f3177}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classradiosonde_af31298e5aa292b7d8113116ae112db01}{\index{radiosonde@{radiosonde}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!radiosonde@{radiosonde}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int radiosonde\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{line, }
+\item[{struct timeval $\ast$}]{l\-\_\-t\-Data, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classradiosonde_af31298e5aa292b7d8113116ae112db01}
+Read the data from the current line of the data file. \begin{DoxyReturn}{Returns}
+-\/1 no data found, skip storage 0 sucess, store data, 1 read another line 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a9c20d9d69af4ba1641dbc82dd5be2aa5}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classradiosonde_ad8974221a2a65698387b7c6552f6903a}{\index{radiosonde@{radiosonde}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!radiosonde@{radiosonde}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int radiosonde\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classradiosonde_ad8974221a2a65698387b7c6552f6903a}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classradiosonde_a8c1c1be9e950d6c3b70df6bc13f8cbca}{\index{radiosonde@{radiosonde}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!radiosonde@{radiosonde}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void radiosonde\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classradiosonde_a8c1c1be9e950d6c3b70df6bc13f8cbca}
+The function is called before reading the configuration from the inifile. Use this fucntion in the module specific implementation to override the standard defaults 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classradiosonde_a3a7487275417bf085aed3f7e8bb9efdd}{\index{radiosonde@{radiosonde}!start\-\_\-time@{start\-\_\-time}}
+\index{start\-\_\-time@{start\-\_\-time}!radiosonde@{radiosonde}}
+\subsubsection[{start\-\_\-time}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval radiosonde\-::start\-\_\-time\hspace{0.3cm}{\ttfamily [private]}}}\label{classradiosonde_a3a7487275417bf085aed3f7e8bb9efdd}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{radiosonde_8h}{radiosonde.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{radiosonde_8cpp}{radiosonde.\-cpp}\end{DoxyCompactItemize}

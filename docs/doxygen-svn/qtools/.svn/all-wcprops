@@ -1,0 +1,653 @@
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/p/doxygen/code/!svn/ver/847/trunk/qtools
+END
+qfile.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/403/trunk/qtools/qfile.cpp
+END
+Makefile.in
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/841/trunk/qtools/Makefile.in
+END
+qgstring.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/730/trunk/qtools/qgstring.h
+END
+qglist.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qglist.cpp
+END
+qfile_unix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qfile_unix.cpp
+END
+qdatastream.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qdatastream.cpp
+END
+qvector.doc
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qvector.doc
+END
+qstrlist.doc
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qstrlist.doc
+END
+qtextcodec.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qtextcodec.h
+END
+qstack.doc
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qstack.doc
+END
+qqueue.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qqueue.h
+END
+qgarray.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qgarray.h
+END
+qthread_p.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qthread_p.h
+END
+qutfcodec.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qutfcodec.cpp
+END
+qwaitcondition_win32.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qwaitcondition_win32.cpp
+END
+qcollection.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qcollection.h
+END
+qdir_win32.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/doxygen/code/!svn/ver/809/trunk/qtools/qdir_win32.cpp
+END
+qtl.doc
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qtl.doc
+END
+qglobal.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/825/trunk/qtools/qglobal.h
+END
+qstringlist.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/730/trunk/qtools/qstringlist.h
+END
+qstack.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/590/trunk/qtools/qstack.h
+END
+scstring.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/756/trunk/qtools/scstring.cpp
+END
+qmap.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qmap.cpp
+END
+qvaluelist.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qvaluelist.h
+END
+qwaitcondition_unix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/doxygen/code/!svn/ver/825/trunk/qtools/qwaitcondition_unix.cpp
+END
+qgvector.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qgvector.h
+END
+qintdict.doc
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qintdict.doc
+END
+qgeneric.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qgeneric.h
+END
+qtextcodec.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qtextcodec.cpp
+END
+qtools.pro.in
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/734/trunk/qtools/qtools.pro.in
+END
+qarray.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qarray.h
+END
+qfile.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/p/doxygen/code/!svn/ver/559/trunk/qtools/qfile.h
+END
+qtl.h
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qtl.h
+END
+qmutex_win32.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qmutex_win32.cpp
+END
+qiodevice.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/839/trunk/qtools/qiodevice.cpp
+END
+qthread_win32.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qthread_win32.cpp
+END
+qdatastream.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qdatastream.h
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/p/doxygen/code/!svn/ver/130/trunk/qtools/README
+END
+qptrdict.doc
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qptrdict.doc
+END
+qregexp.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/730/trunk/qtools/qregexp.h
+END
+qglobal.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qglobal.cpp
+END
+qdatetime.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/504/trunk/qtools/qdatetime.h
+END
+qsortedlist.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qsortedlist.h
+END
+qstringlist.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/730/trunk/qtools/qstringlist.cpp
+END
+qdict.doc
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qdict.doc
+END
+qthread.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qthread.cpp
+END
+qbuffer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qbuffer.cpp
+END
+qthread_unix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qthread_unix.cpp
+END
+qstring.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/809/trunk/qtools/qstring.h
+END
+qfileinfo_win32.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/doxygen/code/!svn/ver/734/trunk/qtools/qfileinfo_win32.cpp
+END
+qptrdict.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qptrdict.h
+END
+qwaitcondition.h
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qwaitcondition.h
+END
+scstring.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/734/trunk/qtools/scstring.h
+END
+qdir_unix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/839/trunk/qtools/qdir_unix.cpp
+END
+Doxyfile
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/847/trunk/qtools/Doxyfile
+END
+qmap.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qmap.h
+END
+qfeatures.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qfeatures.h
+END
+qdir.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qdir.h
+END
+qmutex_p.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qmutex_p.h
+END
+qdict.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/p/doxygen/code/!svn/ver/490/trunk/qtools/qdict.h
+END
+qregexp.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qregexp.cpp
+END
+qvaluelist.doc
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qvaluelist.doc
+END
+qfileinfo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qfileinfo.cpp
+END
+qiodevice.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qiodevice.h
+END
+qdatetime.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/841/trunk/qtools/qdatetime.cpp
+END
+qfileinfo_unix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qfileinfo_unix.cpp
+END
+qlist.doc
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/812/trunk/qtools/qlist.doc
+END
+qgdict.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/839/trunk/qtools/qgdict.h
+END
+qarray.doc
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qarray.doc
+END
+qxml.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/p/doxygen/code/!svn/ver/802/trunk/qtools/qxml.h
+END
+qmutex_unix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qmutex_unix.cpp
+END
+qtextstream.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qtextstream.h
+END
+qstring.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qstring.cpp
+END
+qmutex.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qmutex.h
+END
+qvector.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qvector.h
+END
+qcstring.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/730/trunk/qtools/qcstring.cpp
+END
+qstrlist.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qstrlist.h
+END
+qshared.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qshared.h
+END
+qstrvec.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qstrvec.h
+END
+qthread.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/732/trunk/qtools/qthread.h
+END
+qgstring.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/740/trunk/qtools/qgstring.cpp
+END
+qdir.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/832/trunk/qtools/qdir.cpp
+END
+qbuffer.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qbuffer.h
+END
+qgcache.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/839/trunk/qtools/qgcache.h
+END
+qsortedlist.doc
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/240/trunk/qtools/qsortedlist.doc
+END
+qlist.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qlist.h
+END
+qgarray.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/839/trunk/qtools/qgarray.cpp
+END
+qglist.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qglist.h
+END
+qgdict.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/839/trunk/qtools/qgdict.cpp
+END
+qcollection.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qcollection.cpp
+END
+qxml.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/809/trunk/qtools/qxml.cpp
+END
+qfileinfo.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qfileinfo.h
+END
+qtextstream.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/839/trunk/qtools/qtextstream.cpp
+END
+qasciidict.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/490/trunk/qtools/qasciidict.h
+END
+LICENSE.GPL
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/130/trunk/qtools/LICENSE.GPL
+END
+qfile_win32.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/734/trunk/qtools/qfile_win32.cpp
+END
+qutfcodec.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/734/trunk/qtools/qutfcodec.h
+END
+qmutex.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/772/trunk/qtools/qmutex.cpp
+END
+qintdict.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qintdict.h
+END
+qfiledefs_p.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/839/trunk/qtools/qfiledefs_p.h
+END
+qvaluestack.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/762/trunk/qtools/qvaluestack.h
+END
+qcache.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p/doxygen/code/!svn/ver/792/trunk/qtools/qcache.h
+END
+qgvector.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/181/trunk/qtools/qgvector.cpp
+END
+qgcache.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/839/trunk/qtools/qgcache.cpp
+END
+qconfig.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/146/trunk/qtools/qconfig.h
+END
+LICENSE.QPL
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/130/trunk/qtools/LICENSE.QPL
+END
+qmodules.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/146/trunk/qtools/qmodules.h
+END
+qcstring.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/843/trunk/qtools/qcstring.h
+END

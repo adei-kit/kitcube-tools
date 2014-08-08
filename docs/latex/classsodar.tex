@@ -1,0 +1,146 @@
+\hypertarget{classsodar}{\section{sodar Class Reference}
+\label{classsodar}\index{sodar@{sodar}}
+}
+
+
+{\ttfamily \#include $<$sodar.\-h$>$}
+
+Inheritance diagram for sodar\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classsodar}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classsodar_a8aaddca894ce6fe0f8ce57c1f4a64f85}{sodar} ()
+\item 
+\hyperlink{classsodar_aa4e1b67dd45bd581be158676ebf9a080}{$\sim$sodar} ()
+\item 
+void \hyperlink{classsodar_a77ca325c97b3884426c1946b9882d948}{set\-Config\-Defaults} ()
+\item 
+int \hyperlink{classsodar_ad9fd2ae78c8e8319033e34e8a85a5657}{read\-Header} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+unsigned int \hyperlink{classsodar_a378a75de0ce9f12a434b0141910a8cb8}{get\-Sensor\-Group} ()
+\item 
+int \hyperlink{classsodar_afcdf95cbd5488e8a68d15d0817b62ba6}{create\-\_\-data\-\_\-table} ()
+\item 
+void \hyperlink{classsodar_ae760bb4e2c93e93dba5cd5ae25914918}{read\-Data} (std\-::string full\-\_\-filename)
+\item 
+int \hyperlink{classsodar_a827706bc079f28fbdf0f7e735412ba09}{parse\-Data} (char $\ast$\hyperlink{classDAQDevice_ab661aa5c5b4bafe78354f5169b1c7d2f}{buffer}, double $\ast$sensor\-\_\-values, int height\-\_\-no)
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{classsodar_a368de96847363f30d6d1c423a343db95}{convert\-\_\-gap\-\_\-values} (double $\ast$sensor\-\_\-values)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double $\ast$ \hyperlink{classsodar_a0b46b7d6c87a469b27f9a14c49383918}{gap\-\_\-value}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classsodar_a8aaddca894ce6fe0f8ce57c1f4a64f85}{\index{sodar@{sodar}!sodar@{sodar}}
+\index{sodar@{sodar}!sodar@{sodar}}
+\subsubsection[{sodar}]{\setlength{\rightskip}{0pt plus 5cm}sodar\-::sodar (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classsodar_a8aaddca894ce6fe0f8ce57c1f4a64f85}
+\hypertarget{classsodar_aa4e1b67dd45bd581be158676ebf9a080}{\index{sodar@{sodar}!$\sim$sodar@{$\sim$sodar}}
+\index{$\sim$sodar@{$\sim$sodar}!sodar@{sodar}}
+\subsubsection[{$\sim$sodar}]{\setlength{\rightskip}{0pt plus 5cm}sodar\-::$\sim$sodar (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classsodar_aa4e1b67dd45bd581be158676ebf9a080}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classsodar_a368de96847363f30d6d1c423a343db95}{\index{sodar@{sodar}!convert\-\_\-gap\-\_\-values@{convert\-\_\-gap\-\_\-values}}
+\index{convert\-\_\-gap\-\_\-values@{convert\-\_\-gap\-\_\-values}!sodar@{sodar}}
+\subsubsection[{convert\-\_\-gap\-\_\-values}]{\setlength{\rightskip}{0pt plus 5cm}int sodar\-::convert\-\_\-gap\-\_\-values (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{sensor\-\_\-values}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classsodar_a368de96847363f30d6d1c423a343db95}
+\hypertarget{classsodar_afcdf95cbd5488e8a68d15d0817b62ba6}{\index{sodar@{sodar}!create\-\_\-data\-\_\-table@{create\-\_\-data\-\_\-table}}
+\index{create\-\_\-data\-\_\-table@{create\-\_\-data\-\_\-table}!sodar@{sodar}}
+\subsubsection[{create\-\_\-data\-\_\-table}]{\setlength{\rightskip}{0pt plus 5cm}int sodar\-::create\-\_\-data\-\_\-table (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classsodar_afcdf95cbd5488e8a68d15d0817b62ba6}
+Create data table, if it doesn't exist. The function is called by \hyperlink{classDAQDevice_a32f118d291f1c7b8fe47a16474b825e2}{open\-Database()}. 
+
+Reimplemented from \hyperlink{classDAQDevice_ac4867b7e5aff2d5c404d6eb1053dda71}{D\-A\-Q\-Device}.
+
+\hypertarget{classsodar_a378a75de0ce9f12a434b0141910a8cb8}{\index{sodar@{sodar}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!sodar@{sodar}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int sodar\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classsodar_a378a75de0ce9f12a434b0141910a8cb8}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classsodar_a827706bc079f28fbdf0f7e735412ba09}{\index{sodar@{sodar}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!sodar@{sodar}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int sodar\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{buffer, }
+\item[{double $\ast$}]{sensor\-\_\-values, }
+\item[{int}]{height\-\_\-no}
+\end{DoxyParamCaption}
+)}}\label{classsodar_a827706bc079f28fbdf0f7e735412ba09}
+\hypertarget{classsodar_ae760bb4e2c93e93dba5cd5ae25914918}{\index{sodar@{sodar}!read\-Data@{read\-Data}}
+\index{read\-Data@{read\-Data}!sodar@{sodar}}
+\subsubsection[{read\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void sodar\-::read\-Data (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{full\-\_\-filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classsodar_ae760bb4e2c93e93dba5cd5ae25914918}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a0d9b17803680d966c7025ca6f174cef0}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classsodar_ad9fd2ae78c8e8319033e34e8a85a5657}{\index{sodar@{sodar}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!sodar@{sodar}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int sodar\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classsodar_ad9fd2ae78c8e8319033e34e8a85a5657}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classsodar_a77ca325c97b3884426c1946b9882d948}{\index{sodar@{sodar}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!sodar@{sodar}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void sodar\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classsodar_a77ca325c97b3884426c1946b9882d948}
+The function is called before reading the configuration from the inifile. Use this fucntion in the module specific implementation to override the standard defaults 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classsodar_a0b46b7d6c87a469b27f9a14c49383918}{\index{sodar@{sodar}!gap\-\_\-value@{gap\-\_\-value}}
+\index{gap\-\_\-value@{gap\-\_\-value}!sodar@{sodar}}
+\subsubsection[{gap\-\_\-value}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ sodar\-::gap\-\_\-value\hspace{0.3cm}{\ttfamily [private]}}}\label{classsodar_a0b46b7d6c87a469b27f9a14c49383918}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{sodar_8h}{sodar.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{sodar_8cpp}{sodar.\-cpp}\end{DoxyCompactItemize}

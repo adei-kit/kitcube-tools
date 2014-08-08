@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/603/trunk/tmake/lib/aix-xlc
+END
+subdirs.t
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/aix-xlc/subdirs.t
+END
+app.t
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/aix-xlc/app.t
+END
+tmake.conf
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/603/trunk/tmake/lib/aix-xlc/tmake.conf
+END
+lib.t
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/aix-xlc/lib.t
+END

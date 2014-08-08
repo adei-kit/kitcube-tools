@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/p/doxygen/code/!svn/ver/843/trunk/winbuild
+END
+unistd.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/doxygen/code/!svn/ver/576/trunk/winbuild/unistd.h
+END
+iconv64.lib
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/796/trunk/winbuild/iconv64.lib
+END
+runbison.bat
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/doxygen/code/!svn/ver/785/trunk/winbuild/runbison.bat
+END
+iconv.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/578/trunk/winbuild/iconv.h
+END
+doxyindexer.vcproj
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/p/doxygen/code/!svn/ver/836/trunk/winbuild/doxyindexer.vcproj
+END
+Doxywizard.vcproj
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/doxygen/code/!svn/ver/762/trunk/winbuild/Doxywizard.vcproj
+END
+moc.rules
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/561/trunk/winbuild/moc.rules
+END
+Doxygen.sln
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/836/trunk/winbuild/Doxygen.sln
+END
+doxysearch.vcproj
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/doxygen/code/!svn/ver/836/trunk/winbuild/doxysearch.vcproj
+END
+Doxygen.vcproj
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/doxygen/code/!svn/ver/843/trunk/winbuild/Doxygen.vcproj
+END
+iconv.vcproj
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/doxygen/code/!svn/ver/796/trunk/winbuild/iconv.vcproj
+END
+Lex.rules
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/576/trunk/winbuild/Lex.rules
+END
+qtools.vcproj
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/doxygen/code/!svn/ver/796/trunk/winbuild/qtools.vcproj
+END
+iconv.lib
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/576/trunk/winbuild/iconv.lib
+END
+version.bat
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/581/trunk/winbuild/version.bat
+END
