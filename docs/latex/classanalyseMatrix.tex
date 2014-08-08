@@ -1,0 +1,466 @@
+\hypertarget{classanalyseMatrix}{\section{analyse\-Matrix Class Reference}
+\label{classanalyseMatrix}\index{analyse\-Matrix@{analyse\-Matrix}}
+}
+
+
+{\ttfamily \#include $<$analysematrix.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classanalyseMatrix_ae056d1b34e217c935a4353255ebdd9bb}{analyse\-Matrix} ()
+\item 
+\hyperlink{classanalyseMatrix_ab0bad30e89e799510fbb95a5b9d37ab8}{$\sim$analyse\-Matrix} ()
+\item 
+void \hyperlink{classanalyseMatrix_a39fd86f43c32f0803d8e05859e96afaa}{filter\-By2x2} (int filter\mbox{[}2\mbox{]}\mbox{[}2\mbox{]}, int col, int row, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, double res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_af376bbf6f497ebe891aa1670072008a9}{display\-Matrix} (F\-I\-L\-E $\ast$fout, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, const char $\ast$title)
+\item 
+void \hyperlink{classanalyseMatrix_a455fced75f8847d2749111da7e7fd44a}{display\-Matrix} (F\-I\-L\-E $\ast$fout, int matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, const char $\ast$title, int norm=0, int value=0, const char $\ast$tag=0)
+\item 
+int \hyperlink{classanalyseMatrix_a7f26b3aefa10cb9457c3dd3d2334420d}{display\-Pixel\-List} (F\-I\-L\-E $\ast$fout, int matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a6ff734ef0f617117e1dd9235646edc1a}{classify\-By\-Threshold} (double thresh, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int up=1)
+\item 
+void \hyperlink{classanalyseMatrix_a16bc8177a6cfbf2bc8877c4bfa890ef3}{set\-Matrix} (double value, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_acbcd251fd377f28de7ca6a1381b519cf}{set\-Matrix} (int value, int matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_ab6daa3c332d14b9d71b1208edfdf33cf}{mult\-Matrix} (double value, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a756d6af7a102bf5624589b118307b935}{mult\-Mask} (int value, int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_ac1fa43f05dbc70125df4c63dcb65df29}{div\-Matrix} (double res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a1f0cbad7de61b574221f1fddac3252e7}{div\-Matrix} (double res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_acb6421a2e698a280e19d751feca9faff}{mean\-Matrix} (double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, double $\ast$mean, double $\ast$var, int $\ast$n, int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a4ca419c0a8d92accfcd2ef1660497378}{mean\-Matrix} (double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, double $\ast$mean, double $\ast$var, int $\ast$n, int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int err\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a25918ce9812bc346425cdcdb3d1f72bd}{add\-Mask} (int res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a821b829a991ad53d8b068d00ec411405}{add\-Matrix} (double res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_ae561bd929c3d2a0ceb1f3f1139bc533f}{copy\-Matrix} (double res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a779d81ad2a1991688dfddde7011d6d06}{or\-Mask} (int res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_aa454eb316f95fca25b72073020e04e36}{invert\-Mask} (int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+int \hyperlink{classanalyseMatrix_a8c70c1c16f2482328b5bdc3e7b792034}{n\-Mask} (int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_ae42ccc44ff5a297121c7e73a6b4eadbf}{copy\-Mask} (int res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a4820924cab97d5a6bce8a66766b8a4f5}{max\-Mask} (int max, int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_abfe8bf706868c42cfb8cf2dac9c2d0d4}{min\-Mask} (int min, int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a8f3afe9804ef7e5a15b805a7742faecc}{find\-High\-Noise1} (F\-I\-L\-E $\ast$fout, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int err\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a81f17c9773ff663a24095af3a8a8700b}{find\-High\-Noise2} (F\-I\-L\-E $\ast$fout, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, int err\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a53f84ec658a8a2826ef26876091706a0}{clear\-Noisy\-Pixel} ()
+\item 
+void \hyperlink{classanalyseMatrix_a74d13c1dffb2d2795b583db6b88026e9}{clear\-Faulty\-Pixel} ()
+\item 
+void \hyperlink{classanalyseMatrix_a0f00e198a9f2005d6a6ca5f4fe70fda2}{add\-Noisy\-Pixel} (int mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_abc6c434b1e9c2dccebf7380b2237cd14}{find\-High\-Noise} (F\-I\-L\-E $\ast$fout, double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]})
+\item 
+void \hyperlink{classanalyseMatrix_a4b69db0536063f67fd7ed635953d08b4}{mean\-Of\-Normal\-Pixel} (double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, double $\ast$mean, double $\ast$var, int $\ast$n)
+\item 
+void \hyperlink{classanalyseMatrix_af32477590ff3d201d3d9ab3faed270a2}{mean\-Of\-Noisy\-Pixel} (double matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, double $\ast$mean, double $\ast$var, int $\ast$n)
+\item 
+int \hyperlink{classanalyseMatrix_a9db1346d6a0601e0863961dddd310508}{n\-Noisy\-Pixel} ()
+\item 
+void \hyperlink{classanalyseMatrix_a953d8a856b95876b5f7e90e25063310b}{display\-Noisy\-Pixel\-List} (F\-I\-L\-E $\ast$fout)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{classanalyseMatrix_a7309694bc069cc545ddb80de2cf96cb8}{noisy\-Pixel} \mbox{[}20\mbox{]}\mbox{[}22\mbox{]}
+\item 
+int \hyperlink{classanalyseMatrix_ae1a917330c3aa0e9ee6446d14f31eed3}{noisy\-Pixel\-Last} \mbox{[}20\mbox{]}\mbox{[}22\mbox{]}
+\item 
+int \hyperlink{classanalyseMatrix_a8cddd52641a8d1dc2a6cf669584ac440}{faulty\-Pixel} \mbox{[}20\mbox{]}\mbox{[}22\mbox{]}
+\item 
+int \hyperlink{classanalyseMatrix_af4911f335c7415683cac99607ee3972d}{noisy\-Runs}
+\item 
+double \hyperlink{classanalyseMatrix_a1e35cc039abe9757861c13ad48b73134}{noisy\-N\-Variances}
+\item 
+int \hyperlink{classanalyseMatrix_adb3542dfa480b47bdc51442a1980821a}{noisy\-Min\-Variance}
+\item 
+double \hyperlink{classanalyseMatrix_a8a8c6af9d824a68930c5307517e050f5}{noisy\-Neighbor\-Diff}
+\item 
+double \hyperlink{classanalyseMatrix_ab2c3e6805f8c69bb1c2317df1130cffd}{noisy\-Abs\-Thresh}
+\item 
+double \hyperlink{classanalyseMatrix_a66744956a995f194e5a018da3aaedc12}{noisy\-Low\-Thresh}
+\item 
+int \hyperlink{classanalyseMatrix_a5c3dd03672f12a8a3ad1adbbe15d3a3e}{debug}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Analyse the variance matrix of a telescope All functions are on matrices of 20x22 elements. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classanalyseMatrix_ae056d1b34e217c935a4353255ebdd9bb}{\index{analyse\-Matrix@{analyse\-Matrix}!analyse\-Matrix@{analyse\-Matrix}}
+\index{analyse\-Matrix@{analyse\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{analyse\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}analyse\-Matrix\-::analyse\-Matrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_ae056d1b34e217c935a4353255ebdd9bb}
+\hypertarget{classanalyseMatrix_ab0bad30e89e799510fbb95a5b9d37ab8}{\index{analyse\-Matrix@{analyse\-Matrix}!$\sim$analyse\-Matrix@{$\sim$analyse\-Matrix}}
+\index{$\sim$analyse\-Matrix@{$\sim$analyse\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{$\sim$analyse\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}analyse\-Matrix\-::$\sim$analyse\-Matrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_ab0bad30e89e799510fbb95a5b9d37ab8}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classanalyseMatrix_a25918ce9812bc346425cdcdb3d1f72bd}{\index{analyse\-Matrix@{analyse\-Matrix}!add\-Mask@{add\-Mask}}
+\index{add\-Mask@{add\-Mask}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{add\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::add\-Mask (
+\begin{DoxyParamCaption}
+\item[{int}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a25918ce9812bc346425cdcdb3d1f72bd}
+Add two masks \hypertarget{classanalyseMatrix_a821b829a991ad53d8b068d00ec411405}{\index{analyse\-Matrix@{analyse\-Matrix}!add\-Matrix@{add\-Matrix}}
+\index{add\-Matrix@{add\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{add\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::add\-Matrix (
+\begin{DoxyParamCaption}
+\item[{double}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a821b829a991ad53d8b068d00ec411405}
+Add two matrixes \hypertarget{classanalyseMatrix_a0f00e198a9f2005d6a6ca5f4fe70fda2}{\index{analyse\-Matrix@{analyse\-Matrix}!add\-Noisy\-Pixel@{add\-Noisy\-Pixel}}
+\index{add\-Noisy\-Pixel@{add\-Noisy\-Pixel}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{add\-Noisy\-Pixel}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::add\-Noisy\-Pixel (
+\begin{DoxyParamCaption}
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a0f00e198a9f2005d6a6ca5f4fe70fda2}
+Add a new noisy pixel mask \hypertarget{classanalyseMatrix_a6ff734ef0f617117e1dd9235646edc1a}{\index{analyse\-Matrix@{analyse\-Matrix}!classify\-By\-Threshold@{classify\-By\-Threshold}}
+\index{classify\-By\-Threshold@{classify\-By\-Threshold}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{classify\-By\-Threshold}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::classify\-By\-Threshold (
+\begin{DoxyParamCaption}
+\item[{double}]{thresh, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{up = {\ttfamily 1}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a6ff734ef0f617117e1dd9235646edc1a}
+Classify by using a constant threshold matrix, res and mask are 20x22 pixel. The up parameter controls whether the values higher or lower of the threshold should be taken. \hypertarget{classanalyseMatrix_a74d13c1dffb2d2795b583db6b88026e9}{\index{analyse\-Matrix@{analyse\-Matrix}!clear\-Faulty\-Pixel@{clear\-Faulty\-Pixel}}
+\index{clear\-Faulty\-Pixel@{clear\-Faulty\-Pixel}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{clear\-Faulty\-Pixel}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::clear\-Faulty\-Pixel (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a74d13c1dffb2d2795b583db6b88026e9}
+Clear faulty pixel matrix \hypertarget{classanalyseMatrix_a53f84ec658a8a2826ef26876091706a0}{\index{analyse\-Matrix@{analyse\-Matrix}!clear\-Noisy\-Pixel@{clear\-Noisy\-Pixel}}
+\index{clear\-Noisy\-Pixel@{clear\-Noisy\-Pixel}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{clear\-Noisy\-Pixel}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::clear\-Noisy\-Pixel (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a53f84ec658a8a2826ef26876091706a0}
+Clear noisy pixel matrix \hypertarget{classanalyseMatrix_ae42ccc44ff5a297121c7e73a6b4eadbf}{\index{analyse\-Matrix@{analyse\-Matrix}!copy\-Mask@{copy\-Mask}}
+\index{copy\-Mask@{copy\-Mask}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{copy\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::copy\-Mask (
+\begin{DoxyParamCaption}
+\item[{int}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_ae42ccc44ff5a297121c7e73a6b4eadbf}
+Copy the mask to res \hypertarget{classanalyseMatrix_ae561bd929c3d2a0ceb1f3f1139bc533f}{\index{analyse\-Matrix@{analyse\-Matrix}!copy\-Matrix@{copy\-Matrix}}
+\index{copy\-Matrix@{copy\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{copy\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::copy\-Matrix (
+\begin{DoxyParamCaption}
+\item[{double}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_ae561bd929c3d2a0ceb1f3f1139bc533f}
+Copy matrix to res \hypertarget{classanalyseMatrix_af376bbf6f497ebe891aa1670072008a9}{\index{analyse\-Matrix@{analyse\-Matrix}!display\-Matrix@{display\-Matrix}}
+\index{display\-Matrix@{display\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{display\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::display\-Matrix (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{const char $\ast$}]{title}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_af376bbf6f497ebe891aa1670072008a9}
+Display a matrix of 20x22 elements \hypertarget{classanalyseMatrix_a455fced75f8847d2749111da7e7fd44a}{\index{analyse\-Matrix@{analyse\-Matrix}!display\-Matrix@{display\-Matrix}}
+\index{display\-Matrix@{display\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{display\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::display\-Matrix (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout, }
+\item[{int}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{const char $\ast$}]{title, }
+\item[{int}]{norm = {\ttfamily 0}, }
+\item[{int}]{value = {\ttfamily 0}, }
+\item[{const char $\ast$}]{tag = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a455fced75f8847d2749111da7e7fd44a}
+Display a matrix of 20x22 integer elements. With the argument norm $>$ 0, relative values in percent a the normation given will be displayed. A special value can be replaced by a tag. \hypertarget{classanalyseMatrix_a953d8a856b95876b5f7e90e25063310b}{\index{analyse\-Matrix@{analyse\-Matrix}!display\-Noisy\-Pixel\-List@{display\-Noisy\-Pixel\-List}}
+\index{display\-Noisy\-Pixel\-List@{display\-Noisy\-Pixel\-List}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{display\-Noisy\-Pixel\-List}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::display\-Noisy\-Pixel\-List (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a953d8a856b95876b5f7e90e25063310b}
+Display the list of noisy pixel in the last analysis \hypertarget{classanalyseMatrix_a7f26b3aefa10cb9457c3dd3d2334420d}{\index{analyse\-Matrix@{analyse\-Matrix}!display\-Pixel\-List@{display\-Pixel\-List}}
+\index{display\-Pixel\-List@{display\-Pixel\-List}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{display\-Pixel\-List}]{\setlength{\rightskip}{0pt plus 5cm}int analyse\-Matrix\-::display\-Pixel\-List (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout, }
+\item[{int}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a7f26b3aefa10cb9457c3dd3d2334420d}
+Display list of coordinates of all pixel in the mask Returns the number of pixel in the mask \hypertarget{classanalyseMatrix_ac1fa43f05dbc70125df4c63dcb65df29}{\index{analyse\-Matrix@{analyse\-Matrix}!div\-Matrix@{div\-Matrix}}
+\index{div\-Matrix@{div\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{div\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::div\-Matrix (
+\begin{DoxyParamCaption}
+\item[{double}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_ac1fa43f05dbc70125df4c63dcb65df29}
+Devide by matrix \hypertarget{classanalyseMatrix_a1f0cbad7de61b574221f1fddac3252e7}{\index{analyse\-Matrix@{analyse\-Matrix}!div\-Matrix@{div\-Matrix}}
+\index{div\-Matrix@{div\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{div\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::div\-Matrix (
+\begin{DoxyParamCaption}
+\item[{double}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a1f0cbad7de61b574221f1fddac3252e7}
+Devide by matrix \hypertarget{classanalyseMatrix_a39fd86f43c32f0803d8e05859e96afaa}{\index{analyse\-Matrix@{analyse\-Matrix}!filter\-By2x2@{filter\-By2x2}}
+\index{filter\-By2x2@{filter\-By2x2}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{filter\-By2x2}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::filter\-By2x2 (
+\begin{DoxyParamCaption}
+\item[{int}]{filter\mbox{[}2\mbox{]}\mbox{[}2\mbox{]}, }
+\item[{int}]{col, }
+\item[{int}]{row, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{double}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a39fd86f43c32f0803d8e05859e96afaa}
+Filter a matrix using a free 2x2 matrix. With mask pixel can be excluded from the calculation matrix, res and mask are 20x22 pixel Parameters (col/row) determine the center pixel of the filter. Possible values are col, row = \{0$|$1\}. \hypertarget{classanalyseMatrix_abc6c434b1e9c2dccebf7380b2237cd14}{\index{analyse\-Matrix@{analyse\-Matrix}!find\-High\-Noise@{find\-High\-Noise}}
+\index{find\-High\-Noise@{find\-High\-Noise}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{find\-High\-Noise}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::find\-High\-Noise (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_abc6c434b1e9c2dccebf7380b2237cd14}
+Analyse matrix and store result in the local arrays \hypertarget{classanalyseMatrix_a8f3afe9804ef7e5a15b805a7742faecc}{\index{analyse\-Matrix@{analyse\-Matrix}!find\-High\-Noise1@{find\-High\-Noise1}}
+\index{find\-High\-Noise1@{find\-High\-Noise1}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{find\-High\-Noise1}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::find\-High\-Noise1 (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{err\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a8f3afe9804ef7e5a15b805a7742faecc}
+Automatically find pixel with high noise in the variance matrix
+
+Algorithm\-:
+\begin{DoxyItemize}
+\item Calculate statistics of pixel distribution
+\item Take threshold proportional to N times the distribution variance. Consider a minumum threshold.
+\item Repeat the algorithm taking only non noisy pixel into account.
+\end{DoxyItemize}
+
+Parameter of the alorithm\-:
+\begin{DoxyItemize}
+\item Factor N of the variances \mbox{[}-\/\mbox{]}
+\item Minimum threshold \mbox{[}A\-D\-C Counts\mbox{]} 
+\end{DoxyItemize}\hypertarget{classanalyseMatrix_a81f17c9773ff663a24095af3a8a8700b}{\index{analyse\-Matrix@{analyse\-Matrix}!find\-High\-Noise2@{find\-High\-Noise2}}
+\index{find\-High\-Noise2@{find\-High\-Noise2}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{find\-High\-Noise2}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::find\-High\-Noise2 (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{err\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a81f17c9773ff663a24095af3a8a8700b}
+Automatically find pixel with high noise in the variance matrix
+
+Algorithm\-:
+\begin{DoxyItemize}
+\item Find all negative values and exclude from further analsysis
+\item Run a 2x2 edge filters over the pixel matrix.
+\item Use a threshold on the difference matrix.
+\item Repeat this rotating the 2x2 filter to consider all orientations. and overlap the resulting pixel mask.
+\item Calculate the distribution mean for low and high noise pixel
+\item Use a threshold on the orignal distribution. The thresold is choosen to mean high noise value minus half of the difference image threshold. Add the results.
+\end{DoxyItemize}
+
+Parameter of the algorithm\-:
+\begin{DoxyItemize}
+\item Threshold in the difference matrixes 
+\end{DoxyItemize}\hypertarget{classanalyseMatrix_aa454eb316f95fca25b72073020e04e36}{\index{analyse\-Matrix@{analyse\-Matrix}!invert\-Mask@{invert\-Mask}}
+\index{invert\-Mask@{invert\-Mask}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{invert\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::invert\-Mask (
+\begin{DoxyParamCaption}
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_aa454eb316f95fca25b72073020e04e36}
+Invert the values of the mask \hypertarget{classanalyseMatrix_a4820924cab97d5a6bce8a66766b8a4f5}{\index{analyse\-Matrix@{analyse\-Matrix}!max\-Mask@{max\-Mask}}
+\index{max\-Mask@{max\-Mask}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{max\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::max\-Mask (
+\begin{DoxyParamCaption}
+\item[{int}]{max, }
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a4820924cab97d5a6bce8a66766b8a4f5}
+Maximum of constant and mask values \hypertarget{classanalyseMatrix_acb6421a2e698a280e19d751feca9faff}{\index{analyse\-Matrix@{analyse\-Matrix}!mean\-Matrix@{mean\-Matrix}}
+\index{mean\-Matrix@{mean\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{mean\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::mean\-Matrix (
+\begin{DoxyParamCaption}
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{double $\ast$}]{mean, }
+\item[{double $\ast$}]{var, }
+\item[{int $\ast$}]{n, }
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_acb6421a2e698a280e19d751feca9faff}
+Calculate the mean value of a matrix. Mask can be used to exclude some pixel from mean value \hypertarget{classanalyseMatrix_a4ca419c0a8d92accfcd2ef1660497378}{\index{analyse\-Matrix@{analyse\-Matrix}!mean\-Matrix@{mean\-Matrix}}
+\index{mean\-Matrix@{mean\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{mean\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::mean\-Matrix (
+\begin{DoxyParamCaption}
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{double $\ast$}]{mean, }
+\item[{double $\ast$}]{var, }
+\item[{int $\ast$}]{n, }
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{err\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a4ca419c0a8d92accfcd2ef1660497378}
+\hypertarget{classanalyseMatrix_af32477590ff3d201d3d9ab3faed270a2}{\index{analyse\-Matrix@{analyse\-Matrix}!mean\-Of\-Noisy\-Pixel@{mean\-Of\-Noisy\-Pixel}}
+\index{mean\-Of\-Noisy\-Pixel@{mean\-Of\-Noisy\-Pixel}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{mean\-Of\-Noisy\-Pixel}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::mean\-Of\-Noisy\-Pixel (
+\begin{DoxyParamCaption}
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{double $\ast$}]{mean, }
+\item[{double $\ast$}]{var, }
+\item[{int $\ast$}]{n}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_af32477590ff3d201d3d9ab3faed270a2}
+Mean of noisy pixel Faulty pixel are not considered \hypertarget{classanalyseMatrix_a4b69db0536063f67fd7ed635953d08b4}{\index{analyse\-Matrix@{analyse\-Matrix}!mean\-Of\-Normal\-Pixel@{mean\-Of\-Normal\-Pixel}}
+\index{mean\-Of\-Normal\-Pixel@{mean\-Of\-Normal\-Pixel}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{mean\-Of\-Normal\-Pixel}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::mean\-Of\-Normal\-Pixel (
+\begin{DoxyParamCaption}
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{double $\ast$}]{mean, }
+\item[{double $\ast$}]{var, }
+\item[{int $\ast$}]{n}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a4b69db0536063f67fd7ed635953d08b4}
+Mean of normal pixel. Faulty pixel are not considered \hypertarget{classanalyseMatrix_abfe8bf706868c42cfb8cf2dac9c2d0d4}{\index{analyse\-Matrix@{analyse\-Matrix}!min\-Mask@{min\-Mask}}
+\index{min\-Mask@{min\-Mask}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{min\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::min\-Mask (
+\begin{DoxyParamCaption}
+\item[{int}]{min, }
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_abfe8bf706868c42cfb8cf2dac9c2d0d4}
+Minimum of constant and mask values \hypertarget{classanalyseMatrix_a756d6af7a102bf5624589b118307b935}{\index{analyse\-Matrix@{analyse\-Matrix}!mult\-Mask@{mult\-Mask}}
+\index{mult\-Mask@{mult\-Mask}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{mult\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::mult\-Mask (
+\begin{DoxyParamCaption}
+\item[{int}]{value, }
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a756d6af7a102bf5624589b118307b935}
+Multiply mask by constant \hypertarget{classanalyseMatrix_ab6daa3c332d14b9d71b1208edfdf33cf}{\index{analyse\-Matrix@{analyse\-Matrix}!mult\-Matrix@{mult\-Matrix}}
+\index{mult\-Matrix@{mult\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{mult\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::mult\-Matrix (
+\begin{DoxyParamCaption}
+\item[{double}]{value, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_ab6daa3c332d14b9d71b1208edfdf33cf}
+Multiply matrix by constant \hypertarget{classanalyseMatrix_a8c70c1c16f2482328b5bdc3e7b792034}{\index{analyse\-Matrix@{analyse\-Matrix}!n\-Mask@{n\-Mask}}
+\index{n\-Mask@{n\-Mask}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{n\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}int analyse\-Matrix\-::n\-Mask (
+\begin{DoxyParamCaption}
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a8c70c1c16f2482328b5bdc3e7b792034}
+Count the pixel in the mask \hypertarget{classanalyseMatrix_a9db1346d6a0601e0863961dddd310508}{\index{analyse\-Matrix@{analyse\-Matrix}!n\-Noisy\-Pixel@{n\-Noisy\-Pixel}}
+\index{n\-Noisy\-Pixel@{n\-Noisy\-Pixel}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{n\-Noisy\-Pixel}]{\setlength{\rightskip}{0pt plus 5cm}int analyse\-Matrix\-::n\-Noisy\-Pixel (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a9db1346d6a0601e0863961dddd310508}
+Number of noisy pixel \hypertarget{classanalyseMatrix_a779d81ad2a1991688dfddde7011d6d06}{\index{analyse\-Matrix@{analyse\-Matrix}!or\-Mask@{or\-Mask}}
+\index{or\-Mask@{or\-Mask}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{or\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::or\-Mask (
+\begin{DoxyParamCaption}
+\item[{int}]{res\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}, }
+\item[{int}]{mask\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a779d81ad2a1991688dfddde7011d6d06}
+Merge two mask using a logical or \hypertarget{classanalyseMatrix_a16bc8177a6cfbf2bc8877c4bfa890ef3}{\index{analyse\-Matrix@{analyse\-Matrix}!set\-Matrix@{set\-Matrix}}
+\index{set\-Matrix@{set\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{set\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::set\-Matrix (
+\begin{DoxyParamCaption}
+\item[{double}]{value, }
+\item[{double}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_a16bc8177a6cfbf2bc8877c4bfa890ef3}
+Set matrix to constant value \hypertarget{classanalyseMatrix_acbcd251fd377f28de7ca6a1381b519cf}{\index{analyse\-Matrix@{analyse\-Matrix}!set\-Matrix@{set\-Matrix}}
+\index{set\-Matrix@{set\-Matrix}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{set\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void analyse\-Matrix\-::set\-Matrix (
+\begin{DoxyParamCaption}
+\item[{int}]{value, }
+\item[{int}]{matrix\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{classanalyseMatrix_acbcd251fd377f28de7ca6a1381b519cf}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classanalyseMatrix_a5c3dd03672f12a8a3ad1adbbe15d3a3e}{\index{analyse\-Matrix@{analyse\-Matrix}!debug@{debug}}
+\index{debug@{debug}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{debug}]{\setlength{\rightskip}{0pt plus 5cm}int analyse\-Matrix\-::debug}}\label{classanalyseMatrix_a5c3dd03672f12a8a3ad1adbbe15d3a3e}
+Debug flag \hypertarget{classanalyseMatrix_a8cddd52641a8d1dc2a6cf669584ac440}{\index{analyse\-Matrix@{analyse\-Matrix}!faulty\-Pixel@{faulty\-Pixel}}
+\index{faulty\-Pixel@{faulty\-Pixel}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{faulty\-Pixel}]{\setlength{\rightskip}{0pt plus 5cm}int analyse\-Matrix\-::faulty\-Pixel\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}}\label{classanalyseMatrix_a8cddd52641a8d1dc2a6cf669584ac440}
+Matrix of faulty pixel. Every time the statistical evaluation finds pixel with neg variances they were marked in the faulty pixel matrix and excluded from further calculations \hypertarget{classanalyseMatrix_ab2c3e6805f8c69bb1c2317df1130cffd}{\index{analyse\-Matrix@{analyse\-Matrix}!noisy\-Abs\-Thresh@{noisy\-Abs\-Thresh}}
+\index{noisy\-Abs\-Thresh@{noisy\-Abs\-Thresh}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{noisy\-Abs\-Thresh}]{\setlength{\rightskip}{0pt plus 5cm}double analyse\-Matrix\-::noisy\-Abs\-Thresh}}\label{classanalyseMatrix_ab2c3e6805f8c69bb1c2317df1130cffd}
+Absolut threshold used to find noisy pixel relativ to the distribution mean \hypertarget{classanalyseMatrix_a66744956a995f194e5a018da3aaedc12}{\index{analyse\-Matrix@{analyse\-Matrix}!noisy\-Low\-Thresh@{noisy\-Low\-Thresh}}
+\index{noisy\-Low\-Thresh@{noisy\-Low\-Thresh}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{noisy\-Low\-Thresh}]{\setlength{\rightskip}{0pt plus 5cm}double analyse\-Matrix\-::noisy\-Low\-Thresh}}\label{classanalyseMatrix_a66744956a995f194e5a018da3aaedc12}
+Find extreme low noise pixel?! These pixel will be added to the error pixel \hypertarget{classanalyseMatrix_adb3542dfa480b47bdc51442a1980821a}{\index{analyse\-Matrix@{analyse\-Matrix}!noisy\-Min\-Variance@{noisy\-Min\-Variance}}
+\index{noisy\-Min\-Variance@{noisy\-Min\-Variance}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{noisy\-Min\-Variance}]{\setlength{\rightskip}{0pt plus 5cm}int analyse\-Matrix\-::noisy\-Min\-Variance}}\label{classanalyseMatrix_adb3542dfa480b47bdc51442a1980821a}
+Tolerated varinance deviation. \hypertarget{classanalyseMatrix_a8a8c6af9d824a68930c5307517e050f5}{\index{analyse\-Matrix@{analyse\-Matrix}!noisy\-Neighbor\-Diff@{noisy\-Neighbor\-Diff}}
+\index{noisy\-Neighbor\-Diff@{noisy\-Neighbor\-Diff}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{noisy\-Neighbor\-Diff}]{\setlength{\rightskip}{0pt plus 5cm}double analyse\-Matrix\-::noisy\-Neighbor\-Diff}}\label{classanalyseMatrix_a8a8c6af9d824a68930c5307517e050f5}
+Difference between neiboring pixel relativ to the distribution mean \hypertarget{classanalyseMatrix_a1e35cc039abe9757861c13ad48b73134}{\index{analyse\-Matrix@{analyse\-Matrix}!noisy\-N\-Variances@{noisy\-N\-Variances}}
+\index{noisy\-N\-Variances@{noisy\-N\-Variances}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{noisy\-N\-Variances}]{\setlength{\rightskip}{0pt plus 5cm}double analyse\-Matrix\-::noisy\-N\-Variances}}\label{classanalyseMatrix_a1e35cc039abe9757861c13ad48b73134}
+Tolerated variance changes proportional to variance distribution over the telescope \hypertarget{classanalyseMatrix_a7309694bc069cc545ddb80de2cf96cb8}{\index{analyse\-Matrix@{analyse\-Matrix}!noisy\-Pixel@{noisy\-Pixel}}
+\index{noisy\-Pixel@{noisy\-Pixel}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{noisy\-Pixel}]{\setlength{\rightskip}{0pt plus 5cm}int analyse\-Matrix\-::noisy\-Pixel\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}}\label{classanalyseMatrix_a7309694bc069cc545ddb80de2cf96cb8}
+Matrix of noisy pixel. Every time the statistical evaluation finds pixel with high noise they were marked in the noisy pixel matrix and excluded from further calculations \hypertarget{classanalyseMatrix_ae1a917330c3aa0e9ee6446d14f31eed3}{\index{analyse\-Matrix@{analyse\-Matrix}!noisy\-Pixel\-Last@{noisy\-Pixel\-Last}}
+\index{noisy\-Pixel\-Last@{noisy\-Pixel\-Last}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{noisy\-Pixel\-Last}]{\setlength{\rightskip}{0pt plus 5cm}int analyse\-Matrix\-::noisy\-Pixel\-Last\mbox{[}20\mbox{]}\mbox{[}22\mbox{]}}}\label{classanalyseMatrix_ae1a917330c3aa0e9ee6446d14f31eed3}
+Last noisy pixel mask calculated by find\-Noisy\-Pixel() \hypertarget{classanalyseMatrix_af4911f335c7415683cac99607ee3972d}{\index{analyse\-Matrix@{analyse\-Matrix}!noisy\-Runs@{noisy\-Runs}}
+\index{noisy\-Runs@{noisy\-Runs}!analyseMatrix@{analyse\-Matrix}}
+\subsubsection[{noisy\-Runs}]{\setlength{\rightskip}{0pt plus 5cm}int analyse\-Matrix\-::noisy\-Runs}}\label{classanalyseMatrix_af4911f335c7415683cac99607ee3972d}
+Count the number of analysis runs per telescope 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/akutil/\hyperlink{analysematrix_8h}{analysematrix.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/akutil/\hyperlink{analysematrix_8cpp}{analysematrix.\-cpp}\end{DoxyCompactItemize}

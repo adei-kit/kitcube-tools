@@ -1,0 +1,115 @@
+\hypertarget{classmrr}{\section{mrr Class Reference}
+\label{classmrr}\index{mrr@{mrr}}
+}
+
+
+{\ttfamily \#include $<$mrr.\-h$>$}
+
+Inheritance diagram for mrr\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classmrr}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classmrr_a1a061ae8c23b5d12008f7b14c5eb1346}{mrr} ()
+\item 
+\hyperlink{classmrr_a2aaef911f158a4ad7922470d91378faf}{$\sim$mrr} ()
+\item 
+int \hyperlink{classmrr_a594cc3909052919f57881790f094b1fa}{read\-Header} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+void \hyperlink{classmrr_a36a73bcb154bafe4abed5c69c374e96f}{write\-Header} ()
+\item 
+void \hyperlink{classmrr_a781f21c62e91952f18fef385bcb1be6c}{write\-Data} ()
+\item 
+unsigned int \hyperlink{classmrr_a830a95365f1abeba05a339d5823cd6ac}{get\-Sensor\-Group} ()
+\item 
+void \hyperlink{classmrr_a748ac19e38528725bb1794cbd50a1748}{read\-Data} (std\-::string full\-\_\-filename)
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Implementation for the mrr device 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classmrr_a1a061ae8c23b5d12008f7b14c5eb1346}{\index{mrr@{mrr}!mrr@{mrr}}
+\index{mrr@{mrr}!mrr@{mrr}}
+\subsubsection[{mrr}]{\setlength{\rightskip}{0pt plus 5cm}mrr\-::mrr (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classmrr_a1a061ae8c23b5d12008f7b14c5eb1346}
+\hypertarget{classmrr_a2aaef911f158a4ad7922470d91378faf}{\index{mrr@{mrr}!$\sim$mrr@{$\sim$mrr}}
+\index{$\sim$mrr@{$\sim$mrr}!mrr@{mrr}}
+\subsubsection[{$\sim$mrr}]{\setlength{\rightskip}{0pt plus 5cm}mrr\-::$\sim$mrr (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classmrr_a2aaef911f158a4ad7922470d91378faf}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classmrr_a830a95365f1abeba05a339d5823cd6ac}{\index{mrr@{mrr}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!mrr@{mrr}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int mrr\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classmrr_a830a95365f1abeba05a339d5823cd6ac}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classmrr_a748ac19e38528725bb1794cbd50a1748}{\index{mrr@{mrr}!read\-Data@{read\-Data}}
+\index{read\-Data@{read\-Data}!mrr@{mrr}}
+\subsubsection[{read\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void mrr\-::read\-Data (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{full\-\_\-filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classmrr_a748ac19e38528725bb1794cbd50a1748}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a0d9b17803680d966c7025ca6f174cef0}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classmrr_a594cc3909052919f57881790f094b1fa}{\index{mrr@{mrr}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!mrr@{mrr}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int mrr\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classmrr_a594cc3909052919f57881790f094b1fa}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classmrr_a781f21c62e91952f18fef385bcb1be6c}{\index{mrr@{mrr}!write\-Data@{write\-Data}}
+\index{write\-Data@{write\-Data}!mrr@{mrr}}
+\subsubsection[{write\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void mrr\-::write\-Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classmrr_a781f21c62e91952f18fef385bcb1be6c}
+
+
+Reimplemented from \hyperlink{classDAQDevice_acdc9d3765b1dfd845f99ec9c93071811}{D\-A\-Q\-Device}.
+
+\hypertarget{classmrr_a36a73bcb154bafe4abed5c69c374e96f}{\index{mrr@{mrr}!write\-Header@{write\-Header}}
+\index{write\-Header@{write\-Header}!mrr@{mrr}}
+\subsubsection[{write\-Header}]{\setlength{\rightskip}{0pt plus 5cm}void mrr\-::write\-Header (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classmrr_a36a73bcb154bafe4abed5c69c374e96f}
+
+
+Reimplemented from \hyperlink{classDAQDevice_aad39c13f039abd6e6a9b0aa21a7c8a4d}{D\-A\-Q\-Device}.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{mrr_8h}{mrr.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{mrr_8cpp}{mrr.\-cpp}\end{DoxyCompactItemize}

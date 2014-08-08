@@ -1,0 +1,197 @@
+\hypertarget{classLara}{\section{Lara Class Reference}
+\label{classLara}\index{Lara@{Lara}}
+}
+
+
+{\ttfamily \#include $<$lara.\-h$>$}
+
+Inheritance diagram for Lara\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classLara}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classLara_ad6868223e6c8dcec6297e60cf52c0054}{Lara} ()
+\item 
+\hyperlink{classLara_a13972df0bdfdfc87b69b8e15f4525296}{$\sim$\-Lara} ()
+\item 
+void \hyperlink{classLara_aa799138169577ef61f0d43341846ccf9}{set\-Config\-Defaults} ()
+\item 
+const char $\ast$ \hyperlink{classLara_a717b34c0a592c907ead948e010161ba6}{get\-Data\-Dir} ()
+\item 
+const char $\ast$ \hyperlink{classLara_a91cc9e1a0ac8f8f13b24bcf966524152}{get\-Data\-Filename} ()
+\item 
+long \hyperlink{classLara_a6061880b0ad621eb863d14eda0ea0b95}{get\-File\-Number} (char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+unsigned int \hyperlink{classLara_a004ffdd20608ea635775b68733a3d5a3}{get\-Sensor\-Group} ()
+\item 
+int \hyperlink{classLara_af903264894bc1afa28ea3321deeb7083}{read\-Header} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+int \hyperlink{classLara_aff63ff661248c4aa565282eaba084823}{parse\-Data} (char $\ast$line, struct timeval $\ast$l\-\_\-t\-Data, double $\ast$\hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value})
+\item 
+void \hyperlink{classLara_a727b4aa20f48283239922df33c191de1}{read\-Data} (std\-::string full\-\_\-filename)
+\item 
+void \hyperlink{classLara_abc32ee9688cef1ec84060d3c206c0123}{write\-Data} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+struct timeval \hyperlink{classLara_affcaafa6f994ac7ffc6105fdd0571c01}{t\-Ref}
+\item 
+int \hyperlink{classLara_a5225d610f129a85314440ec529d8b81f}{n\-Template}
+\item 
+int \hyperlink{classLara_a6ba4f1300d5a85063428df2e100bc6bf}{n\-Samples\-In\-File}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Implementation for the weather mast D\-A\-Q devices that are used for turbulence, energy balance and 20m mast.
+
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000016}{Todo}]Implement also storage of the test data in the database The feature should be configurable from the inifile \end{DoxyRefDesc}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classLara_ad6868223e6c8dcec6297e60cf52c0054}{\index{Lara@{Lara}!Lara@{Lara}}
+\index{Lara@{Lara}!Lara@{Lara}}
+\subsubsection[{Lara}]{\setlength{\rightskip}{0pt plus 5cm}Lara\-::\-Lara (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classLara_ad6868223e6c8dcec6297e60cf52c0054}
+\hypertarget{classLara_a13972df0bdfdfc87b69b8e15f4525296}{\index{Lara@{Lara}!$\sim$\-Lara@{$\sim$\-Lara}}
+\index{$\sim$\-Lara@{$\sim$\-Lara}!Lara@{Lara}}
+\subsubsection[{$\sim$\-Lara}]{\setlength{\rightskip}{0pt plus 5cm}Lara\-::$\sim$\-Lara (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classLara_a13972df0bdfdfc87b69b8e15f4525296}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classLara_a717b34c0a592c907ead948e010161ba6}{\index{Lara@{Lara}!get\-Data\-Dir@{get\-Data\-Dir}}
+\index{get\-Data\-Dir@{get\-Data\-Dir}!Lara@{Lara}}
+\subsubsection[{get\-Data\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ Lara\-::get\-Data\-Dir (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classLara_a717b34c0a592c907ead948e010161ba6}
+
+
+Reimplemented from \hyperlink{classDAQDevice_a7d7d41f0c1496221e589d84b38d1c865}{D\-A\-Q\-Device}.
+
+\hypertarget{classLara_a91cc9e1a0ac8f8f13b24bcf966524152}{\index{Lara@{Lara}!get\-Data\-Filename@{get\-Data\-Filename}}
+\index{get\-Data\-Filename@{get\-Data\-Filename}!Lara@{Lara}}
+\subsubsection[{get\-Data\-Filename}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ Lara\-::get\-Data\-Filename (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classLara_a91cc9e1a0ac8f8f13b24bcf966524152}
+Implements the data filename convention of the D\-A\-Q module. 
+
+Reimplemented from \hyperlink{classDAQDevice_af4734900eb86417b3160a723a077f8f5}{D\-A\-Q\-Device}.
+
+\hypertarget{classLara_a6061880b0ad621eb863d14eda0ea0b95}{\index{Lara@{Lara}!get\-File\-Number@{get\-File\-Number}}
+\index{get\-File\-Number@{get\-File\-Number}!Lara@{Lara}}
+\subsubsection[{get\-File\-Number}]{\setlength{\rightskip}{0pt plus 5cm}long Lara\-::get\-File\-Number (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classLara_a6061880b0ad621eb863d14eda0ea0b95}
+Re-\/implement the calculation of the file numbering scheme. \hyperlink{classLara}{Lara} uses date and times in the filename 
+
+Reimplemented from \hyperlink{classDAQDevice_a56a712062b2b17c6a73cb7fb0a475d2e}{D\-A\-Q\-Device}.
+
+\hypertarget{classLara_a004ffdd20608ea635775b68733a3d5a3}{\index{Lara@{Lara}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!Lara@{Lara}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Lara\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classLara_a004ffdd20608ea635775b68733a3d5a3}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classLara_aff63ff661248c4aa565282eaba084823}{\index{Lara@{Lara}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!Lara@{Lara}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int Lara\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{line, }
+\item[{struct timeval $\ast$}]{l\-\_\-t\-Data, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classLara_aff63ff661248c4aa565282eaba084823}
+Read the data from the current line of the data file. \begin{DoxyReturn}{Returns}
+-\/1 no data found, skip storage 0 sucess, store data, 1 read another line 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a9c20d9d69af4ba1641dbc82dd5be2aa5}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classLara_a727b4aa20f48283239922df33c191de1}{\index{Lara@{Lara}!read\-Data@{read\-Data}}
+\index{read\-Data@{read\-Data}!Lara@{Lara}}
+\subsubsection[{read\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void Lara\-::read\-Data (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{full\-\_\-filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classLara_a727b4aa20f48283239922df33c191de1}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a0d9b17803680d966c7025ca6f174cef0}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classLara_af903264894bc1afa28ea3321deeb7083}{\index{Lara@{Lara}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!Lara@{Lara}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int Lara\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classLara_af903264894bc1afa28ea3321deeb7083}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classLara_aa799138169577ef61f0d43341846ccf9}{\index{Lara@{Lara}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!Lara@{Lara}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void Lara\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classLara_aa799138169577ef61f0d43341846ccf9}
+The function is called before reading the configuration from the inifile. Use this fucntion in the module specific implementation to override the standard defaults 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+\hypertarget{classLara_abc32ee9688cef1ec84060d3c206c0123}{\index{Lara@{Lara}!write\-Data@{write\-Data}}
+\index{write\-Data@{write\-Data}!Lara@{Lara}}
+\subsubsection[{write\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void Lara\-::write\-Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classLara_abc32ee9688cef1ec84060d3c206c0123}
+
+
+Reimplemented from \hyperlink{classDAQDevice_acdc9d3765b1dfd845f99ec9c93071811}{D\-A\-Q\-Device}.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classLara_a6ba4f1300d5a85063428df2e100bc6bf}{\index{Lara@{Lara}!n\-Samples\-In\-File@{n\-Samples\-In\-File}}
+\index{n\-Samples\-In\-File@{n\-Samples\-In\-File}!Lara@{Lara}}
+\subsubsection[{n\-Samples\-In\-File}]{\setlength{\rightskip}{0pt plus 5cm}int Lara\-::n\-Samples\-In\-File\hspace{0.3cm}{\ttfamily [private]}}}\label{classLara_a6ba4f1300d5a85063428df2e100bc6bf}
+Number of samples in one file \hypertarget{classLara_a5225d610f129a85314440ec529d8b81f}{\index{Lara@{Lara}!n\-Template@{n\-Template}}
+\index{n\-Template@{n\-Template}!Lara@{Lara}}
+\subsubsection[{n\-Template}]{\setlength{\rightskip}{0pt plus 5cm}int Lara\-::n\-Template\hspace{0.3cm}{\ttfamily [private]}}}\label{classLara_a5225d610f129a85314440ec529d8b81f}
+\hypertarget{classLara_affcaafa6f994ac7ffc6105fdd0571c01}{\index{Lara@{Lara}!t\-Ref@{t\-Ref}}
+\index{t\-Ref@{t\-Ref}!Lara@{Lara}}
+\subsubsection[{t\-Ref}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval Lara\-::t\-Ref\hspace{0.3cm}{\ttfamily [private]}}}\label{classLara_affcaafa6f994ac7ffc6105fdd0571c01}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{lara_8h}{lara.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{lara_8cpp}{lara.\-cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/434/trunk/tmake/lib/irix-dcc
+END
+subdirs.t
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/irix-dcc/subdirs.t
+END
+app.t
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/irix-dcc/app.t
+END
+tmake.conf
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/doxygen/code/!svn/ver/434/trunk/tmake/lib/irix-dcc/tmake.conf
+END
+lib.t
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/irix-dcc/lib.t
+END

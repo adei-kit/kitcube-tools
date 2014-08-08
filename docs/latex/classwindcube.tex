@@ -1,0 +1,148 @@
+\hypertarget{classwindcube}{\section{windcube Class Reference}
+\label{classwindcube}\index{windcube@{windcube}}
+}
+
+
+{\ttfamily \#include $<$windcube.\-h$>$}
+
+Inheritance diagram for windcube\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classwindcube}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classwindcube_a8ae21721598a79437be9852ccaa266aa}{windcube} ()
+\item 
+\hyperlink{classwindcube_a08dd08e8a45cd9082be7bd488a8d230f}{$\sim$windcube} ()
+\item 
+void \hyperlink{classwindcube_ab15ca79d204a336abbd7ab5245ec9e55}{set\-Config\-Defaults} ()
+\item 
+int \hyperlink{classwindcube_a369ea13a1dcd471ad51250f89151364b}{read\-Header} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+unsigned int \hyperlink{classwindcube_a705808162810f8f4430e2bc3ca04a181}{get\-Sensor\-Group} ()
+\item 
+void \hyperlink{classwindcube_ab0a74d15ddda343b34ff4b28389fa811}{read\-Data} (std\-::string full\-\_\-filename)
+\item 
+int \hyperlink{classwindcube_a72691b4435de39d059542a1ccd064683}{parse\-Data} (char $\ast$\hyperlink{classDAQDevice_ab661aa5c5b4bafe78354f5169b1c7d2f}{buffer}, struct timeval $\ast$l\-\_\-t\-Data, double $\ast$sensor\-\_\-values)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \hyperlink{classwindcube_ada525fe40090dafeb8d7dae911ed9ac4}{elevation\-\_\-angle}
+\item 
+double $\ast$ \hyperlink{classwindcube_a6080ff141d176b3bb7e0dbc655ed46e9}{altitudes}
+\item 
+int \hyperlink{classwindcube_a283219a5fa65543bef16fdb3c8598260}{initial\-\_\-position}
+\item 
+struct timeval \hyperlink{classwindcube_aecb46d84c92acb6390ef5d33ba33957c}{initial\-\_\-timestamp}
+\item 
+double \hyperlink{classwindcube_a7c023ee8ccc3900b6544136f1e845e3f}{gain}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classwindcube_a8ae21721598a79437be9852ccaa266aa}{\index{windcube@{windcube}!windcube@{windcube}}
+\index{windcube@{windcube}!windcube@{windcube}}
+\subsubsection[{windcube}]{\setlength{\rightskip}{0pt plus 5cm}windcube\-::windcube (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classwindcube_a8ae21721598a79437be9852ccaa266aa}
+\hypertarget{classwindcube_a08dd08e8a45cd9082be7bd488a8d230f}{\index{windcube@{windcube}!$\sim$windcube@{$\sim$windcube}}
+\index{$\sim$windcube@{$\sim$windcube}!windcube@{windcube}}
+\subsubsection[{$\sim$windcube}]{\setlength{\rightskip}{0pt plus 5cm}windcube\-::$\sim$windcube (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classwindcube_a08dd08e8a45cd9082be7bd488a8d230f}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classwindcube_a705808162810f8f4430e2bc3ca04a181}{\index{windcube@{windcube}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!windcube@{windcube}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int windcube\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwindcube_a705808162810f8f4430e2bc3ca04a181}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classwindcube_a72691b4435de39d059542a1ccd064683}{\index{windcube@{windcube}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!windcube@{windcube}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int windcube\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{line, }
+\item[{struct timeval $\ast$}]{l\-\_\-t\-Data, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwindcube_a72691b4435de39d059542a1ccd064683}
+Read the data from the current line of the data file. \begin{DoxyReturn}{Returns}
+-\/1 no data found, skip storage 0 sucess, store data, 1 read another line 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a9c20d9d69af4ba1641dbc82dd5be2aa5}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classwindcube_ab0a74d15ddda343b34ff4b28389fa811}{\index{windcube@{windcube}!read\-Data@{read\-Data}}
+\index{read\-Data@{read\-Data}!windcube@{windcube}}
+\subsubsection[{read\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void windcube\-::read\-Data (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{full\-\_\-filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwindcube_ab0a74d15ddda343b34ff4b28389fa811}
+
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a0d9b17803680d966c7025ca6f174cef0}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classwindcube_a369ea13a1dcd471ad51250f89151364b}{\index{windcube@{windcube}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!windcube@{windcube}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int windcube\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwindcube_a369ea13a1dcd471ad51250f89151364b}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classwindcube_ab15ca79d204a336abbd7ab5245ec9e55}{\index{windcube@{windcube}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!windcube@{windcube}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void windcube\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwindcube_ab15ca79d204a336abbd7ab5245ec9e55}
+The function is called before reading the configuration from the inifile. Use this fucntion in the module specific implementation to override the standard defaults 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classwindcube_a6080ff141d176b3bb7e0dbc655ed46e9}{\index{windcube@{windcube}!altitudes@{altitudes}}
+\index{altitudes@{altitudes}!windcube@{windcube}}
+\subsubsection[{altitudes}]{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ windcube\-::altitudes\hspace{0.3cm}{\ttfamily [private]}}}\label{classwindcube_a6080ff141d176b3bb7e0dbc655ed46e9}
+\hypertarget{classwindcube_ada525fe40090dafeb8d7dae911ed9ac4}{\index{windcube@{windcube}!elevation\-\_\-angle@{elevation\-\_\-angle}}
+\index{elevation\-\_\-angle@{elevation\-\_\-angle}!windcube@{windcube}}
+\subsubsection[{elevation\-\_\-angle}]{\setlength{\rightskip}{0pt plus 5cm}double windcube\-::elevation\-\_\-angle\hspace{0.3cm}{\ttfamily [private]}}}\label{classwindcube_ada525fe40090dafeb8d7dae911ed9ac4}
+\hypertarget{classwindcube_a7c023ee8ccc3900b6544136f1e845e3f}{\index{windcube@{windcube}!gain@{gain}}
+\index{gain@{gain}!windcube@{windcube}}
+\subsubsection[{gain}]{\setlength{\rightskip}{0pt plus 5cm}double windcube\-::gain\hspace{0.3cm}{\ttfamily [private]}}}\label{classwindcube_a7c023ee8ccc3900b6544136f1e845e3f}
+\hypertarget{classwindcube_a283219a5fa65543bef16fdb3c8598260}{\index{windcube@{windcube}!initial\-\_\-position@{initial\-\_\-position}}
+\index{initial\-\_\-position@{initial\-\_\-position}!windcube@{windcube}}
+\subsubsection[{initial\-\_\-position}]{\setlength{\rightskip}{0pt plus 5cm}int windcube\-::initial\-\_\-position\hspace{0.3cm}{\ttfamily [private]}}}\label{classwindcube_a283219a5fa65543bef16fdb3c8598260}
+\hypertarget{classwindcube_aecb46d84c92acb6390ef5d33ba33957c}{\index{windcube@{windcube}!initial\-\_\-timestamp@{initial\-\_\-timestamp}}
+\index{initial\-\_\-timestamp@{initial\-\_\-timestamp}!windcube@{windcube}}
+\subsubsection[{initial\-\_\-timestamp}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval windcube\-::initial\-\_\-timestamp\hspace{0.3cm}{\ttfamily [private]}}}\label{classwindcube_aecb46d84c92acb6390ef5d33ba33957c}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{windcube_8h}{windcube.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{windcube_8cpp}{windcube.\-cpp}\end{DoxyCompactItemize}

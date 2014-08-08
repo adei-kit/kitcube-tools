@@ -1,0 +1,246 @@
+\hypertarget{classakTimeLib}{\section{ak\-Time\-Lib Class Reference}
+\label{classakTimeLib}\index{ak\-Time\-Lib@{ak\-Time\-Lib}}
+}
+
+
+{\ttfamily \#include $<$aktimelib.\-h$>$}
+
+Inheritance diagram for ak\-Time\-Lib\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classakTimeLib}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classakTimeLib_a1ed04c2866f3216275ee5253e47e239c}{$\sim$ak\-Time\-Lib} ()
+\item 
+void \hyperlink{classakTimeLib_aee4282fce5f0ecdd6af03073ad158562}{init} (const char $\ast$inifile=\char`\"{}aktimelib.\-ini\char`\"{}, F\-I\-L\-E $\ast$fout=0)
+\item 
+void \hyperlink{classakTimeLib_a76f4e184574a8c4e4321c41e63042dd1}{dump} (F\-I\-L\-E $\ast$fout=stdout)
+\item 
+void \hyperlink{classakTimeLib_a3c925c111c32829c9583d5c5ae4aada2}{test} ()
+\item 
+time\-\_\-t \hyperlink{classakTimeLib_ae72986916166ba6ceb9dfdcb27821f3a}{convert\-G\-P\-S\-To\-U\-T\-C} (unsigned long t\-\_\-gps)
+\item 
+unsigned long \hyperlink{classakTimeLib_a100f532636878a9fc17f2d2ebbb56ffb}{convert\-U\-T\-C\-To\-G\-P\-S} (time\-\_\-t t\-\_\-utc)
+\item 
+int \hyperlink{classakTimeLib_ad96749040ca82dc93bf484bec0b840de}{is\-Leap\-Second} (unsigned long t\-\_\-gps)
+\item 
+int \hyperlink{classakTimeLib_a678551e52aa31b75fddfaa7716e3ad64}{n\-Leap\-Seconds} (unsigned long t\-\_\-gps)
+\item 
+int \hyperlink{classakTimeLib_a53076bb547d1f621530e208804eb45c6}{add\-Leap\-Second} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{classakTimeLib}{ak\-Time\-Lib} $\ast$ \hyperlink{classakTimeLib_a60a13be5767c7e66c10e0ec9e10ad7d1}{get\-Reference} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classakTimeLib_a63e21732142b1b753a5bea511db61780}{ak\-Time\-Lib} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unsigned long \hyperlink{classakTimeLib_aece53a073d766b0842004433bbb743bc}{gps\-Delay}
+\item 
+int \hyperlink{classakTimeLib_a1792f1ade7d43742f16880fc3747a472}{leap\-Seconds}
+\item 
+unsigned long \hyperlink{classakTimeLib_adc38424ed0d1365181685654c1e430dc}{next\-Leap\-Second}
+\item 
+unsigned long $\ast$ \hyperlink{classakTimeLib_a0e3a8f8795bb2911947530ccbfe8797f}{leap\-Sec\-Gps}
+\item 
+unsigned long $\ast$ \hyperlink{classakTimeLib_a9b0bc2cb3fe5d6544ef93900c00a8b96}{leap\-Sec\-Utc}
+\item 
+int $\ast$ \hyperlink{classakTimeLib_afb895cbc388c984925ab8ebe8361e23e}{leap\-Sec\-N}
+\item 
+int \hyperlink{classakTimeLib_a95186789b9668d0b3a242ac8a57bf634}{n\-Leap\-Secs}
+\end{DoxyCompactItemize}
+\subsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{classakTimeLib}{ak\-Time\-Lib} \hyperlink{classakTimeLib_a85a5f79db7d7ddebce2174d8e7241a62}{instance}
+\item 
+static \hyperlink{classakSingletonCleaner}{ak\-Singleton\-Cleaner} \hyperlink{classakTimeLib_a69bc0356384bc7976926ac8c9e32847f}{cleaner}
+\item 
+static int \hyperlink{classakTimeLib_ad6b1a7cd89c1cccd32277b7c5442a597}{no\-Leap\-Sec\-Table} = 1
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classakTimeLib_aa7613c42aff93f7383b7f7298e0957b9}{ak\-Singleton\-Cleaner}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Library to handle the different time formats. The class needs to reads it's basic information (about the leap seconds) from some configuration file. Before using the library the first time load these value with the function init.
+
+The first implementation is based on a default number of leap second at the presend time and the time when the next leap second will occure. After this given occurence the ini file parameters have to be adjusted.
+
+There are two values taken from the ini file (stanard F\-E.\-ini)\-: \begin{DoxyItemize}
+\item The actual number of leap seconds (default is 13) and \item the time (in U\-T\-C format) when the next leap second is introcuded. If this value is zero no change in the leap second is considered.\end{DoxyItemize}
+A sample entry is F\-E.\-ini looks like\-: 
+\begin{DoxyPre}
+[GPSTime]
+; number of leap seconds (before nextLeapSecond - time)
+leapSeconds = 13
+; Time when the next leap second occures (UTC seconds)
+nextLeapSecond = 1016534603
+\end{DoxyPre}
+ 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classakTimeLib_a63e21732142b1b753a5bea511db61780}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!ak\-Time\-Lib@{ak\-Time\-Lib}}
+\index{ak\-Time\-Lib@{ak\-Time\-Lib}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{ak\-Time\-Lib}]{\setlength{\rightskip}{0pt plus 5cm}ak\-Time\-Lib\-::ak\-Time\-Lib (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{classakTimeLib_a63e21732142b1b753a5bea511db61780}
+\hypertarget{classakTimeLib_a1ed04c2866f3216275ee5253e47e239c}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!$\sim$ak\-Time\-Lib@{$\sim$ak\-Time\-Lib}}
+\index{$\sim$ak\-Time\-Lib@{$\sim$ak\-Time\-Lib}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{$\sim$ak\-Time\-Lib}]{\setlength{\rightskip}{0pt plus 5cm}ak\-Time\-Lib\-::$\sim$ak\-Time\-Lib (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classakTimeLib_a1ed04c2866f3216275ee5253e47e239c}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classakTimeLib_a53076bb547d1f621530e208804eb45c6}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!add\-Leap\-Second@{add\-Leap\-Second}}
+\index{add\-Leap\-Second@{add\-Leap\-Second}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{add\-Leap\-Second}]{\setlength{\rightskip}{0pt plus 5cm}int ak\-Time\-Lib\-::add\-Leap\-Second (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classakTimeLib_a53076bb547d1f621530e208804eb45c6}
+Add new leap second \hypertarget{classakTimeLib_ae72986916166ba6ceb9dfdcb27821f3a}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!convert\-G\-P\-S\-To\-U\-T\-C@{convert\-G\-P\-S\-To\-U\-T\-C}}
+\index{convert\-G\-P\-S\-To\-U\-T\-C@{convert\-G\-P\-S\-To\-U\-T\-C}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{convert\-G\-P\-S\-To\-U\-T\-C}]{\setlength{\rightskip}{0pt plus 5cm}time\-\_\-t ak\-Time\-Lib\-::convert\-G\-P\-S\-To\-U\-T\-C (
+\begin{DoxyParamCaption}
+\item[{unsigned long}]{t\-\_\-gps}
+\end{DoxyParamCaption}
+)}}\label{classakTimeLib_ae72986916166ba6ceb9dfdcb27821f3a}
+Convert the Hardware second counter the the format used by the P\-C (U\-T\-C time started at 1.\-1.\-1970)
+
+
+\begin{DoxyParams}{Parameters}
+{\em t\-\_\-gps} & Second counter in G\-P\-S format \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Time in U\-T\-C format format 
+\end{DoxyReturn}
+\hypertarget{classakTimeLib_a100f532636878a9fc17f2d2ebbb56ffb}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!convert\-U\-T\-C\-To\-G\-P\-S@{convert\-U\-T\-C\-To\-G\-P\-S}}
+\index{convert\-U\-T\-C\-To\-G\-P\-S@{convert\-U\-T\-C\-To\-G\-P\-S}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{convert\-U\-T\-C\-To\-G\-P\-S}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long ak\-Time\-Lib\-::convert\-U\-T\-C\-To\-G\-P\-S (
+\begin{DoxyParamCaption}
+\item[{time\-\_\-t}]{t\-\_\-utc}
+\end{DoxyParamCaption}
+)}}\label{classakTimeLib_a100f532636878a9fc17f2d2ebbb56ffb}
+Convert U\-T\-C to G\-P\-S time
+
+
+\begin{DoxyParams}{Parameters}
+{\em t\-\_\-utc} & Second counter in U\-T\-C format \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Time in G\-P\-S format format 
+\end{DoxyReturn}
+\hypertarget{classakTimeLib_a76f4e184574a8c4e4321c41e63042dd1}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!dump@{dump}}
+\index{dump@{dump}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{dump}]{\setlength{\rightskip}{0pt plus 5cm}void ak\-Time\-Lib\-::dump (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout = {\ttfamily stdout}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classakTimeLib_a76f4e184574a8c4e4321c41e63042dd1}
+Give information about class internals \hypertarget{classakTimeLib_a60a13be5767c7e66c10e0ec9e10ad7d1}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!get\-Reference@{get\-Reference}}
+\index{get\-Reference@{get\-Reference}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{get\-Reference}]{\setlength{\rightskip}{0pt plus 5cm}{\bf ak\-Time\-Lib} $\ast$ ak\-Time\-Lib\-::get\-Reference (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{classakTimeLib_a60a13be5767c7e66c10e0ec9e10ad7d1}
+Get the reference to the singleton \hypertarget{classakTimeLib_aee4282fce5f0ecdd6af03073ad158562}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!init@{init}}
+\index{init@{init}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{init}]{\setlength{\rightskip}{0pt plus 5cm}void ak\-Time\-Lib\-::init (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{inifile = {\ttfamily \char`\"{}aktimelib.ini\char`\"{}}, }
+\item[{F\-I\-L\-E $\ast$}]{fout = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}\label{classakTimeLib_aee4282fce5f0ecdd6af03073ad158562}
+Read the leap seconds table from an ini file \hypertarget{classakTimeLib_ad96749040ca82dc93bf484bec0b840de}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!is\-Leap\-Second@{is\-Leap\-Second}}
+\index{is\-Leap\-Second@{is\-Leap\-Second}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{is\-Leap\-Second}]{\setlength{\rightskip}{0pt plus 5cm}int ak\-Time\-Lib\-::is\-Leap\-Second (
+\begin{DoxyParamCaption}
+\item[{unsigned long}]{t\-\_\-gps}
+\end{DoxyParamCaption}
+)}}\label{classakTimeLib_ad96749040ca82dc93bf484bec0b840de}
+Check if a gps second counter points to an leap second
+
+\begin{DoxyReturn}{Returns}
+-\/1 error, 0 no lepa second, 1 leap second 
+\end{DoxyReturn}
+\hypertarget{classakTimeLib_a678551e52aa31b75fddfaa7716e3ad64}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!n\-Leap\-Seconds@{n\-Leap\-Seconds}}
+\index{n\-Leap\-Seconds@{n\-Leap\-Seconds}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{n\-Leap\-Seconds}]{\setlength{\rightskip}{0pt plus 5cm}int ak\-Time\-Lib\-::n\-Leap\-Seconds (
+\begin{DoxyParamCaption}
+\item[{unsigned long}]{t\-\_\-gps}
+\end{DoxyParamCaption}
+)}}\label{classakTimeLib_a678551e52aa31b75fddfaa7716e3ad64}
+Determine the number of leap seconds \hypertarget{classakTimeLib_a3c925c111c32829c9583d5c5ae4aada2}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!test@{test}}
+\index{test@{test}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{test}]{\setlength{\rightskip}{0pt plus 5cm}void ak\-Time\-Lib\-::test (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classakTimeLib_a3c925c111c32829c9583d5c5ae4aada2}
+Test the functions of the class 
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classakTimeLib_aa7613c42aff93f7383b7f7298e0957b9}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!ak\-Singleton\-Cleaner@{ak\-Singleton\-Cleaner}}
+\index{ak\-Singleton\-Cleaner@{ak\-Singleton\-Cleaner}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{ak\-Singleton\-Cleaner}]{\setlength{\rightskip}{0pt plus 5cm}friend class {\bf ak\-Singleton\-Cleaner}\hspace{0.3cm}{\ttfamily [friend]}}}\label{classakTimeLib_aa7613c42aff93f7383b7f7298e0957b9}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classakTimeLib_a69bc0356384bc7976926ac8c9e32847f}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!cleaner@{cleaner}}
+\index{cleaner@{cleaner}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{cleaner}]{\setlength{\rightskip}{0pt plus 5cm}{\bf ak\-Singleton\-Cleaner} ak\-Time\-Lib\-::cleaner\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}}\label{classakTimeLib_a69bc0356384bc7976926ac8c9e32847f}
+Can the cleaner be defined in the singleton class? I fear, it will only be possible to have one singleton in a program ?! \hypertarget{classakTimeLib_aece53a073d766b0842004433bbb743bc}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!gps\-Delay@{gps\-Delay}}
+\index{gps\-Delay@{gps\-Delay}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{gps\-Delay}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long ak\-Time\-Lib\-::gps\-Delay\hspace{0.3cm}{\ttfamily [private]}}}\label{classakTimeLib_aece53a073d766b0842004433bbb743bc}
+Delay between G\-P\-S and U\-T\-C second count gps\-Delay = t(\-U\-T\-P) -\/ t(\-G\-P\-S) \hypertarget{classakTimeLib_a85a5f79db7d7ddebce2174d8e7241a62}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!instance@{instance}}
+\index{instance@{instance}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{instance}]{\setlength{\rightskip}{0pt plus 5cm}{\bf ak\-Time\-Lib} ak\-Time\-Lib\-::instance\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}}\label{classakTimeLib_a85a5f79db7d7ddebce2174d8e7241a62}
+The only instance of this singleton class \hypertarget{classakTimeLib_a0e3a8f8795bb2911947530ccbfe8797f}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!leap\-Sec\-Gps@{leap\-Sec\-Gps}}
+\index{leap\-Sec\-Gps@{leap\-Sec\-Gps}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{leap\-Sec\-Gps}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long$\ast$ ak\-Time\-Lib\-::leap\-Sec\-Gps\hspace{0.3cm}{\ttfamily [private]}}}\label{classakTimeLib_a0e3a8f8795bb2911947530ccbfe8797f}
+List of gps seconds where a leap second is added \hypertarget{classakTimeLib_afb895cbc388c984925ab8ebe8361e23e}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!leap\-Sec\-N@{leap\-Sec\-N}}
+\index{leap\-Sec\-N@{leap\-Sec\-N}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{leap\-Sec\-N}]{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ ak\-Time\-Lib\-::leap\-Sec\-N\hspace{0.3cm}{\ttfamily [private]}}}\label{classakTimeLib_afb895cbc388c984925ab8ebe8361e23e}
+Number of leap second beginning from leap\-Sec\-Gps \hypertarget{classakTimeLib_a1792f1ade7d43742f16880fc3747a472}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!leap\-Seconds@{leap\-Seconds}}
+\index{leap\-Seconds@{leap\-Seconds}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{leap\-Seconds}]{\setlength{\rightskip}{0pt plus 5cm}int ak\-Time\-Lib\-::leap\-Seconds\hspace{0.3cm}{\ttfamily [private]}}}\label{classakTimeLib_a1792f1ade7d43742f16880fc3747a472}
+Number of actual leap seconds \hypertarget{classakTimeLib_a9b0bc2cb3fe5d6544ef93900c00a8b96}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!leap\-Sec\-Utc@{leap\-Sec\-Utc}}
+\index{leap\-Sec\-Utc@{leap\-Sec\-Utc}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{leap\-Sec\-Utc}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long$\ast$ ak\-Time\-Lib\-::leap\-Sec\-Utc\hspace{0.3cm}{\ttfamily [private]}}}\label{classakTimeLib_a9b0bc2cb3fe5d6544ef93900c00a8b96}
+List of utc/ntp second where a leap second is added \hypertarget{classakTimeLib_adc38424ed0d1365181685654c1e430dc}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!next\-Leap\-Second@{next\-Leap\-Second}}
+\index{next\-Leap\-Second@{next\-Leap\-Second}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{next\-Leap\-Second}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long ak\-Time\-Lib\-::next\-Leap\-Second\hspace{0.3cm}{\ttfamily [private]}}}\label{classakTimeLib_adc38424ed0d1365181685654c1e430dc}
+Time when the next leap second occures. This time has to be given in U\-T\-C seconds. \hypertarget{classakTimeLib_a95186789b9668d0b3a242ac8a57bf634}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!n\-Leap\-Secs@{n\-Leap\-Secs}}
+\index{n\-Leap\-Secs@{n\-Leap\-Secs}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{n\-Leap\-Secs}]{\setlength{\rightskip}{0pt plus 5cm}int ak\-Time\-Lib\-::n\-Leap\-Secs\hspace{0.3cm}{\ttfamily [private]}}}\label{classakTimeLib_a95186789b9668d0b3a242ac8a57bf634}
+Number of entries in the leap list \hypertarget{classakTimeLib_ad6b1a7cd89c1cccd32277b7c5442a597}{\index{ak\-Time\-Lib@{ak\-Time\-Lib}!no\-Leap\-Sec\-Table@{no\-Leap\-Sec\-Table}}
+\index{no\-Leap\-Sec\-Table@{no\-Leap\-Sec\-Table}!akTimeLib@{ak\-Time\-Lib}}
+\subsubsection[{no\-Leap\-Sec\-Table}]{\setlength{\rightskip}{0pt plus 5cm}int ak\-Time\-Lib\-::no\-Leap\-Sec\-Table = 1\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}}\label{classakTimeLib_ad6b1a7cd89c1cccd32277b7c5442a597}
+Flag to show if leap second table is missing 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/akutil/\hyperlink{aktimelib_8h}{aktimelib.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/akutil/\hyperlink{aktimelib_8cpp}{aktimelib.\-cpp}\end{DoxyCompactItemize}

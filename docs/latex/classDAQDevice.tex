@@ -1,0 +1,992 @@
+\hypertarget{classDAQDevice}{\section{D\-A\-Q\-Device Class Reference}
+\label{classDAQDevice}\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}}
+}
+
+
+{\ttfamily \#include $<$daqdevice.\-h$>$}
+
+Inheritance diagram for D\-A\-Q\-Device\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{classDAQDevice}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classDAQDevice_adcc18d71d95de6d875f99894383092f6}{D\-A\-Q\-Device} ()
+\item 
+virtual \hyperlink{classDAQDevice_a2fb9f1fe7ff9496d52654bda6b1a099b}{$\sim$\-D\-A\-Q\-Device} ()
+\item 
+int \hyperlink{classDAQDevice_aa077dc208e0af098a95c75a97dcb4a16}{get\-N\-Sensors} ()
+\item 
+virtual void \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{set\-Config\-Defaults} ()
+\item 
+void \hyperlink{classDAQDevice_aedf0ba7667fd7e0952f04878af2d3bb4}{read\-Inifile\-Common} (const char $\ast$\hyperlink{classDAQDevice_aeacc409b639f3ed09cfdbd9b2c3e7d09}{inifile})
+\item 
+virtual void \hyperlink{classDAQDevice_a47c1cf880beb17950a575168274bc213}{read\-Inifile} (const char $\ast$\hyperlink{classDAQDevice_aeacc409b639f3ed09cfdbd9b2c3e7d09}{inifile}, const char $\ast$group=0)
+\item 
+void \hyperlink{classDAQDevice_ac1fa63e8be022587c80af60a67fb0893}{read\-Axis} (const char $\ast$\hyperlink{classDAQDevice_aeacc409b639f3ed09cfdbd9b2c3e7d09}{inifile})
+\item 
+void \hyperlink{classDAQDevice_adb56a07d66555732a901196519b1b963}{get\-Sensor\-Names} (const char $\ast$sensor\-\_\-list\-\_\-file\-\_\-name)
+\item 
+void \hyperlink{classDAQDevice_aee072d124ed6eb99003d24233f3eb5f6}{get\-Sampling\-Time} (struct timeval $\ast$time)
+\item 
+void \hyperlink{classDAQDevice_a6351102955977889363de75de88436f2}{get\-Last\-Timestamp} (struct timeval $\ast$time)
+\item 
+void \hyperlink{classDAQDevice_ae8c54de957f24848f9882d427ccda1f1}{get\-Next\-Timestamp} (struct timeval $\ast$time)
+\item 
+void \hyperlink{classDAQDevice_afc9b0a86f2c4d7a2dbf099d8eebade23}{set\-Last\-Timestamp} (struct timeval $\ast$time)
+\item 
+void \hyperlink{classDAQDevice_add887304744674aae4d21b9988437dc5}{create\-Directories} (const char $\ast$\hyperlink{classDAQDevice_a388a037825fdd2248eb1cadf15780bcd}{path})
+\item 
+virtual void \hyperlink{classDAQDevice_aa31998fc15327f4999946adcdbb9f770}{open\-File} (const char $\ast$filenname)
+\item 
+virtual void \hyperlink{classDAQDevice_a6631b33164c86e7da8d0cd7eca50863f}{open\-File} ()
+\item 
+virtual void \hyperlink{classDAQDevice_a0626e224d6263cca633f74b0aae65223}{open\-New\-File} ()
+\item 
+virtual void \hyperlink{classDAQDevice_ae27c5729563be895c0d0a607ee023e30}{close\-File} ()
+\item 
+const char $\ast$ \hyperlink{classDAQDevice_a45f86e1db8a54d14559ad4f74078a49e}{get\-Archive\-Dir} ()
+\item 
+virtual const char $\ast$ \hyperlink{classDAQDevice_a7d7d41f0c1496221e589d84b38d1c865}{get\-Data\-Dir} ()
+\item 
+virtual const char $\ast$ \hyperlink{classDAQDevice_af4734900eb86417b3160a723a077f8f5}{get\-Data\-Filename} ()
+\item 
+virtual void \hyperlink{classDAQDevice_a32f118d291f1c7b8fe47a16474b825e2}{open\-Database} ()
+\item 
+void \hyperlink{classDAQDevice_a88a9330a2982674e6e9097790c7e65cb}{open\-Status\-Tab} ()
+\item 
+void \hyperlink{classDAQDevice_adc401ccdc283c2121a8ef0f5fe67f543}{connect\-Database} ()
+\item 
+virtual int \hyperlink{classDAQDevice_ac4867b7e5aff2d5c404d6eb1053dda71}{create\-\_\-data\-\_\-table} ()
+\item 
+virtual void \hyperlink{classDAQDevice_a00f5a8af6622bc8aebcf930f2ae674ac}{close\-Database} ()
+\item 
+virtual int \hyperlink{classDAQDevice_af5fa373af9a089c18c7fd1d662db144f}{read\-Header} (const char $\ast$header)
+\item 
+virtual void \hyperlink{classDAQDevice_ac663fe98e445fc57df55dac84a2c9846}{read\-Header} ()
+\item 
+virtual void \hyperlink{classDAQDevice_aad39c13f039abd6e6a9b0aa21a7c8a4d}{write\-Header} ()
+\item 
+virtual int \hyperlink{classDAQDevice_a37f6fcab4893285e7f7d74670294a645}{parse\-Data} (char $\ast$line, struct timeval $\ast$l\-\_\-t\-Data, double $\ast$\hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value})
+\item 
+void \hyperlink{classDAQDevice_a3c31d33d7af79b99cc86dc00554e9472}{register\-Status\-Tab} (const char $\ast$status=0, const char $\ast$comment=0)
+\item 
+virtual void \hyperlink{classDAQDevice_a5262fc7b919829bc439e9eebfc8592e7}{store\-Sensor\-Data} ()
+\item 
+virtual void \hyperlink{classDAQDevice_a218267a0239e980d418ee5ab70f884e7}{read\-Data} (std\-::string full\-\_\-filename)
+\item 
+virtual void \hyperlink{classDAQDevice_a06d18d7b372d35c55f8a1a399f582a94}{update\-Data\-Set} (unsigned char $\ast$buf)
+\item 
+virtual void \hyperlink{classDAQDevice_acdc9d3765b1dfd845f99ec9c93071811}{write\-Data} ()
+\item 
+virtual long \hyperlink{classDAQDevice_a56a712062b2b17c6a73cb7fb0a475d2e}{get\-File\-Number} (char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\item 
+void \hyperlink{classDAQDevice_a8d52a03c722baf86c7279478f31f6e60}{get\-New\-Files} (const char $\ast$dir=0)
+\item 
+unsigned int \hyperlink{classDAQDevice_ae96988af5ad52d284d3d10dc7e52c351}{get\-Module\-Number} ()
+\item 
+virtual unsigned int \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{get\-Sensor\-Group} ()
+\item 
+unsigned long \hyperlink{classDAQDevice_a9bc65c78b7855fc29bf80e1dae950109}{get\-Timestamp} (const char $\ast$date, const char $\ast$time)
+\item 
+void \hyperlink{classDAQDevice_ad62233d33b79371db16f666864fbc83b}{set\-Debug\-Level} (int level)
+\item 
+virtual void \hyperlink{classDAQDevice_a42934eca41ab337dc5874e9e70ba1fab}{set\-App\-Id} (int id)
+\item 
+int \hyperlink{classDAQDevice_a176d88638d40c00284fe465344f76f32}{get\-App\-Id} ()
+\item 
+bool \hyperlink{classDAQDevice_a56426722a8c4ee14d242fd15b49440c5}{reached\-E\-O\-F} ()
+\item 
+unsigned int \hyperlink{classDAQDevice_a873db9cbaef6c48fb42bbcd4e3d5dc3b}{get\-Processed\-Data} ()
+\item 
+void \hyperlink{classDAQDevice_acf52574e463497c82a7435190710d198}{save\-File\-Position} (long last\-Index, unsigned long curr\-Pos, struct timeval \&timestamp)
+\item 
+void \hyperlink{classDAQDevice_a315931693c343f5d6f9b607d406e25ac}{load\-File\-Position} (long \&last\-Index, unsigned long \&last\-Pos, struct timeval \&timestamp)
+\item 
+void \hyperlink{classDAQDevice_a8aab00baa4f0f0b5718e88539b3d3479}{reset\-File\-Position} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\-::string \hyperlink{classDAQDevice_aab515711e872a4ee38ae5b1278f64286}{sensor\-Listfile}
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classDAQDevice_a66f31f8b094adaa54a79fd28730248d6}{load\-Python} ()
+\item 
+void \hyperlink{classDAQDevice_aaebe17251aead6111efcb7bcb3006c60}{release\-Python} ()
+\item 
+void \hyperlink{classDAQDevice_a63bf061ad2297861e1e8d8144445235e}{read\-Data\-With\-Python} (const char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename}, double $\ast$\hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value})
+\item 
+virtual int \hyperlink{classDAQDevice_add621117663b1aa2b3c3efcc115a8126}{create\-\_\-data\-\_\-table\-\_\-name} (std\-::string \&data\-\_\-table\-\_\-name)
+\item 
+int \hyperlink{classDAQDevice_acd12b71320ddcf9c875df0cb701cd581}{read\-\_\-ascii\-\_\-line} (char $\ast$$\ast$\hyperlink{classDAQDevice_ab661aa5c5b4bafe78354f5169b1c7d2f}{buffer}, size\-\_\-t $\ast$length, F\-I\-L\-E $\ast$file\-\_\-ptr)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{classDAQDevice_ad9f21827cf4471e11b5e5bfe8f29152f}{reset}
+\item 
+bool \hyperlink{classDAQDevice_a6103f8804ccb23ac0e76e38ed954ddbc}{use\-Ticks}
+\item 
+int \hyperlink{classDAQDevice_a91b1652c6ca593eaf3f04e3118cd2420}{len\-Header}
+\item 
+int \hyperlink{classDAQDevice_a155e6dba34521962283c83f1bda63799}{len\-Header\-Lines}
+\item 
+int \hyperlink{classDAQDevice_ae6cf89824f15528d92fe1e31b2dacf59}{len\-Data\-Set}
+\item 
+int \hyperlink{classDAQDevice_af1607d0a9cdd02c6dfe9a7db01fbe4e8}{no\-Data}
+\item 
+int \hyperlink{classDAQDevice_aae80d100e6407da492b7bda911739bb8}{t\-Sample}
+\item 
+struct timeval \hyperlink{classDAQDevice_a7c0d73d39b13231c2760b0aa6724b42c}{t\-Last\-Data}
+\item 
+int \hyperlink{classDAQDevice_a508ad6a95eec7efc47047b056f145a9d}{t\-Alarm}
+\item 
+int \hyperlink{classDAQDevice_a9e0cb352d0412ec6cc600cc86aee69b8}{n\-Axis}
+\item 
+struct \hyperlink{structaxisDef}{axis\-Def} $\ast$ \hyperlink{classDAQDevice_ad4d9fa4d5ec7b391260d89393ed13a37}{axis}
+\item 
+int \hyperlink{classDAQDevice_a66af3e902896059a53f5cfb2fa04e0f5}{n\-Sensors}
+\item 
+int \hyperlink{classDAQDevice_a308e077b2ecaff2aa04e3dec7387751a}{n\-Sensor\-Cols}
+\item 
+int \hyperlink{classDAQDevice_a5da19e281fb55786ad815c0d98a0c616}{profile\-\_\-length}
+\item 
+struct \hyperlink{structsensorType}{sensor\-Type} $\ast$ \hyperlink{classDAQDevice_a62c5391079563bbd24ac2f7cdd210710}{sensor}
+\item 
+struct timeval \hyperlink{classDAQDevice_af7da14a199a793fd63db3af2b2a78d92}{t\-Data}
+\item 
+float $\ast$ \hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value}
+\item 
+unsigned int \hyperlink{classDAQDevice_a4ba9ed1e61cf39c3e3eab37e8cfc908c}{processed\-Data}
+\item 
+F\-I\-L\-E $\ast$ \hyperlink{classDAQDevice_a0dcbda57c0b7b95d27a53ed5e1fabf59}{fdata}
+\item 
+unsigned long \hyperlink{classDAQDevice_a68a1e79d4d2efd8592d566bacc1838f2}{file\-Index}
+\item 
+int \hyperlink{classDAQDevice_a96c5b196a01603f4b8e37c3840597295}{n\-Line}
+\item 
+int \hyperlink{classDAQDevice_a2f0b3d2e531be7f5d06f47a4753d35bd}{app\-Id}
+\item 
+bool \hyperlink{classDAQDevice_a4431ebea220a683acb12ce0f78e87927}{is\-Flat\-Folder}
+\item 
+std\-::string \hyperlink{classDAQDevice_a2febc34bb56a8b39d0d13523ccc60c3e}{project}
+\item 
+std\-::string \hyperlink{classDAQDevice_a43ebbf069d065fdafba9aa9664ab76b1}{filename\-Marker}
+\item 
+std\-::string \hyperlink{classDAQDevice_aeacc409b639f3ed09cfdbd9b2c3e7d09}{inifile}
+\item 
+std\-::string \hyperlink{classDAQDevice_a10e5184e28ccafa407167c032f8496ea}{ini\-Group}
+\item 
+std\-::string \hyperlink{classDAQDevice_a388a037825fdd2248eb1cadf15780bcd}{path}
+\item 
+std\-::string \hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename}
+\item 
+std\-::string \hyperlink{classDAQDevice_a1bb9bdd8a55337b40e44d159cb1cc8e5}{full\-Filename}
+\item 
+std\-::string \hyperlink{classDAQDevice_a5fb94d0eed52bfb5df51424a21f3482f}{module\-Name}
+\item 
+std\-::string \hyperlink{classDAQDevice_a962a90d4dd66bb3d4c3cab6ec628db73}{module\-Comment}
+\item 
+std\-::string \hyperlink{classDAQDevice_ab246fcff5cbe2a1f4748db00bb9fa5c4}{module\-Type}
+\item 
+unsigned int \hyperlink{classDAQDevice_a07fc449a690016ffa1b1bc029b956c02}{module\-Number}
+\item 
+std\-::string \hyperlink{classDAQDevice_a8adec9c21ffa22beee97e2eda1f2488c}{data\-Sub\-Dir}
+\item 
+std\-::string \hyperlink{classDAQDevice_a63a6793abe5933e7dc71cd673bd0f98f}{sensor\-Group}
+\item 
+unsigned int \hyperlink{classDAQDevice_aa35abc3d365a36659b64df6cadf2c807}{sensor\-Group\-Number}
+\item 
+int \hyperlink{classDAQDevice_a06e7f707d2d97b192a4389a0c4fd231d}{header\-Line}
+\item 
+std\-::string \hyperlink{classDAQDevice_ae8e11658c72f3a6468cc37f1e8cf08bb}{data\-Sep}
+\item 
+std\-::string \hyperlink{classDAQDevice_af34a3a4a6cc3b4a8c01ce42d495be6c2}{comment\-Char}
+\item 
+std\-::string \hyperlink{classDAQDevice_a35f89e6ada8acd69ce9b705633370345}{timestamp\-Format}
+\item 
+std\-::string \hyperlink{classDAQDevice_a1fcd353aea74e51801b36d5728f67e66}{config\-Dir}
+\item 
+std\-::string \hyperlink{classDAQDevice_a6df191f01fd268b0072e09ba2b76827f}{remote\-Dir}
+\item 
+std\-::string \hyperlink{classDAQDevice_a40eb0f06fac7ec90ed04b766b1f5df3c}{archive\-Dir}
+\item 
+std\-::string \hyperlink{classDAQDevice_ae99e0e25b09c03713caac3f9b2baaee8}{data\-Dir}
+\item 
+std\-::string \hyperlink{classDAQDevice_ad3cde27a8f45ea3af4495a9d366c31c3}{datafile\-Mask}
+\item 
+std\-::string \hyperlink{classDAQDevice_a3d221f2cd6d5d903cbaa8c80abe495de}{datafile\-Index\-Format}
+\item 
+std\-::string \hyperlink{classDAQDevice_a551a005ad3f98c83a2b8b38bc3634007}{datafile\-Template}
+\item 
+std\-::string \hyperlink{classDAQDevice_ae6db34954e8c3723feba1d32a7643095}{rsync\-Args}
+\item 
+int \hyperlink{classDAQDevice_ad0a7f34f8a98c28fa5660714c048e657}{init\-Done}
+\item 
+std\-::string \hyperlink{classDAQDevice_ac06e9cd93e95a3c4e33970edb79f9148}{compression\-Type}
+\item 
+std\-::string \hyperlink{classDAQDevice_ad85b8bb5afbe0a9c3cd75e7ee9ef83ee}{db\-Host}
+\item 
+int \hyperlink{classDAQDevice_a275b8a01d1219d64a64a2536038039a4}{db\-Port}
+\item 
+std\-::string \hyperlink{classDAQDevice_afb3d256eedb538510939b8c40e26a968}{db\-Name}
+\item 
+std\-::string \hyperlink{classDAQDevice_a1cecb55a4edaf4299411f650c7410e5e}{db\-User}
+\item 
+std\-::string \hyperlink{classDAQDevice_ab02618ceb308d39d365bc0b394914b69}{db\-Password}
+\item 
+std\-::string \hyperlink{classDAQDevice_a4140887251923bc9715a23fb63849785}{sensor\-Table\-Name}
+\item 
+std\-::string \hyperlink{classDAQDevice_af33c38b4bf6c138dc60d84a9bfb6df85}{axis\-Table\-Name}
+\item 
+std\-::string \hyperlink{classDAQDevice_a0061ca1e9e172bc2cb113a6f6b7f0ade}{module\-Table\-Name}
+\item 
+std\-::string \hyperlink{classDAQDevice_a3b932e09b546454324cc07d7958f58ac}{data\-Table\-Name}
+\item 
+std\-::string \hyperlink{classDAQDevice_ac2ae1cde05bf5d13d18e213c94c5dadc}{data\-Table\-Prefix}
+\item 
+std\-::string \hyperlink{classDAQDevice_a9e039294e443228fc1854ec798d1b5c4}{status\-Table\-Name}
+\item 
+std\-::string \hyperlink{classDAQDevice_a1d817232e36e532fbed88e7013e30567}{status\-Table\-Key}
+\item 
+std\-::string \hyperlink{classDAQDevice_a4d916c2296ae785dbe02859721b410e6}{python\-Dir}
+\item 
+std\-::string \hyperlink{classDAQDevice_a75b36464a8009089f1f5721764f7bf70}{python\-Module}
+\item 
+std\-::string \hyperlink{classDAQDevice_ac2662dfe78ec08ab4bd8cc8e159fed0f}{python\-Function}
+\item 
+int \hyperlink{classDAQDevice_ae7b23729ae0dc7ab3cd0e4c633bf4e25}{debug}
+\item 
+std\-::string \hyperlink{classDAQDevice_ab661aa5c5b4bafe78354f5169b1c7d2f}{buffer}
+\item 
+bool \hyperlink{classDAQDevice_a0adfd30435b899ce439998bbdd3dae91}{fd\-\_\-eof}
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{classDAQDevice_ac3c405fb5cc77a22c450b952ae6b82f3}{get\-\_\-file\-\_\-list} (std\-::string directory)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\-::string \hyperlink{classDAQDevice_a2abc939adabdc9bc9a88bd1db5dcfd08}{filename\-Tmpl}
+\item 
+std\-::string \hyperlink{classDAQDevice_add8342b70f7350c0d8b7bf4ba3e9c5b4}{basedir}
+\item 
+std\-::string \hyperlink{classDAQDevice_a6dc47f2c1a792f5a1ed09b03ac98e8cc}{basedir\-Tmpl}
+\item 
+std\-::string \hyperlink{classDAQDevice_aab09bfdbb1d0aa4b413e4bbbc5e3c5a6}{location}
+\item 
+std\-::map$<$ long, std\-::string $>$ \hyperlink{classDAQDevice_a962745a4a4f20898c918d59fabf05e2a}{dateien}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Implementation for the weather mast D\-A\-Q devices that are used for turbulence, energy balance and 20m mast. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classDAQDevice_adcc18d71d95de6d875f99894383092f6}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!D\-A\-Q\-Device@{D\-A\-Q\-Device}}
+\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{D\-A\-Q\-Device}]{\setlength{\rightskip}{0pt plus 5cm}D\-A\-Q\-Device\-::\-D\-A\-Q\-Device (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_adcc18d71d95de6d875f99894383092f6}
+\hypertarget{classDAQDevice_a2fb9f1fe7ff9496d52654bda6b1a099b}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!$\sim$\-D\-A\-Q\-Device@{$\sim$\-D\-A\-Q\-Device}}
+\index{$\sim$\-D\-A\-Q\-Device@{$\sim$\-D\-A\-Q\-Device}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{$\sim$\-D\-A\-Q\-Device}]{\setlength{\rightskip}{0pt plus 5cm}D\-A\-Q\-Device\-::$\sim$\-D\-A\-Q\-Device (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a2fb9f1fe7ff9496d52654bda6b1a099b}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classDAQDevice_a00f5a8af6622bc8aebcf930f2ae674ac}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!close\-Database@{close\-Database}}
+\index{close\-Database@{close\-Database}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{close\-Database}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::close\-Database (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a00f5a8af6622bc8aebcf930f2ae674ac}
+\hypertarget{classDAQDevice_ae27c5729563be895c0d0a607ee023e30}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!close\-File@{close\-File}}
+\index{close\-File@{close\-File}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{close\-File}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::close\-File (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_ae27c5729563be895c0d0a607ee023e30}
+
+
+Reimplemented in \hyperlink{classDAQBinaryDevice_aaa2ed58aa73772cd742d3239e21944d9}{D\-A\-Q\-Binary\-Device}, and \hyperlink{classDAQAsciiDevice_aef686b204dd3569291c5cc4534f7aa24}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classDAQDevice_adc401ccdc283c2121a8ef0f5fe67f543}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!connect\-Database@{connect\-Database}}
+\index{connect\-Database@{connect\-Database}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{connect\-Database}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::connect\-Database (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_adc401ccdc283c2121a8ef0f5fe67f543}
+Connect to the database \char`\"{}$<$project$>$\-\_\-active\char`\"{}. The database is created, if not existing. The function is included from \hyperlink{classDAQDevice_a32f118d291f1c7b8fe47a16474b825e2}{open\-Database()}. \hypertarget{classDAQDevice_ac4867b7e5aff2d5c404d6eb1053dda71}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!create\-\_\-data\-\_\-table@{create\-\_\-data\-\_\-table}}
+\index{create\-\_\-data\-\_\-table@{create\-\_\-data\-\_\-table}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{create\-\_\-data\-\_\-table}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::create\-\_\-data\-\_\-table (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_ac4867b7e5aff2d5c404d6eb1053dda71}
+Create data table, if it doesn't exist. The function is called by \hyperlink{classDAQDevice_a32f118d291f1c7b8fe47a16474b825e2}{open\-Database()}. 
+
+Reimplemented in \hyperlink{classwindtracer_a4921e9eaa0f568b3119bd8f253484388}{windtracer}, \hyperlink{classsodar_afcdf95cbd5488e8a68d15d0817b62ba6}{sodar}, and \hyperlink{classhatpro_aa252764179bbe6f3c06b4a02ded7be52}{hatpro}.
+
+\hypertarget{classDAQDevice_add621117663b1aa2b3c3efcc115a8126}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!create\-\_\-data\-\_\-table\-\_\-name@{create\-\_\-data\-\_\-table\-\_\-name}}
+\index{create\-\_\-data\-\_\-table\-\_\-name@{create\-\_\-data\-\_\-table\-\_\-name}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{create\-\_\-data\-\_\-table\-\_\-name}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::create\-\_\-data\-\_\-table\-\_\-name (
+\begin{DoxyParamCaption}
+\item[{std\-::string \&}]{data\-\_\-table\-\_\-name}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}}\label{classDAQDevice_add621117663b1aa2b3c3efcc115a8126}
+
+
+Reimplemented in \hyperlink{classwindtracer_af9d739964c034029c99e283a283b506f}{windtracer}.
+
+\hypertarget{classDAQDevice_add887304744674aae4d21b9988437dc5}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!create\-Directories@{create\-Directories}}
+\index{create\-Directories@{create\-Directories}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{create\-Directories}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::create\-Directories (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{path}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_add887304744674aae4d21b9988437dc5}
+\hypertarget{classDAQDevice_ac3c405fb5cc77a22c450b952ae6b82f3}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-\_\-file\-\_\-list@{get\-\_\-file\-\_\-list}}
+\index{get\-\_\-file\-\_\-list@{get\-\_\-file\-\_\-list}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-\_\-file\-\_\-list}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::get\-\_\-file\-\_\-list (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{directory}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}}\label{classDAQDevice_ac3c405fb5cc77a22c450b952ae6b82f3}
+\hypertarget{classDAQDevice_a176d88638d40c00284fe465344f76f32}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-App\-Id@{get\-App\-Id}}
+\index{get\-App\-Id@{get\-App\-Id}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-App\-Id}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::get\-App\-Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a176d88638d40c00284fe465344f76f32}
+Get the application I\-D \hypertarget{classDAQDevice_a45f86e1db8a54d14559ad4f74078a49e}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Archive\-Dir@{get\-Archive\-Dir}}
+\index{get\-Archive\-Dir@{get\-Archive\-Dir}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Archive\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ D\-A\-Q\-Device\-::get\-Archive\-Dir (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a45f86e1db8a54d14559ad4f74078a49e}
+Get the path to the archive directory \hypertarget{classDAQDevice_a7d7d41f0c1496221e589d84b38d1c865}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Data\-Dir@{get\-Data\-Dir}}
+\index{get\-Data\-Dir@{get\-Data\-Dir}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Data\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ D\-A\-Q\-Device\-::get\-Data\-Dir (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a7d7d41f0c1496221e589d84b38d1c865}
+
+
+Reimplemented in \hyperlink{classwindtracer_abb6a7e64e508dec0f0e10cf8af76fc9c}{windtracer}, \hyperlink{classMast_a728e5f3077a08c7fec100cc8792a1de6}{Mast}, \hyperlink{classCeilometer_ac9984aad78fe229d7314d45c0e722ef2}{Ceilometer}, \hyperlink{classNorbert_a8b111e6c53af877a765b9c9938a841b9}{Norbert}, \hyperlink{classwolkenkamera_ac4f55fd3e4b97532af5774daab350358}{wolkenkamera}, \hyperlink{classLara_a717b34c0a592c907ead948e010161ba6}{Lara}, \hyperlink{classSimRandom_a5d4693d599a13efe8a75cf72dd55d8f3}{Sim\-Random}, and \hyperlink{classsisomop_a3f242e161d194348f13d8a4b399e23a3}{sisomop}.
+
+\hypertarget{classDAQDevice_af4734900eb86417b3160a723a077f8f5}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Data\-Filename@{get\-Data\-Filename}}
+\index{get\-Data\-Filename@{get\-Data\-Filename}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Data\-Filename}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ D\-A\-Q\-Device\-::get\-Data\-Filename (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_af4734900eb86417b3160a723a077f8f5}
+Implements the data filename convention of the D\-A\-Q module. 
+
+Reimplemented in \hyperlink{classMast_af1019b85d2e451e9a57bf9da0638d69e}{Mast}, \hyperlink{classSimRandom_ae456d364f9f6eda82fa7947cb3ccd813}{Sim\-Random}, and \hyperlink{classLara_a91cc9e1a0ac8f8f13b24bcf966524152}{Lara}.
+
+\hypertarget{classDAQDevice_a56a712062b2b17c6a73cb7fb0a475d2e}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-File\-Number@{get\-File\-Number}}
+\index{get\-File\-Number@{get\-File\-Number}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-File\-Number}]{\setlength{\rightskip}{0pt plus 5cm}long D\-A\-Q\-Device\-::get\-File\-Number (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a56a712062b2b17c6a73cb7fb0a475d2e}
+Get the ranking number from a filename. The returned number can be used to order files by their date. Smaller numbers are processed before larger ones. The function needs also to check if the given filename is valid according to the file name specification of the device. In case of violation zero is returned. 
+
+Reimplemented in \hyperlink{classwolkenkamera_aada77e474f3ed7097178c17e03c78b5b}{wolkenkamera}, \hyperlink{classNorbert_a1f346f31e3c69c956a3a177ca13fed91}{Norbert}, and \hyperlink{classLara_a6061880b0ad621eb863d14eda0ea0b95}{Lara}.
+
+\hypertarget{classDAQDevice_a6351102955977889363de75de88436f2}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Last\-Timestamp@{get\-Last\-Timestamp}}
+\index{get\-Last\-Timestamp@{get\-Last\-Timestamp}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Last\-Timestamp}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::get\-Last\-Timestamp (
+\begin{DoxyParamCaption}
+\item[{struct timeval $\ast$}]{time}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a6351102955977889363de75de88436f2}
+Get the last sampling time \hypertarget{classDAQDevice_ae96988af5ad52d284d3d10dc7e52c351}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Module\-Number@{get\-Module\-Number}}
+\index{get\-Module\-Number@{get\-Module\-Number}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Module\-Number}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int D\-A\-Q\-Device\-::get\-Module\-Number (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_ae96988af5ad52d284d3d10dc7e52c351}
+Return the module number \hypertarget{classDAQDevice_a8d52a03c722baf86c7279478f31f6e60}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-New\-Files@{get\-New\-Files}}
+\index{get\-New\-Files@{get\-New\-Files}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-New\-Files}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::get\-New\-Files (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{dir = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a8d52a03c722baf86c7279478f31f6e60}
+Get list of new files \hypertarget{classDAQDevice_ae8c54de957f24848f9882d427ccda1f1}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Next\-Timestamp@{get\-Next\-Timestamp}}
+\index{get\-Next\-Timestamp@{get\-Next\-Timestamp}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Next\-Timestamp}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::get\-Next\-Timestamp (
+\begin{DoxyParamCaption}
+\item[{struct timeval $\ast$}]{time}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_ae8c54de957f24848f9882d427ccda1f1}
+Get the last sampling time \hypertarget{classDAQDevice_aa077dc208e0af098a95c75a97dcb4a16}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-N\-Sensors@{get\-N\-Sensors}}
+\index{get\-N\-Sensors@{get\-N\-Sensors}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-N\-Sensors}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::get\-N\-Sensors (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_aa077dc208e0af098a95c75a97dcb4a16}
+Get the number of sensors \hypertarget{classDAQDevice_a873db9cbaef6c48fb42bbcd4e3d5dc3b}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Processed\-Data@{get\-Processed\-Data}}
+\index{get\-Processed\-Data@{get\-Processed\-Data}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Processed\-Data}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int D\-A\-Q\-Device\-::get\-Processed\-Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a873db9cbaef6c48fb42bbcd4e3d5dc3b}
+Get the number of processed data in the last cycle \hypertarget{classDAQDevice_aee072d124ed6eb99003d24233f3eb5f6}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Sampling\-Time@{get\-Sampling\-Time}}
+\index{get\-Sampling\-Time@{get\-Sampling\-Time}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Sampling\-Time}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::get\-Sampling\-Time (
+\begin{DoxyParamCaption}
+\item[{struct timeval $\ast$}]{time}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_aee072d124ed6eb99003d24233f3eb5f6}
+Return the samping time of the device \hypertarget{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int D\-A\-Q\-Device\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}
+Return the number of the sensor group 
+
+Reimplemented in \hyperlink{classwindtracer_a55ce8f421fa720fa2f6976feb229f255}{windtracer}, \hyperlink{classMast_a3aa4d13cae485f7123ed52009142f45e}{Mast}, \hyperlink{classCeilometer_a4acd8818fb18be80d3cc442d71934657}{Ceilometer}, \hyperlink{classNorbert_a87b849c0c5fa73636de5e413f17033b7}{Norbert}, \hyperlink{classLara_a004ffdd20608ea635775b68733a3d5a3}{Lara}, \hyperlink{classmrr_a830a95365f1abeba05a339d5823cd6ac}{mrr}, \hyperlink{classwolkenkamera_abf6bb4f8fe052838bb2cf1905ce15caa}{wolkenkamera}, \hyperlink{classjwd_aad72b312ba156e4cd3459121abbf89ef}{jwd}, \hyperlink{classparsivel_af756bf97da1b3023037090e9e7c1cfb8}{parsivel}, \hyperlink{classsisomop_ac80a0cb371d6419d2dcd6bdc3b93cc6d}{sisomop}, \hyperlink{classregenwippe_ad311e91cdfbd233971f51c9a635e47ba}{regenwippe}, \hyperlink{classgps_a3735ebac4b699c531c8ec24015bc9c89}{gps}, \hyperlink{classsci_a54872e325b018dabbd6f60e0443f864c}{sci}, \hyperlink{classOrcaProcess_ab22bbbebedbbedeb83965377fb2b302b}{Orca\-Process}, \hyperlink{classradiosonde_ad7e2421821dca49851d8fc8c5f9f3177}{radiosonde}, \hyperlink{classdreim_a32184278a7ac6d365217f3e6b1023067}{dreim}, \hyperlink{classsodar_a378a75de0ce9f12a434b0141910a8cb8}{sodar}, \hyperlink{classCampbellTOA5_a97d66fcd7773a093d43f468e2998ae39}{Campbell\-T\-O\-A5}, \hyperlink{classwindcube_a705808162810f8f4430e2bc3ca04a181}{windcube}, and \hyperlink{classhatpro_a0bfedca307a0c586e4eaf3ff60ef64a3}{hatpro}.
+
+\hypertarget{classDAQDevice_adb56a07d66555732a901196519b1b963}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Sensor\-Names@{get\-Sensor\-Names}}
+\index{get\-Sensor\-Names@{get\-Sensor\-Names}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Sensor\-Names}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::get\-Sensor\-Names (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{sensor\-\_\-list\-\_\-file\-\_\-name}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_adb56a07d66555732a901196519b1b963}
+Read the univeral K\-I\-T\-Cube sensor names from the configuration file $\ast$.sensors. If the sensor configuration file is not found in the configuration directory a template file for all sensors is created and the execution stops until the sensor names are filled in.
+
+Format of the $\ast$.sensors file\-: Every sensor starts in a new line. The fields are separated by $<$\-T\-A\-B$>$s The entry of each sensor contains
+\begin{DoxyItemize}
+\item the number of the sensor in the module (1 .. n\-Sensors)
+\item Description of the sensor. If different aggregation types are stored also this information is needed
+\item K\-I\-T\-Cube sensor name (fill in)
+\item Name of the axis to be used with the sensors. The axis needs to be defined in the general configuration file (default\-: kitcube.\-ini, fillin). 
+\end{DoxyItemize}\hypertarget{classDAQDevice_a9bc65c78b7855fc29bf80e1dae950109}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!get\-Timestamp@{get\-Timestamp}}
+\index{get\-Timestamp@{get\-Timestamp}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{get\-Timestamp}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long D\-A\-Q\-Device\-::get\-Timestamp (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{date, }
+\item[{const char $\ast$}]{time}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a9bc65c78b7855fc29bf80e1dae950109}
+Get a unix time stamp (in U\-T\-C) frm a date and time string of the form dd.\-mm.\-yyy and hh\-:mm\-:ss \hypertarget{classDAQDevice_a315931693c343f5d6f9b607d406e25ac}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!load\-File\-Position@{load\-File\-Position}}
+\index{load\-File\-Position@{load\-File\-Position}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{load\-File\-Position}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::load\-File\-Position (
+\begin{DoxyParamCaption}
+\item[{long \&}]{last\-Index, }
+\item[{unsigned long \&}]{last\-Pos, }
+\item[{struct timeval \&}]{timestamp}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a315931693c343f5d6f9b607d406e25ac}
+Restore the file pointers from the marker file \hypertarget{classDAQDevice_a66f31f8b094adaa54a79fd28730248d6}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!load\-Python@{load\-Python}}
+\index{load\-Python@{load\-Python}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{load\-Python}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::load\-Python (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a66f31f8b094adaa54a79fd28730248d6}
+Load analysis script for the D\-A\-Q module \hypertarget{classDAQDevice_a32f118d291f1c7b8fe47a16474b825e2}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!open\-Database@{open\-Database}}
+\index{open\-Database@{open\-Database}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{open\-Database}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::open\-Database (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a32f118d291f1c7b8fe47a16474b825e2}
+Open the database and create all required tables The required tables are axislist, sensorlist, statuslist and the data table for the current D\-A\-Q device. 
+
+Reimplemented in \hyperlink{classhatpro_a8d4126b59d1f8c9958b533ff1022f90a}{hatpro}.
+
+\hypertarget{classDAQDevice_aa31998fc15327f4999946adcdbb9f770}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!open\-File@{open\-File}}
+\index{open\-File@{open\-File}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{open\-File}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::open\-File (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{filenname}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_aa31998fc15327f4999946adcdbb9f770}
+Set filename for reading data \hypertarget{classDAQDevice_a6631b33164c86e7da8d0cd7eca50863f}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!open\-File@{open\-File}}
+\index{open\-File@{open\-File}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{open\-File}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::open\-File (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a6631b33164c86e7da8d0cd7eca50863f}
+Open file for writing data 
+
+Reimplemented in \hyperlink{classDAQBinaryDevice_a0169d5bde4e7841350a22793522f0529}{D\-A\-Q\-Binary\-Device}, and \hyperlink{classDAQAsciiDevice_ae79f6ea28b8f477b5eda360a0a5e5854}{D\-A\-Q\-Ascii\-Device}.
+
+\hypertarget{classDAQDevice_a0626e224d6263cca633f74b0aae65223}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!open\-New\-File@{open\-New\-File}}
+\index{open\-New\-File@{open\-New\-File}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{open\-New\-File}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::open\-New\-File (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a0626e224d6263cca633f74b0aae65223}
+Close the actual output file and open a new one fro writing \hypertarget{classDAQDevice_a88a9330a2982674e6e9097790c7e65cb}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!open\-Status\-Tab@{open\-Status\-Tab}}
+\index{open\-Status\-Tab@{open\-Status\-Tab}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{open\-Status\-Tab}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::open\-Status\-Tab (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a88a9330a2982674e6e9097790c7e65cb}
+Crete status table, if necessary \hypertarget{classDAQDevice_a37f6fcab4893285e7f7d74670294a645}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{line, }
+\item[{struct timeval $\ast$}]{l\-\_\-t\-Data, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a37f6fcab4893285e7f7d74670294a645}
+Read the data from the current line of the data file. \begin{DoxyReturn}{Returns}
+-\/1 no data found, skip storage 0 sucess, store data, 1 read another line 
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{classMast_a9d6b848916200b80dfd294c1ab3d42fe}{Mast}, \hyperlink{classCeilometer_aaff1b4b73350c443e64df5decd975f07}{Ceilometer}, \hyperlink{classLara_aff63ff661248c4aa565282eaba084823}{Lara}, \hyperlink{classparsivel_ab0195d09b023c63d725c551791c83462}{parsivel}, \hyperlink{classSimRandom_a239bacabadccabc3c6d32278ab357ac1}{Sim\-Random}, \hyperlink{classDAQAsciiDevice_a9c20d9d69af4ba1641dbc82dd5be2aa5}{D\-A\-Q\-Ascii\-Device}, \hyperlink{classsisomop_a8c2afe6fe5aac3e8b8e860f3589407c1}{sisomop}, \hyperlink{classjwd_ae3124d496889e0e756cc9688c4a9a5d7}{jwd}, \hyperlink{classwindcube_a72691b4435de39d059542a1ccd064683}{windcube}, \hyperlink{classgps_a8dc22ee8632e62c0547a782708b0238a}{gps}, \hyperlink{classregenwippe_a0975a15b95532a6c3fb7be3dda8fd4e2}{regenwippe}, \hyperlink{classsci_abb8bd3f6f3861a95e4977614fd9cea70}{sci}, \hyperlink{classOrcaProcess_a3bfc4800f22f99f2370cd513a4a19c7c}{Orca\-Process}, \hyperlink{classradiosonde_af31298e5aa292b7d8113116ae112db01}{radiosonde}, and \hyperlink{classdreim_ab0adce023f0af72491fe36dc2e228a4f}{dreim}.
+
+\hypertarget{classDAQDevice_a56426722a8c4ee14d242fd15b49440c5}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!reached\-E\-O\-F@{reached\-E\-O\-F}}
+\index{reached\-E\-O\-F@{reached\-E\-O\-F}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{reached\-E\-O\-F}]{\setlength{\rightskip}{0pt plus 5cm}bool D\-A\-Q\-Device\-::reached\-E\-O\-F (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a56426722a8c4ee14d242fd15b49440c5}
+Reached E\-O\-F during reading data in \hyperlink{classDAQDevice_a218267a0239e980d418ee5ab70f884e7}{read\-Data()} \hypertarget{classDAQDevice_acd12b71320ddcf9c875df0cb701cd581}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!read\-\_\-ascii\-\_\-line@{read\-\_\-ascii\-\_\-line}}
+\index{read\-\_\-ascii\-\_\-line@{read\-\_\-ascii\-\_\-line}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{read\-\_\-ascii\-\_\-line}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::read\-\_\-ascii\-\_\-line (
+\begin{DoxyParamCaption}
+\item[{char $\ast$$\ast$}]{buffer, }
+\item[{size\-\_\-t $\ast$}]{length, }
+\item[{F\-I\-L\-E $\ast$}]{file\-\_\-ptr}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_acd12b71320ddcf9c875df0cb701cd581}
+\hypertarget{classDAQDevice_ac1fa63e8be022587c80af60a67fb0893}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!read\-Axis@{read\-Axis}}
+\index{read\-Axis@{read\-Axis}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{read\-Axis}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::read\-Axis (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{inifile}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_ac1fa63e8be022587c80af60a67fb0893}
+Read axis definition from inifile and update the axsi definition in the database \hypertarget{classDAQDevice_a218267a0239e980d418ee5ab70f884e7}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!read\-Data@{read\-Data}}
+\index{read\-Data@{read\-Data}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{read\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::read\-Data (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{full\-\_\-filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a218267a0239e980d418ee5ab70f884e7}
+
+
+Reimplemented in \hyperlink{classwindtracer_a3017c180cdd51ab93c5b73c2f84059f5}{windtracer}, \hyperlink{classNorbert_a0b1b1ba6fc63b8662a537c66815ff19b}{Norbert}, \hyperlink{classCeilometer_a9ef73907ba808f6f967b32dc3a161a66}{Ceilometer}, \hyperlink{classLara_a727b4aa20f48283239922df33c191de1}{Lara}, \hyperlink{classwolkenkamera_a9d63655c35a98dec0583b27a67b292ce}{wolkenkamera}, \hyperlink{classmrr_a748ac19e38528725bb1794cbd50a1748}{mrr}, \hyperlink{classDAQAsciiDevice_a0d9b17803680d966c7025ca6f174cef0}{D\-A\-Q\-Ascii\-Device}, \hyperlink{classDAQBinaryDevice_a725281822b7945b8c1154d079c0011ff}{D\-A\-Q\-Binary\-Device}, \hyperlink{classsodar_ae760bb4e2c93e93dba5cd5ae25914918}{sodar}, \hyperlink{classwindcube_ab0a74d15ddda343b34ff4b28389fa811}{windcube}, and \hyperlink{classhatpro_a6a22e73eb5d50f6425d8e46795d2007a}{hatpro}.
+
+\hypertarget{classDAQDevice_a63bf061ad2297861e1e8d8144445235e}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!read\-Data\-With\-Python@{read\-Data\-With\-Python}}
+\index{read\-Data\-With\-Python@{read\-Data\-With\-Python}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{read\-Data\-With\-Python}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::read\-Data\-With\-Python (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{filename, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a63bf061ad2297861e1e8d8144445235e}
+Analyse data from the given data file. The function is an alternative to the function \hyperlink{classDAQDevice_a37f6fcab4893285e7f7d74670294a645}{parse\-Data()} Q\-: How many values? \hypertarget{classDAQDevice_af5fa373af9a089c18c7fd1d662db144f}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_af5fa373af9a089c18c7fd1d662db144f}
+Get time until next sample and it's id 
+
+Reimplemented in \hyperlink{classwindtracer_ae85ea00fe9c7849b4b29e2efe644383c}{windtracer}, \hyperlink{classMast_aa58ccf139807b76c5433ddb61b4a274a}{Mast}, \hyperlink{classNorbert_a522857eace03f70822689acf6ad0e6eb}{Norbert}, \hyperlink{classCeilometer_ac915ac4f192b4e59d7cd40ed022a045d}{Ceilometer}, \hyperlink{classLara_af903264894bc1afa28ea3321deeb7083}{Lara}, \hyperlink{classparsivel_ab2b3727aa63b91b2178d3ce5192ed830}{parsivel}, \hyperlink{classwolkenkamera_acbca7eeed93a4686d5661c997c24ac7b}{wolkenkamera}, \hyperlink{classSimRandom_a2a652b85ec23f610491f5f838664f152}{Sim\-Random}, \hyperlink{classDAQAsciiDevice_a5fce725c52b70ef2f56a34b32a03e15d}{D\-A\-Q\-Ascii\-Device}, \hyperlink{classsisomop_a658a1ebe29f6405d2aabb7b3ce335fdd}{sisomop}, \hyperlink{classCampbellTOA5_a3781a7ec4c685f52595aba01d46bad45}{Campbell\-T\-O\-A5}, \hyperlink{classmrr_a594cc3909052919f57881790f094b1fa}{mrr}, \hyperlink{classCampbellTOB1_aad343912437691a763b7130deec5372c}{Campbell\-T\-O\-B1}, \hyperlink{classgps_a37400cebc4929e7b30305c1b361f6309}{gps}, \hyperlink{classhatpro_a5122a613dc3fc746347cf221648af619}{hatpro}, \hyperlink{classjwd_afb8c407ba5ff5f9c712b11a9bd4a6657}{jwd}, \hyperlink{classregenwippe_a349ee93b85dda804304b08d6244d2cf9}{regenwippe}, \hyperlink{classsci_acf9c29e3fe47d89795dd4160525c008f}{sci}, \hyperlink{classsodar_ad9fd2ae78c8e8319033e34e8a85a5657}{sodar}, \hyperlink{classOrcaProcess_af433a05b744459be6427500d237c23c8}{Orca\-Process}, \hyperlink{classradiosonde_ad8974221a2a65698387b7c6552f6903a}{radiosonde}, \hyperlink{classwindcube_a369ea13a1dcd471ad51250f89151364b}{windcube}, and \hyperlink{classdreim_a298f4f39711f41fd5e69d562d2e74bb7}{dreim}.
+
+\hypertarget{classDAQDevice_ac663fe98e445fc57df55dac84a2c9846}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::read\-Header (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_ac663fe98e445fc57df55dac84a2c9846}
+Get time until next sample and it's id \hypertarget{classDAQDevice_a47c1cf880beb17950a575168274bc213}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!read\-Inifile@{read\-Inifile}}
+\index{read\-Inifile@{read\-Inifile}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{read\-Inifile}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::read\-Inifile (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{inifile, }
+\item[{const char $\ast$}]{group = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a47c1cf880beb17950a575168274bc213}
+Read common and module dependant parameters from inifile \hypertarget{classDAQDevice_aedf0ba7667fd7e0952f04878af2d3bb4}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!read\-Inifile\-Common@{read\-Inifile\-Common}}
+\index{read\-Inifile\-Common@{read\-Inifile\-Common}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{read\-Inifile\-Common}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::read\-Inifile\-Common (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{inifile}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_aedf0ba7667fd7e0952f04878af2d3bb4}
+Read common parameters from inifile (e.\-g. database access, directory struction, ...) \hypertarget{classDAQDevice_a3c31d33d7af79b99cc86dc00554e9472}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!register\-Status\-Tab@{register\-Status\-Tab}}
+\index{register\-Status\-Tab@{register\-Status\-Tab}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{register\-Status\-Tab}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::register\-Status\-Tab (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{status = {\ttfamily 0}, }
+\item[{const char $\ast$}]{comment = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a3c31d33d7af79b99cc86dc00554e9472}
+Update or create the entry for this module in the status table \hypertarget{classDAQDevice_aaebe17251aead6111efcb7bcb3006c60}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!release\-Python@{release\-Python}}
+\index{release\-Python@{release\-Python}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{release\-Python}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::release\-Python (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_aaebe17251aead6111efcb7bcb3006c60}
+Release the analysis script \hypertarget{classDAQDevice_a8aab00baa4f0f0b5718e88539b3d3479}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!reset\-File\-Position@{reset\-File\-Position}}
+\index{reset\-File\-Position@{reset\-File\-Position}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{reset\-File\-Position}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::reset\-File\-Position (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_a8aab00baa4f0f0b5718e88539b3d3479}
+Reset the file pointers in the marker file \hypertarget{classDAQDevice_acf52574e463497c82a7435190710d198}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!save\-File\-Position@{save\-File\-Position}}
+\index{save\-File\-Position@{save\-File\-Position}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{save\-File\-Position}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::save\-File\-Position (
+\begin{DoxyParamCaption}
+\item[{long}]{last\-Index, }
+\item[{unsigned long}]{curr\-Pos, }
+\item[{struct timeval \&}]{timestamp}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_acf52574e463497c82a7435190710d198}
+Save the file pointers to the marker file The items stored are the index of the processed file (see get\-File\-Number), the file pointer in data file and the timestmp of the latest valid data set \hypertarget{classDAQDevice_a42934eca41ab337dc5874e9e70ba1fab}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!set\-App\-Id@{set\-App\-Id}}
+\index{set\-App\-Id@{set\-App\-Id}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{set\-App\-Id}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::set\-App\-Id (
+\begin{DoxyParamCaption}
+\item[{int}]{id}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a42934eca41ab337dc5874e9e70ba1fab}
+Set the application I\-D 
+
+Reimplemented in \hyperlink{classSysLog_a1a6772be111f471271fce194955e69f8}{Sys\-Log}.
+
+\hypertarget{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}
+The function is called before reading the configuration from the inifile. Use this fucntion in the module specific implementation to override the standard defaults 
+
+Reimplemented in \hyperlink{classwindtracer_a6e14dbde1b75db6e2c995b86964316ea}{windtracer}, \hyperlink{classMast_a0dd0878ebcdb7ef0fe4806cafe4deaff}{Mast}, \hyperlink{classSysLog_a7a68d2e9cb7ab67ba5fac6a842ddf9ed}{Sys\-Log}, \hyperlink{classCeilometer_a9e1c96a6f8e813ac7490dfda84f9455b}{Ceilometer}, \hyperlink{classLara_aa799138169577ef61f0d43341846ccf9}{Lara}, \hyperlink{classNorbert_a3144651319dd271f84757d1ea1669ba1}{Norbert}, \hyperlink{classwolkenkamera_a718522b6c0780be9819af11b9e6a81dd}{wolkenkamera}, \hyperlink{classSimRandom_a48019bace7da9b182ef482e135b6736e}{Sim\-Random}, \hyperlink{classsisomop_a388047e129e1c7082a8d9e99e2e8ec99}{sisomop}, \hyperlink{classgps_a55f655de8f378da212ec92fd3283bb83}{gps}, \hyperlink{classjwd_ae1e9dc000396fc7078c6300f92f1012e}{jwd}, \hyperlink{classregenwippe_ac72996d1fc607aa1764a8838d1eeb943}{regenwippe}, \hyperlink{classsci_a0f0a2b8d161af6f539e202ff5357c56f}{sci}, \hyperlink{classsodar_a77ca325c97b3884426c1946b9882d948}{sodar}, \hyperlink{classOrcaProcess_a987ff32d0ec211530e76e108bd5e0460}{Orca\-Process}, \hyperlink{classradiosonde_a8c1c1be9e950d6c3b70df6bc13f8cbca}{radiosonde}, \hyperlink{classwindcube_ab15ca79d204a336abbd7ab5245ec9e55}{windcube}, and \hyperlink{classdreim_ae519ec4beeebe38402cdae1d475f1aaa}{dreim}.
+
+\hypertarget{classDAQDevice_ad62233d33b79371db16f666864fbc83b}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!set\-Debug\-Level@{set\-Debug\-Level}}
+\index{set\-Debug\-Level@{set\-Debug\-Level}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{set\-Debug\-Level}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::set\-Debug\-Level (
+\begin{DoxyParamCaption}
+\item[{int}]{level}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_ad62233d33b79371db16f666864fbc83b}
+Set debug level \hypertarget{classDAQDevice_afc9b0a86f2c4d7a2dbf099d8eebade23}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!set\-Last\-Timestamp@{set\-Last\-Timestamp}}
+\index{set\-Last\-Timestamp@{set\-Last\-Timestamp}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{set\-Last\-Timestamp}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::set\-Last\-Timestamp (
+\begin{DoxyParamCaption}
+\item[{struct timeval $\ast$}]{time}
+\end{DoxyParamCaption}
+)}}\label{classDAQDevice_afc9b0a86f2c4d7a2dbf099d8eebade23}
+Set last timestamp \hypertarget{classDAQDevice_a5262fc7b919829bc439e9eebfc8592e7}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!store\-Sensor\-Data@{store\-Sensor\-Data}}
+\index{store\-Sensor\-Data@{store\-Sensor\-Data}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{store\-Sensor\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::store\-Sensor\-Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a5262fc7b919829bc439e9eebfc8592e7}
+\hypertarget{classDAQDevice_a06d18d7b372d35c55f8a1a399f582a94}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!update\-Data\-Set@{update\-Data\-Set}}
+\index{update\-Data\-Set@{update\-Data\-Set}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{update\-Data\-Set}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::update\-Data\-Set (
+\begin{DoxyParamCaption}
+\item[{unsigned char $\ast$}]{buf}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_a06d18d7b372d35c55f8a1a399f582a94}
+Update the date of the current data set and replace it by the current date. The function is used by write\-Data to generate simulated data with current time stamp using the sample data file 
+
+Reimplemented in \hyperlink{classMast_a41f1bc2262c34256418bb6f812743d42}{Mast}, \hyperlink{classCeilometer_adcb425b5d5ffeb84a3603bab2a5ae6df}{Ceilometer}, \hyperlink{classNorbert_a2187d668d3c73ad112c223b82460064b}{Norbert}, and \hyperlink{classwolkenkamera_ab6cb0bfc7780ca531c10d18ff7b7ab13}{wolkenkamera}.
+
+\hypertarget{classDAQDevice_acdc9d3765b1dfd845f99ec9c93071811}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!write\-Data@{write\-Data}}
+\index{write\-Data@{write\-Data}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{write\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::write\-Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_acdc9d3765b1dfd845f99ec9c93071811}
+
+
+Reimplemented in \hyperlink{classLara_abc32ee9688cef1ec84060d3c206c0123}{Lara}, \hyperlink{classparsivel_a8e501c43f6ef4a197b92177729784286}{parsivel}, \hyperlink{classSimRandom_a8ef2df7e35047cee952340901a96aba4}{Sim\-Random}, \hyperlink{classmrr_a781f21c62e91952f18fef385bcb1be6c}{mrr}, \hyperlink{classDAQBinaryDevice_aa438886ea601984abdf2daf0f4e72543}{D\-A\-Q\-Binary\-Device}, \hyperlink{classjwd_a1476f415afb8ec97f0a5c1dfecf13fc3}{jwd}, and \hyperlink{classregenwippe_a8229559506073be5033662daffe76243}{regenwippe}.
+
+\hypertarget{classDAQDevice_aad39c13f039abd6e6a9b0aa21a7c8a4d}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!write\-Header@{write\-Header}}
+\index{write\-Header@{write\-Header}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{write\-Header}]{\setlength{\rightskip}{0pt plus 5cm}void D\-A\-Q\-Device\-::write\-Header (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classDAQDevice_aad39c13f039abd6e6a9b0aa21a7c8a4d}
+
+
+Reimplemented in \hyperlink{classMast_a415c39dd4df43ae2153a6c2d0f4ec718}{Mast}, \hyperlink{classNorbert_a0f0cf702bcacd76ab4d68d0334443bbe}{Norbert}, \hyperlink{classCeilometer_ab114fc34cce9cdb8ed87cad3aab908d0}{Ceilometer}, \hyperlink{classwolkenkamera_ab5b110a1434326c6f843390fc91c6f1b}{wolkenkamera}, \hyperlink{classSimRandom_a5119c39c479a46a691fe63b3b388c3fc}{Sim\-Random}, \hyperlink{classmrr_a36a73bcb154bafe4abed5c69c374e96f}{mrr}, and \hyperlink{classjwd_a51681be8332cc4c174f07e27f5abe594}{jwd}.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classDAQDevice_a2f0b3d2e531be7f5d06f47a4753d35bd}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!app\-Id@{app\-Id}}
+\index{app\-Id@{app\-Id}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{app\-Id}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::app\-Id\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a2f0b3d2e531be7f5d06f47a4753d35bd}
+Application I\-D. Can be used to identify the calling application. \hypertarget{classDAQDevice_a40eb0f06fac7ec90ed04b766b1f5df3c}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!archive\-Dir@{archive\-Dir}}
+\index{archive\-Dir@{archive\-Dir}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{archive\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::archive\-Dir\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a40eb0f06fac7ec90ed04b766b1f5df3c}
+Folder to store the local copy of the raw data files on the server \hypertarget{classDAQDevice_ad4d9fa4d5ec7b391260d89393ed13a37}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!axis@{axis}}
+\index{axis@{axis}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{axis}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf axis\-Def}$\ast$ D\-A\-Q\-Device\-::axis\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ad4d9fa4d5ec7b391260d89393ed13a37}
+List of defined axis \hypertarget{classDAQDevice_af33c38b4bf6c138dc60d84a9bfb6df85}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!axis\-Table\-Name@{axis\-Table\-Name}}
+\index{axis\-Table\-Name@{axis\-Table\-Name}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{axis\-Table\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::axis\-Table\-Name\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_af33c38b4bf6c138dc60d84a9bfb6df85}
+\hypertarget{classDAQDevice_add8342b70f7350c0d8b7bf4ba3e9c5b4}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!basedir@{basedir}}
+\index{basedir@{basedir}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{basedir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::basedir\hspace{0.3cm}{\ttfamily [private]}}}\label{classDAQDevice_add8342b70f7350c0d8b7bf4ba3e9c5b4}
+Basedir of the auger file \hypertarget{classDAQDevice_a6dc47f2c1a792f5a1ed09b03ac98e8cc}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!basedir\-Tmpl@{basedir\-Tmpl}}
+\index{basedir\-Tmpl@{basedir\-Tmpl}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{basedir\-Tmpl}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::basedir\-Tmpl\hspace{0.3cm}{\ttfamily [private]}}}\label{classDAQDevice_a6dc47f2c1a792f5a1ed09b03ac98e8cc}
+Template for the basedir of the auger file \hypertarget{classDAQDevice_ab661aa5c5b4bafe78354f5169b1c7d2f}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!buffer@{buffer}}
+\index{buffer@{buffer}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{buffer}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::buffer\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ab661aa5c5b4bafe78354f5169b1c7d2f}
+\hypertarget{classDAQDevice_af34a3a4a6cc3b4a8c01ce42d495be6c2}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!comment\-Char@{comment\-Char}}
+\index{comment\-Char@{comment\-Char}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{comment\-Char}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::comment\-Char\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_af34a3a4a6cc3b4a8c01ce42d495be6c2}
+Comment character (default \char`\"{}\#\char`\"{}) \hypertarget{classDAQDevice_ac06e9cd93e95a3c4e33970edb79f9148}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!compression\-Type@{compression\-Type}}
+\index{compression\-Type@{compression\-Type}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{compression\-Type}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::compression\-Type\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ac06e9cd93e95a3c4e33970edb79f9148}
+Type of compression used for the raw data file \hypertarget{classDAQDevice_a1fcd353aea74e51801b36d5728f67e66}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!config\-Dir@{config\-Dir}}
+\index{config\-Dir@{config\-Dir}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{config\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::config\-Dir\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a1fcd353aea74e51801b36d5728f67e66}
+Folder where all the configurations are stored \hypertarget{classDAQDevice_ae99e0e25b09c03713caac3f9b2baaee8}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!data\-Dir@{data\-Dir}}
+\index{data\-Dir@{data\-Dir}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{data\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::data\-Dir\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ae99e0e25b09c03713caac3f9b2baaee8}
+Directory for writing the simulated data \hypertarget{classDAQDevice_a3d221f2cd6d5d903cbaa8c80abe495de}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!datafile\-Index\-Format@{datafile\-Index\-Format}}
+\index{datafile\-Index\-Format@{datafile\-Index\-Format}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{datafile\-Index\-Format}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::datafile\-Index\-Format\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a3d221f2cd6d5d903cbaa8c80abe495de}
+Mask to parse the date in the index filed \hypertarget{classDAQDevice_ad3cde27a8f45ea3af4495a9d366c31c3}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!datafile\-Mask@{datafile\-Mask}}
+\index{datafile\-Mask@{datafile\-Mask}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{datafile\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::datafile\-Mask\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ad3cde27a8f45ea3af4495a9d366c31c3}
+Mask used to identify the data files in \hyperlink{classDAQDevice_a8d52a03c722baf86c7279478f31f6e60}{get\-New\-Files()} \hypertarget{classDAQDevice_a551a005ad3f98c83a2b8b38bc3634007}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!datafile\-Template@{datafile\-Template}}
+\index{datafile\-Template@{datafile\-Template}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{datafile\-Template}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::datafile\-Template\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a551a005ad3f98c83a2b8b38bc3634007}
+The template file is used to generate an appropriate header and the data is used to have some realistic simulation when writing data \hypertarget{classDAQDevice_ae8e11658c72f3a6468cc37f1e8cf08bb}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!data\-Sep@{data\-Sep}}
+\index{data\-Sep@{data\-Sep}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{data\-Sep}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::data\-Sep\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ae8e11658c72f3a6468cc37f1e8cf08bb}
+List of data field separators (default \char`\"{}\textbackslash{}t\textbackslash{}n\char`\"{}) \hypertarget{classDAQDevice_a8adec9c21ffa22beee97e2eda1f2488c}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!data\-Sub\-Dir@{data\-Sub\-Dir}}
+\index{data\-Sub\-Dir@{data\-Sub\-Dir}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{data\-Sub\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::data\-Sub\-Dir\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a8adec9c21ffa22beee97e2eda1f2488c}
+The relative folder after the module number. Default is module name. The default can be changed by the function get\-Data\-Dir for every class \hypertarget{classDAQDevice_a3b932e09b546454324cc07d7958f58ac}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!data\-Table\-Name@{data\-Table\-Name}}
+\index{data\-Table\-Name@{data\-Table\-Name}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{data\-Table\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::data\-Table\-Name\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a3b932e09b546454324cc07d7958f58ac}
+\hypertarget{classDAQDevice_ac2ae1cde05bf5d13d18e213c94c5dadc}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!data\-Table\-Prefix@{data\-Table\-Prefix}}
+\index{data\-Table\-Prefix@{data\-Table\-Prefix}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{data\-Table\-Prefix}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::data\-Table\-Prefix\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ac2ae1cde05bf5d13d18e213c94c5dadc}
+Every type of data should have a unique data table prefix. E.\-g. Scalar values use the prefix Data, while higher dimensional structures are stored as B\-L\-O\-Bs with the prefix Profile. \hypertarget{classDAQDevice_a962745a4a4f20898c918d59fabf05e2a}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!dateien@{dateien}}
+\index{dateien@{dateien}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{dateien}]{\setlength{\rightskip}{0pt plus 5cm}std\-::map$<$long, std\-::string$>$ D\-A\-Q\-Device\-::dateien\hspace{0.3cm}{\ttfamily [private]}}}\label{classDAQDevice_a962745a4a4f20898c918d59fabf05e2a}
+Flag to switch between unique and relative telescope id's \hypertarget{classDAQDevice_ad85b8bb5afbe0a9c3cd75e7ee9ef83ee}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!db\-Host@{db\-Host}}
+\index{db\-Host@{db\-Host}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{db\-Host}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::db\-Host\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ad85b8bb5afbe0a9c3cd75e7ee9ef83ee}
+\hypertarget{classDAQDevice_afb3d256eedb538510939b8c40e26a968}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!db\-Name@{db\-Name}}
+\index{db\-Name@{db\-Name}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{db\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::db\-Name\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_afb3d256eedb538510939b8c40e26a968}
+\hypertarget{classDAQDevice_ab02618ceb308d39d365bc0b394914b69}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!db\-Password@{db\-Password}}
+\index{db\-Password@{db\-Password}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{db\-Password}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::db\-Password\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ab02618ceb308d39d365bc0b394914b69}
+\hypertarget{classDAQDevice_a275b8a01d1219d64a64a2536038039a4}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!db\-Port@{db\-Port}}
+\index{db\-Port@{db\-Port}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{db\-Port}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::db\-Port\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a275b8a01d1219d64a64a2536038039a4}
+\hypertarget{classDAQDevice_a1cecb55a4edaf4299411f650c7410e5e}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!db\-User@{db\-User}}
+\index{db\-User@{db\-User}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{db\-User}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::db\-User\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a1cecb55a4edaf4299411f650c7410e5e}
+\hypertarget{classDAQDevice_ae7b23729ae0dc7ab3cd0e4c633bf4e25}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!debug@{debug}}
+\index{debug@{debug}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{debug}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::debug\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ae7b23729ae0dc7ab3cd0e4c633bf4e25}
+Debug level (0 = no debug) \hypertarget{classDAQDevice_a0adfd30435b899ce439998bbdd3dae91}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!fd\-\_\-eof@{fd\-\_\-eof}}
+\index{fd\-\_\-eof@{fd\-\_\-eof}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{fd\-\_\-eof}]{\setlength{\rightskip}{0pt plus 5cm}bool D\-A\-Q\-Device\-::fd\-\_\-eof\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a0adfd30435b899ce439998bbdd3dae91}
+\hypertarget{classDAQDevice_a0dcbda57c0b7b95d27a53ed5e1fabf59}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!fdata@{fdata}}
+\index{fdata@{fdata}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{fdata}]{\setlength{\rightskip}{0pt plus 5cm}F\-I\-L\-E$\ast$ D\-A\-Q\-Device\-::fdata\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a0dcbda57c0b7b95d27a53ed5e1fabf59}
+File pointer for the data file \hypertarget{classDAQDevice_a68a1e79d4d2efd8592d566bacc1838f2}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!file\-Index@{file\-Index}}
+\index{file\-Index@{file\-Index}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{file\-Index}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long D\-A\-Q\-Device\-::file\-Index\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a68a1e79d4d2efd8592d566bacc1838f2}
+Index of the data file This variable will be stored persitently (.kitcube-\/data.\-marker) \hypertarget{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!filename@{filename}}
+\index{filename@{filename}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{filename}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::filename\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}
+Filename for writing data \hypertarget{classDAQDevice_a43ebbf069d065fdafba9aa9664ab76b1}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!filename\-Marker@{filename\-Marker}}
+\index{filename\-Marker@{filename\-Marker}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{filename\-Marker}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::filename\-Marker\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a43ebbf069d065fdafba9aa9664ab76b1}
+Name of the marker file. Used to make the file index persistent. \hypertarget{classDAQDevice_a2abc939adabdc9bc9a88bd1db5dcfd08}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!filename\-Tmpl@{filename\-Tmpl}}
+\index{filename\-Tmpl@{filename\-Tmpl}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{filename\-Tmpl}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::filename\-Tmpl\hspace{0.3cm}{\ttfamily [private]}}}\label{classDAQDevice_a2abc939adabdc9bc9a88bd1db5dcfd08}
+Template for the record filename \hypertarget{classDAQDevice_a1bb9bdd8a55337b40e44d159cb1cc8e5}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!full\-Filename@{full\-Filename}}
+\index{full\-Filename@{full\-Filename}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{full\-Filename}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::full\-Filename\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a1bb9bdd8a55337b40e44d159cb1cc8e5}
+Filename for writing data \hypertarget{classDAQDevice_a06e7f707d2d97b192a4389a0c4fd231d}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!header\-Line@{header\-Line}}
+\index{header\-Line@{header\-Line}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{header\-Line}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::header\-Line\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a06e7f707d2d97b192a4389a0c4fd231d}
+Line number of the sensor definition in the data file header (default 1 = first line) \hypertarget{classDAQDevice_aeacc409b639f3ed09cfdbd9b2c3e7d09}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!inifile@{inifile}}
+\index{inifile@{inifile}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{inifile}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::inifile\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_aeacc409b639f3ed09cfdbd9b2c3e7d09}
+\hypertarget{classDAQDevice_a10e5184e28ccafa407167c032f8496ea}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!ini\-Group@{ini\-Group}}
+\index{ini\-Group@{ini\-Group}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{ini\-Group}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::ini\-Group\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a10e5184e28ccafa407167c032f8496ea}
+\hypertarget{classDAQDevice_ad0a7f34f8a98c28fa5660714c048e657}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!init\-Done@{init\-Done}}
+\index{init\-Done@{init\-Done}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{init\-Done}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::init\-Done\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ad0a7f34f8a98c28fa5660714c048e657}
+Flag to idenitfy the first run \hypertarget{classDAQDevice_a4431ebea220a683acb12ce0f78e87927}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!is\-Flat\-Folder@{is\-Flat\-Folder}}
+\index{is\-Flat\-Folder@{is\-Flat\-Folder}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{is\-Flat\-Folder}]{\setlength{\rightskip}{0pt plus 5cm}bool D\-A\-Q\-Device\-::is\-Flat\-Folder\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a4431ebea220a683acb12ce0f78e87927}
+Flag to identify flat folder mode \hypertarget{classDAQDevice_ae6cf89824f15528d92fe1e31b2dacf59}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!len\-Data\-Set@{len\-Data\-Set}}
+\index{len\-Data\-Set@{len\-Data\-Set}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{len\-Data\-Set}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::len\-Data\-Set\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ae6cf89824f15528d92fe1e31b2dacf59}
+Length of one data set in the data file \hypertarget{classDAQDevice_a91b1652c6ca593eaf3f04e3118cd2420}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!len\-Header@{len\-Header}}
+\index{len\-Header@{len\-Header}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{len\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::len\-Header\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a91b1652c6ca593eaf3f04e3118cd2420}
+Length of the header block in the data file \hypertarget{classDAQDevice_a155e6dba34521962283c83f1bda63799}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!len\-Header\-Lines@{len\-Header\-Lines}}
+\index{len\-Header\-Lines@{len\-Header\-Lines}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{len\-Header\-Lines}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::len\-Header\-Lines\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a155e6dba34521962283c83f1bda63799}
+Length of the header block in number of lines The number of lines can be given alternatively to the size of the header in Bytes (len\-Header) \hypertarget{classDAQDevice_aab09bfdbb1d0aa4b413e4bbbc5e3c5a6}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!location@{location}}
+\index{location@{location}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{location}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::location\hspace{0.3cm}{\ttfamily [private]}}}\label{classDAQDevice_aab09bfdbb1d0aa4b413e4bbbc5e3c5a6}
+Location Id Name of the location \hypertarget{classDAQDevice_a962a90d4dd66bb3d4c3cab6ec628db73}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!module\-Comment@{module\-Comment}}
+\index{module\-Comment@{module\-Comment}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{module\-Comment}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::module\-Comment\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a962a90d4dd66bb3d4c3cab6ec628db73}
+\hypertarget{classDAQDevice_a5fb94d0eed52bfb5df51424a21f3482f}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!module\-Name@{module\-Name}}
+\index{module\-Name@{module\-Name}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{module\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::module\-Name\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a5fb94d0eed52bfb5df51424a21f3482f}
+\hypertarget{classDAQDevice_a07fc449a690016ffa1b1bc029b956c02}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!module\-Number@{module\-Number}}
+\index{module\-Number@{module\-Number}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{module\-Number}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int D\-A\-Q\-Device\-::module\-Number\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a07fc449a690016ffa1b1bc029b956c02}
+\hypertarget{classDAQDevice_a0061ca1e9e172bc2cb113a6f6b7f0ade}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!module\-Table\-Name@{module\-Table\-Name}}
+\index{module\-Table\-Name@{module\-Table\-Name}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{module\-Table\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::module\-Table\-Name\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a0061ca1e9e172bc2cb113a6f6b7f0ade}
+\hypertarget{classDAQDevice_ab246fcff5cbe2a1f4748db00bb9fa5c4}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!module\-Type@{module\-Type}}
+\index{module\-Type@{module\-Type}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{module\-Type}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::module\-Type\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ab246fcff5cbe2a1f4748db00bb9fa5c4}
+Module type \hypertarget{classDAQDevice_a9e0cb352d0412ec6cc600cc86aee69b8}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!n\-Axis@{n\-Axis}}
+\index{n\-Axis@{n\-Axis}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{n\-Axis}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::n\-Axis\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a9e0cb352d0412ec6cc600cc86aee69b8}
+Number of axis definitions \hypertarget{classDAQDevice_a96c5b196a01603f4b8e37c3840597295}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!n\-Line@{n\-Line}}
+\index{n\-Line@{n\-Line}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{n\-Line}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::n\-Line\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a96c5b196a01603f4b8e37c3840597295}
+\hypertarget{classDAQDevice_af1607d0a9cdd02c6dfe9a7db01fbe4e8}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!no\-Data@{no\-Data}}
+\index{no\-Data@{no\-Data}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{no\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::no\-Data\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_af1607d0a9cdd02c6dfe9a7db01fbe4e8}
+Value used if no data is available \hypertarget{classDAQDevice_a308e077b2ecaff2aa04e3dec7387751a}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!n\-Sensor\-Cols@{n\-Sensor\-Cols}}
+\index{n\-Sensor\-Cols@{n\-Sensor\-Cols}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{n\-Sensor\-Cols}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::n\-Sensor\-Cols\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a308e077b2ecaff2aa04e3dec7387751a}
+Number of sensor columns in the data table. It is possible to have more sensors defined in the end of the sensor list that are just alias names for existing entries \hypertarget{classDAQDevice_a66af3e902896059a53f5cfb2fa04e0f5}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!n\-Sensors@{n\-Sensors}}
+\index{n\-Sensors@{n\-Sensors}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{n\-Sensors}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::n\-Sensors\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a66af3e902896059a53f5cfb2fa04e0f5}
+Number of sensors in the module \hypertarget{classDAQDevice_a388a037825fdd2248eb1cadf15780bcd}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!path@{path}}
+\index{path@{path}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{path}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::path\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a388a037825fdd2248eb1cadf15780bcd}
+Path for writing data \hypertarget{classDAQDevice_a4ba9ed1e61cf39c3e3eab37e8cfc908c}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!processed\-Data@{processed\-Data}}
+\index{processed\-Data@{processed\-Data}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{processed\-Data}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int D\-A\-Q\-Device\-::processed\-Data\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a4ba9ed1e61cf39c3e3eab37e8cfc908c}
+Number of processed bytes in the last cycle \hypertarget{classDAQDevice_a5da19e281fb55786ad815c0d98a0c616}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!profile\-\_\-length@{profile\-\_\-length}}
+\index{profile\-\_\-length@{profile\-\_\-length}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{profile\-\_\-length}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::profile\-\_\-length\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a5da19e281fb55786ad815c0d98a0c616}
+number of values in profile data \hypertarget{classDAQDevice_a2febc34bb56a8b39d0d13523ccc60c3e}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!project@{project}}
+\index{project@{project}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{project}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::project\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a2febc34bb56a8b39d0d13523ccc60c3e}
+Name of the project. This variable is used to generate the database \hypertarget{classDAQDevice_a4d916c2296ae785dbe02859721b410e6}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!python\-Dir@{python\-Dir}}
+\index{python\-Dir@{python\-Dir}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{python\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::python\-Dir\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a4d916c2296ae785dbe02859721b410e6}
+\hypertarget{classDAQDevice_ac2662dfe78ec08ab4bd8cc8e159fed0f}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!python\-Function@{python\-Function}}
+\index{python\-Function@{python\-Function}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{python\-Function}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::python\-Function\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ac2662dfe78ec08ab4bd8cc8e159fed0f}
+\hypertarget{classDAQDevice_a75b36464a8009089f1f5721764f7bf70}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!python\-Module@{python\-Module}}
+\index{python\-Module@{python\-Module}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{python\-Module}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::python\-Module\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a75b36464a8009089f1f5721764f7bf70}
+\hypertarget{classDAQDevice_a6df191f01fd268b0072e09ba2b76827f}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!remote\-Dir@{remote\-Dir}}
+\index{remote\-Dir@{remote\-Dir}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{remote\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::remote\-Dir\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a6df191f01fd268b0072e09ba2b76827f}
+Directory where the data can be found -\/ if simulation and readout run on the same machine this folder need to be the same as the data\-Dir \hypertarget{classDAQDevice_ad9f21827cf4471e11b5e5bfe8f29152f}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!reset@{reset}}
+\index{reset@{reset}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{reset}]{\setlength{\rightskip}{0pt plus 5cm}bool D\-A\-Q\-Device\-::reset\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ad9f21827cf4471e11b5e5bfe8f29152f}
+Reset file pointer in marker file \hypertarget{classDAQDevice_ae6db34954e8c3723feba1d32a7643095}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!rsync\-Args@{rsync\-Args}}
+\index{rsync\-Args@{rsync\-Args}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{rsync\-Args}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::rsync\-Args\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ae6db34954e8c3723feba1d32a7643095}
+Argument for the rsync call to copy data from the modules to the archive \hypertarget{classDAQDevice_a62c5391079563bbd24ac2f7cdd210710}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!sensor@{sensor}}
+\index{sensor@{sensor}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{sensor}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf sensor\-Type}$\ast$ D\-A\-Q\-Device\-::sensor\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a62c5391079563bbd24ac2f7cdd210710}
+List of the official sensor properties \hypertarget{classDAQDevice_a63a6793abe5933e7dc71cd673bd0f98f}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!sensor\-Group@{sensor\-Group}}
+\index{sensor\-Group@{sensor\-Group}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::sensor\-Group\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a63a6793abe5933e7dc71cd673bd0f98f}
+Name of the sensor group. The sensor group name is used in most cases as file extention for the data file. \hypertarget{classDAQDevice_aa35abc3d365a36659b64df6cadf2c807}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!sensor\-Group\-Number@{sensor\-Group\-Number}}
+\index{sensor\-Group\-Number@{sensor\-Group\-Number}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{sensor\-Group\-Number}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int D\-A\-Q\-Device\-::sensor\-Group\-Number\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_aa35abc3d365a36659b64df6cadf2c807}
+\hypertarget{classDAQDevice_aab515711e872a4ee38ae5b1278f64286}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!sensor\-Listfile@{sensor\-Listfile}}
+\index{sensor\-Listfile@{sensor\-Listfile}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{sensor\-Listfile}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::sensor\-Listfile}}\label{classDAQDevice_aab515711e872a4ee38ae5b1278f64286}
+\hypertarget{classDAQDevice_a4140887251923bc9715a23fb63849785}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!sensor\-Table\-Name@{sensor\-Table\-Name}}
+\index{sensor\-Table\-Name@{sensor\-Table\-Name}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{sensor\-Table\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::sensor\-Table\-Name\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a4140887251923bc9715a23fb63849785}
+\hypertarget{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!sensor\-Value@{sensor\-Value}}
+\index{sensor\-Value@{sensor\-Value}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{sensor\-Value}]{\setlength{\rightskip}{0pt plus 5cm}float$\ast$ D\-A\-Q\-Device\-::sensor\-Value\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}
+\hypertarget{classDAQDevice_a1d817232e36e532fbed88e7013e30567}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!status\-Table\-Key@{status\-Table\-Key}}
+\index{status\-Table\-Key@{status\-Table\-Key}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{status\-Table\-Key}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::status\-Table\-Key\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a1d817232e36e532fbed88e7013e30567}
+Unique key used for seletion of the data set in the status table \hypertarget{classDAQDevice_a9e039294e443228fc1854ec798d1b5c4}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!status\-Table\-Name@{status\-Table\-Name}}
+\index{status\-Table\-Name@{status\-Table\-Name}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{status\-Table\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::status\-Table\-Name\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a9e039294e443228fc1854ec798d1b5c4}
+\hypertarget{classDAQDevice_a508ad6a95eec7efc47047b056f145a9d}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!t\-Alarm@{t\-Alarm}}
+\index{t\-Alarm@{t\-Alarm}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{t\-Alarm}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::t\-Alarm\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a508ad6a95eec7efc47047b056f145a9d}
+Maximal allowed delay time before an alarm will be generated (sec) \hypertarget{classDAQDevice_af7da14a199a793fd63db3af2b2a78d92}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!t\-Data@{t\-Data}}
+\index{t\-Data@{t\-Data}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{t\-Data}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval D\-A\-Q\-Device\-::t\-Data\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_af7da14a199a793fd63db3af2b2a78d92}
+\hypertarget{classDAQDevice_a35f89e6ada8acd69ce9b705633370345}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!timestamp\-Format@{timestamp\-Format}}
+\index{timestamp\-Format@{timestamp\-Format}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{timestamp\-Format}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string D\-A\-Q\-Device\-::timestamp\-Format\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a35f89e6ada8acd69ce9b705633370345}
+Format of the timestamp (in A\-S\-C\-I\-I data files) \hypertarget{classDAQDevice_a7c0d73d39b13231c2760b0aa6724b42c}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!t\-Last\-Data@{t\-Last\-Data}}
+\index{t\-Last\-Data@{t\-Last\-Data}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{t\-Last\-Data}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval D\-A\-Q\-Device\-::t\-Last\-Data\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a7c0d73d39b13231c2760b0aa6724b42c}
+Timestamp of the last sample writen by the data server \hypertarget{classDAQDevice_aae80d100e6407da492b7bda911739bb8}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!t\-Sample@{t\-Sample}}
+\index{t\-Sample@{t\-Sample}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{t\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}int D\-A\-Q\-Device\-::t\-Sample\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_aae80d100e6407da492b7bda911739bb8}
+Sampling time of the daq module in milliseconds \hypertarget{classDAQDevice_a6103f8804ccb23ac0e76e38ed954ddbc}{\index{D\-A\-Q\-Device@{D\-A\-Q\-Device}!use\-Ticks@{use\-Ticks}}
+\index{use\-Ticks@{use\-Ticks}!DAQDevice@{D\-A\-Q\-Device}}
+\subsubsection[{use\-Ticks}]{\setlength{\rightskip}{0pt plus 5cm}bool D\-A\-Q\-Device\-::use\-Ticks\hspace{0.3cm}{\ttfamily [protected]}}}\label{classDAQDevice_a6103f8804ccb23ac0e76e38ed954ddbc}
+Use the microsecond ticks when storing the data (default\-: yes). 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{daqdevice_8h}{daqdevice.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{daqdevice_8cpp}{daqdevice.\-cpp}\end{DoxyCompactItemize}

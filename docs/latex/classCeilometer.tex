@@ -1,0 +1,229 @@
+\hypertarget{classCeilometer}{\section{Ceilometer Class Reference}
+\label{classCeilometer}\index{Ceilometer@{Ceilometer}}
+}
+
+
+{\ttfamily \#include $<$ceilometer.\-h$>$}
+
+Inheritance diagram for Ceilometer\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classCeilometer}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classCeilometer_a2bf3db4a3f55c934412f83553f531f2b}{Ceilometer} ()
+\item 
+\hyperlink{classCeilometer_a449bdf7592f4630df99ab15bc885445b}{$\sim$\-Ceilometer} ()
+\item 
+void \hyperlink{classCeilometer_a9e1c96a6f8e813ac7490dfda84f9455b}{set\-Config\-Defaults} ()
+\item 
+const char $\ast$ \hyperlink{classCeilometer_ac9984aad78fe229d7314d45c0e722ef2}{get\-Data\-Dir} ()
+\item 
+void \hyperlink{classCeilometer_a50863be019de8c71409e73ffd1e83921}{replace\-Item} (const char $\ast$$\ast$header, const char $\ast$item\-Tag, const char $\ast$new\-Value)
+\item 
+const char $\ast$ \hyperlink{classCeilometer_a739c17f98b60c5cbcd3d65d6973dc22b}{get\-String\-Item} (const char $\ast$$\ast$header, const char $\ast$item\-Tag)
+\item 
+int \hyperlink{classCeilometer_ab35f4b64b941194185aee79ed3002456}{get\-Numeric\-Item} (const char $\ast$$\ast$header, const char $\ast$item\-Tag)
+\item 
+unsigned int \hyperlink{classCeilometer_a4acd8818fb18be80d3cc442d71934657}{get\-Sensor\-Group} ()
+\item 
+int \hyperlink{classCeilometer_ac915ac4f192b4e59d7cd40ed022a045d}{read\-Header} (const char $\ast$header)
+\item 
+void \hyperlink{classCeilometer_ab114fc34cce9cdb8ed87cad3aab908d0}{write\-Header} ()
+\item 
+void \hyperlink{classCeilometer_a9ef73907ba808f6f967b32dc3a161a66}{read\-Data} (std\-::string full\-\_\-filename)
+\item 
+void \hyperlink{classCeilometer_aeb9c0bddc60b920f7d686a7663b37eae}{read\-Netcdf} (std\-::string full\-\_\-filename)
+\item 
+int \hyperlink{classCeilometer_aaff1b4b73350c443e64df5decd975f07}{parse\-Data} (char $\ast$line, struct timeval $\ast$l\-\_\-t\-Data, double $\ast$\hyperlink{classDAQDevice_ad148188c57598fdf4fd4c1c333aeb0d8}{sensor\-Value})
+\item 
+void \hyperlink{classCeilometer_adcb425b5d5ffeb84a3603bab2a5ae6df}{update\-Data\-Set} (unsigned char $\ast$buf)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unsigned char $\ast$ \hyperlink{classCeilometer_ae6363cb7019753e8d2b1b005d030818e}{header\-Raw}
+\item 
+std\-::string \hyperlink{classCeilometer_adacde94d57006bd9d81a20919bcb4f20}{experiment\-Name}
+\item 
+unsigned long \hyperlink{classCeilometer_ab98f876944333787e16570753c409560}{t\-Sample}
+\item 
+struct timeval \hyperlink{classCeilometer_a173231c1db65165d1a0cb91d3913339e}{t\-Ref}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Implementation for the ceilometer D\-A\-Q device.
+
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000015}{Todo}]Move return string to the argument list\end{DoxyRefDesc}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classCeilometer_a2bf3db4a3f55c934412f83553f531f2b}{\index{Ceilometer@{Ceilometer}!Ceilometer@{Ceilometer}}
+\index{Ceilometer@{Ceilometer}!Ceilometer@{Ceilometer}}
+\subsubsection[{Ceilometer}]{\setlength{\rightskip}{0pt plus 5cm}Ceilometer\-::\-Ceilometer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classCeilometer_a2bf3db4a3f55c934412f83553f531f2b}
+\hypertarget{classCeilometer_a449bdf7592f4630df99ab15bc885445b}{\index{Ceilometer@{Ceilometer}!$\sim$\-Ceilometer@{$\sim$\-Ceilometer}}
+\index{$\sim$\-Ceilometer@{$\sim$\-Ceilometer}!Ceilometer@{Ceilometer}}
+\subsubsection[{$\sim$\-Ceilometer}]{\setlength{\rightskip}{0pt plus 5cm}Ceilometer\-::$\sim$\-Ceilometer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classCeilometer_a449bdf7592f4630df99ab15bc885445b}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classCeilometer_ac9984aad78fe229d7314d45c0e722ef2}{\index{Ceilometer@{Ceilometer}!get\-Data\-Dir@{get\-Data\-Dir}}
+\index{get\-Data\-Dir@{get\-Data\-Dir}!Ceilometer@{Ceilometer}}
+\subsubsection[{get\-Data\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ Ceilometer\-::get\-Data\-Dir (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classCeilometer_ac9984aad78fe229d7314d45c0e722ef2}
+Read parameter from inifile Returns the path relative to the base path to the data dir 
+
+Reimplemented from \hyperlink{classDAQDevice_a7d7d41f0c1496221e589d84b38d1c865}{D\-A\-Q\-Device}.
+
+\hypertarget{classCeilometer_ab35f4b64b941194185aee79ed3002456}{\index{Ceilometer@{Ceilometer}!get\-Numeric\-Item@{get\-Numeric\-Item}}
+\index{get\-Numeric\-Item@{get\-Numeric\-Item}!Ceilometer@{Ceilometer}}
+\subsubsection[{get\-Numeric\-Item}]{\setlength{\rightskip}{0pt plus 5cm}int Ceilometer\-::get\-Numeric\-Item (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$$\ast$}]{header, }
+\item[{const char $\ast$}]{item\-Tag}
+\end{DoxyParamCaption}
+)}}\label{classCeilometer_ab35f4b64b941194185aee79ed3002456}
+\hypertarget{classCeilometer_a4acd8818fb18be80d3cc442d71934657}{\index{Ceilometer@{Ceilometer}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!Ceilometer@{Ceilometer}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Ceilometer\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classCeilometer_a4acd8818fb18be80d3cc442d71934657}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classCeilometer_a739c17f98b60c5cbcd3d65d6973dc22b}{\index{Ceilometer@{Ceilometer}!get\-String\-Item@{get\-String\-Item}}
+\index{get\-String\-Item@{get\-String\-Item}!Ceilometer@{Ceilometer}}
+\subsubsection[{get\-String\-Item}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ Ceilometer\-::get\-String\-Item (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$$\ast$}]{header, }
+\item[{const char $\ast$}]{item\-Tag}
+\end{DoxyParamCaption}
+)}}\label{classCeilometer_a739c17f98b60c5cbcd3d65d6973dc22b}
+\hypertarget{classCeilometer_aaff1b4b73350c443e64df5decd975f07}{\index{Ceilometer@{Ceilometer}!parse\-Data@{parse\-Data}}
+\index{parse\-Data@{parse\-Data}!Ceilometer@{Ceilometer}}
+\subsubsection[{parse\-Data}]{\setlength{\rightskip}{0pt plus 5cm}int Ceilometer\-::parse\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{line, }
+\item[{struct timeval $\ast$}]{l\-\_\-t\-Data, }
+\item[{double $\ast$}]{sensor\-Value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classCeilometer_aaff1b4b73350c443e64df5decd975f07}
+Read the data from the current line of the data file. \begin{DoxyReturn}{Returns}
+-\/1 no data found, skip storage 0 sucess, store data, 1 read another line 
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{classDAQDevice_a37f6fcab4893285e7f7d74670294a645}{D\-A\-Q\-Device}.
+
+\hypertarget{classCeilometer_a9ef73907ba808f6f967b32dc3a161a66}{\index{Ceilometer@{Ceilometer}!read\-Data@{read\-Data}}
+\index{read\-Data@{read\-Data}!Ceilometer@{Ceilometer}}
+\subsubsection[{read\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void Ceilometer\-::read\-Data (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{full\-\_\-filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classCeilometer_a9ef73907ba808f6f967b32dc3a161a66}
+
+
+Reimplemented from \hyperlink{classDAQBinaryDevice_a725281822b7945b8c1154d079c0011ff}{D\-A\-Q\-Binary\-Device}.
+
+\hypertarget{classCeilometer_ac915ac4f192b4e59d7cd40ed022a045d}{\index{Ceilometer@{Ceilometer}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!Ceilometer@{Ceilometer}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int Ceilometer\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classCeilometer_ac915ac4f192b4e59d7cd40ed022a045d}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQDevice_af5fa373af9a089c18c7fd1d662db144f}{D\-A\-Q\-Device}.
+
+\hypertarget{classCeilometer_aeb9c0bddc60b920f7d686a7663b37eae}{\index{Ceilometer@{Ceilometer}!read\-Netcdf@{read\-Netcdf}}
+\index{read\-Netcdf@{read\-Netcdf}!Ceilometer@{Ceilometer}}
+\subsubsection[{read\-Netcdf}]{\setlength{\rightskip}{0pt plus 5cm}void Ceilometer\-::read\-Netcdf (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{full\-\_\-filename}
+\end{DoxyParamCaption}
+)}}\label{classCeilometer_aeb9c0bddc60b920f7d686a7663b37eae}
+\hypertarget{classCeilometer_a50863be019de8c71409e73ffd1e83921}{\index{Ceilometer@{Ceilometer}!replace\-Item@{replace\-Item}}
+\index{replace\-Item@{replace\-Item}!Ceilometer@{Ceilometer}}
+\subsubsection[{replace\-Item}]{\setlength{\rightskip}{0pt plus 5cm}void Ceilometer\-::replace\-Item (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$$\ast$}]{header, }
+\item[{const char $\ast$}]{item\-Tag, }
+\item[{const char $\ast$}]{new\-Value}
+\end{DoxyParamCaption}
+)}}\label{classCeilometer_a50863be019de8c71409e73ffd1e83921}
+\hypertarget{classCeilometer_a9e1c96a6f8e813ac7490dfda84f9455b}{\index{Ceilometer@{Ceilometer}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!Ceilometer@{Ceilometer}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void Ceilometer\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classCeilometer_a9e1c96a6f8e813ac7490dfda84f9455b}
+Set default configuration 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+\hypertarget{classCeilometer_adcb425b5d5ffeb84a3603bab2a5ae6df}{\index{Ceilometer@{Ceilometer}!update\-Data\-Set@{update\-Data\-Set}}
+\index{update\-Data\-Set@{update\-Data\-Set}!Ceilometer@{Ceilometer}}
+\subsubsection[{update\-Data\-Set}]{\setlength{\rightskip}{0pt plus 5cm}void Ceilometer\-::update\-Data\-Set (
+\begin{DoxyParamCaption}
+\item[{unsigned char $\ast$}]{buf}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classCeilometer_adcb425b5d5ffeb84a3603bab2a5ae6df}
+Replace time stamp in the data set by the current time 
+
+Reimplemented from \hyperlink{classDAQDevice_a06d18d7b372d35c55f8a1a399f582a94}{D\-A\-Q\-Device}.
+
+\hypertarget{classCeilometer_ab114fc34cce9cdb8ed87cad3aab908d0}{\index{Ceilometer@{Ceilometer}!write\-Header@{write\-Header}}
+\index{write\-Header@{write\-Header}!Ceilometer@{Ceilometer}}
+\subsubsection[{write\-Header}]{\setlength{\rightskip}{0pt plus 5cm}void Ceilometer\-::write\-Header (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classCeilometer_ab114fc34cce9cdb8ed87cad3aab908d0}
+
+
+Reimplemented from \hyperlink{classDAQDevice_aad39c13f039abd6e6a9b0aa21a7c8a4d}{D\-A\-Q\-Device}.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classCeilometer_adacde94d57006bd9d81a20919bcb4f20}{\index{Ceilometer@{Ceilometer}!experiment\-Name@{experiment\-Name}}
+\index{experiment\-Name@{experiment\-Name}!Ceilometer@{Ceilometer}}
+\subsubsection[{experiment\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Ceilometer\-::experiment\-Name\hspace{0.3cm}{\ttfamily [private]}}}\label{classCeilometer_adacde94d57006bd9d81a20919bcb4f20}
+\hypertarget{classCeilometer_ae6363cb7019753e8d2b1b005d030818e}{\index{Ceilometer@{Ceilometer}!header\-Raw@{header\-Raw}}
+\index{header\-Raw@{header\-Raw}!Ceilometer@{Ceilometer}}
+\subsubsection[{header\-Raw}]{\setlength{\rightskip}{0pt plus 5cm}unsigned char$\ast$ Ceilometer\-::header\-Raw\hspace{0.3cm}{\ttfamily [private]}}}\label{classCeilometer_ae6363cb7019753e8d2b1b005d030818e}
+\hypertarget{classCeilometer_a173231c1db65165d1a0cb91d3913339e}{\index{Ceilometer@{Ceilometer}!t\-Ref@{t\-Ref}}
+\index{t\-Ref@{t\-Ref}!Ceilometer@{Ceilometer}}
+\subsubsection[{t\-Ref}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval Ceilometer\-::t\-Ref\hspace{0.3cm}{\ttfamily [private]}}}\label{classCeilometer_a173231c1db65165d1a0cb91d3913339e}
+\hypertarget{classCeilometer_ab98f876944333787e16570753c409560}{\index{Ceilometer@{Ceilometer}!t\-Sample@{t\-Sample}}
+\index{t\-Sample@{t\-Sample}!Ceilometer@{Ceilometer}}
+\subsubsection[{t\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Ceilometer\-::t\-Sample\hspace{0.3cm}{\ttfamily [private]}}}\label{classCeilometer_ab98f876944333787e16570753c409560}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{ceilometer_8h}{ceilometer.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{ceilometer_8cpp}{ceilometer.\-cpp}\end{DoxyCompactItemize}

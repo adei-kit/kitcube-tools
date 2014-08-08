@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/434/trunk/tmake/lib/beos-g++
+END
+lib.t
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/doxygen/code/!svn/ver/426/trunk/tmake/lib/beos-g++/lib.t
+END
+subdirs.t
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/426/trunk/tmake/lib/beos-g++/subdirs.t
+END
+app.t
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/doxygen/code/!svn/ver/426/trunk/tmake/lib/beos-g++/app.t
+END
+tmake.conf
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/doxygen/code/!svn/ver/434/trunk/tmake/lib/beos-g++/tmake.conf
+END

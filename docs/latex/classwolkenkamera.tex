@@ -1,0 +1,184 @@
+\hypertarget{classwolkenkamera}{\section{wolkenkamera Class Reference}
+\label{classwolkenkamera}\index{wolkenkamera@{wolkenkamera}}
+}
+
+
+{\ttfamily \#include $<$wolkenkamera.\-h$>$}
+
+Inheritance diagram for wolkenkamera\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classwolkenkamera}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classwolkenkamera_ae13f001a967338d8301ece76e9046980}{wolkenkamera} ()
+\item 
+\hyperlink{classwolkenkamera_a1f773650109aff935dcf89246c51da93}{$\sim$wolkenkamera} ()
+\item 
+void \hyperlink{classwolkenkamera_a718522b6c0780be9819af11b9e6a81dd}{set\-Config\-Defaults} ()
+\item 
+const char $\ast$ \hyperlink{classwolkenkamera_ac4f55fd3e4b97532af5774daab350358}{get\-Data\-Dir} ()
+\item 
+unsigned int \hyperlink{classwolkenkamera_abf6bb4f8fe052838bb2cf1905ce15caa}{get\-Sensor\-Group} ()
+\item 
+int \hyperlink{classwolkenkamera_acbca7eeed93a4686d5661c997c24ac7b}{read\-Header} (const char $\ast$header)
+\item 
+void \hyperlink{classwolkenkamera_ab5b110a1434326c6f843390fc91c6f1b}{write\-Header} ()
+\item 
+void \hyperlink{classwolkenkamera_a9d63655c35a98dec0583b27a67b292ce}{read\-Data} (std\-::string full\-\_\-filename)
+\item 
+void \hyperlink{classwolkenkamera_ab6cb0bfc7780ca531c10d18ff7b7ab13}{update\-Data\-Set} (unsigned char $\ast$buf)
+\item 
+long \hyperlink{classwolkenkamera_aada77e474f3ed7097178c17e03c78b5b}{get\-File\-Number} (char $\ast$\hyperlink{classDAQDevice_a7f9cda7cf5b41f6b134c313477e9644b}{filename})
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unsigned char $\ast$ \hyperlink{classwolkenkamera_a30e481479bddffe39a354b51ef4c7b67}{header\-Raw}
+\item 
+std\-::string \hyperlink{classwolkenkamera_aa91268dbd611187b783c89ef62dbcfd5}{experiment\-Name}
+\item 
+unsigned long \hyperlink{classwolkenkamera_a5f45de1bc4646afdc2fd112a724e48bd}{t\-Sample}
+\item 
+struct timeval \hyperlink{classwolkenkamera_afff90fa33b0ee850413fee6e2aa4563f}{t\-Ref}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Implementation for the ceilometer D\-A\-Q device.
+
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000018}{Todo}]Move return string to the argument list\end{DoxyRefDesc}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classwolkenkamera_ae13f001a967338d8301ece76e9046980}{\index{wolkenkamera@{wolkenkamera}!wolkenkamera@{wolkenkamera}}
+\index{wolkenkamera@{wolkenkamera}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{wolkenkamera}]{\setlength{\rightskip}{0pt plus 5cm}wolkenkamera\-::wolkenkamera (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classwolkenkamera_ae13f001a967338d8301ece76e9046980}
+\hypertarget{classwolkenkamera_a1f773650109aff935dcf89246c51da93}{\index{wolkenkamera@{wolkenkamera}!$\sim$wolkenkamera@{$\sim$wolkenkamera}}
+\index{$\sim$wolkenkamera@{$\sim$wolkenkamera}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{$\sim$wolkenkamera}]{\setlength{\rightskip}{0pt plus 5cm}wolkenkamera\-::$\sim$wolkenkamera (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classwolkenkamera_a1f773650109aff935dcf89246c51da93}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classwolkenkamera_ac4f55fd3e4b97532af5774daab350358}{\index{wolkenkamera@{wolkenkamera}!get\-Data\-Dir@{get\-Data\-Dir}}
+\index{get\-Data\-Dir@{get\-Data\-Dir}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{get\-Data\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}const char $\ast$ wolkenkamera\-::get\-Data\-Dir (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwolkenkamera_ac4f55fd3e4b97532af5774daab350358}
+Read parameter from inifile Returns the path relative to the base path to the data dir 
+
+Reimplemented from \hyperlink{classDAQDevice_a7d7d41f0c1496221e589d84b38d1c865}{D\-A\-Q\-Device}.
+
+\hypertarget{classwolkenkamera_aada77e474f3ed7097178c17e03c78b5b}{\index{wolkenkamera@{wolkenkamera}!get\-File\-Number@{get\-File\-Number}}
+\index{get\-File\-Number@{get\-File\-Number}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{get\-File\-Number}]{\setlength{\rightskip}{0pt plus 5cm}long wolkenkamera\-::get\-File\-Number (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwolkenkamera_aada77e474f3ed7097178c17e03c78b5b}
+Get the ranking number from a filename. The returned number can be used to order files by their date. Smaller numbers are processed before larger ones. The function needs also to check if the given filename is valid according to the file name specification of the device. In case of violation zero is returned. 
+
+Reimplemented from \hyperlink{classDAQDevice_a56a712062b2b17c6a73cb7fb0a475d2e}{D\-A\-Q\-Device}.
+
+\hypertarget{classwolkenkamera_abf6bb4f8fe052838bb2cf1905ce15caa}{\index{wolkenkamera@{wolkenkamera}!get\-Sensor\-Group@{get\-Sensor\-Group}}
+\index{get\-Sensor\-Group@{get\-Sensor\-Group}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{get\-Sensor\-Group}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int wolkenkamera\-::get\-Sensor\-Group (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwolkenkamera_abf6bb4f8fe052838bb2cf1905ce15caa}
+Define a sensor group number for all the availble sensor group files 
+
+Reimplemented from \hyperlink{classDAQDevice_a61d08492a11c30944dfaf3b86115abe8}{D\-A\-Q\-Device}.
+
+\hypertarget{classwolkenkamera_a9d63655c35a98dec0583b27a67b292ce}{\index{wolkenkamera@{wolkenkamera}!read\-Data@{read\-Data}}
+\index{read\-Data@{read\-Data}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{read\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void wolkenkamera\-::read\-Data (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{full\-\_\-filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwolkenkamera_a9d63655c35a98dec0583b27a67b292ce}
+
+
+Reimplemented from \hyperlink{classDAQBinaryDevice_a725281822b7945b8c1154d079c0011ff}{D\-A\-Q\-Binary\-Device}.
+
+\hypertarget{classwolkenkamera_acbca7eeed93a4686d5661c997c24ac7b}{\index{wolkenkamera@{wolkenkamera}!read\-Header@{read\-Header}}
+\index{read\-Header@{read\-Header}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{read\-Header}]{\setlength{\rightskip}{0pt plus 5cm}int wolkenkamera\-::read\-Header (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{header}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwolkenkamera_acbca7eeed93a4686d5661c997c24ac7b}
+Get time until next sample and it's id 
+
+Reimplemented from \hyperlink{classDAQDevice_af5fa373af9a089c18c7fd1d662db144f}{D\-A\-Q\-Device}.
+
+\hypertarget{classwolkenkamera_a718522b6c0780be9819af11b9e6a81dd}{\index{wolkenkamera@{wolkenkamera}!set\-Config\-Defaults@{set\-Config\-Defaults}}
+\index{set\-Config\-Defaults@{set\-Config\-Defaults}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{set\-Config\-Defaults}]{\setlength{\rightskip}{0pt plus 5cm}void wolkenkamera\-::set\-Config\-Defaults (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwolkenkamera_a718522b6c0780be9819af11b9e6a81dd}
+Set default configuration 
+
+Reimplemented from \hyperlink{classDAQDevice_a7685cec80865752cc0ef3ab49c6c2277}{D\-A\-Q\-Device}.
+
+\hypertarget{classwolkenkamera_ab6cb0bfc7780ca531c10d18ff7b7ab13}{\index{wolkenkamera@{wolkenkamera}!update\-Data\-Set@{update\-Data\-Set}}
+\index{update\-Data\-Set@{update\-Data\-Set}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{update\-Data\-Set}]{\setlength{\rightskip}{0pt plus 5cm}void wolkenkamera\-::update\-Data\-Set (
+\begin{DoxyParamCaption}
+\item[{unsigned char $\ast$}]{buf}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwolkenkamera_ab6cb0bfc7780ca531c10d18ff7b7ab13}
+Replace time stamp in the data set by the current time 
+
+Reimplemented from \hyperlink{classDAQDevice_a06d18d7b372d35c55f8a1a399f582a94}{D\-A\-Q\-Device}.
+
+\hypertarget{classwolkenkamera_ab5b110a1434326c6f843390fc91c6f1b}{\index{wolkenkamera@{wolkenkamera}!write\-Header@{write\-Header}}
+\index{write\-Header@{write\-Header}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{write\-Header}]{\setlength{\rightskip}{0pt plus 5cm}void wolkenkamera\-::write\-Header (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classwolkenkamera_ab5b110a1434326c6f843390fc91c6f1b}
+
+
+Reimplemented from \hyperlink{classDAQDevice_aad39c13f039abd6e6a9b0aa21a7c8a4d}{D\-A\-Q\-Device}.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classwolkenkamera_aa91268dbd611187b783c89ef62dbcfd5}{\index{wolkenkamera@{wolkenkamera}!experiment\-Name@{experiment\-Name}}
+\index{experiment\-Name@{experiment\-Name}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{experiment\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string wolkenkamera\-::experiment\-Name\hspace{0.3cm}{\ttfamily [private]}}}\label{classwolkenkamera_aa91268dbd611187b783c89ef62dbcfd5}
+\hypertarget{classwolkenkamera_a30e481479bddffe39a354b51ef4c7b67}{\index{wolkenkamera@{wolkenkamera}!header\-Raw@{header\-Raw}}
+\index{header\-Raw@{header\-Raw}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{header\-Raw}]{\setlength{\rightskip}{0pt plus 5cm}unsigned char$\ast$ wolkenkamera\-::header\-Raw\hspace{0.3cm}{\ttfamily [private]}}}\label{classwolkenkamera_a30e481479bddffe39a354b51ef4c7b67}
+\hypertarget{classwolkenkamera_afff90fa33b0ee850413fee6e2aa4563f}{\index{wolkenkamera@{wolkenkamera}!t\-Ref@{t\-Ref}}
+\index{t\-Ref@{t\-Ref}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{t\-Ref}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval wolkenkamera\-::t\-Ref\hspace{0.3cm}{\ttfamily [private]}}}\label{classwolkenkamera_afff90fa33b0ee850413fee6e2aa4563f}
+\hypertarget{classwolkenkamera_a5f45de1bc4646afdc2fd112a724e48bd}{\index{wolkenkamera@{wolkenkamera}!t\-Sample@{t\-Sample}}
+\index{t\-Sample@{t\-Sample}!wolkenkamera@{wolkenkamera}}
+\subsubsection[{t\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long wolkenkamera\-::t\-Sample\hspace{0.3cm}{\ttfamily [private]}}}\label{classwolkenkamera_a5f45de1bc4646afdc2fd112a724e48bd}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{wolkenkamera_8h}{wolkenkamera.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/\hyperlink{wolkenkamera_8cpp}{wolkenkamera.\-cpp}\end{DoxyCompactItemize}

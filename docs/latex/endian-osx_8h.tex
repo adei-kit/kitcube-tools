@@ -1,0 +1,146 @@
+\hypertarget{endian-osx_8h}{\section{/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/endian-\/osx.h File Reference}
+\label{endian-osx_8h}\index{/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/endian-\/osx.\-h@{/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/endian-\/osx.\-h}}
+}
+{\ttfamily \#include $<$machine/endian.\-h$>$}\\*
+{\ttfamily \#include $<$libkern/\-O\-S\-Byte\-Order.\-h$>$}\\*
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{endian-osx_8h_af3bfd349519cdf98adcb6b234425c651}{bswap16}(x)~O\-S\-Swap\-Int16(x)
+\item 
+\#define \hyperlink{endian-osx_8h_a3e376c247d19427f3c01311e816f2574}{bswap32}(x)~O\-S\-Swap\-Int32(x)
+\item 
+\#define \hyperlink{endian-osx_8h_a69935d8b7d0238c6d27f46ed1c5d4050}{bswap64}(x)~O\-S\-Swap\-Int64(x)
+\item 
+\#define \hyperlink{endian-osx_8h_a4b9167199621b390f82c3e5361ba6df6}{htobe16}(x)~\hyperlink{endian-osx_8h_af3bfd349519cdf98adcb6b234425c651}{bswap16}((x))
+\item 
+\#define \hyperlink{endian-osx_8h_aa65407014913309932b9a5ea3c16a86d}{htobe32}(x)~\hyperlink{endian-osx_8h_a3e376c247d19427f3c01311e816f2574}{bswap32}((x))
+\item 
+\#define \hyperlink{endian-osx_8h_a5c81b75e6da4507e0a90b6f6169c4787}{htobe64}(x)~\hyperlink{endian-osx_8h_a69935d8b7d0238c6d27f46ed1c5d4050}{bswap64}((x))
+\item 
+\#define \hyperlink{endian-osx_8h_a3ea73a6089f61223b225c46e2ba58a47}{htole16}(x)~((uint16\-\_\-t)(x))
+\item 
+\#define \hyperlink{endian-osx_8h_a9bea1e76e277f13ae39ac86095510bfa}{htole32}(x)~((uint32\-\_\-t)(x))
+\item 
+\#define \hyperlink{endian-osx_8h_a3070a5f8867dbc37bdafcb1a7cd491bf}{htole64}(x)~((uint64\-\_\-t)(x))
+\item 
+\#define \hyperlink{endian-osx_8h_abb9b3120f6457dc04471c134fee1d221}{be16toh}(x)~\hyperlink{endian-osx_8h_af3bfd349519cdf98adcb6b234425c651}{bswap16}((x))
+\item 
+\#define \hyperlink{endian-osx_8h_a6acac399720b3a57d9050420aa0aac41}{be32toh}(x)~\hyperlink{endian-osx_8h_a3e376c247d19427f3c01311e816f2574}{bswap32}((x))
+\item 
+\#define \hyperlink{endian-osx_8h_af94eb043f5be14b4f260fb9b4c89ca2e}{be64toh}(x)~\hyperlink{endian-osx_8h_a69935d8b7d0238c6d27f46ed1c5d4050}{bswap64}((x))
+\item 
+\#define \hyperlink{endian-osx_8h_a684a5d26d1989cbd925e97292cc81c72}{le16toh}(x)~((uint16\-\_\-t)(x))
+\item 
+\#define \hyperlink{endian-osx_8h_ad2dfbafcefb3add65ea44e581398e90a}{le32toh}(x)~((uint32\-\_\-t)(x))
+\item 
+\#define \hyperlink{endian-osx_8h_afeefd2e03c936cc08821e7fa67946c4a}{le64toh}(x)~((uint64\-\_\-t)(x))
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{endian-osx_8h_abb9b3120f6457dc04471c134fee1d221}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!be16toh@{be16toh}}
+\index{be16toh@{be16toh}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{be16toh}]{\setlength{\rightskip}{0pt plus 5cm}\#define be16toh(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~{\bf bswap16}((x))}}\label{endian-osx_8h_abb9b3120f6457dc04471c134fee1d221}
+\hypertarget{endian-osx_8h_a6acac399720b3a57d9050420aa0aac41}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!be32toh@{be32toh}}
+\index{be32toh@{be32toh}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{be32toh}]{\setlength{\rightskip}{0pt plus 5cm}\#define be32toh(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~{\bf bswap32}((x))}}\label{endian-osx_8h_a6acac399720b3a57d9050420aa0aac41}
+\hypertarget{endian-osx_8h_af94eb043f5be14b4f260fb9b4c89ca2e}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!be64toh@{be64toh}}
+\index{be64toh@{be64toh}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{be64toh}]{\setlength{\rightskip}{0pt plus 5cm}\#define be64toh(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~{\bf bswap64}((x))}}\label{endian-osx_8h_af94eb043f5be14b4f260fb9b4c89ca2e}
+\hypertarget{endian-osx_8h_af3bfd349519cdf98adcb6b234425c651}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!bswap16@{bswap16}}
+\index{bswap16@{bswap16}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{bswap16}]{\setlength{\rightskip}{0pt plus 5cm}\#define bswap16(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~O\-S\-Swap\-Int16(x)}}\label{endian-osx_8h_af3bfd349519cdf98adcb6b234425c651}
+\hypertarget{endian-osx_8h_a3e376c247d19427f3c01311e816f2574}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!bswap32@{bswap32}}
+\index{bswap32@{bswap32}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{bswap32}]{\setlength{\rightskip}{0pt plus 5cm}\#define bswap32(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~O\-S\-Swap\-Int32(x)}}\label{endian-osx_8h_a3e376c247d19427f3c01311e816f2574}
+\hypertarget{endian-osx_8h_a69935d8b7d0238c6d27f46ed1c5d4050}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!bswap64@{bswap64}}
+\index{bswap64@{bswap64}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{bswap64}]{\setlength{\rightskip}{0pt plus 5cm}\#define bswap64(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~O\-S\-Swap\-Int64(x)}}\label{endian-osx_8h_a69935d8b7d0238c6d27f46ed1c5d4050}
+\hypertarget{endian-osx_8h_a4b9167199621b390f82c3e5361ba6df6}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!htobe16@{htobe16}}
+\index{htobe16@{htobe16}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{htobe16}]{\setlength{\rightskip}{0pt plus 5cm}\#define htobe16(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~{\bf bswap16}((x))}}\label{endian-osx_8h_a4b9167199621b390f82c3e5361ba6df6}
+\hypertarget{endian-osx_8h_aa65407014913309932b9a5ea3c16a86d}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!htobe32@{htobe32}}
+\index{htobe32@{htobe32}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{htobe32}]{\setlength{\rightskip}{0pt plus 5cm}\#define htobe32(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~{\bf bswap32}((x))}}\label{endian-osx_8h_aa65407014913309932b9a5ea3c16a86d}
+\hypertarget{endian-osx_8h_a5c81b75e6da4507e0a90b6f6169c4787}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!htobe64@{htobe64}}
+\index{htobe64@{htobe64}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{htobe64}]{\setlength{\rightskip}{0pt plus 5cm}\#define htobe64(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~{\bf bswap64}((x))}}\label{endian-osx_8h_a5c81b75e6da4507e0a90b6f6169c4787}
+\hypertarget{endian-osx_8h_a3ea73a6089f61223b225c46e2ba58a47}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!htole16@{htole16}}
+\index{htole16@{htole16}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{htole16}]{\setlength{\rightskip}{0pt plus 5cm}\#define htole16(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~((uint16\-\_\-t)(x))}}\label{endian-osx_8h_a3ea73a6089f61223b225c46e2ba58a47}
+\hypertarget{endian-osx_8h_a9bea1e76e277f13ae39ac86095510bfa}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!htole32@{htole32}}
+\index{htole32@{htole32}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{htole32}]{\setlength{\rightskip}{0pt plus 5cm}\#define htole32(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~((uint32\-\_\-t)(x))}}\label{endian-osx_8h_a9bea1e76e277f13ae39ac86095510bfa}
+\hypertarget{endian-osx_8h_a3070a5f8867dbc37bdafcb1a7cd491bf}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!htole64@{htole64}}
+\index{htole64@{htole64}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{htole64}]{\setlength{\rightskip}{0pt plus 5cm}\#define htole64(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~((uint64\-\_\-t)(x))}}\label{endian-osx_8h_a3070a5f8867dbc37bdafcb1a7cd491bf}
+\hypertarget{endian-osx_8h_a684a5d26d1989cbd925e97292cc81c72}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!le16toh@{le16toh}}
+\index{le16toh@{le16toh}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{le16toh}]{\setlength{\rightskip}{0pt plus 5cm}\#define le16toh(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~((uint16\-\_\-t)(x))}}\label{endian-osx_8h_a684a5d26d1989cbd925e97292cc81c72}
+\hypertarget{endian-osx_8h_ad2dfbafcefb3add65ea44e581398e90a}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!le32toh@{le32toh}}
+\index{le32toh@{le32toh}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{le32toh}]{\setlength{\rightskip}{0pt plus 5cm}\#define le32toh(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~((uint32\-\_\-t)(x))}}\label{endian-osx_8h_ad2dfbafcefb3add65ea44e581398e90a}
+\hypertarget{endian-osx_8h_afeefd2e03c936cc08821e7fa67946c4a}{\index{endian-\/osx.\-h@{endian-\/osx.\-h}!le64toh@{le64toh}}
+\index{le64toh@{le64toh}!endian-osx.h@{endian-\/osx.\-h}}
+\subsubsection[{le64toh}]{\setlength{\rightskip}{0pt plus 5cm}\#define le64toh(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~((uint64\-\_\-t)(x))}}\label{endian-osx_8h_afeefd2e03c936cc08821e7fa67946c4a}

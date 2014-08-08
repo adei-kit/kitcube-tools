@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/doxygen/code/!svn/ver/829/trunk/tmake/lib/macosx-intel-c++
+END
+app.t
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/doxygen/code/!svn/ver/829/trunk/tmake/lib/macosx-intel-c++/app.t
+END
+tmake.conf
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/p/doxygen/code/!svn/ver/829/trunk/tmake/lib/macosx-intel-c++/tmake.conf
+END
+lib.t
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/doxygen/code/!svn/ver/829/trunk/tmake/lib/macosx-intel-c++/lib.t
+END
+subdirs.t
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/doxygen/code/!svn/ver/829/trunk/tmake/lib/macosx-intel-c++/subdirs.t
+END

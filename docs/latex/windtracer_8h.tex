@@ -1,0 +1,141 @@
+\hypertarget{windtracer_8h}{\section{/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/windtracer.h File Reference}
+\label{windtracer_8h}\index{/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/windtracer.\-h@{/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/devices/windtracer.\-h}}
+}
+{\ttfamily \#include \char`\"{}daqbinarydevice.\-h\char`\"{}}\\*
+{\ttfamily \#include $<$sys/types.\-h$>$}\\*
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structBlockDescriptor}{Block\-Descriptor}
+\item 
+struct \hyperlink{structRecordHeader}{Record\-Header}
+\item 
+struct \hyperlink{structConfigurationRecord}{Configuration\-Record}
+\item 
+struct \hyperlink{structScanInfo}{Scan\-Info}
+\item 
+struct \hyperlink{structProductPulseInfo}{Product\-Pulse\-Info}
+\item 
+class \hyperlink{classwindtracer}{windtracer}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{windtracer_8h_a5d21086da80ccbabd31b2716d0e77da6}{R\-A\-W\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0400
+\item 
+\#define \hyperlink{windtracer_8h_a7f60ac0f9d6a5d2aa8bf1117e5669275}{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0420
+\item 
+\#define \hyperlink{windtracer_8h_a3836441fd78130707d9d37648cfa070f}{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0421
+\item 
+\#define \hyperlink{windtracer_8h_ad5e68bb22c029d03db0659f287a30098}{P\-R\-O\-D\-U\-C\-T\-\_\-\-N\-O\-I\-S\-E\-\_\-\-C\-O\-M\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0422
+\item 
+\#define \hyperlink{windtracer_8h_a19e144836790c62ab0ad102edda0bd8f}{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-A\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0430
+\item 
+\#define \hyperlink{windtracer_8h_a92446f44a79efaf0203d811518bfcd7a}{S\-T\-A\-T\-U\-S\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0440
+\item 
+\#define \hyperlink{windtracer_8h_ae41ec2c386503ce93d4dd0ea45a523bf}{R\-E\-P\-O\-R\-T\-E\-R\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0442
+\item 
+\#define \hyperlink{windtracer_8h_a72aa2fd427d7ea3fd8f12463e9711606}{C\-O\-N\-F\-I\-G\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0460
+\item 
+\#define \hyperlink{windtracer_8h_a0b4a6bc585697c324166e079ce05c193}{C\-L\-U\-T\-T\-E\-R\-\_\-\-M\-A\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0462
+\item 
+\#define \hyperlink{windtracer_8h_a0e695f98c3816346d657234f84fefd14}{T\-E\-L\-N\-E\-T\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0463
+\item 
+\#define \hyperlink{windtracer_8h_a7bc266492d1fab697eccfeb2bbbf65c9}{S\-U\-S\-P\-E\-N\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0464
+\item 
+\#define \hyperlink{windtracer_8h_adf76c1e9db59d1b2f57d07266e54406f}{R\-E\-S\-U\-M\-E\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}~0x0465
+\item 
+\#define \hyperlink{windtracer_8h_a6bab20cb2c68cbb2016b898e68980cb7}{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-A1
+\item 
+\#define \hyperlink{windtracer_8h_abe338690bb7612c6cd4f1b07bcc32eb3}{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-A2
+\item 
+\#define \hyperlink{windtracer_8h_a780e855942e3067de3b9c671a59fa5d8}{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-A5
+\item 
+\#define \hyperlink{windtracer_8h_a18a9c099e9d2bb4862fc6188e34dc3b1}{P\-R\-O\-D\-U\-C\-T\-\_\-\-M\-O\-N\-I\-T\-O\-R\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-A6
+\item 
+\#define \hyperlink{windtracer_8h_a68a092503cb8408d851bf7f7449ab452}{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-E\-S\-T\-I\-M\-A\-T\-E\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-A7
+\item 
+\#define \hyperlink{windtracer_8h_a504bbb2ee43d5879c7762c7a41a636f1}{P\-R\-O\-D\-U\-C\-T\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-A8
+\item 
+\#define \hyperlink{windtracer_8h_a763d00c82fa88c896f29ae910a935d7f}{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-B0
+\item 
+\#define \hyperlink{windtracer_8h_a02256cdcce9597357cadc6c10af1f6e8}{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-B1
+\item 
+\#define \hyperlink{windtracer_8h_adc63843f88c49f52c77df0124ac3504f}{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-B2
+\item 
+\#define \hyperlink{windtracer_8h_a647fcc808bcc0cb42f4bc004ec331c8c}{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-B3
+\item 
+\#define \hyperlink{windtracer_8h_a286e01e1379c7d9e248073ad18856795}{C\-O\-N\-F\-I\-G\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}~0x04\-F0
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{windtracer_8h_a0b4a6bc585697c324166e079ce05c193}{\index{windtracer.\-h@{windtracer.\-h}!C\-L\-U\-T\-T\-E\-R\-\_\-\-M\-A\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{C\-L\-U\-T\-T\-E\-R\-\_\-\-M\-A\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{C\-L\-U\-T\-T\-E\-R\-\_\-\-M\-A\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{C\-L\-U\-T\-T\-E\-R\-\_\-\-M\-A\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{C\-L\-U\-T\-T\-E\-R\-\_\-\-M\-A\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define C\-L\-U\-T\-T\-E\-R\-\_\-\-M\-A\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0462}}\label{windtracer_8h_a0b4a6bc585697c324166e079ce05c193}
+\hypertarget{windtracer_8h_a286e01e1379c7d9e248073ad18856795}{\index{windtracer.\-h@{windtracer.\-h}!C\-O\-N\-F\-I\-G\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{C\-O\-N\-F\-I\-G\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{C\-O\-N\-F\-I\-G\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{C\-O\-N\-F\-I\-G\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{C\-O\-N\-F\-I\-G\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define C\-O\-N\-F\-I\-G\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-F0}}\label{windtracer_8h_a286e01e1379c7d9e248073ad18856795}
+\hypertarget{windtracer_8h_a72aa2fd427d7ea3fd8f12463e9711606}{\index{windtracer.\-h@{windtracer.\-h}!C\-O\-N\-F\-I\-G\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{C\-O\-N\-F\-I\-G\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{C\-O\-N\-F\-I\-G\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{C\-O\-N\-F\-I\-G\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{C\-O\-N\-F\-I\-G\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define C\-O\-N\-F\-I\-G\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0460}}\label{windtracer_8h_a72aa2fd427d7ea3fd8f12463e9711606}
+\hypertarget{windtracer_8h_a504bbb2ee43d5879c7762c7a41a636f1}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-A8}}\label{windtracer_8h_a504bbb2ee43d5879c7762c7a41a636f1}
+\hypertarget{windtracer_8h_adc63843f88c49f52c77df0124ac3504f}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-B\-A\-C\-K\-S\-C\-A\-T\-T\-E\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-B2}}\label{windtracer_8h_adc63843f88c49f52c77df0124ac3504f}
+\hypertarget{windtracer_8h_a02256cdcce9597357cadc6c10af1f6e8}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-B1}}\label{windtracer_8h_a02256cdcce9597357cadc6c10af1f6e8}
+\hypertarget{windtracer_8h_a647fcc808bcc0cb42f4bc004ec331c8c}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-B3}}\label{windtracer_8h_a647fcc808bcc0cb42f4bc004ec331c8c}
+\hypertarget{windtracer_8h_a763d00c82fa88c896f29ae910a935d7f}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-B0}}\label{windtracer_8h_a763d00c82fa88c896f29ae910a935d7f}
+\hypertarget{windtracer_8h_a3836441fd78130707d9d37648cfa070f}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-F\-I\-L\-T\-E\-R\-E\-D\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0421}}\label{windtracer_8h_a3836441fd78130707d9d37648cfa070f}
+\hypertarget{windtracer_8h_a18a9c099e9d2bb4862fc6188e34dc3b1}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-M\-O\-N\-I\-T\-O\-R\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-M\-O\-N\-I\-T\-O\-R\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-M\-O\-N\-I\-T\-O\-R\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-M\-O\-N\-I\-T\-O\-R\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-M\-O\-N\-I\-T\-O\-R\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-M\-O\-N\-I\-T\-O\-R\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-A6}}\label{windtracer_8h_a18a9c099e9d2bb4862fc6188e34dc3b1}
+\hypertarget{windtracer_8h_ad5e68bb22c029d03db0659f287a30098}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-N\-O\-I\-S\-E\-\_\-\-C\-O\-M\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-N\-O\-I\-S\-E\-\_\-\-C\-O\-M\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-N\-O\-I\-S\-E\-\_\-\-C\-O\-M\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-N\-O\-I\-S\-E\-\_\-\-C\-O\-M\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-N\-O\-I\-S\-E\-\_\-\-C\-O\-M\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-N\-O\-I\-S\-E\-\_\-\-C\-O\-M\-P\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0422}}\label{windtracer_8h_ad5e68bb22c029d03db0659f287a30098}
+\hypertarget{windtracer_8h_abe338690bb7612c6cd4f1b07bcc32eb3}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-N\-R\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-A2}}\label{windtracer_8h_abe338690bb7612c6cd4f1b07bcc32eb3}
+\hypertarget{windtracer_8h_a68a092503cb8408d851bf7f7449ab452}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-E\-S\-T\-I\-M\-A\-T\-E\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-E\-S\-T\-I\-M\-A\-T\-E\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-E\-S\-T\-I\-M\-A\-T\-E\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-E\-S\-T\-I\-M\-A\-T\-E\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-E\-S\-T\-I\-M\-A\-T\-E\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-E\-S\-T\-I\-M\-A\-T\-E\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-A7}}\label{windtracer_8h_a68a092503cb8408d851bf7f7449ab452}
+\hypertarget{windtracer_8h_a780e855942e3067de3b9c671a59fa5d8}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-S\-P\-E\-C\-T\-R\-A\-L\-\_\-\-W\-I\-D\-T\-H\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-A5}}\label{windtracer_8h_a780e855942e3067de3b9c671a59fa5d8}
+\hypertarget{windtracer_8h_a19e144836790c62ab0ad102edda0bd8f}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-A\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-A\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-A\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-A\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-A\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-A\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0430}}\label{windtracer_8h_a19e144836790c62ab0ad102edda0bd8f}
+\hypertarget{windtracer_8h_a6bab20cb2c68cbb2016b898e68980cb7}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-D\-A\-T\-A\-\_\-\-B\-L\-O\-C\-K\-\_\-\-I\-D~0x04\-A1}}\label{windtracer_8h_a6bab20cb2c68cbb2016b898e68980cb7}
+\hypertarget{windtracer_8h_a7f60ac0f9d6a5d2aa8bf1117e5669275}{\index{windtracer.\-h@{windtracer.\-h}!P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define P\-R\-O\-D\-U\-C\-T\-\_\-\-V\-E\-L\-O\-C\-I\-T\-Y\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0420}}\label{windtracer_8h_a7f60ac0f9d6a5d2aa8bf1117e5669275}
+\hypertarget{windtracer_8h_a5d21086da80ccbabd31b2716d0e77da6}{\index{windtracer.\-h@{windtracer.\-h}!R\-A\-W\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{R\-A\-W\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{R\-A\-W\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{R\-A\-W\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{R\-A\-W\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-A\-W\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0400}}\label{windtracer_8h_a5d21086da80ccbabd31b2716d0e77da6}
+\hypertarget{windtracer_8h_ae41ec2c386503ce93d4dd0ea45a523bf}{\index{windtracer.\-h@{windtracer.\-h}!R\-E\-P\-O\-R\-T\-E\-R\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{R\-E\-P\-O\-R\-T\-E\-R\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{R\-E\-P\-O\-R\-T\-E\-R\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{R\-E\-P\-O\-R\-T\-E\-R\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{R\-E\-P\-O\-R\-T\-E\-R\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-E\-P\-O\-R\-T\-E\-R\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0442}}\label{windtracer_8h_ae41ec2c386503ce93d4dd0ea45a523bf}
+\hypertarget{windtracer_8h_adf76c1e9db59d1b2f57d07266e54406f}{\index{windtracer.\-h@{windtracer.\-h}!R\-E\-S\-U\-M\-E\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{R\-E\-S\-U\-M\-E\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{R\-E\-S\-U\-M\-E\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{R\-E\-S\-U\-M\-E\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{R\-E\-S\-U\-M\-E\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-E\-S\-U\-M\-E\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0465}}\label{windtracer_8h_adf76c1e9db59d1b2f57d07266e54406f}
+\hypertarget{windtracer_8h_a92446f44a79efaf0203d811518bfcd7a}{\index{windtracer.\-h@{windtracer.\-h}!S\-T\-A\-T\-U\-S\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{S\-T\-A\-T\-U\-S\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{S\-T\-A\-T\-U\-S\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{S\-T\-A\-T\-U\-S\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{S\-T\-A\-T\-U\-S\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define S\-T\-A\-T\-U\-S\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0440}}\label{windtracer_8h_a92446f44a79efaf0203d811518bfcd7a}
+\hypertarget{windtracer_8h_a7bc266492d1fab697eccfeb2bbbf65c9}{\index{windtracer.\-h@{windtracer.\-h}!S\-U\-S\-P\-E\-N\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{S\-U\-S\-P\-E\-N\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{S\-U\-S\-P\-E\-N\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{S\-U\-S\-P\-E\-N\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{S\-U\-S\-P\-E\-N\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define S\-U\-S\-P\-E\-N\-D\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0464}}\label{windtracer_8h_a7bc266492d1fab697eccfeb2bbbf65c9}
+\hypertarget{windtracer_8h_a0e695f98c3816346d657234f84fefd14}{\index{windtracer.\-h@{windtracer.\-h}!T\-E\-L\-N\-E\-T\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{T\-E\-L\-N\-E\-T\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}}
+\index{T\-E\-L\-N\-E\-T\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D@{T\-E\-L\-N\-E\-T\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}!windtracer.h@{windtracer.\-h}}
+\subsubsection[{T\-E\-L\-N\-E\-T\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define T\-E\-L\-N\-E\-T\-\_\-\-R\-E\-C\-O\-R\-D\-\_\-\-I\-D~0x0463}}\label{windtracer_8h_a0e695f98c3816346d657234f84fefd14}

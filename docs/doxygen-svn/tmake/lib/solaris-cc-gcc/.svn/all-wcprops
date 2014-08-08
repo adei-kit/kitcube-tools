@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/doxygen/code/!svn/ver/434/trunk/tmake/lib/solaris-cc-gcc
+END
+lib.t
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/doxygen/code/!svn/ver/28/trunk/tmake/lib/solaris-cc-gcc/lib.t
+END
+subdirs.t
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/p/doxygen/code/!svn/ver/28/trunk/tmake/lib/solaris-cc-gcc/subdirs.t
+END
+app.t
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/doxygen/code/!svn/ver/28/trunk/tmake/lib/solaris-cc-gcc/app.t
+END
+tmake.conf
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/doxygen/code/!svn/ver/434/trunk/tmake/lib/solaris-cc-gcc/tmake.conf
+END

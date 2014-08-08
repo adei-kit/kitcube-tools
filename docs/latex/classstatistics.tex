@@ -1,0 +1,188 @@
+\hypertarget{classstatistics}{\section{statistics Class Reference}
+\label{classstatistics}\index{statistics@{statistics}}
+}
+
+
+{\ttfamily \#include $<$statistics.\-h$>$}
+
+Inheritance diagram for statistics\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classstatistics}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classstatistics_a31d6750c3251c979f5c2d013984e1162}{statistics} ()
+\item 
+\hyperlink{classstatistics_a8cf720227802726be118712dc6616f94}{$\sim$statistics} ()
+\item 
+\hyperlink{classstatistics}{statistics} \hyperlink{classstatistics_a7e1f497f3e4780616e26bee24f30944d}{operator=} (\hyperlink{classstatistics}{statistics} zuw)
+\item 
+void \hyperlink{classstatistics_ae1c996db4172cc4f3011870565703949}{of} (unsigned short $\ast$data, int n)
+\item 
+void \hyperlink{classstatistics_adc449c82af5a264a3056553f79a23e4b}{of} (\hyperlink{classstatistics}{statistics} $\ast$stat, int n)
+\item 
+float \hyperlink{classstatistics_a7b484fdc49bf285ada28a5f422c503ac}{calc\-Mean} (unsigned short $\ast$data, int n)
+\item 
+unsigned short \hyperlink{classstatistics_a11bc27c277c69da2d9c9b73f02a50b84}{calc\-Min} (unsigned short $\ast$data, int n)
+\item 
+unsigned short \hyperlink{classstatistics_a25386f47edfa8c646ed6e6db836533c6}{calc\-Max} (unsigned short $\ast$data, int n)
+\item 
+float \hyperlink{classstatistics_a4765a751c416d896665eb38ccdccae85}{calc\-Variance} (unsigned short $\ast$data, int n)
+\item 
+void \hyperlink{classstatistics_ae75932ba711d0db5989bca5d8e7c13fd}{display} (F\-I\-L\-E $\ast$fout)
+\item 
+void \hyperlink{classstatistics_af09b9e0004c0df961422b58816a40c73}{set\-Mask} (unsigned short \hyperlink{classstatistics_a6cef2b7af0c9455ba4d7a3be62920d92}{mask})
+\item 
+void \hyperlink{classstatistics_a1c3f661ec160e9651baf2f5150e7176c}{add} (\hyperlink{classstatistics}{statistics} $\ast$stat)
+\item 
+void \hyperlink{classstatistics_ab509d6761e6556fd9c8ef9d056b7f9f0}{minus} (\hyperlink{classstatistics}{statistics} $\ast$stat)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unsigned short \hyperlink{classstatistics_a9ddfcd7403d9a4ace35979ac3ad59fda}{min}
+\item 
+unsigned short \hyperlink{classstatistics_a46d65241f719918224650310f2fddecc}{max}
+\item 
+float \hyperlink{classstatistics_a5eacad512b051c45016ffeed7b35fe21}{mean}
+\item 
+float \hyperlink{classstatistics_a1397e63632ef6a3b87abfd35eff6485c}{variance}
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unsigned short \hyperlink{classstatistics_a6cef2b7af0c9455ba4d7a3be62920d92}{mask}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Provide statistics for a time series. The statistic is described by the minimum and maximum value, the mean value and the variance of the series. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classstatistics_a31d6750c3251c979f5c2d013984e1162}{\index{statistics@{statistics}!statistics@{statistics}}
+\index{statistics@{statistics}!statistics@{statistics}}
+\subsubsection[{statistics}]{\setlength{\rightskip}{0pt plus 5cm}statistics\-::statistics (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_a31d6750c3251c979f5c2d013984e1162}
+\hypertarget{classstatistics_a8cf720227802726be118712dc6616f94}{\index{statistics@{statistics}!$\sim$statistics@{$\sim$statistics}}
+\index{$\sim$statistics@{$\sim$statistics}!statistics@{statistics}}
+\subsubsection[{$\sim$statistics}]{\setlength{\rightskip}{0pt plus 5cm}statistics\-::$\sim$statistics (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_a8cf720227802726be118712dc6616f94}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classstatistics_a1c3f661ec160e9651baf2f5150e7176c}{\index{statistics@{statistics}!add@{add}}
+\index{add@{add}!statistics@{statistics}}
+\subsubsection[{add}]{\setlength{\rightskip}{0pt plus 5cm}void statistics\-::add (
+\begin{DoxyParamCaption}
+\item[{{\bf statistics} $\ast$}]{stat}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_a1c3f661ec160e9651baf2f5150e7176c}
+Add another statistical set \hypertarget{classstatistics_a25386f47edfa8c646ed6e6db836533c6}{\index{statistics@{statistics}!calc\-Max@{calc\-Max}}
+\index{calc\-Max@{calc\-Max}!statistics@{statistics}}
+\subsubsection[{calc\-Max}]{\setlength{\rightskip}{0pt plus 5cm}unsigned short statistics\-::calc\-Max (
+\begin{DoxyParamCaption}
+\item[{unsigned short $\ast$}]{data, }
+\item[{int}]{n}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_a25386f47edfa8c646ed6e6db836533c6}
+\hypertarget{classstatistics_a7b484fdc49bf285ada28a5f422c503ac}{\index{statistics@{statistics}!calc\-Mean@{calc\-Mean}}
+\index{calc\-Mean@{calc\-Mean}!statistics@{statistics}}
+\subsubsection[{calc\-Mean}]{\setlength{\rightskip}{0pt plus 5cm}float statistics\-::calc\-Mean (
+\begin{DoxyParamCaption}
+\item[{unsigned short $\ast$}]{data, }
+\item[{int}]{n}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_a7b484fdc49bf285ada28a5f422c503ac}
+\hypertarget{classstatistics_a11bc27c277c69da2d9c9b73f02a50b84}{\index{statistics@{statistics}!calc\-Min@{calc\-Min}}
+\index{calc\-Min@{calc\-Min}!statistics@{statistics}}
+\subsubsection[{calc\-Min}]{\setlength{\rightskip}{0pt plus 5cm}unsigned short statistics\-::calc\-Min (
+\begin{DoxyParamCaption}
+\item[{unsigned short $\ast$}]{data, }
+\item[{int}]{n}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_a11bc27c277c69da2d9c9b73f02a50b84}
+\hypertarget{classstatistics_a4765a751c416d896665eb38ccdccae85}{\index{statistics@{statistics}!calc\-Variance@{calc\-Variance}}
+\index{calc\-Variance@{calc\-Variance}!statistics@{statistics}}
+\subsubsection[{calc\-Variance}]{\setlength{\rightskip}{0pt plus 5cm}float statistics\-::calc\-Variance (
+\begin{DoxyParamCaption}
+\item[{unsigned short $\ast$}]{data, }
+\item[{int}]{n}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_a4765a751c416d896665eb38ccdccae85}
+\hypertarget{classstatistics_ae75932ba711d0db5989bca5d8e7c13fd}{\index{statistics@{statistics}!display@{display}}
+\index{display@{display}!statistics@{statistics}}
+\subsubsection[{display}]{\setlength{\rightskip}{0pt plus 5cm}void statistics\-::display (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_ae75932ba711d0db5989bca5d8e7c13fd}
+\hypertarget{classstatistics_ab509d6761e6556fd9c8ef9d056b7f9f0}{\index{statistics@{statistics}!minus@{minus}}
+\index{minus@{minus}!statistics@{statistics}}
+\subsubsection[{minus}]{\setlength{\rightskip}{0pt plus 5cm}void statistics\-::minus (
+\begin{DoxyParamCaption}
+\item[{{\bf statistics} $\ast$}]{stat}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_ab509d6761e6556fd9c8ef9d056b7f9f0}
+Substract another statistical set \hypertarget{classstatistics_ae1c996db4172cc4f3011870565703949}{\index{statistics@{statistics}!of@{of}}
+\index{of@{of}!statistics@{statistics}}
+\subsubsection[{of}]{\setlength{\rightskip}{0pt plus 5cm}void statistics\-::of (
+\begin{DoxyParamCaption}
+\item[{unsigned short $\ast$}]{data, }
+\item[{int}]{n}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_ae1c996db4172cc4f3011870565703949}
+Calculate the statistics a time series defined by n values of type unsigned short. \hypertarget{classstatistics_adc449c82af5a264a3056553f79a23e4b}{\index{statistics@{statistics}!of@{of}}
+\index{of@{of}!statistics@{statistics}}
+\subsubsection[{of}]{\setlength{\rightskip}{0pt plus 5cm}void statistics\-::of (
+\begin{DoxyParamCaption}
+\item[{{\bf statistics} $\ast$}]{stat, }
+\item[{int}]{n}
+\end{DoxyParamCaption}
+)}}\label{classstatistics_adc449c82af5a264a3056553f79a23e4b}
+Calculate the statistics of a time series that has been analysed in n segments of equal length \hypertarget{classstatistics_a7e1f497f3e4780616e26bee24f30944d}{\index{statistics@{statistics}!operator=@{operator=}}
+\index{operator=@{operator=}!statistics@{statistics}}
+\subsubsection[{operator=}]{\setlength{\rightskip}{0pt plus 5cm}{\bf statistics} statistics\-::operator= (
+\begin{DoxyParamCaption}
+\item[{{\bf statistics}}]{zuw}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classstatistics_a7e1f497f3e4780616e26bee24f30944d}
+\hypertarget{classstatistics_af09b9e0004c0df961422b58816a40c73}{\index{statistics@{statistics}!set\-Mask@{set\-Mask}}
+\index{set\-Mask@{set\-Mask}!statistics@{statistics}}
+\subsubsection[{set\-Mask}]{\setlength{\rightskip}{0pt plus 5cm}void statistics\-::set\-Mask (
+\begin{DoxyParamCaption}
+\item[{unsigned short}]{mask}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classstatistics_af09b9e0004c0df961422b58816a40c73}
+Set mask to select the data and remove possible flags 
+
+\subsection{Member Data Documentation}
+\hypertarget{classstatistics_a6cef2b7af0c9455ba4d7a3be62920d92}{\index{statistics@{statistics}!mask@{mask}}
+\index{mask@{mask}!statistics@{statistics}}
+\subsubsection[{mask}]{\setlength{\rightskip}{0pt plus 5cm}unsigned short statistics\-::mask\hspace{0.3cm}{\ttfamily [private]}}}\label{classstatistics_a6cef2b7af0c9455ba4d7a3be62920d92}
+Mask for the data \hypertarget{classstatistics_a46d65241f719918224650310f2fddecc}{\index{statistics@{statistics}!max@{max}}
+\index{max@{max}!statistics@{statistics}}
+\subsubsection[{max}]{\setlength{\rightskip}{0pt plus 5cm}unsigned short statistics\-::max}}\label{classstatistics_a46d65241f719918224650310f2fddecc}
+\hypertarget{classstatistics_a5eacad512b051c45016ffeed7b35fe21}{\index{statistics@{statistics}!mean@{mean}}
+\index{mean@{mean}!statistics@{statistics}}
+\subsubsection[{mean}]{\setlength{\rightskip}{0pt plus 5cm}float statistics\-::mean}}\label{classstatistics_a5eacad512b051c45016ffeed7b35fe21}
+\hypertarget{classstatistics_a9ddfcd7403d9a4ace35979ac3ad59fda}{\index{statistics@{statistics}!min@{min}}
+\index{min@{min}!statistics@{statistics}}
+\subsubsection[{min}]{\setlength{\rightskip}{0pt plus 5cm}unsigned short statistics\-::min}}\label{classstatistics_a9ddfcd7403d9a4ace35979ac3ad59fda}
+\hypertarget{classstatistics_a1397e63632ef6a3b87abfd35eff6485c}{\index{statistics@{statistics}!variance@{variance}}
+\index{variance@{variance}!statistics@{statistics}}
+\subsubsection[{variance}]{\setlength{\rightskip}{0pt plus 5cm}float statistics\-::variance}}\label{classstatistics_a1397e63632ef6a3b87abfd35eff6485c}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/akutil/\hyperlink{statistics_8h}{statistics.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/akutil/\hyperlink{statistics_8cpp}{statistics.\-cpp}\end{DoxyCompactItemize}

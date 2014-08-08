@@ -1,0 +1,40 @@
+10
+
+dir
+850
+https://svn.code.sf.net/p/doxygen/code/trunk/addon
+https://svn.code.sf.net/p/doxygen/code
+
+
+
+2013-05-12T13:04:34.333153Z
+847
+dimitri
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+afe2bf4a-e733-0410-8a33-86f594647bc7
+
+doxmlparser
+dir
+
+doxyapp
+dir
+
+doxywizard
+dir
+
+doxysearch
+dir
+

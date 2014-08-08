@@ -1,0 +1,163 @@
+10
+
+dir
+850
+https://svn.code.sf.net/p/doxygen/code/trunk/tmake/lib
+https://svn.code.sf.net/p/doxygen/code
+
+
+
+2012-12-26T15:59:17.775130Z
+836
+dimitri
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+afe2bf4a-e733-0410-8a33-86f594647bc7
+
+irix-n32
+dir
+
+irix-o32
+dir
+
+unixware-g++
+dir
+
+unixware7-cc
+dir
+
+win32-visage
+dir
+
+qnx-g++
+dir
+
+dgux-g++
+dir
+
+win32-borland
+dir
+
+osf1-g++
+dir
+
+unix
+dir
+
+win32-symantec
+dir
+
+freebsd-g++
+dir
+
+solaris-g++
+dir
+
+linux-64
+dir
+
+netbsd-g++
+dir
+
+win32-watcom
+dir
+
+aix-g++
+dir
+
+bsdi-g++
+dir
+
+sco-g++
+dir
+
+hpux-g++
+dir
+
+solaris-cc
+dir
+
+macosx-c++
+dir
+
+ultrix-g++
+dir
+
+irix-64
+dir
+
+irix-dcc
+dir
+
+unixware7-g++
+dir
+
+hpux-cc
+dir
+
+win32-msvc
+dir
+
+macosx-intel-c++
+dir
+
+linux-g++
+dir
+
+win32-g++
+dir
+
+sunos-g++
+dir
+
+win32-mingw
+dir
+
+irix-g++
+dir
+
+solaris-cc-64
+dir
+
+macosx-uni-c++
+dir
+
+solaris-cc-gcc
+dir
+
+m68k-atari-mint-g++
+dir
+
+beos-g++
+dir
+
+win32
+dir
+
+gnu-g++
+dir
+
+openbsd-g++
+dir
+
+aix-xlc
+dir
+
+osf1-cxx
+dir
+
+hpux-acc
+dir
+

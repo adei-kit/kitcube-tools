@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/p/doxygen/code/!svn/ver/841/trunk/libmd5
+END
+libmd5.pro.in
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/400/trunk/libmd5/libmd5.pro.in
+END
+Makefile.in
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/doxygen/code/!svn/ver/841/trunk/libmd5/Makefile.in
+END
+md5.c
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/p/doxygen/code/!svn/ver/825/trunk/libmd5/md5.c
+END
+md5_loc.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/590/trunk/libmd5/md5_loc.h
+END
+md5.h
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/p/doxygen/code/!svn/ver/590/trunk/libmd5/md5.h
+END

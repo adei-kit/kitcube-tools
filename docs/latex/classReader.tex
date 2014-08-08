@@ -1,0 +1,619 @@
+\hypertarget{classReader}{\section{Reader Class Reference}
+\label{classReader}\index{Reader@{Reader}}
+}
+
+
+{\ttfamily \#include $<$reader.\-h$>$}
+
+Inheritance diagram for Reader\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classReader}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classReader_adcda31b507720ab44044d7a21686fba2}{Reader} ()
+\item 
+\hyperlink{classReader_a78089542fd27a0ac2df6702fffe8725c}{$\sim$\-Reader} ()
+\item 
+void \hyperlink{classReader_a00b096fb45b4c2510f8b045989bf162c}{set\-App\-Name} (const char $\ast$name)
+\item 
+int \hyperlink{classReader_ae309d831a357a1107a7f7f1db49f00e8}{get\-App\-Id} ()
+\item 
+void \hyperlink{classReader_aadf658dbddd5060d8a2f10482f070a16}{set\-Reset} ()
+\item 
+void \hyperlink{classReader_a0f1f72184f82854b67b28471844734da}{read\-Inifile} (const char $\ast$\hyperlink{classReader_aaeaf0ff38217063a14b00bf16deed50a}{inifile}, const char $\ast$module=0)
+\item 
+void \hyperlink{classReader_a4f2113dc609befa174f3716492bf7ebc}{run\-As\-Daemon} (bool flag=true)
+\item 
+void \hyperlink{classReader_aa471d16ce98f57c1c40aaf6090a3a971}{get\-Next\-Sample} (int $\ast$i\-Sample, double $\ast$t\-Wait)
+\item 
+void \hyperlink{classReader_a656b1bef6050e0b043f4499fe2a22f2d}{get\-Next\-Sample} (int $\ast$i\-Sample, struct timeval $\ast$t\-Wait)
+\item 
+int \hyperlink{classReader_a1c23cb1e3ec1a87fb5db65392fb43d21}{handle\-\_\-timeout} ()
+\item 
+int \hyperlink{classReader_a8adf1a4f5f852efa0433cab70bb750c0}{read\-\_\-from\-\_\-keyboard} ()
+\item 
+void \hyperlink{classReader_a8d71e1068d9bf3886ac4fd472ed71ae9}{execute\-Cmd} (int client, short cmd, unsigned int $\ast$arg, short n)
+\item 
+void \hyperlink{classReader_a966aeba64f6a646c10276d248b60760c}{run\-Readout} ()
+\item 
+long int \hyperlink{classReader_a1abd8f689645dafbf76fda50cd9dd48d}{analyse\-Timing} (struct timeval $\ast$t)
+\item 
+void \hyperlink{classReader_a73c6e0134bdd06ebdbfef68252b8be94}{display\-Status} (F\-I\-L\-E $\ast$\hyperlink{classBaseServer_a9ad43261a042fbeeafee33ca4c0b3fd3}{fout})
+\item 
+void \hyperlink{classReader_a330c1515ec85cdde0662805cd3be735e}{analyse\-Disk\-Space} (const char $\ast$dir)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{classReader_ae5710fab671a39e2e2c6472aa8cd5cf6}{app\-Id}
+\item 
+bool \hyperlink{classReader_ac7fb1595fa93f70c58656bff11091f94}{reset}
+\item 
+std\-::string \hyperlink{classReader_a6207e38c6bc804dabb6b086405c8231d}{app\-Name}
+\item 
+bool \hyperlink{classReader_a08302c0ae536dd0d0d2de37143eb7a94}{run\-Daemon}
+\item 
+int \hyperlink{classReader_abe8094976b8f244a539e34689dda91bc}{t\-Sample\-From\-Inifile}
+\item 
+int \hyperlink{classReader_abf76426a02d8896908e76edefa1821b2}{n\-Modules}
+\item 
+std\-::string \hyperlink{classReader_a0120f495d8251090cb5a406b6326c543}{module\-Name}
+\item 
+std\-::string $\ast$ \hyperlink{classReader_a082c78fbd3e67423e6ab134d4fb61cc9}{module\-Type}
+\item 
+int $\ast$ \hyperlink{classReader_aa816d9ed493e53da3119680a60a581ed}{module\-Number}
+\item 
+std\-::string $\ast$ \hyperlink{classReader_ab53774f0eac672c5d80f5f086e7b0d3b}{ini\-Group}
+\item 
+\hyperlink{classDAQDevice}{D\-A\-Q\-Device} $\ast$$\ast$ \hyperlink{classReader_a759e4aca2327cd6959af3273bb10c979}{dev}
+\item 
+\hyperlink{classSysLog}{Sys\-Log} $\ast$ \hyperlink{classReader_a3623b291506e1e6f54b90e00eeefdad8}{log}
+\item 
+int \hyperlink{classReader_a5d275c3577f7d7c02a6cc83f70d0dcc7}{n\-Error}
+\item 
+int \hyperlink{classReader_aa87a2b5443237f58cadeaa815e6e6790}{n\-Groups}
+\item 
+unsigned long \hyperlink{classReader_aa6c9e0275ed3601e6df4fcb194d97834}{samples\-N}
+\item 
+long long \hyperlink{classReader_a85c71a4d9f959cabea9cb7b168d966a0}{timing\-N}
+\item 
+long long \hyperlink{classReader_ab185760a9e7235b20f9cb21db44d0663}{timing\-Sum}
+\item 
+long long \hyperlink{classReader_a8a8de149490f7fe3c01413453c3d0a50}{timing\-Sum2}
+\item 
+long long \hyperlink{classReader_a6e85a422cbe42ab60c20b06e719bbdae}{timing\-Min}
+\item 
+long long \hyperlink{classReader_a6cf0d42c4478dafaf61696bcc0c668f9}{timing\-Max}
+\item 
+int \hyperlink{classReader_a4b6268d4969e7209ea2c7fea25d09a58}{n\-Samples\-Skipped}
+\item 
+\hyperlink{classSimpleSocket}{Simple\-Socket} $\ast$ \hyperlink{classReader_a4cbb3ab4b903d0114ee8f6ea521259b8}{cfp\-Sock}
+\item 
+std\-::string \hyperlink{classReader_aaeaf0ff38217063a14b00bf16deed50a}{inifile}
+\item 
+std\-::string \hyperlink{classReader_a527aa131b2bafc4f6292828ac097a77f}{filename}
+\item 
+std\-::string \hyperlink{classReader_af4873d08f7454f94b69379682b86b761}{filename\-Tmpl}
+\item 
+std\-::string \hyperlink{classReader_ace3793e1d270276c63e9689e59a6cb23}{basedir}
+\item 
+std\-::string \hyperlink{classReader_a5357e56eb1aea6d31962a3ac034b4d0b}{basedir\-Tmpl}
+\item 
+int \hyperlink{classReader_a2f8737a95888b1cb41b2fa191382fe1c}{location\-Id}
+\item 
+std\-::string \hyperlink{classReader_a8f238308360fe50adda67d360a9d3b28}{location}
+\item 
+int \hyperlink{classReader_a2df27c47ac46939a756ab78b71690d44}{unique\-Id}
+\item 
+F\-I\-L\-E $\ast$ \hyperlink{classReader_aa0296167e6f6781808727fa2a93b6a74}{bg\-File}
+\item 
+bool \hyperlink{classReader_acfb61762011f4aa995126c9e8c1950c3}{record}
+\item 
+int \hyperlink{classReader_a298c2e5e5d77eab7642ebfef4ac8e8da}{sel\-Store}
+\item 
+int \hyperlink{classReader_ab52320900b9165867a7294a5282b2caf}{sel\-Display}
+\item 
+int \hyperlink{classReader_a822ff7808145dd73c18e03a02ff59fbe}{sel\-Telescopes}
+\item 
+int \hyperlink{classReader_a04a91fc12dab5c7eee7bcbf051619b16}{limit\-Var}
+\item 
+unsigned long \hyperlink{classReader_a98d0f293c15366f1efbe6722ed4fa9eb}{stat\-Samples}
+\item 
+unsigned long \hyperlink{classReader_a8fd2d0cd7df8a4c2cf1ca350f6ca95c9}{stat\-Offset}
+\item 
+unsigned long \hyperlink{classReader_ac749831ff1afb95fcc67c3100b45c6d7}{disabled\-Pixel} \mbox{[}20\mbox{]}
+\item 
+unsigned long \hyperlink{classReader_a03046b6de7c2adc07bc85fffd69d78b1}{pixel\-Status} \mbox{[}20\mbox{]}\mbox{[}24\mbox{]}
+\item 
+unsigned long \hyperlink{classReader_a59ce0afb9461ba7360d135e4b2c4fb95}{fddas\-Run\-Id}
+\item 
+std\-::string \hyperlink{classReader_a7e985019f1cb999712f0955e0febf4ef}{bgrun\-File}
+\item 
+std\-::string \hyperlink{classReader_a097598eeea105530aa64222c8bf6d828}{bgcal\-File}
+\item 
+int \hyperlink{classReader_a1fa6f7582327f96076165c7b95b55a1b}{bgrun\-T\-Sample}
+\item 
+int \hyperlink{classReader_aa98bab20153537c112ca0640c210c34b}{bgcal\-T\-Sample}
+\item 
+F\-I\-L\-E $\ast$ \hyperlink{classReader_adced1caed365fc651778f352416914c6}{flog}
+\item 
+std\-::string \hyperlink{classReader_a59413e43dd39a74095478580bdcc7eb9}{logfile}
+\item 
+int \hyperlink{classReader_a3fb6ef9d55ca8c9d23e0bf6be5796583}{run\-Mode}
+\item 
+std\-::string \hyperlink{classReader_a25348aba8ec875045f557beaa11e2415}{run\-Type}
+\item 
+int \hyperlink{classReader_aaa48504eb00d9023ff126beb8b6f5c89}{tel\-Active} \mbox{[}24\mbox{]}
+\item 
+unsigned long \hyperlink{classReader_a14d16a29a867041a4bc916142630a162}{last\-Data\-Sec} \mbox{[}24\mbox{]}
+\item 
+int \hyperlink{classReader_a19a9f80856c30d86a31b79f1672b3804}{hitrate\-Overflow} \mbox{[}24\mbox{]}
+\item 
+unsigned long \hyperlink{classReader_a9686e0c5ed311baa141f6021fc45c931}{last\-Second\-Diff} \mbox{[}24\mbox{]}
+\item 
+int \hyperlink{classReader_a57a28f21905a04e6eeb0008840ed7ab6}{variance\-Level} \mbox{[}24\mbox{]}
+\item 
+float \hyperlink{classReader_a2318276c2913fe9eb87c1b49c786d9b5}{variance\-Closed\-Shutter}
+\item 
+float \hyperlink{classReader_a55a312840dc5e05cbadcc8002838a252}{variance\-Overflow}
+\item 
+int \hyperlink{classReader_aa69150af33df50c03662851a660321b4}{last\-Variance} \mbox{[}24\mbox{]}
+\item 
+int \hyperlink{classReader_a20de0ffe57bd63c8b322a552d0eea7aa}{actual\-Variance} \mbox{[}24\mbox{]}
+\item 
+unsigned long \hyperlink{classReader_a17df32c8ae16df4d276d73b8d955c0e6}{last\-Time\-Stamp}
+\item 
+unsigned long \hyperlink{classReader_a0f8a298ecdd8c02e9e1a428c1634581c}{actual\-Time\-Stamp}
+\item 
+int \hyperlink{classReader_ae79b47c731fc265b3ca401cdbdccd726}{threshold\-Level} \mbox{[}24\mbox{]}
+\item 
+int \hyperlink{classReader_a9574d13bbda6fd1a17f1aca61e2a0df1}{missing\-Tel} \mbox{[}24\mbox{]}
+\item 
+int \hyperlink{classReader_a92b7378790ac975b65f159b6502cb47e}{error\-Level} \mbox{[}24\mbox{]}
+\item 
+int \hyperlink{classReader_ae6d9d7dae0b2b71985a8d2df2ee09819}{error\-General}
+\item 
+unsigned long long \hyperlink{classReader_ad7344b65bf38e5ea1a22230ad37fc95a}{last\-Deadtime} \mbox{[}24\mbox{]}
+\item 
+int \hyperlink{classReader_aee93b4550b1f413ac5e263e0a2f85b25}{deadtime\-Active} \mbox{[}24\mbox{]}
+\item 
+int \hyperlink{classReader_aeb5766561480656c2a2182b86e2cdae8}{t\-Database}
+\item 
+std\-::string \hyperlink{classReader_ad92d8d94dae6b66a5278cb792ca0a206}{qd\-Path}
+\item 
+std\-::string \hyperlink{classReader_ab0da569b087b0ba5efdb22ee8459e40d}{qd\-Config}
+\item 
+int \hyperlink{classReader_a69f380acc4c2b439f1cd940b12349d92}{qd\-T\-Sample}
+\item 
+int \hyperlink{classReader_a1807cf089712f144cbf20b280dc36240}{qd\-N\-Sensors}
+\item 
+double \hyperlink{classReader_a0746e7e813a05ee8648875ee2776b5f4}{disk\-\_\-avail\-\_\-gb}
+\item 
+struct timeval \hyperlink{classReader_a4b26c73a9ce2d08fd78b11dca25c0ad6}{time\-\_\-now}
+\item 
+uint64\-\_\-t \hyperlink{classReader_a759fcd53649d1d49e66ff8e9cfd4b452}{rx}
+\item 
+uint64\-\_\-t \hyperlink{classReader_acb6c6053d7bd278014e04c34fdad4e0e}{tx}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}The reader funtion periodically transfers data from the 
+connected DAQ systems and writes any newly recorded data 
+to the database. At the same time also some indicators 
+for the system performance are stored in a separate 
+table. The performance data contains:
+ - Amount of free data
+ - Rate of stored data
+ - Rate of transfered data (send/receive)
+ - Durations for data transfer an database access
+ - Timing acurancy of the scheduler
+
+The reader class is using several debug levels to control the
+amount of messages send to the terminal. 
+
+0: Only output of application welcome and error messages
+1: Additional output of new files that are porcessed
+2: Display of key information of every reader loop
+3: Header information of every function called
+4+5: More messages
+
+
+The following box shows a sample call of the background recorder.
+\end{DoxyVerb}
+ \begin{DoxyVerb}  TsBackgroundLoop *bgrec;
+  Pbus *thePbus;
+
+  Pbus::init(inifile.c_str());
+
+
+  // Create recorder
+  bgrec = new TsBackgroundLoop();
+  bgrec->readInifile(inifile.c_str());
+
+  bgrec->setLogfile(stdout);
+
+  // Set parameter: Period length, selected parameter, file, ....
+  bgrec->setParameter(name, tSample, 0, selRecord, selDisplay, runType.c_str());  // no output to file, take data every 5s
+
+  // Run background recorder
+  // The readout process is started at all connected telescopes
+  bgrec->runReadout(stdout);
+
+  delete bgrec;
+\end{DoxyVerb}
+ 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classReader_adcda31b507720ab44044d7a21686fba2}{\index{Reader@{Reader}!Reader@{Reader}}
+\index{Reader@{Reader}!Reader@{Reader}}
+\subsubsection[{Reader}]{\setlength{\rightskip}{0pt plus 5cm}Reader\-::\-Reader (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classReader_adcda31b507720ab44044d7a21686fba2}
+\hypertarget{classReader_a78089542fd27a0ac2df6702fffe8725c}{\index{Reader@{Reader}!$\sim$\-Reader@{$\sim$\-Reader}}
+\index{$\sim$\-Reader@{$\sim$\-Reader}!Reader@{Reader}}
+\subsubsection[{$\sim$\-Reader}]{\setlength{\rightskip}{0pt plus 5cm}Reader\-::$\sim$\-Reader (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classReader_a78089542fd27a0ac2df6702fffe8725c}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classReader_a330c1515ec85cdde0662805cd3be735e}{\index{Reader@{Reader}!analyse\-Disk\-Space@{analyse\-Disk\-Space}}
+\index{analyse\-Disk\-Space@{analyse\-Disk\-Space}!Reader@{Reader}}
+\subsubsection[{analyse\-Disk\-Space}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::analyse\-Disk\-Space (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{dir}
+\end{DoxyParamCaption}
+)}}\label{classReader_a330c1515ec85cdde0662805cd3be735e}
+Read the free disk space from the filesystem that is used for data storage. \hypertarget{classReader_a1abd8f689645dafbf76fda50cd9dd48d}{\index{Reader@{Reader}!analyse\-Timing@{analyse\-Timing}}
+\index{analyse\-Timing@{analyse\-Timing}!Reader@{Reader}}
+\subsubsection[{analyse\-Timing}]{\setlength{\rightskip}{0pt plus 5cm}long int Reader\-::analyse\-Timing (
+\begin{DoxyParamCaption}
+\item[{struct timeval $\ast$}]{t}
+\end{DoxyParamCaption}
+)}}\label{classReader_a1abd8f689645dafbf76fda50cd9dd48d}
+Analyse timing \hypertarget{classReader_a73c6e0134bdd06ebdbfef68252b8be94}{\index{Reader@{Reader}!display\-Status@{display\-Status}}
+\index{display\-Status@{display\-Status}!Reader@{Reader}}
+\subsubsection[{display\-Status}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::display\-Status (
+\begin{DoxyParamCaption}
+\item[{F\-I\-L\-E $\ast$}]{fout}
+\end{DoxyParamCaption}
+)}}\label{classReader_a73c6e0134bdd06ebdbfef68252b8be94}
+Display status of readout process \hypertarget{classReader_a8d71e1068d9bf3886ac4fd472ed71ae9}{\index{Reader@{Reader}!execute\-Cmd@{execute\-Cmd}}
+\index{execute\-Cmd@{execute\-Cmd}!Reader@{Reader}}
+\subsubsection[{execute\-Cmd}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::execute\-Cmd (
+\begin{DoxyParamCaption}
+\item[{int}]{client, }
+\item[{short}]{cmd, }
+\item[{unsigned int $\ast$}]{arg, }
+\item[{short}]{n}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classReader_a8d71e1068d9bf3886ac4fd472ed71ae9}
+Execute the command 
+
+Reimplemented from \hyperlink{classSimpleServer_ad8244094d9e1806edaa166093c94bd24}{Simple\-Server}.
+
+\hypertarget{classReader_ae309d831a357a1107a7f7f1db49f00e8}{\index{Reader@{Reader}!get\-App\-Id@{get\-App\-Id}}
+\index{get\-App\-Id@{get\-App\-Id}!Reader@{Reader}}
+\subsubsection[{get\-App\-Id}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::get\-App\-Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classReader_ae309d831a357a1107a7f7f1db49f00e8}
+Get the number of the application \hypertarget{classReader_aa471d16ce98f57c1c40aaf6090a3a971}{\index{Reader@{Reader}!get\-Next\-Sample@{get\-Next\-Sample}}
+\index{get\-Next\-Sample@{get\-Next\-Sample}!Reader@{Reader}}
+\subsubsection[{get\-Next\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::get\-Next\-Sample (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{i\-Sample, }
+\item[{double $\ast$}]{t\-Wait}
+\end{DoxyParamCaption}
+)}}\label{classReader_aa471d16ce98f57c1c40aaf6090a3a971}
+Get time until next sample and it's id \hypertarget{classReader_a656b1bef6050e0b043f4499fe2a22f2d}{\index{Reader@{Reader}!get\-Next\-Sample@{get\-Next\-Sample}}
+\index{get\-Next\-Sample@{get\-Next\-Sample}!Reader@{Reader}}
+\subsubsection[{get\-Next\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::get\-Next\-Sample (
+\begin{DoxyParamCaption}
+\item[{int $\ast$}]{i\-Sample, }
+\item[{struct timeval $\ast$}]{t\-Wait}
+\end{DoxyParamCaption}
+)}}\label{classReader_a656b1bef6050e0b043f4499fe2a22f2d}
+\hypertarget{classReader_a1c23cb1e3ec1a87fb5db65392fb43d21}{\index{Reader@{Reader}!handle\-\_\-timeout@{handle\-\_\-timeout}}
+\index{handle\-\_\-timeout@{handle\-\_\-timeout}!Reader@{Reader}}
+\subsubsection[{handle\-\_\-timeout}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::handle\-\_\-timeout (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classReader_a1c23cb1e3ec1a87fb5db65392fb43d21}
+Handler for the timeout 
+
+Reimplemented from \hyperlink{classBaseServer_a892cf59b889f59d73031108cfab07772}{Base\-Server}.
+
+\hypertarget{classReader_a8adf1a4f5f852efa0433cab70bb750c0}{\index{Reader@{Reader}!read\-\_\-from\-\_\-keyboard@{read\-\_\-from\-\_\-keyboard}}
+\index{read\-\_\-from\-\_\-keyboard@{read\-\_\-from\-\_\-keyboard}!Reader@{Reader}}
+\subsubsection[{read\-\_\-from\-\_\-keyboard}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::read\-\_\-from\-\_\-keyboard (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classReader_a8adf1a4f5f852efa0433cab70bb750c0}
+Keyboard interface for interactive control (only for compatibility reasons 
+
+Reimplemented from \hyperlink{classBaseServer_a2c5a73b3bd9950a7809ac2a353061960}{Base\-Server}.
+
+\hypertarget{classReader_a0f1f72184f82854b67b28471844734da}{\index{Reader@{Reader}!read\-Inifile@{read\-Inifile}}
+\index{read\-Inifile@{read\-Inifile}!Reader@{Reader}}
+\subsubsection[{read\-Inifile}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::read\-Inifile (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{inifile, }
+\item[{const char $\ast$}]{module = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}\label{classReader_a0f1f72184f82854b67b28471844734da}
+Read parameter from inifile. The module definition will be read from the argument list, afterwards from the reader section in the inifile and at last the default name (Simulation) selected. \hypertarget{classReader_a4f2113dc609befa174f3716492bf7ebc}{\index{Reader@{Reader}!run\-As\-Daemon@{run\-As\-Daemon}}
+\index{run\-As\-Daemon@{run\-As\-Daemon}!Reader@{Reader}}
+\subsubsection[{run\-As\-Daemon}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::run\-As\-Daemon (
+\begin{DoxyParamCaption}
+\item[{bool}]{flag = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{classReader_a4f2113dc609befa174f3716492bf7ebc}
+Set operation without interactive inputs \hypertarget{classReader_a966aeba64f6a646c10276d248b60760c}{\index{Reader@{Reader}!run\-Readout@{run\-Readout}}
+\index{run\-Readout@{run\-Readout}!Reader@{Reader}}
+\subsubsection[{run\-Readout}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::run\-Readout (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classReader_a966aeba64f6a646c10276d248b60760c}
+Start the server and all the client recording the telescopes background data. \hypertarget{classReader_a00b096fb45b4c2510f8b045989bf162c}{\index{Reader@{Reader}!set\-App\-Name@{set\-App\-Name}}
+\index{set\-App\-Name@{set\-App\-Name}!Reader@{Reader}}
+\subsubsection[{set\-App\-Name}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::set\-App\-Name (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{name}
+\end{DoxyParamCaption}
+)}}\label{classReader_a00b096fb45b4c2510f8b045989bf162c}
+Change the default name of the application used to figure out the right inifile section \hypertarget{classReader_aadf658dbddd5060d8a2f10482f070a16}{\index{Reader@{Reader}!set\-Reset@{set\-Reset}}
+\index{set\-Reset@{set\-Reset}!Reader@{Reader}}
+\subsubsection[{set\-Reset}]{\setlength{\rightskip}{0pt plus 5cm}void Reader\-::set\-Reset (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classReader_aadf658dbddd5060d8a2f10482f070a16}
+Activate reset of file pointers 
+
+\subsection{Member Data Documentation}
+\hypertarget{classReader_a0f8a298ecdd8c02e9e1a428c1634581c}{\index{Reader@{Reader}!actual\-Time\-Stamp@{actual\-Time\-Stamp}}
+\index{actual\-Time\-Stamp@{actual\-Time\-Stamp}!Reader@{Reader}}
+\subsubsection[{actual\-Time\-Stamp}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::actual\-Time\-Stamp\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a0f8a298ecdd8c02e9e1a428c1634581c}
+Actual time stamp \hypertarget{classReader_a20de0ffe57bd63c8b322a552d0eea7aa}{\index{Reader@{Reader}!actual\-Variance@{actual\-Variance}}
+\index{actual\-Variance@{actual\-Variance}!Reader@{Reader}}
+\subsubsection[{actual\-Variance}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::actual\-Variance\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a20de0ffe57bd63c8b322a552d0eea7aa}
+Array with the actual variances \hypertarget{classReader_ae5710fab671a39e2e2c6472aa8cd5cf6}{\index{Reader@{Reader}!app\-Id@{app\-Id}}
+\index{app\-Id@{app\-Id}!Reader@{Reader}}
+\subsubsection[{app\-Id}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::app\-Id\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ae5710fab671a39e2e2c6472aa8cd5cf6}
+Get index / time stamp of a folder or a filename. The index field is defined by a starting tag directly before the numerical values. The length of the field can be given by a final string of the length of the field or all following digit will be taken. In case of success the parsed numerical values will cut out of the passed filename.\-Get list of new files Read new data from the file Every reader application has it's own I\-D \hypertarget{classReader_a6207e38c6bc804dabb6b086405c8231d}{\index{Reader@{Reader}!app\-Name@{app\-Name}}
+\index{app\-Name@{app\-Name}!Reader@{Reader}}
+\subsubsection[{app\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::app\-Name\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a6207e38c6bc804dabb6b086405c8231d}
+Name of the application. Used to select the application ini group. Default\-: \hyperlink{classReader}{Reader} \hypertarget{classReader_ace3793e1d270276c63e9689e59a6cb23}{\index{Reader@{Reader}!basedir@{basedir}}
+\index{basedir@{basedir}!Reader@{Reader}}
+\subsubsection[{basedir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::basedir\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ace3793e1d270276c63e9689e59a6cb23}
+Basedir of the auger file \hypertarget{classReader_a5357e56eb1aea6d31962a3ac034b4d0b}{\index{Reader@{Reader}!basedir\-Tmpl@{basedir\-Tmpl}}
+\index{basedir\-Tmpl@{basedir\-Tmpl}!Reader@{Reader}}
+\subsubsection[{basedir\-Tmpl}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::basedir\-Tmpl\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a5357e56eb1aea6d31962a3ac034b4d0b}
+Template for the basedir of the auger file \hypertarget{classReader_a097598eeea105530aa64222c8bf6d828}{\index{Reader@{Reader}!bgcal\-File@{bgcal\-File}}
+\index{bgcal\-File@{bgcal\-File}!Reader@{Reader}}
+\subsubsection[{bgcal\-File}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::bgcal\-File\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a097598eeea105530aa64222c8bf6d828}
+Filename template for the calibration mode \hypertarget{classReader_aa98bab20153537c112ca0640c210c34b}{\index{Reader@{Reader}!bgcal\-T\-Sample@{bgcal\-T\-Sample}}
+\index{bgcal\-T\-Sample@{bgcal\-T\-Sample}!Reader@{Reader}}
+\subsubsection[{bgcal\-T\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::bgcal\-T\-Sample\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aa98bab20153537c112ca0640c210c34b}
+Sampling time for calibration mode \hypertarget{classReader_aa0296167e6f6781808727fa2a93b6a74}{\index{Reader@{Reader}!bg\-File@{bg\-File}}
+\index{bg\-File@{bg\-File}!Reader@{Reader}}
+\subsubsection[{bg\-File}]{\setlength{\rightskip}{0pt plus 5cm}F\-I\-L\-E$\ast$ Reader\-::bg\-File\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aa0296167e6f6781808727fa2a93b6a74}
+File descriptor for back \hypertarget{classReader_a7e985019f1cb999712f0955e0febf4ef}{\index{Reader@{Reader}!bgrun\-File@{bgrun\-File}}
+\index{bgrun\-File@{bgrun\-File}!Reader@{Reader}}
+\subsubsection[{bgrun\-File}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::bgrun\-File\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a7e985019f1cb999712f0955e0febf4ef}
+Filename template for the run mode \hypertarget{classReader_a1fa6f7582327f96076165c7b95b55a1b}{\index{Reader@{Reader}!bgrun\-T\-Sample@{bgrun\-T\-Sample}}
+\index{bgrun\-T\-Sample@{bgrun\-T\-Sample}!Reader@{Reader}}
+\subsubsection[{bgrun\-T\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::bgrun\-T\-Sample\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a1fa6f7582327f96076165c7b95b55a1b}
+Sampling time for run mode \hypertarget{classReader_a4cbb3ab4b903d0114ee8f6ea521259b8}{\index{Reader@{Reader}!cfp\-Sock@{cfp\-Sock}}
+\index{cfp\-Sock@{cfp\-Sock}!Reader@{Reader}}
+\subsubsection[{cfp\-Sock}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Simple\-Socket}$\ast$ Reader\-::cfp\-Sock\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a4cbb3ab4b903d0114ee8f6ea521259b8}
+cfp server socket \hypertarget{classReader_aee93b4550b1f413ac5e263e0a2f85b25}{\index{Reader@{Reader}!deadtime\-Active@{deadtime\-Active}}
+\index{deadtime\-Active@{deadtime\-Active}!Reader@{Reader}}
+\subsubsection[{deadtime\-Active}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::deadtime\-Active\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aee93b4550b1f413ac5e263e0a2f85b25}
+Deadtime active \hypertarget{classReader_a759e4aca2327cd6959af3273bb10c979}{\index{Reader@{Reader}!dev@{dev}}
+\index{dev@{dev}!Reader@{Reader}}
+\subsubsection[{dev}]{\setlength{\rightskip}{0pt plus 5cm}{\bf D\-A\-Q\-Device}$\ast$$\ast$ Reader\-::dev\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a759e4aca2327cd6959af3273bb10c979}
+\hypertarget{classReader_ac749831ff1afb95fcc67c3100b45c6d7}{\index{Reader@{Reader}!disabled\-Pixel@{disabled\-Pixel}}
+\index{disabled\-Pixel@{disabled\-Pixel}!Reader@{Reader}}
+\subsubsection[{disabled\-Pixel}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::disabled\-Pixel\mbox{[}20\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ac749831ff1afb95fcc67c3100b45c6d7}
+Bits mask to mark the faulty pixel that should not be included in the calculation of the mean values \hypertarget{classReader_a0746e7e813a05ee8648875ee2776b5f4}{\index{Reader@{Reader}!disk\-\_\-avail\-\_\-gb@{disk\-\_\-avail\-\_\-gb}}
+\index{disk\-\_\-avail\-\_\-gb@{disk\-\_\-avail\-\_\-gb}!Reader@{Reader}}
+\subsubsection[{disk\-\_\-avail\-\_\-gb}]{\setlength{\rightskip}{0pt plus 5cm}double Reader\-::disk\-\_\-avail\-\_\-gb\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a0746e7e813a05ee8648875ee2776b5f4}
+\hypertarget{classReader_ae6d9d7dae0b2b71985a8d2df2ee09819}{\index{Reader@{Reader}!error\-General@{error\-General}}
+\index{error\-General@{error\-General}!Reader@{Reader}}
+\subsubsection[{error\-General}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::error\-General\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ae6d9d7dae0b2b71985a8d2df2ee09819}
+Error in one of the telescopes \hypertarget{classReader_a92b7378790ac975b65f159b6502cb47e}{\index{Reader@{Reader}!error\-Level@{error\-Level}}
+\index{error\-Level@{error\-Level}!Reader@{Reader}}
+\subsubsection[{error\-Level}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::error\-Level\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a92b7378790ac975b65f159b6502cb47e}
+Error level of the telescope (0 Ok, 1 warning, 2 error ) \hypertarget{classReader_a59ce0afb9461ba7360d135e4b2c4fb95}{\index{Reader@{Reader}!fddas\-Run\-Id@{fddas\-Run\-Id}}
+\index{fddas\-Run\-Id@{fddas\-Run\-Id}!Reader@{Reader}}
+\subsubsection[{fddas\-Run\-Id}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::fddas\-Run\-Id\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a59ce0afb9461ba7360d135e4b2c4fb95}
+Number of the corresponding F\-D\-D\-A\-S run \hypertarget{classReader_a527aa131b2bafc4f6292828ac097a77f}{\index{Reader@{Reader}!filename@{filename}}
+\index{filename@{filename}!Reader@{Reader}}
+\subsubsection[{filename}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::filename\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a527aa131b2bafc4f6292828ac097a77f}
+Record filename \hypertarget{classReader_af4873d08f7454f94b69379682b86b761}{\index{Reader@{Reader}!filename\-Tmpl@{filename\-Tmpl}}
+\index{filename\-Tmpl@{filename\-Tmpl}!Reader@{Reader}}
+\subsubsection[{filename\-Tmpl}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::filename\-Tmpl\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_af4873d08f7454f94b69379682b86b761}
+Template for the record filename \hypertarget{classReader_adced1caed365fc651778f352416914c6}{\index{Reader@{Reader}!flog@{flog}}
+\index{flog@{flog}!Reader@{Reader}}
+\subsubsection[{flog}]{\setlength{\rightskip}{0pt plus 5cm}F\-I\-L\-E$\ast$ Reader\-::flog\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_adced1caed365fc651778f352416914c6}
+F\-Ealarm log file name \hypertarget{classReader_a19a9f80856c30d86a31b79f1672b3804}{\index{Reader@{Reader}!hitrate\-Overflow@{hitrate\-Overflow}}
+\index{hitrate\-Overflow@{hitrate\-Overflow}!Reader@{Reader}}
+\subsubsection[{hitrate\-Overflow}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::hitrate\-Overflow\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a19a9f80856c30d86a31b79f1672b3804}
+Flag to indicate colums with hitrate overflow \hypertarget{classReader_aaeaf0ff38217063a14b00bf16deed50a}{\index{Reader@{Reader}!inifile@{inifile}}
+\index{inifile@{inifile}!Reader@{Reader}}
+\subsubsection[{inifile}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::inifile\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aaeaf0ff38217063a14b00bf16deed50a}
+\hypertarget{classReader_ab53774f0eac672c5d80f5f086e7b0d3b}{\index{Reader@{Reader}!ini\-Group@{ini\-Group}}
+\index{ini\-Group@{ini\-Group}!Reader@{Reader}}
+\subsubsection[{ini\-Group}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string$\ast$ Reader\-::ini\-Group\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ab53774f0eac672c5d80f5f086e7b0d3b}
+a group in the $\ast$.ini file \hypertarget{classReader_a14d16a29a867041a4bc916142630a162}{\index{Reader@{Reader}!last\-Data\-Sec@{last\-Data\-Sec}}
+\index{last\-Data\-Sec@{last\-Data\-Sec}!Reader@{Reader}}
+\subsubsection[{last\-Data\-Sec}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::last\-Data\-Sec\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a14d16a29a867041a4bc916142630a162}
+Time stamp of last received data set \hypertarget{classReader_ad7344b65bf38e5ea1a22230ad37fc95a}{\index{Reader@{Reader}!last\-Deadtime@{last\-Deadtime}}
+\index{last\-Deadtime@{last\-Deadtime}!Reader@{Reader}}
+\subsubsection[{last\-Deadtime}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long long Reader\-::last\-Deadtime\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ad7344b65bf38e5ea1a22230ad37fc95a}
+List of faulty pixel (0 Ok, $>$ 1 errors) Last dead time \hypertarget{classReader_a9686e0c5ed311baa141f6021fc45c931}{\index{Reader@{Reader}!last\-Second\-Diff@{last\-Second\-Diff}}
+\index{last\-Second\-Diff@{last\-Second\-Diff}!Reader@{Reader}}
+\subsubsection[{last\-Second\-Diff}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::last\-Second\-Diff\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a9686e0c5ed311baa141f6021fc45c931}
+Last difference between P\-C and H\-W second counter \hypertarget{classReader_a17df32c8ae16df4d276d73b8d955c0e6}{\index{Reader@{Reader}!last\-Time\-Stamp@{last\-Time\-Stamp}}
+\index{last\-Time\-Stamp@{last\-Time\-Stamp}!Reader@{Reader}}
+\subsubsection[{last\-Time\-Stamp}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::last\-Time\-Stamp\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a17df32c8ae16df4d276d73b8d955c0e6}
+Last time stamp \hypertarget{classReader_aa69150af33df50c03662851a660321b4}{\index{Reader@{Reader}!last\-Variance@{last\-Variance}}
+\index{last\-Variance@{last\-Variance}!Reader@{Reader}}
+\subsubsection[{last\-Variance}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::last\-Variance\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aa69150af33df50c03662851a660321b4}
+Array with the last variances \hypertarget{classReader_a04a91fc12dab5c7eee7bcbf051619b16}{\index{Reader@{Reader}!limit\-Var@{limit\-Var}}
+\index{limit\-Var@{limit\-Var}!Reader@{Reader}}
+\subsubsection[{limit\-Var}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::limit\-Var\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a04a91fc12dab5c7eee7bcbf051619b16}
+Limit of allows deviation from the mean variance The limit is given in percent from the mean value. This value is intended to be used with the noisy pixel analysis. \hypertarget{classReader_a8f238308360fe50adda67d360a9d3b28}{\index{Reader@{Reader}!location@{location}}
+\index{location@{location}!Reader@{Reader}}
+\subsubsection[{location}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::location\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a8f238308360fe50adda67d360a9d3b28}
+Name of the location \hypertarget{classReader_a2f8737a95888b1cb41b2fa191382fe1c}{\index{Reader@{Reader}!location\-Id@{location\-Id}}
+\index{location\-Id@{location\-Id}!Reader@{Reader}}
+\subsubsection[{location\-Id}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::location\-Id\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a2f8737a95888b1cb41b2fa191382fe1c}
+Location Id \hypertarget{classReader_a3623b291506e1e6f54b90e00eeefdad8}{\index{Reader@{Reader}!log@{log}}
+\index{log@{log}!Reader@{Reader}}
+\subsubsection[{log}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Sys\-Log}$\ast$ Reader\-::log\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a3623b291506e1e6f54b90e00eeefdad8}
+\hypertarget{classReader_a59413e43dd39a74095478580bdcc7eb9}{\index{Reader@{Reader}!logfile@{logfile}}
+\index{logfile@{logfile}!Reader@{Reader}}
+\subsubsection[{logfile}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::logfile\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a59413e43dd39a74095478580bdcc7eb9}
+Name of the logfile \hypertarget{classReader_a9574d13bbda6fd1a17f1aca61e2a0df1}{\index{Reader@{Reader}!missing\-Tel@{missing\-Tel}}
+\index{missing\-Tel@{missing\-Tel}!Reader@{Reader}}
+\subsubsection[{missing\-Tel}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::missing\-Tel\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a9574d13bbda6fd1a17f1aca61e2a0df1}
+Flag for all missing telesopes \hypertarget{classReader_a0120f495d8251090cb5a406b6326c543}{\index{Reader@{Reader}!module\-Name@{module\-Name}}
+\index{module\-Name@{module\-Name}!Reader@{Reader}}
+\subsubsection[{module\-Name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::module\-Name\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a0120f495d8251090cb5a406b6326c543}
+Module name s given in sensor list \hypertarget{classReader_aa816d9ed493e53da3119680a60a581ed}{\index{Reader@{Reader}!module\-Number@{module\-Number}}
+\index{module\-Number@{module\-Number}!Reader@{Reader}}
+\subsubsection[{module\-Number}]{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ Reader\-::module\-Number\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aa816d9ed493e53da3119680a60a581ed}
+Module number \hypertarget{classReader_a082c78fbd3e67423e6ab134d4fb61cc9}{\index{Reader@{Reader}!module\-Type@{module\-Type}}
+\index{module\-Type@{module\-Type}!Reader@{Reader}}
+\subsubsection[{module\-Type}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string$\ast$ Reader\-::module\-Type\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a082c78fbd3e67423e6ab134d4fb61cc9}
+module type describes the implementation, the class \hypertarget{classReader_a5d275c3577f7d7c02a6cc83f70d0dcc7}{\index{Reader@{Reader}!n\-Error@{n\-Error}}
+\index{n\-Error@{n\-Error}!Reader@{Reader}}
+\subsubsection[{n\-Error}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::n\-Error\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a5d275c3577f7d7c02a6cc83f70d0dcc7}
+Number of errors \hypertarget{classReader_aa87a2b5443237f58cadeaa815e6e6790}{\index{Reader@{Reader}!n\-Groups@{n\-Groups}}
+\index{n\-Groups@{n\-Groups}!Reader@{Reader}}
+\subsubsection[{n\-Groups}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::n\-Groups\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aa87a2b5443237f58cadeaa815e6e6790}
+File pointer for the data file Number of sensor groups \hypertarget{classReader_abf76426a02d8896908e76edefa1821b2}{\index{Reader@{Reader}!n\-Modules@{n\-Modules}}
+\index{n\-Modules@{n\-Modules}!Reader@{Reader}}
+\subsubsection[{n\-Modules}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::n\-Modules\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_abf76426a02d8896908e76edefa1821b2}
+Number of D\-A\-Q modules added to the reader. The number is given by the entries in the inifile \hypertarget{classReader_a4b6268d4969e7209ea2c7fea25d09a58}{\index{Reader@{Reader}!n\-Samples\-Skipped@{n\-Samples\-Skipped}}
+\index{n\-Samples\-Skipped@{n\-Samples\-Skipped}!Reader@{Reader}}
+\subsubsection[{n\-Samples\-Skipped}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::n\-Samples\-Skipped\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a4b6268d4969e7209ea2c7fea25d09a58}
+Number of last samples skipped, because there was no vaild data / timestamp \hypertarget{classReader_a03046b6de7c2adc07bc85fffd69d78b1}{\index{Reader@{Reader}!pixel\-Status@{pixel\-Status}}
+\index{pixel\-Status@{pixel\-Status}!Reader@{Reader}}
+\subsubsection[{pixel\-Status}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::pixel\-Status\mbox{[}20\mbox{]}\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a03046b6de7c2adc07bc85fffd69d78b1}
+Matrix of the pixel status \hypertarget{classReader_ab0da569b087b0ba5efdb22ee8459e40d}{\index{Reader@{Reader}!qd\-Config@{qd\-Config}}
+\index{qd\-Config@{qd\-Config}!Reader@{Reader}}
+\subsubsection[{qd\-Config}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::qd\-Config\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ab0da569b087b0ba5efdb22ee8459e40d}
+Name of configuration file \hypertarget{classReader_a1807cf089712f144cbf20b280dc36240}{\index{Reader@{Reader}!qd\-N\-Sensors@{qd\-N\-Sensors}}
+\index{qd\-N\-Sensors@{qd\-N\-Sensors}!Reader@{Reader}}
+\subsubsection[{qd\-N\-Sensors}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::qd\-N\-Sensors\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a1807cf089712f144cbf20b280dc36240}
+Number of values (max 24) \hypertarget{classReader_ad92d8d94dae6b66a5278cb792ca0a206}{\index{Reader@{Reader}!qd\-Path@{qd\-Path}}
+\index{qd\-Path@{qd\-Path}!Reader@{Reader}}
+\subsubsection[{qd\-Path}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::qd\-Path\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ad92d8d94dae6b66a5278cb792ca0a206}
+Path to the Q\-D data \hypertarget{classReader_a69f380acc4c2b439f1cd940b12349d92}{\index{Reader@{Reader}!qd\-T\-Sample@{qd\-T\-Sample}}
+\index{qd\-T\-Sample@{qd\-T\-Sample}!Reader@{Reader}}
+\subsubsection[{qd\-T\-Sample}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::qd\-T\-Sample\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a69f380acc4c2b439f1cd940b12349d92}
+Sampling time (ms) \hypertarget{classReader_acfb61762011f4aa995126c9e8c1950c3}{\index{Reader@{Reader}!record@{record}}
+\index{record@{record}!Reader@{Reader}}
+\subsubsection[{record}]{\setlength{\rightskip}{0pt plus 5cm}bool Reader\-::record\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_acfb61762011f4aa995126c9e8c1950c3}
+Flag for writing to database \hypertarget{classReader_ac7fb1595fa93f70c58656bff11091f94}{\index{Reader@{Reader}!reset@{reset}}
+\index{reset@{reset}!Reader@{Reader}}
+\subsubsection[{reset}]{\setlength{\rightskip}{0pt plus 5cm}bool Reader\-::reset\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ac7fb1595fa93f70c58656bff11091f94}
+Flag that indicates that the file count should be reset before starting the run \hypertarget{classReader_a08302c0ae536dd0d0d2de37143eb7a94}{\index{Reader@{Reader}!run\-Daemon@{run\-Daemon}}
+\index{run\-Daemon@{run\-Daemon}!Reader@{Reader}}
+\subsubsection[{run\-Daemon}]{\setlength{\rightskip}{0pt plus 5cm}bool Reader\-::run\-Daemon\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a08302c0ae536dd0d0d2de37143eb7a94}
+Flag to start the server as daemon -\/ without interactive input \hypertarget{classReader_a3fb6ef9d55ca8c9d23e0bf6be5796583}{\index{Reader@{Reader}!run\-Mode@{run\-Mode}}
+\index{run\-Mode@{run\-Mode}!Reader@{Reader}}
+\subsubsection[{run\-Mode}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::run\-Mode\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a3fb6ef9d55ca8c9d23e0bf6be5796583}
+Mode of operation (-\/1 unkown, 0 cal/test mode = record every thing, 1 run mode = record only open telescopes \hypertarget{classReader_a25348aba8ec875045f557beaa11e2415}{\index{Reader@{Reader}!run\-Type@{run\-Type}}
+\index{run\-Type@{run\-Type}!Reader@{Reader}}
+\subsubsection[{run\-Type}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string Reader\-::run\-Type\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a25348aba8ec875045f557beaa11e2415}
+Run type (run, cal, test) \hypertarget{classReader_a759fcd53649d1d49e66ff8e9cfd4b452}{\index{Reader@{Reader}!rx@{rx}}
+\index{rx@{rx}!Reader@{Reader}}
+\subsubsection[{rx}]{\setlength{\rightskip}{0pt plus 5cm}uint64\-\_\-t Reader\-::rx\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a759fcd53649d1d49e66ff8e9cfd4b452}
+\hypertarget{classReader_aa6c9e0275ed3601e6df4fcb194d97834}{\index{Reader@{Reader}!samples\-N@{samples\-N}}
+\index{samples\-N@{samples\-N}!Reader@{Reader}}
+\subsubsection[{samples\-N}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::samples\-N\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aa6c9e0275ed3601e6df4fcb194d97834}
+Number of samples (of timeout loop) \hypertarget{classReader_ab52320900b9165867a7294a5282b2caf}{\index{Reader@{Reader}!sel\-Display@{sel\-Display}}
+\index{sel\-Display@{sel\-Display}!Reader@{Reader}}
+\subsubsection[{sel\-Display}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::sel\-Display\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ab52320900b9165867a7294a5282b2caf}
+Selected parameter for display \hypertarget{classReader_a298c2e5e5d77eab7642ebfef4ac8e8da}{\index{Reader@{Reader}!sel\-Store@{sel\-Store}}
+\index{sel\-Store@{sel\-Store}!Reader@{Reader}}
+\subsubsection[{sel\-Store}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::sel\-Store\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a298c2e5e5d77eab7642ebfef4ac8e8da}
+Reference time of the run Selected parameter for recording \hypertarget{classReader_a822ff7808145dd73c18e03a02ff59fbe}{\index{Reader@{Reader}!sel\-Telescopes@{sel\-Telescopes}}
+\index{sel\-Telescopes@{sel\-Telescopes}!Reader@{Reader}}
+\subsubsection[{sel\-Telescopes}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::sel\-Telescopes\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a822ff7808145dd73c18e03a02ff59fbe}
+Selected telescopes \hypertarget{classReader_a8fd2d0cd7df8a4c2cf1ca350f6ca95c9}{\index{Reader@{Reader}!stat\-Offset@{stat\-Offset}}
+\index{stat\-Offset@{stat\-Offset}!Reader@{Reader}}
+\subsubsection[{stat\-Offset}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::stat\-Offset\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a8fd2d0cd7df8a4c2cf1ca350f6ca95c9}
+Offset used for the calculation of the pedestal \hypertarget{classReader_a98d0f293c15366f1efbe6722ed4fa9eb}{\index{Reader@{Reader}!stat\-Samples@{stat\-Samples}}
+\index{stat\-Samples@{stat\-Samples}!Reader@{Reader}}
+\subsubsection[{stat\-Samples}]{\setlength{\rightskip}{0pt plus 5cm}unsigned long Reader\-::stat\-Samples\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a98d0f293c15366f1efbe6722ed4fa9eb}
+Number of samples used for calculation of the satistics \hypertarget{classReader_aeb5766561480656c2a2182b86e2cdae8}{\index{Reader@{Reader}!t\-Database@{t\-Database}}
+\index{t\-Database@{t\-Database}!Reader@{Reader}}
+\subsubsection[{t\-Database}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::t\-Database\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aeb5766561480656c2a2182b86e2cdae8}
+Duration of database storage \hypertarget{classReader_aaa48504eb00d9023ff126beb8b6f5c89}{\index{Reader@{Reader}!tel\-Active@{tel\-Active}}
+\index{tel\-Active@{tel\-Active}!Reader@{Reader}}
+\subsubsection[{tel\-Active}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::tel\-Active\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_aaa48504eb00d9023ff126beb8b6f5c89}
+Run mode of telescope (0 no, 1 yes) \hypertarget{classReader_ae79b47c731fc265b3ca401cdbdccd726}{\index{Reader@{Reader}!threshold\-Level@{threshold\-Level}}
+\index{threshold\-Level@{threshold\-Level}!Reader@{Reader}}
+\subsubsection[{threshold\-Level}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::threshold\-Level\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ae79b47c731fc265b3ca401cdbdccd726}
+Mean threshold pedestal difference \hypertarget{classReader_a4b26c73a9ce2d08fd78b11dca25c0ad6}{\index{Reader@{Reader}!time\-\_\-now@{time\-\_\-now}}
+\index{time\-\_\-now@{time\-\_\-now}!Reader@{Reader}}
+\subsubsection[{time\-\_\-now}]{\setlength{\rightskip}{0pt plus 5cm}struct timeval Reader\-::time\-\_\-now\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a4b26c73a9ce2d08fd78b11dca25c0ad6}
+\hypertarget{classReader_a6cf0d42c4478dafaf61696bcc0c668f9}{\index{Reader@{Reader}!timing\-Max@{timing\-Max}}
+\index{timing\-Max@{timing\-Max}!Reader@{Reader}}
+\subsubsection[{timing\-Max}]{\setlength{\rightskip}{0pt plus 5cm}long long Reader\-::timing\-Max\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a6cf0d42c4478dafaf61696bcc0c668f9}
+Maximal deviation \hypertarget{classReader_a6e85a422cbe42ab60c20b06e719bbdae}{\index{Reader@{Reader}!timing\-Min@{timing\-Min}}
+\index{timing\-Min@{timing\-Min}!Reader@{Reader}}
+\subsubsection[{timing\-Min}]{\setlength{\rightskip}{0pt plus 5cm}long long Reader\-::timing\-Min\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a6e85a422cbe42ab60c20b06e719bbdae}
+Minimal deviation \hypertarget{classReader_a85c71a4d9f959cabea9cb7b168d966a0}{\index{Reader@{Reader}!timing\-N@{timing\-N}}
+\index{timing\-N@{timing\-N}!Reader@{Reader}}
+\subsubsection[{timing\-N}]{\setlength{\rightskip}{0pt plus 5cm}long long Reader\-::timing\-N\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a85c71a4d9f959cabea9cb7b168d966a0}
+Number of analysed samples \hypertarget{classReader_ab185760a9e7235b20f9cb21db44d0663}{\index{Reader@{Reader}!timing\-Sum@{timing\-Sum}}
+\index{timing\-Sum@{timing\-Sum}!Reader@{Reader}}
+\subsubsection[{timing\-Sum}]{\setlength{\rightskip}{0pt plus 5cm}long long Reader\-::timing\-Sum\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_ab185760a9e7235b20f9cb21db44d0663}
+Sum of all deviations from the planned sample time \hypertarget{classReader_a8a8de149490f7fe3c01413453c3d0a50}{\index{Reader@{Reader}!timing\-Sum2@{timing\-Sum2}}
+\index{timing\-Sum2@{timing\-Sum2}!Reader@{Reader}}
+\subsubsection[{timing\-Sum2}]{\setlength{\rightskip}{0pt plus 5cm}long long Reader\-::timing\-Sum2\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a8a8de149490f7fe3c01413453c3d0a50}
+Sum of squares from the the planned sample time \hypertarget{classReader_abe8094976b8f244a539e34689dda91bc}{\index{Reader@{Reader}!t\-Sample\-From\-Inifile@{t\-Sample\-From\-Inifile}}
+\index{t\-Sample\-From\-Inifile@{t\-Sample\-From\-Inifile}!Reader@{Reader}}
+\subsubsection[{t\-Sample\-From\-Inifile}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::t\-Sample\-From\-Inifile\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_abe8094976b8f244a539e34689dda91bc}
+Sampling time (ms) \hypertarget{classReader_acb6c6053d7bd278014e04c34fdad4e0e}{\index{Reader@{Reader}!tx@{tx}}
+\index{tx@{tx}!Reader@{Reader}}
+\subsubsection[{tx}]{\setlength{\rightskip}{0pt plus 5cm}uint64\-\_\-t Reader\-::tx\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_acb6c6053d7bd278014e04c34fdad4e0e}
+\hypertarget{classReader_a2df27c47ac46939a756ab78b71690d44}{\index{Reader@{Reader}!unique\-Id@{unique\-Id}}
+\index{unique\-Id@{unique\-Id}!Reader@{Reader}}
+\subsubsection[{unique\-Id}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::unique\-Id\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a2df27c47ac46939a756ab78b71690d44}
+Flag to switch between unique and relative telescope id's \hypertarget{classReader_a2318276c2913fe9eb87c1b49c786d9b5}{\index{Reader@{Reader}!variance\-Closed\-Shutter@{variance\-Closed\-Shutter}}
+\index{variance\-Closed\-Shutter@{variance\-Closed\-Shutter}!Reader@{Reader}}
+\subsubsection[{variance\-Closed\-Shutter}]{\setlength{\rightskip}{0pt plus 5cm}float Reader\-::variance\-Closed\-Shutter\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a2318276c2913fe9eb87c1b49c786d9b5}
+Level for closed shutters \hypertarget{classReader_a57a28f21905a04e6eeb0008840ed7ab6}{\index{Reader@{Reader}!variance\-Level@{variance\-Level}}
+\index{variance\-Level@{variance\-Level}!Reader@{Reader}}
+\subsubsection[{variance\-Level}]{\setlength{\rightskip}{0pt plus 5cm}int Reader\-::variance\-Level\mbox{[}24\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a57a28f21905a04e6eeb0008840ed7ab6}
+Level of the mean variance (do not include obvious wrong pixel!?) \hypertarget{classReader_a55a312840dc5e05cbadcc8002838a252}{\index{Reader@{Reader}!variance\-Overflow@{variance\-Overflow}}
+\index{variance\-Overflow@{variance\-Overflow}!Reader@{Reader}}
+\subsubsection[{variance\-Overflow}]{\setlength{\rightskip}{0pt plus 5cm}float Reader\-::variance\-Overflow\hspace{0.3cm}{\ttfamily [private]}}}\label{classReader_a55a312840dc5e05cbadcc8002838a252}
+Level for too much light 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/reader/\hyperlink{reader_8h}{reader.\-h}\item 
+/home/ntj/\-Development/phd/kitcube-\/tools/src/kitcube-\/reader/\hyperlink{reader_8cpp}{reader.\-cpp}\end{DoxyCompactItemize}
