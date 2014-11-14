@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/doxygen/code/!svn/ver/254/trunk/tmake/lib/win32-g++
+END
+tmake.conf
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/doxygen/code/!svn/ver/82/trunk/tmake/lib/win32-g++/tmake.conf
+END
+lib.t
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/win32-g++/lib.t
+END
+subdirs.t
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/win32-g++/subdirs.t
+END
+generic.t
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/doxygen/code/!svn/ver/254/trunk/tmake/lib/win32-g++/generic.t
+END
+app.t
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/doxygen/code/!svn/ver/22/trunk/tmake/lib/win32-g++/app.t
+END

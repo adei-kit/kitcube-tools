@@ -1,0 +1,155 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/847/trunk/addon/doxywizard
+END
+expert.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/p/doxygen/code/!svn/ver/847/trunk/addon/doxywizard/expert.cpp
+END
+doxywizard.qrc
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/doxygen/code/!svn/ver/750/trunk/addon/doxywizard/doxywizard.qrc
+END
+doxywizard.h
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/doxygen/code/!svn/ver/730/trunk/addon/doxywizard/doxywizard.h
+END
+config.h
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/doxygen/code/!svn/ver/721/trunk/addon/doxywizard/config.h
+END
+inputint.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/doxygen/code/!svn/ver/847/trunk/addon/doxywizard/inputint.cpp
+END
+inputbool.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/doxygen/code/!svn/ver/847/trunk/addon/doxywizard/inputbool.cpp
+END
+expert.h
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/doxygen/code/!svn/ver/752/trunk/addon/doxywizard/expert.h
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/doxygen/code/!svn/ver/663/trunk/addon/doxywizard/README
+END
+config.l
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/doxygen/code/!svn/ver/845/trunk/addon/doxywizard/config.l
+END
+inputint.h
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/p/doxygen/code/!svn/ver/847/trunk/addon/doxywizard/inputint.h
+END
+inputbool.h
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/839/trunk/addon/doxywizard/inputbool.h
+END
+inputstrlist.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/p/doxygen/code/!svn/ver/847/trunk/addon/doxywizard/inputstrlist.cpp
+END
+doxywizard.rc
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/doxygen/code/!svn/ver/732/trunk/addon/doxywizard/doxywizard.rc
+END
+inputstring.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/doxygen/code/!svn/ver/847/trunk/addon/doxywizard/inputstring.cpp
+END
+doxywizard.pro.in
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/doxygen/code/!svn/ver/829/trunk/addon/doxywizard/doxywizard.pro.in
+END
+inputstrlist.h
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/doxygen/code/!svn/ver/839/trunk/addon/doxywizard/inputstrlist.h
+END
+version.h
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/doxygen/code/!svn/ver/839/trunk/addon/doxywizard/version.h
+END
+inputstring.h
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/doxygen/code/!svn/ver/847/trunk/addon/doxywizard/inputstring.h
+END
+doxywizard.ico
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/doxygen/code/!svn/ver/800/trunk/addon/doxywizard/doxywizard.ico
+END
+helplabel.h
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/663/trunk/addon/doxywizard/helplabel.h
+END
+wizard.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/p/doxygen/code/!svn/ver/756/trunk/addon/doxywizard/wizard.cpp
+END
+Makefile.in
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/839/trunk/addon/doxywizard/Makefile.in
+END
+input.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/doxygen/code/!svn/ver/663/trunk/addon/doxywizard/input.h
+END
+doxywizard.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/doxygen/code/!svn/ver/839/trunk/addon/doxywizard/doxywizard.cpp
+END
+wizard.h
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/doxygen/code/!svn/ver/839/trunk/addon/doxywizard/wizard.h
+END

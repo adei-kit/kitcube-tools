@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/p/doxygen/code/!svn/ver/841/trunk/addon/doxyapp
+END
+doxyapp.pro.in
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/836/trunk/addon/doxyapp/doxyapp.pro.in
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/doxygen/code/!svn/ver/555/trunk/addon/doxyapp/README
+END
+Makefile.in
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/doxygen/code/!svn/ver/841/trunk/addon/doxyapp/Makefile.in
+END
+doxyapp.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/doxygen/code/!svn/ver/839/trunk/addon/doxyapp/doxyapp.cpp
+END

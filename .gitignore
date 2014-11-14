@@ -92,3 +92,7 @@ bin/tmp/
 #
 kitcube-status/
 kitcube-status-0.1/
+# 
+# Doxygen generated html files
+docs/html/
+docs/latex/

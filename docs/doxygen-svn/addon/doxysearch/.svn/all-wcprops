@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/p/doxygen/code/!svn/ver/841/trunk/addon/doxysearch
+END
+doxyindexer.pro.in
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/doxygen/code/!svn/ver/841/trunk/addon/doxysearch/doxyindexer.pro.in
+END
+doxysearch.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/doxygen/code/!svn/ver/839/trunk/addon/doxysearch/doxysearch.cpp
+END
+doxysearch.pro.in
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/doxygen/code/!svn/ver/836/trunk/addon/doxysearch/doxysearch.pro.in
+END
+Makefile.in
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/doxygen/code/!svn/ver/841/trunk/addon/doxysearch/Makefile.in
+END
+doxyindexer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/doxygen/code/!svn/ver/839/trunk/addon/doxysearch/doxyindexer.cpp
+END

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/doxygen/code/!svn/ver/836/trunk/tmake/lib/m68k-atari-mint-g++
+END
+subdirs.t
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/p/doxygen/code/!svn/ver/440/trunk/tmake/lib/m68k-atari-mint-g++/subdirs.t
+END
+app.t
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/doxygen/code/!svn/ver/440/trunk/tmake/lib/m68k-atari-mint-g++/app.t
+END
+tmake.conf
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/doxygen/code/!svn/ver/836/trunk/tmake/lib/m68k-atari-mint-g++/tmake.conf
+END
+lib.t
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/doxygen/code/!svn/ver/440/trunk/tmake/lib/m68k-atari-mint-g++/lib.t
+END
