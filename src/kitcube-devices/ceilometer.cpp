@@ -416,13 +416,15 @@ int Ceilometer::parseData(char *line, struct timeval *l_tData, double *sensorVal
 	
 	// Read data values -- Read only 8 values !!!
 	//printf("%s\n", buf);
-    max = 8; // This functions nows only 8 values !
+    max = 8; // This functions knows only 8 values !
     if (max > nSensors) max = nSensors;
 	for (int j = 0; j < max; j++) {
 		sensorString = (char *) (buf + sensorPtr[j]);
 		//buf[sensorPtr[1]-1] = 0;
 		sensorValue[j] = noData;
 		err = sscanf(sensorString, "%lf", &sensorValue[j]);
+		if (isnan(sensorValue[j])) sensorValue[j] = noData;
+		// TODO: Use NaN instead of noData !!!:
 	}
 	
 	return 0;
