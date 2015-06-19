@@ -100,6 +100,8 @@ Later:
 Release notes
 --------------------------------------------------------------------------------------------
 Version 0.35:
+ - Added implementation of Campbell's binary formats
+   19.6.15 (ak)
  - Updated kitcube-status page for new masts and HATPRO
    3.8.14 (ak+chuan)
  - Added implementation for the processed HATPRO files. The implementation of the raw 
