@@ -180,8 +180,16 @@ public:
       * @return -1 no data found, skip storage 
       *          0 sucess, store data, 
       *          1 read another line 
+	  * 
+	  * For DAQBinardDevice the number of left over Bytes in the dataset is returned.
+	  *
       */
 	virtual int parseData(char* line, struct timeval* l_tData, double *sensorValue);
+	
+	/** Store a dataset includeing timestamp in the database
+	  */
+	virtual int storeData(struct timeval* l_tData, double *sensorValue);
+	
 	
 	/** Update or create the entry for this module in the status table */
 	void registerStatusTab(const char *status = 0, const char *comment = 0);
@@ -426,8 +434,18 @@ protected:
     
     /** Type of compression used for the raw data file */  
     std::string compressionType;
-    
-    
+	
+	
+	/** Name of the second counter */
+	std::string secCounterName;
+	
+	/** Name of the subsecond counter */
+	std::string subSecCounterName;
+	
+	/** Subsecond resolution (Standard: Nanoseconds) */
+	int subSecCounterResolution;
+	
+	
     
 #ifdef USE_MYSQL	
 	MYSQL *db;

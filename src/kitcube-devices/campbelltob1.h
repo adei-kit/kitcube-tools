@@ -30,6 +30,43 @@ public:
 	/** Read Campbell specific header information */
 	int readHeader(const char *header);
 
+	/** Get one dataset from the buffer */
+	int parseData(char *line, struct timeval *l_tData, double *sensorValue);
+
+	
+private:
+	/** File type TOB1 = 1; TOB2 = 2; TOB3 = 3 */
+	int tobno;
+	
+	/** List of sensor types (same name as in Campbell docuumentation, TODO: move to sensor description array)*/
+	std::string *sensorTypes;
+	
+	/** Length of the data in bytes (TODO: move to sensor description array) */
+	int *sensorBytes;
+	
+	int nColsInFile;
+	
+	/** Number of the column with the second counter (0...n)*/
+	int secCol;
+	
+	/** Number of the column with the subsecond counter (0...n)*/
+	int subSecCol;
+	
+	/** Length of a sinle frame */
+	int recordSize;
+	
+	/** recordTimeStep */
+	struct timeval recordTimeStep;
+	
+	/** Number of records in one frame (only TOB2/3) */
+	int nRecordsInFrame;
+	
+	/** Number of processed records (used by parseData)*/
+	int nProcessedRecords;
+	
+	/** Timestamp of data frame */
+	struct timeval frameTimestamp;
+	
 };
 
 #endif

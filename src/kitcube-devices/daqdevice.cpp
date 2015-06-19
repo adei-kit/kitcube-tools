@@ -170,6 +170,10 @@ void DAQDevice::readInifileCommon(const char *filename){
 	
 	this->pythonDir = "";
 	
+	this->secCounterName = "SECONDS";
+	this->subSecCounterName = "NANOSECONDS";
+	this->subSecCounterResolution = 1000000000;
+	
 	
 	if (debug > 2) {
 		ini = new akInifile(inifile.c_str(), stdout);
@@ -408,6 +412,11 @@ void DAQDevice::readInifile(const char *filename, const char *group){
 		this->datafileMask = ini->GetFirstString("datafileMask", datafileMask.c_str(), &error);
 		this->datafileIndexFormat = ini->GetFirstString("datafileIndexFormat", datafileIndexFormat.c_str(), &error);
 		this->sensorListfile = ini->GetFirstString("sensorList", sensorListfile.c_str(), &error);
+		
+		// Used by CampbellTOB1
+		this->secCounterName = ini->GetFirstString("secCounterName", secCounterName.c_str(), &error);
+		this->subSecCounterName = ini->GetFirstString("subSecCounterName", subSecCounterName.c_str(), &error);
+		this->subSecCounterResolution = ini->GetFirstValue("secCounterName", subSecCounterResolution, &error);
 		
 		
 		// Add module number to dataDir + archiveDir
@@ -1681,6 +1690,88 @@ int DAQDevice::parseData(char* line, struct timeval* l_tData, double *sensorValu
 }
 
 
+int DAQDevice::storeData(struct timeval* timestamp_data, double *sensorValue){
+#ifdef USE_MYSQL
+	std::string sql;
+	char sData[50];
+	struct timeval t0, t1;
+	struct timezone tz;
+	int i, k;
+
+	if (db > 0){
+		// Write dataset to database
+		// Store in the order of appearance
+		//printf("Write record to database\n");
+		
+		sql = "INSERT INTO `";
+		if (useTicks)
+			sql += dataTableName + "` (`usec`";
+		else
+			sql += dataTableName + "` (`sec`";
+		for (i = 0 ; i < nSensors; i++) {
+			if (sensorValue[i] != noData) {
+				sql += ",`";
+				sql += sensor[i].name;
+				sql += "`";
+			}
+		}
+		sql += ") VALUES (";
+		if (useTicks)
+			sprintf(sData, "%ld", timestamp_data->tv_sec * 1000000 + timestamp_data->tv_usec);
+		else
+			sprintf(sData, "%ld", timestamp_data->tv_sec);
+		sql += sData;
+		if (profile_length != 0) {
+			for (i = 0; i < nSensors; i++) {
+				sql += ", '";
+				for (k = 0; k < profile_length; k++) {
+					sprintf(sData, "%f, ", sensorValue[i * profile_length + k]);
+					sql += sData;
+				}
+				sql += "'";
+			}
+		} else {
+			// TODO: Add code from ASCIIDev !!
+			//       Read profile data in class internal buffer and copy in parseData !!!
+			for (i = 0; i < nSensors; i++) {
+				if (sensorValue[i] != noData) {
+					sql += ",";
+					sprintf(sData, "%f", sensorValue[i]);
+					sql += sData;
+				}
+			}
+		}
+		sql += ")";
+		
+		//printf("SQL: %s (db = %d)\n", sql.c_str(), db);
+		
+		gettimeofday(&t0, &tz);
+		
+		if (mysql_query(db, sql.c_str())){
+			fprintf(stderr, "%s\n", sql.c_str());
+			fprintf(stderr, "%s\n", mysql_error(db));
+			
+			// If this operation fails do not proceed in the file?!
+			printf("Error: Unable to write data to database\n");
+			throw std::invalid_argument("Writing data failed");
+			return -1;
+		}
+		
+		gettimeofday(&t1, &tz);
+		if (debug >= 5)
+			printf("DB insert duration: %ldus\n", (t1.tv_sec - t0.tv_sec)*1000000 + (t1.tv_usec - t0.tv_usec));
+	} else {
+		printf("Error: No database availabe\n");
+		throw std::invalid_argument("No database");
+	}
+#endif // of USE_MYSQL
+	
+	return 0;
+}
+
+
+
+
 void DAQDevice::registerStatusTab(const char *status, const char *comment){
 #ifdef USE_MYSQL
 	std::string sql;
@@ -2079,8 +2170,8 @@ int DAQDevice::get_file_list(std::string directory)
         //                                file_prop.st_mode & S_IFREG);
         
         
-		//if (dir_entry->d_type == DT_DIR) { // not working in some FS
-        if (file_prop.st_mode & (S_IFDIR > 0)) {
+		if (dir_entry->d_type == DT_DIR) { // not working in some FS
+        //if (file_prop.st_mode & (S_IFDIR > 0)) {
 			//
 			// if we have a real directory (not "." or ".."), call this function recursively
 			//
@@ -2091,8 +2182,8 @@ int DAQDevice::get_file_list(std::string directory)
 				else
 					get_file_list(directory + "/" + dir_entry->d_name);
 			}
-		//} else if (dir_entry->d_type == DT_REG) { // not working in some FS
-        } else if (file_prop.st_mode & S_IFREG) {
+		} else if (dir_entry->d_type == DT_REG) { // not working in some FS
+        //} else if (file_prop.st_mode & S_IFREG) {
 			//
 			// if we have a file, get its number and, if it's the right on, save name and number
 			//
@@ -2199,7 +2290,7 @@ void DAQDevice::getNewFiles(const char *dir) {
 		
 		// Read header of the first file
 		// TODO: Howto force printing of the configuration?!
-		debug = 5;
+		if (debug < 3) debug = 3;
 		dateien_pos = dateien.begin();
 		currentFilename = dateien_pos->second;
 		readHeader(currentFilename.c_str());

@@ -281,7 +281,9 @@ void DAQBinaryDevice::readData(std::string full_filename){
 	
 	n = len;
 	int iLoop = 0;
-	while ((n == len) && (iLoop < 1000000)) {
+	int maxLoop = 1000000;
+	if (debug > 2) maxLoop = 10;
+	while ((n == len) && (iLoop < maxLoop)) {
 		// read one data set of binary data
 		n = read(fd_data_file, buf, len);
         if (debug > 4) {
@@ -291,31 +293,44 @@ void DAQBinaryDevice::readData(std::string full_filename){
 		if (n == len) {
 			// Module specific implementation
 			// Might be necessary to
-			if(parseData((char *)buf, &timestamp_data, local_sensorValue) != 0)
-				continue;
 			
-			// print sensor values
-			if (debug >= 4) {
-                ts = gmtime( &timestamp_data.tv_sec);
+			int nParsedData = n;
+			while (nParsedData > 0){
+				
+				// Parse data a long there is data left in the block
+				nParsedData = parseData((char *)(buf+n-nParsedData),
+										&timestamp_data, local_sensorValue);
+				
+			
+				// print sensor values
+				if (debug >= 4) {
+					ts = gmtime( &timestamp_data.tv_sec);
 
-				printf("%4d: Received %4d bytes --- ", iLoop, n);
-                printf("%02d.%02d.%02d %02d:%02d:%02d / ", 
+					printf("%4d: Received %4d bytes --- ", iLoop, n);
+					printf("%02d.%02d.%02d %02d:%02d:%02d / ",
                        ts->tm_mday, ts->tm_mon + 1, ts->tm_year + 1900,
                        ts->tm_hour, ts->tm_min, ts->tm_sec);
-				printf("%lds %6ldus --- ", timestamp_data.tv_sec, (long) timestamp_data.tv_usec);
-				if (profile_length != 0) {
-					for (j = 0; j < nSensors; j++) {
-						for (k = 0; k < profile_length; k++) {
-							printf("%10.3f ", local_sensorValue[j * profile_length + k]);
+					printf("%lds %6ldus --- ", timestamp_data.tv_sec, (long) timestamp_data.tv_usec);
+					
+					if (profile_length != 0) {
+						for (j = 0; j < nSensors; j++) {
+							for (k = 0; k < profile_length; k++) {
+								printf("%10.3f ", local_sensorValue[j * profile_length + k]);
+							}
+						}
+					} else {
+						for (j = 0; j < nSensors; j++) {
+							printf("%f ", local_sensorValue[j]);
 						}
 					}
-				} else {
-					for (j = 0; j < nSensors; j++) {
-						printf("%f ", local_sensorValue[j]);
-					}
+					printf("\n");
 				}
-				printf("\n");
+			
+				// store dataset in database
+				storeData(&timestamp_data, local_sensorValue);
+				
 			}
+/*
 #ifdef USE_MYSQL
 			if (db > 0){
 				// Write dataset to database
@@ -384,6 +399,8 @@ void DAQBinaryDevice::readData(std::string full_filename){
 				throw std::invalid_argument("No database");
 			}
 #endif // of USE_MYSQL
+*/
+			
 			// Get the position in this file
 			currPos += n;
 		}

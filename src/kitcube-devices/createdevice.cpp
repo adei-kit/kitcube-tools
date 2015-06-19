@@ -31,6 +31,7 @@
 #include "sisomop.h"
 #include "daqasciidevice.h"
 #include "campbelltoa5.h"
+#include "campbelltob1.h"
 
 
 extern "C" void *createDevice(const char *devType) {
@@ -83,7 +84,9 @@ extern "C" void *createDevice(const char *devType) {
 		return( new (DAQAsciiDevice));
     if (strcasestr(devType, "CampbellTOA5") != NULL)
 		return( new (CampbellTOA5));
-    
+	if (strcasestr(devType, "CampbellTOB1") != NULL)
+		return( new (CampbellTOB1));
+
 
 	
 	// Device type is unknown
